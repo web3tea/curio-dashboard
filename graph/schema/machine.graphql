@@ -1,0 +1,13 @@
+scalar Time
+
+type Machine {
+    id: Int!
+    lastContact: Time!
+    hostAndPort: String!
+    cpu: Int!
+    ram: Int!
+    gpu: Float!
+    detail: MachineDetail
+    tasks: [Task]
+    taskHistories(last: Int!): [TaskHistory]
+}

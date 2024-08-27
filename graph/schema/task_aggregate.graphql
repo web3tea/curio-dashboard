@@ -1,0 +1,14 @@
+type TaskNameAggregate {
+    name: String!
+    total: Int!
+    success: Int!
+    failure: Int!
+}
+
+type TaskAggregate {
+    time: Time!
+    total: Int!
+    success: Int!
+    failure: Int!
+    tasks: [TaskNameAggregate]!
+}

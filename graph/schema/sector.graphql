@@ -1,0 +1,37 @@
+scalar JSONB
+
+type Sector {
+    id: ID!
+    meta: SectorMeta
+    locations: [SectorLocation]!
+    pieces: [SectorMetaPiece]!
+    tasks: [Task]!
+    events: [TaskHistory]!
+}
+
+type SectorLocation {
+    minerId: ActorID!
+    sectorNum: Int!
+    sectorFiletype: Int!
+    storageId: String!
+    isPrimary: Boolean
+    readTs: String
+    readRefs: Int!
+    writeTs: String
+    writeLockOwner: String
+}
+
+type SectorMetaPiece {
+    spID: ActorID!
+    sectorNum: Int!
+    pieceNum: Int!
+    pieceCID: String!
+    pieceSize: Int!
+    requestedKeepData: Boolean!
+    rawDataSize: Int
+    startEpoch: Int
+    origEndEpoch: Int
+    f05DealID: Int
+    ddoPam: JSONB
+    f05DealProposal: JSONB
+}

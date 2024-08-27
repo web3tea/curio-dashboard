@@ -1,0 +1,65 @@
+type Pipeline {
+    id: ID!
+    spId: ActorID!
+    sectorNumber: Int!
+    createTime: Time!
+    regSealProof: Int!
+    ticketEpoch: Int
+    ticketValue: ByteArray
+    taskIdSdr: Int
+    afterSdr: Boolean!
+    treeDCid: String
+    taskIdTreeD: Int
+    afterTreeD: Boolean!
+    taskIdTreeC: Int
+    afterTreeC: Boolean!
+    treeRCid: String
+    taskIdTreeR: Int
+    afterTreeR: Boolean!
+    precommitMsgCid: String
+    taskIdPrecommitMsg: Int
+    afterPrecommitMsg: Boolean!
+    seedEpoch: Int
+    precommitMsgTsk: ByteArray
+    afterPrecommitMsgSuccess: Boolean!
+    seedValue: ByteArray
+    taskIdPorep: Int
+    porepProof: ByteArray
+    afterPorep: Boolean!
+    taskIdFinalize: Int
+    afterFinalize: Boolean!
+    taskIdMoveStorage: Int
+    afterMoveStorage: Boolean!
+    commitMsgCid: String
+    taskIdCommitMsg: Int
+    afterCommitMsg: Boolean!
+    commitMsgTsk: ByteArray
+    afterCommitMsgSuccess: Boolean!
+    failed: Boolean!
+    failedAt: Time
+    failedReason: String!
+    failedReasonMsg: String!
+    taskIdSynth: Int
+    afterSynth: Boolean!
+
+    status: PipelineStatus!
+    currentTask: Task
+}
+
+enum PipelineStatus {
+    SDR
+    TreeD
+    TreeRC
+    Synthetic
+    PreCommitMsg
+    PreCommitMsgWait
+    WaitSeed
+    PoRep
+    ClearCache
+    MoveStorage
+    CommitMsg
+    CommitMsgWait
+    Failed
+    Success
+    Unknown
+}

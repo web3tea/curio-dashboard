@@ -1,0 +1,42 @@
+.dot-outline {
+  &.v-timeline {
+    .v-timeline-divider__inner-dot {
+      background: rgb(var(--v-theme-surface)) !important;
+      border: 2px solid rgb(var(--v-theme-lightText));
+      border-radius: 100%;
+      i {
+        display: none;
+      }
+      @each $color, $value in $theme-colors {
+        &.bg-#{$color} {
+          border: 2px solid rgb(#{$value});
+        }
+      }
+    }
+  }
+}
+
+.v-timeline-divider__dot--size-x-small {
+  .v-timeline-divider__inner-dot {
+    width: 12px;
+    height: 12px;
+  }
+}
+.v-timeline-divider__dot--size-small {
+  width: 32px;
+  height: 32px;
+}
+
+.custom-timeline {
+  .v-timeline-divider__inner-dot {
+    border-radius: 4px;
+    @each $color, $value in $theme-colors {
+      &.bg-#{$color} {
+        background: rgba(#{$value}, 0.1) !important;
+        svg {
+          fill: rgb(#{$value}) !important;
+        }
+      }
+    }
+  }
+}

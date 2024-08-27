@@ -1,0 +1,5 @@
+type Alert {
+    id: Int!
+    machineName: String!
+    message: String!
+}

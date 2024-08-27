@@ -1,0 +1,12 @@
+type MachineDetail {
+    id: Int!
+    machineName: String!
+    tasks: String!
+    tasksArray: [String!]
+    layers: String!
+    layersArray: [String!]
+    startupTime: Time!
+    miners: String!
+    minersArray: [String!]
+    machineId: Int!
+}

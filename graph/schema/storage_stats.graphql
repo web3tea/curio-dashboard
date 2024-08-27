@@ -1,0 +1,17 @@
+type StorageStats {
+    type: StorageType!
+    totalCapacity: Int!
+    totalAvailable: Int!
+    totalUsed: Int!
+    totalReserved: Int!
+    totalFsAvailable: Int!
+}
+
+
+type StorageUsage {
+    time: Time!
+    available: Int!
+    used: Int!
+    reserved: Int!
+    fsAvailable: Int!
+}

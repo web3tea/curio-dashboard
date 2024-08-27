@@ -1,0 +1,46 @@
+type Miner {
+    info: MinerInfo
+    power:PowerClaim
+#    deadlines: [MinerDeadline!]
+#    partitions(dix: Int!): [MinerPartition!]
+#    faults: MinerFaults
+#    recoveries: MinerRecoveries
+    availableBalance: BigInt
+}
+
+type PowerClaim {
+    rawBytePower: BigInt
+    qualityAdjPower: BigInt
+}
+
+type MinerInfo {
+    owner: Address!
+    worker: Address!
+    newWorker: Address!
+    controlAddresses: [Address!]
+    workerChangeEpoch: Int!
+    peerId: String
+    multiAddrs: [String!]
+    windowPoStProofType: Int!
+    sectorSize: Int!
+    windowPoStPartitionSectors: Int!
+    consensusFaultElapsed: Int!
+    pendingOwnerAddress: Address
+    beneficiary: Address!
+    beneficiaryTerm:MinerBeneficiaryTerm
+    pendingBeneficiaryChange: MinerPendingBeneficiaryChange
+}
+
+type MinerBeneficiaryTerm  {
+    quota:      BigInt!
+    usedQuota:  Int!
+    expiration: Int!
+}
+
+type MinerPendingBeneficiaryChange {
+    newBeneficiary:Address
+    newQuota:              BigInt!
+    newExpiration:         Int!
+    approvedByBeneficiary: Boolean!
+    approvedByNominee:     Boolean!
+}

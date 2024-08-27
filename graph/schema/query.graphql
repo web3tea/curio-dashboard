@@ -1,0 +1,53 @@
+scalar ActorID
+
+type Query {
+    # config
+    config(layer: String!): Config
+    configs: [Config]
+
+    # machine
+    machine(id: Int!): Machine
+    machines: [Machine]
+    machineSummary: MachineSummary
+
+    # task
+    task(id: Int!): Task
+    tasks: [Task]
+    taskHistories(offset: Int!, limit: Int!): [TaskHistory]
+    tasksCount: Int!
+#    taskSummary(lastDays: Int!): [TaskSummary]
+#    taskSummaryByDay(lastDays: Int!): [TaskSummaryDay]
+    taskAggregatesByDay(lastDays: Int!): [TaskAggregate]
+    taskAggregatesByHour(lastHours: Int!): [TaskAggregate]
+    # storage
+    storagePaths: [StoragePath]
+    storageStats: [StorageStats]
+
+    # sector
+    sectors(actor: ActorID, sectorNumber: Int, offset: Int!, limit: Int!): [Sector]
+    sectorsCount(actor: ActorID): Int!
+    sector(actor: ActorID!, sectorNumber: Int!): Sector
+
+    # actor
+    actors: [Actor]
+    actor(address: Address!): Actor
+
+    # pipeline
+    pipelines: [Pipeline]
+    pipelinesSummary: [PipelineSummary]
+
+    # chain
+    nodesInfo: [NodeInfo]
+
+    # mining
+    miningSummaryByDay(lastDays: Int!): [MiningSummaryDay]
+
+    dealsPending: [OpenSectorPiece]
+
+    alerts: [Alert]
+
+    # metrics
+    metricsActiveTasks(lastDays: Int!, machine: String): [MetricsActiveTask]
+
+    miner(address: Address!): Miner
+}

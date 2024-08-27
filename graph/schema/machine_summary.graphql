@@ -1,0 +1,11 @@
+type MachineSummary {
+    total: Int!
+    totalUp: Int!
+    totalDown: Int!
+    uniqueHostsTotal: Int!
+    uniqueHostsUp: Int!
+    uniqueHostsDown: Int!
+    totalRam: Int!
+    totalCpu: Int!
+    totalGpu: Float!
+}

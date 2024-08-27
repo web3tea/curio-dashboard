@@ -1,0 +1,6 @@
+type Config {
+    id: Int!
+    title: String!
+    config: String!
+    usedBy: [MachineDetail]!
+}

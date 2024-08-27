@@ -1,0 +1,15 @@
+type Task {
+    id: Int!
+    initiatedByID: Int
+    initiatedBy: Machine
+    updateTime: Time!
+    postedTime: Time!
+    ownerId: Int
+    owner: Machine
+    addedByID: Int!
+    addedBy: Machine!
+    previousTaskID: Int
+    previousTask: TaskHistory
+    name: String!
+    histories: [TaskHistory]
+}

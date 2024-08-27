@@ -1,0 +1,5 @@
+type MiningSummaryDay {
+    day: Time!
+    sp_id: ActorID!
+    won: Int!
+}

@@ -1,0 +1,95 @@
+<script setup lang="ts">
+import moment from 'moment'
+import { useQuery } from '@vue/apollo-composable'
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue'
+import { computed, ComputedRef, ref } from 'vue'
+import { GetSectorsPipeline } from '@/views/query/pipeline'
+import { Pipeline } from '@/typed-graph'
+import type { Item } from 'vue3-easy-data-table'
+
+const { result, loading, refetch } = useQuery(GetSectorsPipeline, null, () => ({
+  fetchPolicy: 'cache-first',
+}))
+const items: ComputedRef<[Pipeline]> = computed(() => result.value?.pipelines || [])
+const headers = [
+  { text: 'ID', value: 'id', sortable: true },
+  { text: 'Status', value: 'status' },
+  { text: 'Created', value: 'createTime' },
+  { text: 'Action', value: 'action' },
+]
+
+const searchField = ref('hostAndPort')
+const searchValue = ref('')
+const themeColor = ref('rgb(var(--v-theme-primary))')
+const itemsSelected = ref<Item[]>([])
+
+</script>
+
+<template>
+  <v-row>
+    <v-col cols="12" md="12">
+      <v-card class="bg-surface" elevation="0" variant="outlined">
+        <v-card-item>
+          <v-row class="align-center" justify="space-between">
+            <v-col cols="12" md="3">
+              <v-text-field
+                v-model="searchValue"
+                hide-details
+                persistent-placeholder
+                placeholder="Search"
+                type="text"
+                variant="outlined"
+              >
+                <template #prepend-inner>
+                  <SearchOutlined :style="{ fontSize: '14px' }" />
+                </template>
+              </v-text-field>
+            </v-col>
+            <v-col cols="12" md="3">
+              <div class="d-flex ga-2 justify-end">
+                <v-btn round rounded variant="text" @click="refetch">
+                  <ReloadOutlined />
+                </v-btn>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-item>
+        <v-divider />
+        <v-card-text class="pa-0">
+          <EasyDataTable
+            v-model:items-selected="itemsSelected"
+            :headers="headers"
+            :items="items"
+            :loading="loading"
+            :rows-per-page="100"
+            :search-field="searchField"
+            :search-value="searchValue"
+            table-class-name="customize-table"
+            :theme-color="themeColor"
+          >
+            <template #item-id="{spId, sectorNumber}">
+              <small class="font-weight-bold">{{ spId }}</small>
+              <h5 class="text-h6">{{ sectorNumber }}</h5>
+            </template>
+            <template #item-status="{status}">
+              <v-chip
+                :color="status === 'Failed' ? 'error' : 'success'"
+                label
+                size="small"
+                variant="flat"
+              >{{ status }}</v-chip>
+            </template>
+            <template #item-createTime="{createTime}">
+              {{ moment(createTime).format() }}
+            </template>
+          </EasyDataTable>
+        </v-card-text>
+      </v-card>
+    </v-col>
+  </v-row>
+
+</template>
+
+<style scoped lang="scss">
+
+</style>

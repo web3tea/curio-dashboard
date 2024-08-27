@@ -1,0 +1,10 @@
+type NodeInfo {
+    id: ID!
+    address: String!
+    reachability: Boolean!
+    epoch: Int!
+    behind: Int!
+    peersToPublishMsgs: Int!
+    peersToPublishBlocks: Int!
+    version: String!
+}

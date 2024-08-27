@@ -1,0 +1,4 @@
+type MetricsActiveTask {
+    name: String!
+    series: [[Float!]!] # [[Timestamp, Value]]
+}

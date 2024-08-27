@@ -1,0 +1,23 @@
+scalar JSON
+
+type OpenSectorPiece {
+    spID: ActorID!
+    sectorNumber: Int!
+    pieceIndex: Int!
+    pieceCID: String!
+    pieceSize: Int!
+    dataURL: String!
+    dataHeaders: JSON!
+    dataRawSize: Int!
+    dataDeleteOnFinalize: Boolean!
+    f05PublishCID: String
+    f05DealID: Int
+    f05DealProposal: JSON
+    f05DealStartEpoch: Int
+    f05DealEndEpoch: Int
+    directStartEpoch: Int
+    directEndEpoch: Int
+    directPieceActivationManifest: JSON
+    createdAt: Time!
+    isSnap: Boolean!
+}

@@ -1,0 +1,11 @@
+type PipelineSummary {
+    id: ActorID!
+    sdr: Int!
+    trees: Int!
+    precommitMsg: Int!
+    waitSeed: Int!
+    porep: Int!
+    commitMsg: Int!
+    done: Int!
+    failed: Int!
+}

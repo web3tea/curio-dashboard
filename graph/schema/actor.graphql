@@ -1,0 +1,13 @@
+scalar Address
+scalar BigInt
+
+type Actor{
+    address: Address!
+    layers: [String!]
+    qualityAdjustedPower: BigInt!
+    rawBytePower: BigInt!
+    actorBalance: BigInt!
+    actorAvailableBalance: BigInt!
+    workerBalance: BigInt!
+    deadlines: [ActorDeadline]
+}

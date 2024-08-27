@@ -1,0 +1,24 @@
+name: eslint
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  eslint:
+    name: lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ui
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'yarn'
+          cache-dependency-path: ui/yarn.lock
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
