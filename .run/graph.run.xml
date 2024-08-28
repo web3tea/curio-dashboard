@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="graph" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="curio-dashboard" />
+    <working_directory value="$PROJECT_DIR$" />
+    <parameters value="--debug run" />
+    <kind value="PACKAGE" />
+    <package value="github.com/strahe/curio-dashboard/cmd" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$" />
+    <method v="2" />
+  </configuration>
+</component>
