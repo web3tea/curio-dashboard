@@ -6,7 +6,7 @@ import (
 )
 
 type HarmonyDBConfig struct {
-	URL string `toml:"url" comment:"URL to connect to the HarmonyDB database"`
+	URL string `toml:"url" comment:"URL to connect to the HarmonyDB database, add 'target_session_attrs=any' to the connection string if you want to connect to a read-write node"`
 }
 
 type ChainConfig struct {
@@ -14,7 +14,7 @@ type ChainConfig struct {
 }
 
 type MetricsConfig struct {
-	Enabled    bool   `toml:"enabled" comment:"Enable metrics api for analytics, must provide a prometheus url"`
+	Enabled    bool   `toml:"enabled" comment:"Enable metrics api for analytics, must provide the Prometheus URL for collecting Curio metrics."`
 	Prometheus string `toml:"prometheus" comment:"URL to connect to the Prometheus server"`
 }
 

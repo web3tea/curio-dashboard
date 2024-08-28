@@ -10,6 +10,11 @@ import (
 	"golang.org/x/xerrors"
 )
 
+type ActorLoader interface {
+	Actors(ctx context.Context) ([]*model.Actor, error)
+	Actor(ctx context.Context, address types.Address) (*model.Actor, error)
+}
+
 func (l *Loader) Actors(ctx context.Context) ([]*model.Actor, error) {
 	cfgs, err := l.Configs(ctx)
 	if err != nil {

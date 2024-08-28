@@ -3,10 +3,14 @@ package loaders
 import (
 	"time"
 
+	logging "github.com/ipfs/go-log/v2"
+
 	"github.com/hashicorp/golang-lru/v2/expirable"
 	"github.com/strahe/curio-dashboard/db"
 	"gorm.io/gorm"
 )
+
+var log = logging.Logger("loaders")
 
 type Loader struct {
 	db    *db.HarmonyDB

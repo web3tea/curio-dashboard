@@ -6,6 +6,12 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+type MachineLoader interface {
+	Machine(ctx context.Context, id int) (*model.Machine, error)
+	Machines(ctx context.Context) ([]*model.Machine, error)
+	MachineDetails(ctx context.Context) ([]*model.MachineDetail, error)
+}
+
 func (l *Loader) Machine(ctx context.Context, id int) (*model.Machine, error) {
 	var out model.Machine
 	err := l.db.QueryRow(ctx, `SELECT id,last_contact,host_and_port,cpu,gpu,ram FROM harmony_machines WHERE id = $1`, id).

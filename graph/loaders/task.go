@@ -6,6 +6,12 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+type TaskLoader interface {
+	Task(ctx context.Context, id int) (*model.Task, error)
+	Tasks(ctx context.Context) ([]*model.Task, error)
+	TasksCount(ctx context.Context) (int, error)
+}
+
 func (l *Loader) Task(ctx context.Context, id int) (*model.Task, error) {
 	var out model.Task
 	err := l.db.QueryRow(ctx, `SELECT id,initiated_by,update_time,posted_time,owner_id,added_by,previous_task,name FROM harmony_task WHERE id = $1`, id).

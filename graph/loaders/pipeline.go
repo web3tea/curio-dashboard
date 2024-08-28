@@ -6,6 +6,11 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+type PipelineLoader interface {
+	Pipeline(ctx context.Context, id int) (*model.Pipeline, error)
+	Pipelines(ctx context.Context) ([]*model.Pipeline, error)
+}
+
 func (l *Loader) Pipelines(ctx context.Context) ([]*model.Pipeline, error) {
 	var ms []*model.Pipeline
 	if err := l.db.Select(ctx, &ms, "SELECT * FROM sectors_sdr_pipeline ORDER BY create_time"); err != nil {

@@ -8,6 +8,15 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+type SectorLoader interface {
+	Sectors(ctx context.Context, actor *types.ActorID, offset int, limit int) ([]*model.Sector, error)
+	Sector(ctx context.Context, actor types.ActorID, sectorNumber int) (*model.Sector, error)
+	SectorsCount(ctx context.Context, actor *types.ActorID) (int, error)
+	SectorLocations(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorLocation, error)
+	SectorPieces(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorMetaPiece, error)
+	SectorEvents(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.TaskHistory, error)
+}
+
 func (l *Loader) Sectors(ctx context.Context, actor *types.ActorID, offset int, limit int) ([]*model.Sector, error) {
 	var m []*model.SectorMeta
 	if actor == nil {

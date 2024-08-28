@@ -7,6 +7,11 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+type AlertLoader interface {
+	Alerts(ctx context.Context) ([]*model.Alert, error)
+	SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert, error)
+}
+
 func (l *Loader) Alerts(ctx context.Context) ([]*model.Alert, error) {
 	var alerts []*model.Alert
 	if err := l.db.Select(ctx, &alerts, "SELECT * FROM alerts ORDER BY id DESC"); err != nil {
@@ -18,10 +23,19 @@ func (l *Loader) Alerts(ctx context.Context) ([]*model.Alert, error) {
 func (l *Loader) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert, error) {
 	alertsChan := make(chan *model.Alert)
 
+	log.Infof("SubAlerts: offset=%d", offset)
 	go func() {
-		defer close(alertsChan)
+		var err error
 		ticker := time.NewTicker(time.Second * 3)
-		defer ticker.Stop()
+		defer func() {
+			ticker.Stop()
+			close(alertsChan)
+			if err != nil {
+				log.Infof("SubAlerts done, err: %v", err)
+			} else {
+				log.Infof("SubAlerts done")
+			}
+		}()
 
 		for {
 			select {
@@ -29,7 +43,7 @@ func (l *Loader) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert
 				return
 			case <-ticker.C:
 				var alerts []*model.Alert
-				if err := l.db.Select(ctx, &alerts, "SELECT * FROM alerts WHERE id > $1 ORDER BY id", offset); err != nil {
+				if err = l.db.Select(ctx, &alerts, "SELECT * FROM alerts WHERE id > $1 ORDER BY id", offset); err != nil {
 					return
 				}
 				for _, alert := range alerts {

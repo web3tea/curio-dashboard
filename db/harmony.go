@@ -48,7 +48,7 @@ func NewHarmonyDB(ctx context.Context, hCfg config.HarmonyDBConfig) (*HarmonyDB,
 	if err != nil {
 		return nil, err
 	}
-	return &HarmonyDB{cfg: cfg, pgx: pool}, nil
+	return &HarmonyDB{cfg: cfg, pgx: pool}, pool.Ping(ctx)
 }
 
 func (db *HarmonyDB) Close() {

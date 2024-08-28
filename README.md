@@ -38,7 +38,7 @@ make all
 ./curio-dashboard --debug run
 
 # Run Frontend
-cd web && yarn dev
+cd ui && yarn dev
 
 # Open http://localhost:3000
 # http://localhost:9091 # for production, only available when make aio

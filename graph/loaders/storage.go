@@ -6,6 +6,11 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+type StorageLoader interface {
+	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
+	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
+}
+
 func (l *Loader) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
 	var m []*model.StoragePath
 	if err := l.db.Select(ctx, &m, "SELECT * FROM storage_path"); err != nil {

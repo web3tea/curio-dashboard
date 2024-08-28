@@ -32,6 +32,7 @@ const wsLink = new GraphQLWsLink(
         return true
       }
     },
+    lazy: false,
     onNonLazyError: (err: unknown) => {
       console.error('GraphQLWsLink', err)
     },

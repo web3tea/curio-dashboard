@@ -7,6 +7,12 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+type ConfigLoader interface {
+	Config(ctx context.Context, layer string) (*model.Config, error)
+	Configs(ctx context.Context) ([]*model.Config, error)
+	ConfigUsed(ctx context.Context, layer string) ([]*model.MachineDetail, error)
+}
+
 func (l *Loader) Config(ctx context.Context, layer string) (*model.Config, error) {
 	var m model.Config
 	err := l.db.QueryRow(ctx, "SELECT id,title,config FROM harmony_config WHERE title = $1", layer).
