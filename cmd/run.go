@@ -54,7 +54,6 @@ var runCmd = &cli.Command{
 		e := echo.New()
 		e.Use(middleware.CORS())
 
-		e.GET("/", uiHandler())
 		e.GET("/playground", playgroundHandler())
 
 		client, err := api.NewClient(api.Config{
@@ -66,6 +65,8 @@ var runCmd = &cli.Command{
 		if err := graph.Router(e, cfg, resolvers.NewResolver(harmonyDB, chainAPI, client)); err != nil {
 			return fmt.Errorf("failed to setup GraphQL routes: %w", err)
 		}
+
+		e.GET("/*", uiHandler())
 
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer stop()
