@@ -19,7 +19,7 @@ func (r *minerResolver) Info(ctx context.Context, obj *model.Miner) (*model.Mine
 }
 
 // Power is the resolver for the power field.
-func (r *minerResolver) Power(ctx context.Context, obj *model.Miner) (*model.PowerClaim, error) {
+func (r *minerResolver) Power(ctx context.Context, obj *model.Miner) (*model.MinerPower, error) {
 	panic(fmt.Errorf("not implemented: Power - power"))
 }
 

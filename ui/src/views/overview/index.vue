@@ -1,11 +1,41 @@
 <script setup lang="ts">
-// imported components
 import ActiveTaskChart from '@/views/widgets/chart/ActiveTaskChart.vue'
-import WidgetFive from '@/views/widgets/statistics/WidgetFive.vue'
 import RecentTasks from '@/views/widgets/data/RecentTasks.vue'
+import MinerPower from '@/views/widgets/statistics/MinerPower.vue'
+import WidgetFive from '@/views/widgets/statistics/WidgetFive.vue'
 </script>
 
 <template>
+  <v-row class="my-0">
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+    >
+      <MinerPower />
+    </v-col>
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+    >
+      <MinerPower />
+    </v-col>
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+    >
+      <MinerPower />
+    </v-col>
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+    >
+      <MinerPower />
+    </v-col>
+  </v-row>
   <WidgetFive />
   <v-row class="mb-0">
     <v-col cols="12" md="8">

@@ -174,6 +174,12 @@ type ComplexityRoot struct {
 		NewQuota              func(childComplexity int) int
 	}
 
+	MinerPower struct {
+		HasMinPower func(childComplexity int) int
+		MinerPower  func(childComplexity int) int
+		TotalPower  func(childComplexity int) int
+	}
+
 	MiningSummaryDay struct {
 		Day  func(childComplexity int) int
 		SpID func(childComplexity int) int
@@ -294,6 +300,7 @@ type ComplexityRoot struct {
 		Machines             func(childComplexity int) int
 		MetricsActiveTasks   func(childComplexity int, lastDays int, machine *string) int
 		Miner                func(childComplexity int, address types.Address) int
+		MinerPower           func(childComplexity int, address *types.Address) int
 		MiningSummaryByDay   func(childComplexity int, lastDays int) int
 		NodesInfo            func(childComplexity int) int
 		Pipelines            func(childComplexity int) int
@@ -500,7 +507,7 @@ type MachineSummaryResolver interface {
 }
 type MinerResolver interface {
 	Info(ctx context.Context, obj *model.Miner) (*model.MinerInfo, error)
-	Power(ctx context.Context, obj *model.Miner) (*model.PowerClaim, error)
+	Power(ctx context.Context, obj *model.Miner) (*model.MinerPower, error)
 	AvailableBalance(ctx context.Context, obj *model.Miner) (*types.BigInt, error)
 }
 type MutationResolver interface {
@@ -550,6 +557,7 @@ type QueryResolver interface {
 	Alerts(ctx context.Context) ([]*model.Alert, error)
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
+	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
 }
 type SectorResolver interface {
 	ID(ctx context.Context, obj *model.Sector) (string, error)
@@ -1136,6 +1144,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MinerPendingBeneficiaryChange.NewQuota(childComplexity), true
+
+	case "MinerPower.hasMinPower":
+		if e.complexity.MinerPower.HasMinPower == nil {
+			break
+		}
+
+		return e.complexity.MinerPower.HasMinPower(childComplexity), true
+
+	case "MinerPower.minerPower":
+		if e.complexity.MinerPower.MinerPower == nil {
+			break
+		}
+
+		return e.complexity.MinerPower.MinerPower(childComplexity), true
+
+	case "MinerPower.totalPower":
+		if e.complexity.MinerPower.TotalPower == nil {
+			break
+		}
+
+		return e.complexity.MinerPower.TotalPower(childComplexity), true
 
 	case "MiningSummaryDay.day":
 		if e.complexity.MiningSummaryDay.Day == nil {
@@ -1857,6 +1886,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Miner(childComplexity, args["address"].(types.Address)), true
+
+	case "Query.minerPower":
+		if e.complexity.Query.MinerPower == nil {
+			break
+		}
+
+		args, err := ec.field_Query_minerPower_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MinerPower(childComplexity, args["address"].(*types.Address)), true
 
 	case "Query.miningSummaryByDay":
 		if e.complexity.Query.MiningSummaryByDay == nil {
@@ -3141,6 +3182,21 @@ func (ec *executionContext) field_Query_metricsActiveTasks_args(ctx context.Cont
 		}
 	}
 	args["machine"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_minerPower_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *types.Address
+	if tmp, ok := rawArgs["address"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
+		arg0, err = ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["address"] = arg0
 	return args, nil
 }
 
@@ -5776,9 +5832,9 @@ func (ec *executionContext) _Miner_power(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.PowerClaim)
+	res := resTmp.(*model.MinerPower)
 	fc.Result = res
-	return ec.marshalOPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx, field.Selections, res)
+	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Miner_power(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5789,12 +5845,14 @@ func (ec *executionContext) fieldContext_Miner_power(_ context.Context, field gr
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "rawBytePower":
-				return ec.fieldContext_PowerClaim_rawBytePower(ctx, field)
-			case "qualityAdjPower":
-				return ec.fieldContext_PowerClaim_qualityAdjPower(ctx, field)
+			case "minerPower":
+				return ec.fieldContext_MinerPower_minerPower(ctx, field)
+			case "totalPower":
+				return ec.fieldContext_MinerPower_totalPower(ctx, field)
+			case "hasMinPower":
+				return ec.fieldContext_MinerPower_hasMinPower(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type PowerClaim", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type MinerPower", field.Name)
 		},
 	}
 	return fc, nil
@@ -6842,6 +6900,150 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_approvedByNominee(ctx
 func (ec *executionContext) fieldContext_MinerPendingBeneficiaryChange_approvedByNominee(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "MinerPendingBeneficiaryChange",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerPower_minerPower(ctx context.Context, field graphql.CollectedField, obj *model.MinerPower) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerPower_minerPower(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MinerPower, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PowerClaim)
+	fc.Result = res
+	return ec.marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerPower_minerPower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerPower",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "rawBytePower":
+				return ec.fieldContext_PowerClaim_rawBytePower(ctx, field)
+			case "qualityAdjPower":
+				return ec.fieldContext_PowerClaim_qualityAdjPower(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PowerClaim", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerPower_totalPower(ctx context.Context, field graphql.CollectedField, obj *model.MinerPower) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerPower_totalPower(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalPower, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PowerClaim)
+	fc.Result = res
+	return ec.marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerPower_totalPower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerPower",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "rawBytePower":
+				return ec.fieldContext_PowerClaim_rawBytePower(ctx, field)
+			case "qualityAdjPower":
+				return ec.fieldContext_PowerClaim_qualityAdjPower(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PowerClaim", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerPower_hasMinPower(ctx context.Context, field graphql.CollectedField, obj *model.MinerPower) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerPower_hasMinPower(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasMinPower, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerPower_hasMinPower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerPower",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -12354,6 +12556,66 @@ func (ec *executionContext) fieldContext_Query_miner(ctx context.Context, field 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_miner_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_minerPower(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_minerPower(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MinerPower(rctx, fc.Args["address"].(*types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MinerPower)
+	fc.Result = res
+	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "minerPower":
+				return ec.fieldContext_MinerPower_minerPower(ctx, field)
+			case "totalPower":
+				return ec.fieldContext_MinerPower_totalPower(ctx, field)
+			case "hasMinPower":
+				return ec.fieldContext_MinerPower_hasMinPower(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MinerPower", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_minerPower_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -21062,6 +21324,55 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange(ctx context.Context, 
 	return out
 }
 
+var minerPowerImplementors = []string{"MinerPower"}
+
+func (ec *executionContext) _MinerPower(ctx context.Context, sel ast.SelectionSet, obj *model.MinerPower) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, minerPowerImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MinerPower")
+		case "minerPower":
+			out.Values[i] = ec._MinerPower_minerPower(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalPower":
+			out.Values[i] = ec._MinerPower_totalPower(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "hasMinPower":
+			out.Values[i] = ec._MinerPower_hasMinPower(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var miningSummaryDayImplementors = []string{"MiningSummaryDay"}
 
 func (ec *executionContext) _MiningSummaryDay(ctx context.Context, sel ast.SelectionSet, obj *model.MiningSummaryDay) graphql.Marshaler {
@@ -22493,6 +22804,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_miner(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "minerPower":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_minerPower(ctx, field)
 				return res
 			}
 
@@ -24428,6 +24758,16 @@ func (ec *executionContext) marshalNPipelineStatus2githubᚗcomᚋstraheᚋcurio
 	return v
 }
 
+func (ec *executionContext) marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx context.Context, sel ast.SelectionSet, v *model.PowerClaim) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PowerClaim(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNSectorLocation2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx context.Context, sel ast.SelectionSet, v []*model.SectorLocation) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -25469,6 +25809,13 @@ func (ec *executionContext) marshalOMinerPendingBeneficiaryChange2ᚖgithubᚗco
 	return ec._MinerPendingBeneficiaryChange(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx context.Context, sel ast.SelectionSet, v *model.MinerPower) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MinerPower(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx context.Context, sel ast.SelectionSet, v []*model.MiningSummaryDay) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -25707,13 +26054,6 @@ func (ec *executionContext) marshalOPipelineSummary2ᚖgithubᚗcomᚋstraheᚋc
 		return graphql.Null
 	}
 	return ec._PipelineSummary(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx context.Context, sel ast.SelectionSet, v *model.PowerClaim) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._PowerClaim(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx context.Context, sel ast.SelectionSet, v []*model.Sector) graphql.Marshaler {

@@ -11,6 +11,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/filecoin-project/lotus/api"
+	types2 "github.com/filecoin-project/lotus/chain/types"
+
 	"github.com/BurntSushi/toml"
 	"github.com/filecoin-project/lotus/api/client"
 	cliutil "github.com/filecoin-project/lotus/cli/util"
@@ -255,6 +258,56 @@ func (r *queryResolver) MetricsActiveTasks(ctx context.Context, lastDays int, ma
 // Miner is the resolver for the miner field.
 func (r *queryResolver) Miner(ctx context.Context, address types.Address) (*model.Miner, error) {
 	panic(fmt.Errorf("not implemented: Miner - miner"))
+}
+
+// MinerPower is the resolver for the minerPower field.
+func (r *queryResolver) MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error) {
+
+	var (
+		rawPower    = types2.NewInt(0)
+		qaPower     = types2.NewInt(0)
+		mp          *api.MinerPower // the last miner power
+		err         error
+		handlePower = func(ctx context.Context, addr types.Address) error {
+			mp, err = r.fullNode.StateMinerPower(ctx, addr.Address, types2.EmptyTSK)
+			if err != nil {
+				return fmt.Errorf("failed to get miner power: %w", err)
+			}
+			rawPower.Add(rawPower.Int, mp.MinerPower.RawBytePower.Int)
+			qaPower.Add(qaPower.Int, mp.MinerPower.QualityAdjPower.Int)
+			return nil
+		}
+	)
+
+	if address != nil {
+		if err := handlePower(ctx, *address); err != nil {
+			return nil, err
+		}
+	} else {
+		actors, err := r.loader.Actors(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get actors: %w", err)
+		}
+		for _, act := range actors {
+			if err := handlePower(ctx, act.Address); err != nil {
+				return nil, err
+			}
+		}
+	}
+	out := &model.MinerPower{
+		MinerPower: &model.PowerClaim{
+			RawBytePower:    &types.BigInt{Int: rawPower.Int},
+			QualityAdjPower: &types.BigInt{Int: qaPower.Int},
+		},
+	}
+	if mp != nil {
+		out.TotalPower = &model.PowerClaim{
+			RawBytePower:    &types.BigInt{Int: mp.TotalPower.RawBytePower.Int},
+			QualityAdjPower: &types.BigInt{Int: mp.TotalPower.QualityAdjPower.Int},
+		}
+	}
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Hour)
+	return out, nil
 }
 
 // Query returns graph.QueryResolver implementation.

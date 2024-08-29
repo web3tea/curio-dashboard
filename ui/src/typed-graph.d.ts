@@ -112,7 +112,7 @@ export type Miner = {
   __typename?: 'Miner';
   availableBalance?: Maybe<Scalars['BigInt']['output']>;
   info?: Maybe<MinerInfo>;
-  power?: Maybe<PowerClaim>;
+  power?: Maybe<MinerPower>;
 };
 
 export type MinerBeneficiaryTerm = {
@@ -148,6 +148,13 @@ export type MinerPendingBeneficiaryChange = {
   newBeneficiary?: Maybe<Scalars['Address']['output']>;
   newExpiration: Scalars['Int']['output'];
   newQuota: Scalars['BigInt']['output'];
+};
+
+export type MinerPower = {
+  __typename?: 'MinerPower';
+  hasMinPower: Scalars['Boolean']['output'];
+  minerPower: PowerClaim;
+  totalPower: PowerClaim;
 };
 
 export type MiningSummaryDay = {
@@ -308,6 +315,7 @@ export type Query = {
   machines?: Maybe<Array<Maybe<Machine>>>;
   metricsActiveTasks?: Maybe<Array<Maybe<MetricsActiveTask>>>;
   miner?: Maybe<Miner>;
+  minerPower?: Maybe<MinerPower>;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
   pipelines?: Maybe<Array<Maybe<Pipeline>>>;
@@ -349,6 +357,11 @@ export type QueryMetricsActiveTasksArgs = {
 
 export type QueryMinerArgs = {
   address: Scalars['Address']['input'];
+};
+
+
+export type QueryMinerPowerArgs = {
+  address?: InputMaybe<Scalars['Address']['input']>;
 };
 
 

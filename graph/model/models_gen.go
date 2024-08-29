@@ -75,6 +75,12 @@ type MinerPendingBeneficiaryChange struct {
 	ApprovedByNominee     bool           `json:"approvedByNominee"`
 }
 
+type MinerPower struct {
+	MinerPower  *PowerClaim `json:"minerPower"`
+	TotalPower  *PowerClaim `json:"totalPower"`
+	HasMinPower bool        `json:"hasMinPower"`
+}
+
 type MiningSummaryDay struct {
 	Day  time.Time     `json:"day"`
 	SpID types.ActorID `json:"sp_id"`

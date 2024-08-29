@@ -1,6 +1,6 @@
 type Miner {
     info: MinerInfo
-    power:PowerClaim
+    power:MinerPower
 #    deadlines: [MinerDeadline!]
 #    partitions(dix: Int!): [MinerPartition!]
 #    faults: MinerFaults
@@ -43,4 +43,10 @@ type MinerPendingBeneficiaryChange {
     newExpiration:         Int!
     approvedByBeneficiary: Boolean!
     approvedByNominee:     Boolean!
+}
+
+type MinerPower {
+    minerPower:  PowerClaim!
+    totalPower:  PowerClaim!
+    hasMinPower: Boolean!
 }

@@ -50,4 +50,6 @@ type Query {
     metricsActiveTasks(lastDays: Int!, machine: String): [MetricsActiveTask]
 
     miner(address: Address!): Miner
+    # if address is empty, return all miners power
+    minerPower(address: Address): MinerPower
 }
