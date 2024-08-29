@@ -28,6 +28,9 @@ func main() {
 			},
 		},
 		Before: func(c *cli.Context) error {
+			defer func() {
+				logging.SetLogLevel("rpc", "ERROR") // nolint: errcheck
+			}()
 			if c.Bool("debug") {
 				return logging.SetLogLevel("*", "DEBUG")
 			}

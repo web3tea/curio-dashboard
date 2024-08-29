@@ -27,4 +27,6 @@ type SectorMeta struct {
 	SeedValue       types.ByteArray `json:"seedValue,omitempty"`
 	ExpirationEpoch int             `json:"expirationEpoch"`
 	IsCC            bool            `json:"isCC"`
+	Deadline        *int            `json:"deadline"`
+	Partition       *int            `json:"partition"`
 }
