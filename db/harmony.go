@@ -77,14 +77,12 @@ func (d dbscanRows) NextResultSet() bool {
 	return false
 }
 
-type rawStringOnly string
-
-func (db *HarmonyDB) QueryRow(ctx context.Context, sql rawStringOnly, arguments ...any) Row {
-	return db.pgx.QueryRow(ctx, string(sql), arguments...)
+func (db *HarmonyDB) QueryRow(ctx context.Context, sql string, arguments ...any) Row {
+	return db.pgx.QueryRow(ctx, sql, arguments...)
 }
 
-func (db *HarmonyDB) Select(ctx context.Context, sliceOfStructPtr any, sql rawStringOnly, arguments ...any) error {
-	rows, err := db.pgx.Query(ctx, string(sql), arguments...)
+func (db *HarmonyDB) Select(ctx context.Context, sliceOfStructPtr any, sql string, arguments ...any) error {
+	rows, err := db.pgx.Query(ctx, sql, arguments...)
 	if err != nil {
 		return err
 	}
@@ -92,7 +90,7 @@ func (db *HarmonyDB) Select(ctx context.Context, sliceOfStructPtr any, sql rawSt
 	return dbscan.ScanAll(sliceOfStructPtr, dbscanRows{rows})
 }
 
-func (db *HarmonyDB) Exec(ctx context.Context, sql rawStringOnly, arguments ...any) (count int, err error) {
-	res, err := db.pgx.Exec(ctx, string(sql), arguments...)
+func (db *HarmonyDB) Exec(ctx context.Context, sql string, arguments ...any) (count int, err error) {
+	res, err := db.pgx.Exec(ctx, sql, arguments...)
 	return int(res.RowsAffected()), err
 }

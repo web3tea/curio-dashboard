@@ -11,11 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/filecoin-project/lotus/api"
-	types2 "github.com/filecoin-project/lotus/chain/types"
-
 	"github.com/BurntSushi/toml"
+	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/api/client"
+	types2 "github.com/filecoin-project/lotus/chain/types"
 	cliutil "github.com/filecoin-project/lotus/cli/util"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
@@ -63,16 +62,22 @@ func (r *queryResolver) Tasks(ctx context.Context) ([]*model.Task, error) {
 	return r.loader.Tasks(ctx)
 }
 
+// TasksCount is the resolver for the tasksCount field.
+func (r *queryResolver) TasksCount(ctx context.Context) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.TasksCount(ctx)
+}
+
 // TaskHistories is the resolver for the taskHistories field.
 func (r *queryResolver) TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
 	return r.loader.TaskHistories(ctx, offset, limit)
 }
 
-// TasksCount is the resolver for the tasksCount field.
-func (r *queryResolver) TasksCount(ctx context.Context) (int, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
-	return r.loader.TasksCount(ctx)
+// TaskHistoriesCount is the resolver for the taskHistoriesCount field.
+func (r *queryResolver) TaskHistoriesCount(ctx context.Context, start time.Time, end time.Time, machine *string, name *string, success *bool) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.TaskHistoriesCount(ctx, start, end, machine, name, success)
 }
 
 // TaskAggregatesByDay is the resolver for the taskAggregatesByDay field.
@@ -262,7 +267,6 @@ func (r *queryResolver) Miner(ctx context.Context, address types.Address) (*mode
 
 // MinerPower is the resolver for the minerPower field.
 func (r *queryResolver) MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error) {
-
 	var (
 		rawPower    = types2.NewInt(0)
 		qaPower     = types2.NewInt(0)

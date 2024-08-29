@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { GetMinerPower } from '@/views/query/miner'
-import { computed } from 'vue'
+import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { RiseOutlined } from '@ant-design/icons-vue'
 import { MinerPower } from '@/typed-graph'
@@ -25,11 +25,12 @@ const card = computed(() => ({
   name: 'Total QA Power',
   qaPower: minerPower.value?.minerPower?.qualityAdjPower,
   rawPower: minerPower.value?.minerPower?.rawBytePower,
-  percent: ((minerPower.value?.minerPower?.qualityAdjPower / minerPower.value?.totalPower?.qualityAdjPower) * 100).toFixed(2),
-  color: 'primary',
+  percent: ((minerPower.value?.minerPower?.qualityAdjPower / minerPower.value?.totalPower?.qualityAdjPower) * 100),
   icon: RiseOutlined,
   rate: '2.13 %', // TODO: get from API
 }))
+
+const color = computed(() => Number(card.value.percent) < 0 ? 'error' : 'primary')
 
 </script>
 
@@ -43,19 +44,19 @@ const card = computed(() => ({
             <h4 class="text-h4 d-flex align-center mb-0">
               {{ formatBytes(card.qaPower).combined }}
               <v-chip
-                :border="`${card.color} solid thin opacity-50`"
+                :border="`${color} solid thin opacity-50`"
                 class="ml-2"
-                :color="card.color"
+                :color="color"
                 label
                 size="small"
               >
                 <template #prepend>
-                  <component :is="card.icon" :class="'mr-1 text-' + card.color" :style="{ fontSize: '12px' }" />
+                  <component :is="card.icon" :class="'mr-1 text-' + color" :style="{ fontSize: '12px' }" />
                 </template>
                 {{ card.rate }}
               </v-chip>
             </h4>
-            <span class="text-lightText text-caption pt-5 d-block">You own <span :class="'text-' + card.color">{{ card.percent }}%</span> of the total network power.</span>
+            <span class="text-lightText text-caption pt-5 d-block">You own <span :class="'text-' + color">{{ card.percent.toFixed(2) }}%</span> of the total network power.</span>
           </div>
         </div>
       </v-card-text>

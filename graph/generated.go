@@ -314,6 +314,7 @@ type ComplexityRoot struct {
 		TaskAggregatesByDay  func(childComplexity int, lastDays int) int
 		TaskAggregatesByHour func(childComplexity int, lastHours int) int
 		TaskHistories        func(childComplexity int, offset int, limit int) int
+		TaskHistoriesCount   func(childComplexity int, start time.Time, end time.Time, machine *string, name *string, success *bool) int
 		Tasks                func(childComplexity int) int
 		TasksCount           func(childComplexity int) int
 	}
@@ -538,8 +539,9 @@ type QueryResolver interface {
 	MachineSummary(ctx context.Context) (*model.MachineSummary, error)
 	Task(ctx context.Context, id int) (*model.Task, error)
 	Tasks(ctx context.Context) ([]*model.Task, error)
-	TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error)
 	TasksCount(ctx context.Context) (int, error)
+	TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error)
+	TaskHistoriesCount(ctx context.Context, start time.Time, end time.Time, machine *string, name *string, success *bool) (int, error)
 	TaskAggregatesByDay(ctx context.Context, lastDays int) ([]*model.TaskAggregate, error)
 	TaskAggregatesByHour(ctx context.Context, lastHours int) ([]*model.TaskAggregate, error)
 	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
@@ -2030,6 +2032,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.TaskHistories(childComplexity, args["offset"].(int), args["limit"].(int)), true
 
+	case "Query.taskHistoriesCount":
+		if e.complexity.Query.TaskHistoriesCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_taskHistoriesCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TaskHistoriesCount(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["machine"].(*string), args["name"].(*string), args["success"].(*bool)), true
+
 	case "Query.tasks":
 		if e.complexity.Query.Tasks == nil {
 			break
@@ -3338,6 +3352,57 @@ func (ec *executionContext) field_Query_taskAggregatesByHour_args(ctx context.Co
 		}
 	}
 	args["lastHours"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_taskHistoriesCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 time.Time
+	if tmp, ok := rawArgs["start"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+		arg0, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["start"] = arg0
+	var arg1 time.Time
+	if tmp, ok := rawArgs["end"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["end"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["machine"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("machine"))
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["machine"] = arg2
+	var arg3 *string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg3
+	var arg4 *bool
+	if tmp, ok := rawArgs["success"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("success"))
+		arg4, err = ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["success"] = arg4
 	return args, nil
 }
 
@@ -11303,6 +11368,50 @@ func (ec *executionContext) fieldContext_Query_tasks(_ context.Context, field gr
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_tasksCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TasksCount(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_tasksCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_taskHistories(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_taskHistories(ctx, field)
 	if err != nil {
@@ -11375,8 +11484,8 @@ func (ec *executionContext) fieldContext_Query_taskHistories(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_tasksCount(ctx, field)
+func (ec *executionContext) _Query_taskHistoriesCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskHistoriesCount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11389,7 +11498,7 @@ func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TasksCount(rctx)
+		return ec.resolvers.Query().TaskHistoriesCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["machine"].(*string), fc.Args["name"].(*string), fc.Args["success"].(*bool))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11406,7 +11515,7 @@ func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_tasksCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_taskHistoriesCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -11415,6 +11524,17 @@ func (ec *executionContext) fieldContext_Query_tasksCount(_ context.Context, fie
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_taskHistoriesCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -22446,6 +22566,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "tasksCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_tasksCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "taskHistories":
 			field := field
 
@@ -22465,7 +22607,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "tasksCount":
+		case "taskHistoriesCount":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -22474,7 +22616,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_tasksCount(ctx, field)
+				res = ec._Query_taskHistoriesCount(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

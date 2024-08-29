@@ -29,3 +29,9 @@ export const SubscribeCompletedTask = gql`
     }
   }
 `
+
+export const GetTaskHistoriesCount = gql`
+    query GetTaskHistoriesCount($machine: String, $name: String, $success: Boolean, $start: Time!, $end: Time!) {
+        taskHistoriesCount(machine: $machine, name: $name, start: $start, end: $end, success: $success)
+    }
+`

@@ -329,6 +329,7 @@ export type Query = {
   taskAggregatesByDay?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskAggregatesByHour?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
+  taskHistoriesCount: Scalars['Int']['output'];
   tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
 };
@@ -407,6 +408,15 @@ export type QueryTaskAggregatesByHourArgs = {
 export type QueryTaskHistoriesArgs = {
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
+};
+
+
+export type QueryTaskHistoriesCountArgs = {
+  end: Scalars['Time']['input'];
+  machine?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  start: Scalars['Time']['input'];
+  success?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type Sector = {
