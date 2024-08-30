@@ -82,9 +82,9 @@ type MinerPower struct {
 }
 
 type MiningSummaryDay struct {
-	Day  time.Time     `json:"day"`
-	SpID types.ActorID `json:"sp_id"`
-	Won  int           `json:"won"`
+	Day      time.Time     `json:"day"`
+	Miner    types.ActorID `json:"miner"`
+	WonBlock int           `json:"wonBlock"`
 }
 
 type Mutation struct {

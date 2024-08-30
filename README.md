@@ -1,46 +1,66 @@
-# curio-dashboard
+# Curio Dashboard
 
-Status: **under heavy development**
+**Status: Under Heavy Development**
 
-## Description
-`curio-dashboard` is a dashboard for [curio](https://github.com/filecoin-project/curio), it provides a web interface to monitor the status of curio.
+## Overview
 
-Key features:
-- Authenticated access
-- Server side pagination and filtering (for large datasets)
-- Responsive ui (dark/light mode, mobile friendly)
-- Real-time updates
+`Curio Dashboard` is a web-based monitoring tool for [Curio](https://github.com/filecoin-project/curio). It provides an intuitive interface for tracking the status and performance of your Curio cluster.
 
-## Development
+### Key Features
 
-### Prerequisites
-```shell
-# Install system dependencies, refer to: https://lotus.filecoin.io/lotus/install/linux/#building-from-source
+- **Authenticated Access**: Secure login to protect your data.
+- **Server-Side Pagination & Filtering**: Efficient handling of large datasets.
+- **Responsive UI**: Dark/light mode and mobile-friendly design.
+- **Real-Time Updates**: Live data streaming for up-to-the-minute insights.
+- **Insightful Charts**: Beautifully crafted visualizations to help you understand your metrics.
 
-git clone https://github.com/strahe/curio-dashboard.git
+## Building the Dashboard
 
-cd curio-dashboard
+To build the dashboard, follow these steps:
 
-make all
+1. **Install System Dependencies**  
+   Refer to the [Curio Storage Installation Guide](https://docs.curiostorage.org/installation#linux-build-from-source).
 
-# or make all in one
-# make aio
-```
+2. **Clone the Repository**
+   ```bash
+   git clone https://github.com/strahe/curio-dashboard.git
+   ```
 
-### Run 
-```shell
-# generate default config
-./curio-dashboard config default > config.toml
+3. **Build the Project**
+   ```bash
+   cd curio-dashboard
+   make all
+   # Alternatively, you can run:
+   # make aio
+   ```
 
-# Edit config.toml to match your setup
+## Requirements
 
-# Run Backend
-./curio-dashboard --debug run
+- **YugabyteDB**: The database used by the Curio cluster.
+- **Prometheus**: To collect metrics from the Curio cluster.
+- **Lotus Daemon Node**: Required for blockchain data.
 
-# Run Frontend
-cd ui && yarn dev
+## Running the Dashboard
 
-# Open http://localhost:3000
-# http://localhost:9091 # for production, only available when make aio
-# http://127.0.0.1:9091/playground # for graphql playground
-```
+1. **Generate the Default Configuration**
+   ```bash
+   ./curio-dashboard config default > config.toml
+   ```
+
+2. **Edit the Configuration**
+   Customize the `config.toml` file to suit your environment.
+
+3. **Start the Backend**
+   ```bash
+   ./curio-dashboard --debug run
+   ```
+
+4. **Start the Frontend**
+   ```bash
+   cd ui && yarn dev
+   ```
+
+5. **Access the Dashboard**
+    - Development: [http://localhost:3000](http://localhost:3000)
+    - Production: [http://localhost:9091](http://localhost:9091) (available only with `make aio`)
+    - GraphQL Playground: [http://127.0.0.1:9091/playground](http://127.0.0.1:9091/playground)

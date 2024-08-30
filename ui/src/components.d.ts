@@ -15,5 +15,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     UiChildCard: typeof import('./components/shared/UiChildCard.vue')['default']
     UiParentCard: typeof import('./components/shared/UiParentCard.vue')['default']
+    UiTitleCard: typeof import('./components/shared/UiTitleCard.vue')['default']
   }
 }

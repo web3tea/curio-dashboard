@@ -41,7 +41,8 @@ type Query {
     nodesInfo: [NodeInfo]
 
     # mining
-    miningSummaryByDay(lastDays: Int!): [MiningSummaryDay]
+#    miningSummaryByDay(lastDays: Int!): [MiningSummaryDay]
+    miningSummaryByDay(start: Time!, end: Time!): [MiningSummaryDay]
 
     dealsPending: [OpenSectorPiece]
 

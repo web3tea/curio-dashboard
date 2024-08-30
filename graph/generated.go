@@ -181,9 +181,9 @@ type ComplexityRoot struct {
 	}
 
 	MiningSummaryDay struct {
-		Day  func(childComplexity int) int
-		SpID func(childComplexity int) int
-		Won  func(childComplexity int) int
+		Day      func(childComplexity int) int
+		Miner    func(childComplexity int) int
+		WonBlock func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -301,7 +301,7 @@ type ComplexityRoot struct {
 		MetricsActiveTasks   func(childComplexity int, lastDays int, machine *string) int
 		Miner                func(childComplexity int, address types.Address) int
 		MinerPower           func(childComplexity int, address *types.Address) int
-		MiningSummaryByDay   func(childComplexity int, lastDays int) int
+		MiningSummaryByDay   func(childComplexity int, start time.Time, end time.Time) int
 		NodesInfo            func(childComplexity int) int
 		Pipelines            func(childComplexity int) int
 		PipelinesSummary     func(childComplexity int) int
@@ -419,6 +419,7 @@ type ComplexityRoot struct {
 	Subscription struct {
 		Alerts        func(childComplexity int, offset int) int
 		CompletedTask func(childComplexity int, last int) int
+		NewTask       func(childComplexity int, last int) int
 	}
 
 	Task struct {
@@ -554,7 +555,7 @@ type QueryResolver interface {
 	Pipelines(ctx context.Context) ([]*model.Pipeline, error)
 	PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error)
 	NodesInfo(ctx context.Context) ([]*model.NodeInfo, error)
-	MiningSummaryByDay(ctx context.Context, lastDays int) ([]*model.MiningSummaryDay, error)
+	MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error)
 	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	Alerts(ctx context.Context) ([]*model.Alert, error)
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
@@ -575,6 +576,7 @@ type SectorMetaResolver interface {
 type SubscriptionResolver interface {
 	Alerts(ctx context.Context, offset int) (<-chan *model.Alert, error)
 	CompletedTask(ctx context.Context, last int) (<-chan *model.TaskHistory, error)
+	NewTask(ctx context.Context, last int) (<-chan *model.Task, error)
 }
 type TaskResolver interface {
 	InitiatedBy(ctx context.Context, obj *model.Task) (*model.Machine, error)
@@ -1175,19 +1177,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MiningSummaryDay.Day(childComplexity), true
 
-	case "MiningSummaryDay.sp_id":
-		if e.complexity.MiningSummaryDay.SpID == nil {
+	case "MiningSummaryDay.miner":
+		if e.complexity.MiningSummaryDay.Miner == nil {
 			break
 		}
 
-		return e.complexity.MiningSummaryDay.SpID(childComplexity), true
+		return e.complexity.MiningSummaryDay.Miner(childComplexity), true
 
-	case "MiningSummaryDay.won":
-		if e.complexity.MiningSummaryDay.Won == nil {
+	case "MiningSummaryDay.wonBlock":
+		if e.complexity.MiningSummaryDay.WonBlock == nil {
 			break
 		}
 
-		return e.complexity.MiningSummaryDay.Won(childComplexity), true
+		return e.complexity.MiningSummaryDay.WonBlock(childComplexity), true
 
 	case "Mutation.createConfig":
 		if e.complexity.Mutation.CreateConfig == nil {
@@ -1911,7 +1913,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningSummaryByDay(childComplexity, args["lastDays"].(int)), true
+		return e.complexity.Query.MiningSummaryByDay(childComplexity, args["start"].(time.Time), args["end"].(time.Time)), true
 
 	case "Query.nodesInfo":
 		if e.complexity.Query.NodesInfo == nil {
@@ -2614,6 +2616,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.CompletedTask(childComplexity, args["last"].(int)), true
 
+	case "Subscription.newTask":
+		if e.complexity.Subscription.NewTask == nil {
+			break
+		}
+
+		args, err := ec.field_Subscription_newTask_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.NewTask(childComplexity, args["last"].(int)), true
+
 	case "Task.addedBy":
 		if e.complexity.Task.AddedBy == nil {
 			break
@@ -3007,7 +3021,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining_summary.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/pipeline_summary.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage_path.graphql" "schema/storage_stats.graphql" "schema/storage_type.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
+//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/pipeline_summary.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage_path.graphql" "schema/storage_stats.graphql" "schema/storage_type.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -3028,7 +3042,7 @@ var sources = []*ast.Source{
 	{Name: "schema/machine_summary.graphql", Input: sourceData("schema/machine_summary.graphql"), BuiltIn: false},
 	{Name: "schema/metrics.graphql", Input: sourceData("schema/metrics.graphql"), BuiltIn: false},
 	{Name: "schema/miner.graphql", Input: sourceData("schema/miner.graphql"), BuiltIn: false},
-	{Name: "schema/mining_summary.graphql", Input: sourceData("schema/mining_summary.graphql"), BuiltIn: false},
+	{Name: "schema/mining.graphql", Input: sourceData("schema/mining.graphql"), BuiltIn: false},
 	{Name: "schema/mutation.graphql", Input: sourceData("schema/mutation.graphql"), BuiltIn: false},
 	{Name: "schema/node.graphql", Input: sourceData("schema/node.graphql"), BuiltIn: false},
 	{Name: "schema/pipeline.graphql", Input: sourceData("schema/pipeline.graphql"), BuiltIn: false},
@@ -3232,15 +3246,24 @@ func (ec *executionContext) field_Query_miner_args(ctx context.Context, rawArgs 
 func (ec *executionContext) field_Query_miningSummaryByDay_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["lastDays"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastDays"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+	var arg0 time.Time
+	if tmp, ok := rawArgs["start"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+		arg0, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["lastDays"] = arg0
+	args["start"] = arg0
+	var arg1 time.Time
+	if tmp, ok := rawArgs["end"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["end"] = arg1
 	return args, nil
 }
 
@@ -3461,6 +3484,21 @@ func (ec *executionContext) field_Subscription_alerts_args(ctx context.Context, 
 }
 
 func (ec *executionContext) field_Subscription_completedTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Subscription_newTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
@@ -7163,8 +7201,8 @@ func (ec *executionContext) fieldContext_MiningSummaryDay_day(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _MiningSummaryDay_sp_id(ctx context.Context, field graphql.CollectedField, obj *model.MiningSummaryDay) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MiningSummaryDay_sp_id(ctx, field)
+func (ec *executionContext) _MiningSummaryDay_miner(ctx context.Context, field graphql.CollectedField, obj *model.MiningSummaryDay) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningSummaryDay_miner(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7177,7 +7215,7 @@ func (ec *executionContext) _MiningSummaryDay_sp_id(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.SpID, nil
+		return obj.Miner, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7194,7 +7232,7 @@ func (ec *executionContext) _MiningSummaryDay_sp_id(ctx context.Context, field g
 	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_MiningSummaryDay_sp_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_MiningSummaryDay_miner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "MiningSummaryDay",
 		Field:      field,
@@ -7207,8 +7245,8 @@ func (ec *executionContext) fieldContext_MiningSummaryDay_sp_id(_ context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _MiningSummaryDay_won(ctx context.Context, field graphql.CollectedField, obj *model.MiningSummaryDay) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MiningSummaryDay_won(ctx, field)
+func (ec *executionContext) _MiningSummaryDay_wonBlock(ctx context.Context, field graphql.CollectedField, obj *model.MiningSummaryDay) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningSummaryDay_wonBlock(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7221,7 +7259,7 @@ func (ec *executionContext) _MiningSummaryDay_won(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Won, nil
+		return obj.WonBlock, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7238,7 +7276,7 @@ func (ec *executionContext) _MiningSummaryDay_won(ctx context.Context, field gra
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_MiningSummaryDay_won(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_MiningSummaryDay_wonBlock(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "MiningSummaryDay",
 		Field:      field,
@@ -12388,7 +12426,7 @@ func (ec *executionContext) _Query_miningSummaryByDay(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningSummaryByDay(rctx, fc.Args["lastDays"].(int))
+		return ec.resolvers.Query().MiningSummaryByDay(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12412,10 +12450,10 @@ func (ec *executionContext) fieldContext_Query_miningSummaryByDay(ctx context.Co
 			switch field.Name {
 			case "day":
 				return ec.fieldContext_MiningSummaryDay_day(ctx, field)
-			case "sp_id":
-				return ec.fieldContext_MiningSummaryDay_sp_id(ctx, field)
-			case "won":
-				return ec.fieldContext_MiningSummaryDay_won(ctx, field)
+			case "miner":
+				return ec.fieldContext_MiningSummaryDay_miner(ctx, field)
+			case "wonBlock":
+				return ec.fieldContext_MiningSummaryDay_wonBlock(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type MiningSummaryDay", field.Name)
 		},
@@ -16442,6 +16480,103 @@ func (ec *executionContext) fieldContext_Subscription_completedTask(ctx context.
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Subscription_completedTask_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Subscription_newTask(ctx context.Context, field graphql.CollectedField) (ret func(ctx context.Context) graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subscription_newTask(ctx, field)
+	if err != nil {
+		return nil
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().NewTask(rctx, fc.Args["last"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return nil
+	}
+	return func(ctx context.Context) graphql.Marshaler {
+		select {
+		case res, ok := <-resTmp.(<-chan *model.Task):
+			if !ok {
+				return nil
+			}
+			return graphql.WriterFunc(func(w io.Writer) {
+				w.Write([]byte{'{'})
+				graphql.MarshalString(field.Alias).MarshalGQL(w)
+				w.Write([]byte{':'})
+				ec.marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res).MarshalGQL(w)
+				w.Write([]byte{'}'})
+			})
+		case <-ctx.Done():
+			return nil
+		}
+	}
+}
+
+func (ec *executionContext) fieldContext_Subscription_newTask(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Subscription",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Task_id(ctx, field)
+			case "initiatedByID":
+				return ec.fieldContext_Task_initiatedByID(ctx, field)
+			case "initiatedBy":
+				return ec.fieldContext_Task_initiatedBy(ctx, field)
+			case "updateTime":
+				return ec.fieldContext_Task_updateTime(ctx, field)
+			case "postedTime":
+				return ec.fieldContext_Task_postedTime(ctx, field)
+			case "ownerId":
+				return ec.fieldContext_Task_ownerId(ctx, field)
+			case "owner":
+				return ec.fieldContext_Task_owner(ctx, field)
+			case "addedByID":
+				return ec.fieldContext_Task_addedByID(ctx, field)
+			case "addedBy":
+				return ec.fieldContext_Task_addedBy(ctx, field)
+			case "previousTaskID":
+				return ec.fieldContext_Task_previousTaskID(ctx, field)
+			case "previousTask":
+				return ec.fieldContext_Task_previousTask(ctx, field)
+			case "name":
+				return ec.fieldContext_Task_name(ctx, field)
+			case "histories":
+				return ec.fieldContext_Task_histories(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Subscription_newTask_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -21509,13 +21644,13 @@ func (ec *executionContext) _MiningSummaryDay(ctx context.Context, sel ast.Selec
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "sp_id":
-			out.Values[i] = ec._MiningSummaryDay_sp_id(ctx, field, obj)
+		case "miner":
+			out.Values[i] = ec._MiningSummaryDay_miner(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "won":
-			out.Values[i] = ec._MiningSummaryDay_won(ctx, field, obj)
+		case "wonBlock":
+			out.Values[i] = ec._MiningSummaryDay_wonBlock(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -23763,6 +23898,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_alerts(ctx, fields[0])
 	case "completedTask":
 		return ec._Subscription_completedTask(ctx, fields[0])
+	case "newTask":
+		return ec._Subscription_newTask(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}
@@ -25011,6 +25148,10 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
+func (ec *executionContext) marshalNTask2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
+	return ec._Task(ctx, sel, &v)
+}
+
 func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -25047,6 +25188,16 @@ func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑd
 	wg.Wait()
 
 	return ret
+}
+
+func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Task(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNTaskHistory2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v model.TaskHistory) graphql.Marshaler {

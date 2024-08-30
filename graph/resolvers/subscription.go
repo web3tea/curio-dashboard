@@ -6,7 +6,6 @@ package resolvers
 
 import (
 	"context"
-
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
@@ -19,6 +18,11 @@ func (r *subscriptionResolver) Alerts(ctx context.Context, offset int) (<-chan *
 // CompletedTask is the resolver for the completedTask field.
 func (r *subscriptionResolver) CompletedTask(ctx context.Context, last int) (<-chan *model.TaskHistory, error) {
 	return r.loader.SubCompletedTask(ctx, last)
+}
+
+// NewTask is the resolver for the newTask field.
+func (r *subscriptionResolver) NewTask(ctx context.Context, last int) (<-chan *model.Task, error) {
+	return r.loader.SubNewTask(ctx, last)
 }
 
 // Subscription returns graph.SubscriptionResolver implementation.

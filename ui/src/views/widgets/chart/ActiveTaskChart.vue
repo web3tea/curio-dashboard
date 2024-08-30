@@ -4,6 +4,9 @@ import { getLightBorder } from '@/theme/ChartColors'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { MetricsActiveTask } from '@/typed-graph'
+import { useCustomizerStore } from '@/stores/customizer'
+
+const customizer = useCustomizerStore()
 
 const tab = ref(7)
 watch(() => tab.value, () => {
@@ -73,7 +76,7 @@ const chartOptions = computed(() => {
       show: true,
     },
     tooltip: {
-      theme: 'dark',
+      theme: customizer.dark ? 'dark' : 'light',
     },
   }
 })

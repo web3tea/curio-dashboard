@@ -35,3 +35,17 @@ export const GetTaskHistoriesCount = gql`
         taskHistoriesCount(machine: $machine, name: $name, start: $start, end: $end, success: $success)
     }
 `
+
+export const SubscribeNewTask = gql`
+  subscription SubscribeNewTask($last: Int!) {
+    newTask(last: $last) {
+      id
+      name
+      postedTime
+      updateTime
+      ownerId
+      addedByID
+      initiatedByID
+    }
+  }
+`

@@ -233,9 +233,9 @@ func (r *queryResolver) NodesInfo(ctx context.Context) ([]*model.NodeInfo, error
 }
 
 // MiningSummaryByDay is the resolver for the miningSummaryByDay field.
-func (r *queryResolver) MiningSummaryByDay(ctx context.Context, lastDays int) ([]*model.MiningSummaryDay, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
-	return r.loader.MiningSummaryByDay(ctx, lastDays)
+func (r *queryResolver) MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Hour)
+	return r.loader.MiningSummaryByDay(ctx, start, end)
 }
 
 // DealsPending is the resolver for the dealsPending field.

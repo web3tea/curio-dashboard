@@ -2,32 +2,37 @@ package loaders
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
-func (l *Loader) MiningSummaryByDay(ctx context.Context, lastDays int) ([]*model.MiningSummaryDay, error) {
-	if lastDays <= 0 {
-		lastDays = 1 // Default to 1 day if a non-positive number is provided
+func (l *Loader) MiningSummaryByDay(ctx context.Context, start, end time.Time) ([]*model.MiningSummaryDay, error) {
+	if end.IsZero() {
+		end = time.Now()
 	}
-	var m []*model.MiningSummaryDay
-	err := l.db.Select(ctx, &m,
+	if end.Before(start) {
+		return nil, fmt.Errorf("end time is before start time")
+	}
+
+	var result []*model.MiningSummaryDay
+	err := l.db.Select(ctx, &result,
 		`SELECT
-        sp_id,
-        DATE(mined_at) AS day,
-        COUNT(*) AS won
-    FROM
-        mining_tasks
-    WHERE
-        won = true AND
-        mined_at >= current_date - $1::integer
-    GROUP BY
-        sp_id,
-        DATE(mined_at)
-    ORDER BY
-        day ASC, sp_id;`, lastDays)
+    DATE_TRUNC('day', base_compute_time) AS day,
+    sp_id as miner,
+    COUNT(*) AS won_block
+FROM
+    mining_tasks
+WHERE
+    won = true
+  AND base_compute_time BETWEEN $1 AND $2
+GROUP BY
+    day, sp_id
+ORDER BY
+    day, sp_id;`, start, end)
 	if err != nil {
 		return nil, err
 	}
-	return m, nil
+	return result, nil
 }

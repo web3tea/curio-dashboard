@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import ActiveTaskChart from '@/views/widgets/chart/ActiveTaskChart.vue'
-import RecentTasks from '@/views/widgets/data/RecentTasks.vue'
 import MinerPower from '@/views/widgets/statistics/MinerPower.vue'
 import CompletedTasks from '@/views/widgets/statistics/CompletedTasks.vue'
+import MiningOverviewChart from '@/views/widgets/chart/MiningOverviewChart.vue'
+import RecentTasksTable from '@/views/widgets/data/RecentTasksTable.vue'
+import NewTasks from '@/views/widgets/data/NewTasks.vue'
 </script>
 
 <template>
@@ -41,17 +43,16 @@ import CompletedTasks from '@/views/widgets/statistics/CompletedTasks.vue'
       <ActiveTaskChart />
     </v-col>
     <v-col cols="12" md="4">
-      <CardHeader title="Recently Finished Tasks">
-        <template #header>
-          <router-link class="text-h6 text-primary link-hover" to="#">View all</router-link>
-        </template>
-        <RecentTasks />
-      </CardHeader>
+      <MiningOverviewChart />
     </v-col>
   </v-row>
   <v-row class="mb-0">
-    <v-col cols="12" md="8" />
-    <v-col cols="12" md="4" />
+    <v-col cols="12" md="8">
+      <RecentTasksTable />
+    </v-col>
+    <v-col cols="12" md="4">
+      <NewTasks />
+    </v-col>
   </v-row>
   <v-row>
     <v-col cols="12" md="7" />

@@ -1,4 +1,5 @@
 type Subscription {
     alerts(offset: Int!): Alert!
     completedTask(last: Int!): TaskHistory!
+    newTask(last: Int!): Task!
 }

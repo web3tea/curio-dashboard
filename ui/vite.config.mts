@@ -35,6 +35,9 @@ export default defineConfig({
       // },
     }),
   ],
+  build: {
+    chunkSizeWarningLimit: 1024 * 7,
+  },
   define: { 'process.env': {} },
   resolve: {
     alias: {

@@ -44,7 +44,7 @@ func (l *Loader) TaskHistoriesCount(ctx context.Context, start, end time.Time, m
 		index++
 	}
 	if success != nil {
-		query += " AND success = $" + strconv.Itoa(index)
+		query += " AND result = $" + strconv.Itoa(index)
 		args = append(args, *success)
 	}
 

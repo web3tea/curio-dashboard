@@ -160,8 +160,8 @@ export type MinerPower = {
 export type MiningSummaryDay = {
   __typename?: 'MiningSummaryDay';
   day: Scalars['Time']['output'];
-  sp_id: Scalars['ActorID']['output'];
-  won: Scalars['Int']['output'];
+  miner: Scalars['ActorID']['output'];
+  wonBlock: Scalars['Int']['output'];
 };
 
 export type Mutation = {
@@ -367,7 +367,8 @@ export type QueryMinerPowerArgs = {
 
 
 export type QueryMiningSummaryByDayArgs = {
-  lastDays: Scalars['Int']['input'];
+  end: Scalars['Time']['input'];
+  start: Scalars['Time']['input'];
 };
 
 
@@ -534,6 +535,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   alerts: Alert;
   completedTask: TaskHistory;
+  newTask: Task;
 };
 
 
@@ -543,6 +545,11 @@ export type SubscriptionAlertsArgs = {
 
 
 export type SubscriptionCompletedTaskArgs = {
+  last: Scalars['Int']['input'];
+};
+
+
+export type SubscriptionNewTaskArgs = {
   last: Scalars['Int']['input'];
 };
 
