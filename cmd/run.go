@@ -71,7 +71,7 @@ var runCmd = &cli.Command{
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer stop()
 		go func() {
-			if err := e.Start(cfg.API.Listen); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			if err := e.Start(cfg.Http.Listen); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				e.Logger.Fatalf("shutting down the server: %s", err)
 			}
 		}()
