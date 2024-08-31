@@ -8,20 +8,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"sync"
 	"time"
 
-	"github.com/BurntSushi/toml"
 	"github.com/filecoin-project/lotus/api"
-	"github.com/filecoin-project/lotus/api/client"
 	types2 "github.com/filecoin-project/lotus/chain/types"
-	cliutil "github.com/filecoin-project/lotus/cli/util"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
 	"github.com/strahe/curio-dashboard/types"
 	pgx "github.com/yugabyte/pgx/v5"
-	"golang.org/x/xerrors"
 )
 
 // Config is the resolver for the config field.
@@ -160,74 +155,23 @@ func (r *queryResolver) PipelinesSummary(ctx context.Context) ([]*model.Pipeline
 
 // NodesInfo is the resolver for the nodesInfo field.
 func (r *queryResolver) NodesInfo(ctx context.Context) ([]*model.NodeInfo, error) {
-	cfgs, err := r.Configs(ctx)
+	infos, err := r.curioAPI.SyncerState(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	type minimalApiInfo struct {
-		Apis struct {
-			ChainApiInfo []string
-		}
-	}
-	var apiInfos []string
-	for _, cfg := range cfgs {
-		var info minimalApiInfo
-		if err := toml.Unmarshal([]byte(cfg.Config), &info); err != nil {
-			return nil, xerrors.Errorf("unmarshaling %s config: %s", cfg.Title, err)
-		}
-		if len(info.Apis.ChainApiInfo) > 0 {
-			apiInfos = append(apiInfos, info.Apis.ChainApiInfo...)
-		}
-	}
-	var dupCheck = make(map[string]struct{})
-	var wg sync.WaitGroup
 	var out []*model.NodeInfo
-	for _, apiInfo := range apiInfos {
-		ai := cliutil.ParseApiInfo(apiInfo)
-		if _, ok := dupCheck[ai.Addr]; ok {
-			continue
-		}
-		dupCheck[ai.Addr] = struct{}{}
-		wg.Add(1)
-		go func(ai cliutil.APIInfo) {
-			defer wg.Done()
-
-			nodeInfo := &model.NodeInfo{
-				Address:      ai.Addr,
-				Reachability: false,
-			}
-			defer func() {
-				out = append(out, nodeInfo)
-			}()
-
-			addr, err := ai.DialArgs("v1")
-			if err != nil {
-				return
-			}
-			v1api, closer, err := client.NewFullNodeRPCV1(ctx, addr, ai.AuthHeader())
-			if err != nil {
-				return
-			}
-			defer closer()
-			version, err := v1api.Version(ctx)
-			if err != nil {
-				return
-			}
-			nodeInfo.Version = version.Version
-
-			ns, err := v1api.NodeStatus(ctx, false)
-			if err != nil {
-				return
-			}
-			nodeInfo.Reachability = true
-			nodeInfo.Epoch = int(ns.SyncStatus.Epoch)
-			nodeInfo.Behind = int(ns.SyncStatus.Behind)
-			nodeInfo.PeersToPublishBlocks = ns.PeerStatus.PeersToPublishBlocks
-			nodeInfo.PeersToPublishMsgs = ns.PeerStatus.PeersToPublishMsgs
-		}(ai)
+	for _, info := range infos {
+		out = append(out, &model.NodeInfo{
+			ID:        info.Address,
+			Address:   info.Address,
+			Layers:    info.CLayers,
+			Reachable: info.Reachable,
+			SyncState: info.SyncState,
+			Version:   info.Version,
+		})
 	}
-	wg.Wait()
+
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Second*30)
 	return out, nil
 }

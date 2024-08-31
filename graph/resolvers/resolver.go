@@ -6,6 +6,7 @@ import (
 	"github.com/prometheus/client_golang/api"
 	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/strahe/curio-dashboard/db"
+	"github.com/strahe/curio-dashboard/graph/curiorpc"
 	"github.com/strahe/curio-dashboard/graph/loaders"
 	"github.com/strahe/curio-dashboard/graph/prometheus"
 )
@@ -21,10 +22,11 @@ type Resolver struct {
 	fullNode         v1api.FullNode
 	loader           *loaders.Loader
 	prometheusAPI    v1.API
+	curioAPI         curiorpc.WebRPC
 	prometheusClient *prometheus.Client
 }
 
-func NewResolver(db *db.HarmonyDB, fullNode v1api.FullNode, client api.Client) *Resolver {
+func NewResolver(db *db.HarmonyDB, fullNode v1api.FullNode, curioAPI curiorpc.WebRPC, client api.Client) *Resolver {
 	papi := v1.NewAPI(client)
 	return &Resolver{
 		db:               db,
@@ -32,5 +34,6 @@ func NewResolver(db *db.HarmonyDB, fullNode v1api.FullNode, client api.Client) *
 		loader:           loaders.NewLoader(db, 1000),
 		prometheusAPI:    papi,
 		prometheusClient: prometheus.NewClient(papi),
+		curioAPI:         curioAPI,
 	}
 }

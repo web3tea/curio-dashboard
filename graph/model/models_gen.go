@@ -91,14 +91,12 @@ type Mutation struct {
 }
 
 type NodeInfo struct {
-	ID                   string `json:"id"`
-	Address              string `json:"address"`
-	Reachability         bool   `json:"reachability"`
-	Epoch                int    `json:"epoch"`
-	Behind               int    `json:"behind"`
-	PeersToPublishMsgs   int    `json:"peersToPublishMsgs"`
-	PeersToPublishBlocks int    `json:"peersToPublishBlocks"`
-	Version              string `json:"version"`
+	ID        string   `json:"id"`
+	Address   string   `json:"address"`
+	Layers    []string `json:"layers"`
+	Reachable bool     `json:"reachable"`
+	SyncState string   `json:"syncState"`
+	Version   string   `json:"version"`
 }
 
 type OpenSectorPiece struct {

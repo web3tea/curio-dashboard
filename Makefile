@@ -29,10 +29,10 @@ curio-rpc-gen:
 	goimports -w graph/curiorpc
 .PHONY: api-gen
 
-graph-type-gen:
+type-gen:
 	 cd ui && yarn graphql-codegen -c ../codegen.yml
 
 go-gen:
 	go generate ./...
 
-gen: go-gen curio-rpc-gen graph-type-gen
+gen: go-gen curio-rpc-gen type-gen

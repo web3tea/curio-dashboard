@@ -185,12 +185,10 @@ export type MutationUpdateConfigArgs = {
 export type NodeInfo = {
   __typename?: 'NodeInfo';
   address: Scalars['String']['output'];
-  behind: Scalars['Int']['output'];
-  epoch: Scalars['Int']['output'];
   id: Scalars['ID']['output'];
-  peersToPublishBlocks: Scalars['Int']['output'];
-  peersToPublishMsgs: Scalars['Int']['output'];
-  reachability: Scalars['Boolean']['output'];
+  layers: Array<Scalars['String']['output']>;
+  reachable: Scalars['Boolean']['output'];
+  syncState: Scalars['String']['output'];
   version: Scalars['String']['output'];
 };
 

@@ -13,6 +13,10 @@ type ChainConfig struct {
 	APIs []string `toml:"apis" comment:"List of chain API to connect to"`
 }
 
+type CurioConfig struct {
+	APIs []string `toml:"apis" comment:"List of Curio API to connect to"`
+}
+
 type MetricsConfig struct {
 	Enabled    bool   `toml:"enabled" comment:"Enable metrics api for analytics, must provide the Prometheus URL for collecting Curio metrics."`
 	Prometheus string `toml:"prometheus" comment:"URL to connect to the Prometheus server"`
@@ -42,6 +46,7 @@ type Config struct {
 	Http      HttpConfig      `toml:"api" comment:"Http configuration"`
 	HarmonyDB HarmonyDBConfig `toml:"harmonydb" comment:"HarmonyDB database configuration"`
 	Chain     ChainConfig     `toml:"chain" comment:"Chain API configuration"`
+	Curio     CurioConfig     `toml:"curio" comment:"Curio configuration"`
 	Auth      AuthConfig      `toml:"auth" comment:"Authentication configuration"`
 	Features  FeaturesConfig  `toml:"features" comment:"Features configuration"`
 }
@@ -77,6 +82,11 @@ var DefaultConfig = Config{
 		Metrics: MetricsConfig{
 			Enabled:    true,
 			Prometheus: "http://localhost:9090",
+		},
+	},
+	Curio: CurioConfig{
+		APIs: []string{
+			"http://127.0.0.1:4701",
 		},
 	},
 }

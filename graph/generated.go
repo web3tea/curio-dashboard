@@ -192,14 +192,12 @@ type ComplexityRoot struct {
 	}
 
 	NodeInfo struct {
-		Address              func(childComplexity int) int
-		Behind               func(childComplexity int) int
-		Epoch                func(childComplexity int) int
-		ID                   func(childComplexity int) int
-		PeersToPublishBlocks func(childComplexity int) int
-		PeersToPublishMsgs   func(childComplexity int) int
-		Reachability         func(childComplexity int) int
-		Version              func(childComplexity int) int
+		Address   func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Layers    func(childComplexity int) int
+		Reachable func(childComplexity int) int
+		SyncState func(childComplexity int) int
+		Version   func(childComplexity int) int
 	}
 
 	OpenSectorPiece struct {
@@ -1222,20 +1220,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.NodeInfo.Address(childComplexity), true
 
-	case "NodeInfo.behind":
-		if e.complexity.NodeInfo.Behind == nil {
-			break
-		}
-
-		return e.complexity.NodeInfo.Behind(childComplexity), true
-
-	case "NodeInfo.epoch":
-		if e.complexity.NodeInfo.Epoch == nil {
-			break
-		}
-
-		return e.complexity.NodeInfo.Epoch(childComplexity), true
-
 	case "NodeInfo.id":
 		if e.complexity.NodeInfo.ID == nil {
 			break
@@ -1243,26 +1227,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.NodeInfo.ID(childComplexity), true
 
-	case "NodeInfo.peersToPublishBlocks":
-		if e.complexity.NodeInfo.PeersToPublishBlocks == nil {
+	case "NodeInfo.layers":
+		if e.complexity.NodeInfo.Layers == nil {
 			break
 		}
 
-		return e.complexity.NodeInfo.PeersToPublishBlocks(childComplexity), true
+		return e.complexity.NodeInfo.Layers(childComplexity), true
 
-	case "NodeInfo.peersToPublishMsgs":
-		if e.complexity.NodeInfo.PeersToPublishMsgs == nil {
+	case "NodeInfo.reachable":
+		if e.complexity.NodeInfo.Reachable == nil {
 			break
 		}
 
-		return e.complexity.NodeInfo.PeersToPublishMsgs(childComplexity), true
+		return e.complexity.NodeInfo.Reachable(childComplexity), true
 
-	case "NodeInfo.reachability":
-		if e.complexity.NodeInfo.Reachability == nil {
+	case "NodeInfo.syncState":
+		if e.complexity.NodeInfo.SyncState == nil {
 			break
 		}
 
-		return e.complexity.NodeInfo.Reachability(childComplexity), true
+		return e.complexity.NodeInfo.SyncState(childComplexity), true
 
 	case "NodeInfo.version":
 		if e.complexity.NodeInfo.Version == nil {
@@ -7501,8 +7485,8 @@ func (ec *executionContext) fieldContext_NodeInfo_address(_ context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _NodeInfo_reachability(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeInfo_reachability(ctx, field)
+func (ec *executionContext) _NodeInfo_layers(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeInfo_layers(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7515,7 +7499,51 @@ func (ec *executionContext) _NodeInfo_reachability(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Reachability, nil
+		return obj.Layers, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NodeInfo_layers(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NodeInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NodeInfo_reachable(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeInfo_reachable(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Reachable, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7532,7 +7560,7 @@ func (ec *executionContext) _NodeInfo_reachability(ctx context.Context, field gr
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NodeInfo_reachability(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NodeInfo_reachable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "NodeInfo",
 		Field:      field,
@@ -7545,8 +7573,8 @@ func (ec *executionContext) fieldContext_NodeInfo_reachability(_ context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _NodeInfo_epoch(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeInfo_epoch(ctx, field)
+func (ec *executionContext) _NodeInfo_syncState(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeInfo_syncState(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7559,7 +7587,7 @@ func (ec *executionContext) _NodeInfo_epoch(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Epoch, nil
+		return obj.SyncState, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7571,151 +7599,19 @@ func (ec *executionContext) _NodeInfo_epoch(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_NodeInfo_epoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_NodeInfo_syncState(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "NodeInfo",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _NodeInfo_behind(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeInfo_behind(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Behind, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_NodeInfo_behind(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NodeInfo",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _NodeInfo_peersToPublishMsgs(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeInfo_peersToPublishMsgs(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PeersToPublishMsgs, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_NodeInfo_peersToPublishMsgs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NodeInfo",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _NodeInfo_peersToPublishBlocks(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeInfo_peersToPublishBlocks(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PeersToPublishBlocks, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_NodeInfo_peersToPublishBlocks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NodeInfo",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12393,16 +12289,12 @@ func (ec *executionContext) fieldContext_Query_nodesInfo(_ context.Context, fiel
 				return ec.fieldContext_NodeInfo_id(ctx, field)
 			case "address":
 				return ec.fieldContext_NodeInfo_address(ctx, field)
-			case "reachability":
-				return ec.fieldContext_NodeInfo_reachability(ctx, field)
-			case "epoch":
-				return ec.fieldContext_NodeInfo_epoch(ctx, field)
-			case "behind":
-				return ec.fieldContext_NodeInfo_behind(ctx, field)
-			case "peersToPublishMsgs":
-				return ec.fieldContext_NodeInfo_peersToPublishMsgs(ctx, field)
-			case "peersToPublishBlocks":
-				return ec.fieldContext_NodeInfo_peersToPublishBlocks(ctx, field)
+			case "layers":
+				return ec.fieldContext_NodeInfo_layers(ctx, field)
+			case "reachable":
+				return ec.fieldContext_NodeInfo_reachable(ctx, field)
+			case "syncState":
+				return ec.fieldContext_NodeInfo_syncState(ctx, field)
 			case "version":
 				return ec.fieldContext_NodeInfo_version(ctx, field)
 			}
@@ -21748,28 +21640,18 @@ func (ec *executionContext) _NodeInfo(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "reachability":
-			out.Values[i] = ec._NodeInfo_reachability(ctx, field, obj)
+		case "layers":
+			out.Values[i] = ec._NodeInfo_layers(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "epoch":
-			out.Values[i] = ec._NodeInfo_epoch(ctx, field, obj)
+		case "reachable":
+			out.Values[i] = ec._NodeInfo_reachable(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "behind":
-			out.Values[i] = ec._NodeInfo_behind(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "peersToPublishMsgs":
-			out.Values[i] = ec._NodeInfo_peersToPublishMsgs(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "peersToPublishBlocks":
-			out.Values[i] = ec._NodeInfo_peersToPublishBlocks(ctx, field, obj)
+		case "syncState":
+			out.Values[i] = ec._NodeInfo_syncState(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -25146,6 +25028,38 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalNTask2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {

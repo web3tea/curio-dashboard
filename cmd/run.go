@@ -35,6 +35,7 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return fmt.Errorf("failed to load config: %w", err)
 		}
+
 		harmonyDB, err := db.NewHarmonyDB(cctx.Context, cfg.HarmonyDB)
 		if err != nil {
 			return fmt.Errorf("failed to connect to harmonydb: %w", err)
@@ -44,6 +45,12 @@ var runCmd = &cli.Command{
 		chainAPI, closer, err := getChainAPI(cctx, cfg.Chain)
 		if err != nil {
 			return fmt.Errorf("failed to get chain API: %w", err)
+		}
+		defer closer()
+
+		curioAPI, closer, err := getCurioWebRpcV0(cctx, cfg)
+		if err != nil {
+			return fmt.Errorf("failed to get curio web rpc: %w", err)
 		}
 		defer closer()
 
@@ -62,7 +69,7 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return fmt.Errorf("failed to create Prometheus client: %s", err)
 		}
-		if err := graph.Router(e, cfg, resolvers.NewResolver(harmonyDB, chainAPI, client)); err != nil {
+		if err := graph.Router(e, cfg, resolvers.NewResolver(harmonyDB, chainAPI, curioAPI, client)); err != nil {
 			return fmt.Errorf("failed to setup GraphQL routes: %w", err)
 		}
 

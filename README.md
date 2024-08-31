@@ -36,6 +36,7 @@ To build the dashboard, follow these steps:
 
 ## Requirements
 
+- **Curio Node**: Accessible Curio Web API, such as `http://localhost:4701`
 - **YugabyteDB**: The database used by the Curio cluster.
 - **Prometheus**: To collect metrics from the Curio cluster.
 - **Lotus Daemon Node**: Required for blockchain data.
