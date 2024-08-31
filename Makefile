@@ -2,9 +2,6 @@ all: go-deps ui-deps ui go
 all-in-one: go-deps ui-deps ui go-dist
 aio: all-in-one
 
-gen:
-	go generate ./...
-	 cd ui && yarn graphql-codegen -c ../codegen.yml
 
 go-deps:
 	git submodule update --init --recursive
@@ -26,3 +23,16 @@ ui:
 lint:
 	golangci-lint run -v ./...
 	cd ui && yarn lint
+
+curio-rpc-gen:
+	go run ./graph/curiorpc/gen
+	goimports -w graph/curiorpc
+.PHONY: api-gen
+
+graph-type-gen:
+	 cd ui && yarn graphql-codegen -c ../codegen.yml
+
+go-gen:
+	go generate ./...
+
+gen: go-gen curio-rpc-gen graph-type-gen

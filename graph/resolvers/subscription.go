@@ -6,6 +6,7 @@ package resolvers
 
 import (
 	"context"
+
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
