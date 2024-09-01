@@ -6,6 +6,7 @@ import MiningOverviewChart from '@/views/widgets/chart/MiningOverviewChart.vue'
 import RecentTasksTable from '@/views/widgets/data/RecentTasksTable.vue'
 import NewTasks from '@/views/widgets/data/NewTasks.vue'
 import ChainConnectivity from '@/views/widgets/data/ChainConnectivity.vue'
+import StorageOverview from '@/views/widgets/statistics/StorageOverview.vue'
 </script>
 
 <template>
@@ -52,7 +53,9 @@ import ChainConnectivity from '@/views/widgets/data/ChainConnectivity.vue'
       <ChainConnectivity />
     </v-col>
 
-    <v-col cols="12" md="6" />
+    <v-col cols="12" md="6">
+      <StorageOverview />
+    </v-col>
   </v-row>
   <v-row class="mb-0">
     <v-col cols="12" md="8">
