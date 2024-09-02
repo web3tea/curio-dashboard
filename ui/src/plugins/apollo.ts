@@ -1,6 +1,7 @@
 import { ApolloClient, ApolloLink, concat, InMemoryCache } from '@apollo/client/core'
 import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
+import { router } from '@/router'
 
 const authMiddleware = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem('token')
@@ -25,21 +26,24 @@ const wsLink = new GraphQLWsLink(
       authToken: localStorage.getItem('token'),
     }),
     shouldRetry: (errOrCloseEvent: unknown) => {
-      // retry on transient network errors
       if (errOrCloseEvent instanceof CloseEvent) {
-        return errOrCloseEvent.code !== 1006
-      } else {
-        return true
+        return errOrCloseEvent.code === 1006
       }
+      return true
     },
-    lazy: false,
-    onNonLazyError: (err: unknown) => {
-      console.error('GraphQLWsLink', err)
-    },
-    retryWait: async function waitBeforeRetry () {
-      await new Promise(resolve =>
-        setTimeout(resolve, 1000 + Math.random() * 3000),
-      )
+    lazy: true,
+    on: {
+      closed: (event: unknown) => {
+        if (event instanceof CloseEvent) {
+          if (event.code === 1000 && event.reason === 'terminated') {
+            console.log('GraphQLWsLink', 'auth token expired or invalid')
+            router.push('/auth/login').then()
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000)
+          }
+        }
+      },
     },
   })
 )

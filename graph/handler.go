@@ -51,7 +51,11 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 			if cfg.Auth.Secret == "" {
 				return ctx, nil, nil
 			} else {
-				return webSocketInit(ctx, cfg, initPayload)
+				ctx, payload, err := webSocketInit(ctx, cfg, initPayload)
+				if err != nil {
+					log.Warnf("websocket init failed: %s", err)
+				}
+				return ctx, payload, err
 			}
 		},
 	})
