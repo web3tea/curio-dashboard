@@ -8,7 +8,7 @@ import { Task } from '@/typed-graph'
 import moment from 'moment'
 
 const maxLen = 10
-const { result } = useSubscription(SubscribeNewTask, {
+const { result, loading, error } = useSubscription(SubscribeNewTask, {
   last: maxLen,
 })
 
@@ -40,10 +40,14 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
       :headers="headers"
       hide-footer
       :items="tasks"
+      :loading="loading"
       :rows-per-page="100"
       table-class-name="customize-table"
       :theme-color="themeColor"
     >
+      <template #empty-message>
+        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      </template>
       <template #item-postedTime="{postedTime}">
         {{ moment(postedTime).calendar() }}
       </template>

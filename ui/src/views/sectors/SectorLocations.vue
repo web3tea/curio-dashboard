@@ -19,7 +19,7 @@ const props = defineProps({
   },
 })
 
-const { result, loading, refetch } = useQuery(GetSectorLocations, {
+const { result, loading, refetch, error } = useQuery(GetSectorLocations, {
   miner: props.miner,
   sectorNumber: props.sectorNumber,
 }, () => ({
@@ -55,6 +55,9 @@ const headers :Header[] = [
       table-class-name="customize-table"
       theme-color="primary"
     >
+      <template #empty-message>
+        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      </template>
       <template #item-sectorFiletype="{ sectorFiletype }">
         <v-chip>{{ sectorFileTypeToName(sectorFiletype) }}</v-chip>
       </template>

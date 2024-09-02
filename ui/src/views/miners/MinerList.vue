@@ -9,7 +9,7 @@ import { GetActors } from '@/views/query/miner'
 import { formatFIL } from '@/utils/helpers/formatFIL'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
-const { result, loading, refetch } = useQuery(GetActors, null, () => ({
+const { result, loading, refetch, error } = useQuery(GetActors, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 const items: ComputedRef<[Actor]> = computed(() => result.value?.actors || [])
@@ -74,6 +74,9 @@ const headers :Header[] = [
             table-class-name="customize-table"
             :theme-color="themeColor"
           >
+            <template #empty-message>
+              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            </template>
             <template #[`item.id`]="{ id }">
               <div class="player-wrapper">
                 <h5 class="text-h5">#{{ id }}</h5>

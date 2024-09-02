@@ -15,7 +15,7 @@ const headers = [
 
 const themeColor = ref('rgb(var(--v-theme-primary))')
 
-const { result, loading } = useQuery(GetNodeInfos, null, () => ({
+const { result, loading, error } = useQuery(GetNodeInfos, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -34,6 +34,9 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
       table-class-name="customize-table"
       :theme-color="themeColor"
     >
+      <template #empty-message>
+        {{ error?.message || 'No Data' }}
+      </template>
       <template #item-reachable="{ reachable }">
         <v-chip class="px-0" size="small" variant="text">
           <v-avatar class="mr-2" :color=" reachable ? 'success' : 'error'" size="8" variant="flat" />

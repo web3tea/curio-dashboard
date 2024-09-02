@@ -7,7 +7,7 @@ import { GetSectorsPipeline } from '@/views/query/pipeline'
 import { Pipeline } from '@/typed-graph'
 import type { Item } from 'vue3-easy-data-table'
 
-const { result, loading, refetch } = useQuery(GetSectorsPipeline, null, () => ({
+const { result, loading, refetch, error } = useQuery(GetSectorsPipeline, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 const items: ComputedRef<[Pipeline]> = computed(() => result.value?.pipelines || [])
@@ -67,6 +67,9 @@ const itemsSelected = ref<Item[]>([])
             table-class-name="customize-table"
             :theme-color="themeColor"
           >
+            <template #empty-message>
+              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            </template>
             <template #item-id="{spId, sectorNumber}">
               <small class="font-weight-bold">{{ spId }}</small>
               <h5 class="text-h6">{{ sectorNumber }}</h5>

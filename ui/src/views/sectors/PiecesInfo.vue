@@ -18,7 +18,7 @@ const props = defineProps({
   },
 })
 
-const { result, loading, refetch } = useQuery(GetSectorPieces, {
+const { result, loading, refetch, error } = useQuery(GetSectorPieces, {
   miner: props.miner,
   sectorNumber: props.sectorNumber,
 }, () => ({
@@ -57,6 +57,9 @@ const headers :Header[] = [
       table-class-name="customize-table"
       theme-color="primary"
     >
+      <template #empty-message>
+        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      </template>
       <template #item-f05DealProposal="{ f05DealProposal }">
         <v-btn v-if="f05DealProposal" :icon="true" :rounded="true">
           <InfoCircleIcon />

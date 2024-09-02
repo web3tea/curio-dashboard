@@ -14,7 +14,7 @@ const customizer = useCustomizerStore()
 const end = new Date()
 const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000) // todo: props
 
-const { result } = useQuery(GetMiningSummary, {
+const { result, error } = useQuery(GetMiningSummary, {
   start,
   end,
 }, () => ({
@@ -34,6 +34,9 @@ const chartOptions = computed(() => {
       toolbar: {
         show: false,
       },
+    },
+    noData: {
+      text: error.value?.message || 'Loading...',
     },
     dataLabels: {
       enabled: false,

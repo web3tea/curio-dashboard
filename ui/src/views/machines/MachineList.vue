@@ -8,7 +8,7 @@ import { GetMachines } from '@/views/query/machine'
 import { Machine } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
-const { result, loading, refetch } = useQuery(GetMachines, null, () => ({
+const { result, loading, refetch, error } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
   pollInterval: 10000,
 }))
@@ -75,6 +75,9 @@ const itemsSelected = ref<Item[]>([])
             table-class-name="customize-table"
             :theme-color="themeColor"
           >
+            <template #empty-message>
+              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            </template>
             <template #[`item.id`]="{ id }">
               <div class="player-wrapper">
                 <h5 class="text-h5">#{{ id }}</h5>

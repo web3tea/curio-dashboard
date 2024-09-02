@@ -15,7 +15,7 @@ const serverOptions = ref<ServerOptions>({
 const selectedMiner = ref<string | null>(null)
 const searchSectorNumber = ref<string | null>(null)
 
-const { result, loading, refetch } = useQuery(GetSectors, {
+const { result, loading, refetch, error } = useQuery(GetSectors, {
   miner: selectedMiner.value,
   sectorNumber: searchSectorNumber.value !== null ? parseInt(searchSectorNumber.value) : null,
   offset: (serverOptions.value.page - 1) * serverOptions.value.rowsPerPage,
@@ -133,6 +133,9 @@ function formatLocationDetails (location: SectorLocation): string {
             table-class-name="customize-table"
             :theme-color="themeColor"
           >
+            <template #empty-message>
+              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            </template>
             <template #item-meta.sectorNum="{ meta }">
               <RouterLink :to="{ name: 'SectorDetails', params: { miner: meta.spId, sectorNumber: meta.sectorNum } }">{{ meta.sectorNum }}</RouterLink>
             </template>

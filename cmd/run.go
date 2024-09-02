@@ -69,7 +69,7 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return fmt.Errorf("failed to create Prometheus client: %s", err)
 		}
-		if err := graph.Router(e, cfg, resolvers.NewResolver(harmonyDB, chainAPI, curioAPI, client)); err != nil {
+		if err := graph.Router(e, cfg, resolvers.NewResolver(cfg, harmonyDB, chainAPI, curioAPI, client)); err != nil {
 			return fmt.Errorf("failed to setup GraphQL routes: %w", err)
 		}
 

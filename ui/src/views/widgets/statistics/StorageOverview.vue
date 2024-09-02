@@ -17,7 +17,7 @@ const headers = [
 
 const themeColor = ref('rgb(var(--v-theme-primary))')
 
-const { result, loading } = useQuery(GetStorageStats, null, () => ({
+const { result, loading, error } = useQuery(GetStorageStats, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -40,6 +40,9 @@ function usePercentage (available: number, total: number) {
       table-class-name="customize-table"
       :theme-color="themeColor"
     >
+      <template #empty-message>
+        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      </template>
       <template #item-totalCapacity="{totalCapacity}">
         {{ formatBytes(totalCapacity).combined }}
       </template>

@@ -8,7 +8,7 @@ import moment from 'moment/moment'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import type { Item } from 'vue3-easy-data-table'
 
-const { result, loading, refetch } = useQuery(GetStoragePaths, null, () => ({
+const { result, loading, refetch, error } = useQuery(GetStoragePaths, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -112,6 +112,9 @@ const tabs = [
             table-class-name="customize-table"
             :theme-color="themeColor"
           >
+            <template #empty-message>
+              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            </template>
             <template #[`item.id`]="{ id }">
               <div class="player-wrapper">
                 <h5 class="text-h5">#{{ id }}</h5>

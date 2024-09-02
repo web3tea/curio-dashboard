@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons-vue'
 import { Item } from 'vue3-easy-data-table'
 
-const { result, loading, refetch } = useQuery(GetConfigs, null, () => ({
+const { result, loading, refetch, error } = useQuery(GetConfigs, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -122,6 +122,9 @@ function updateDialog (value: boolean) {
             table-class-name="customize-table"
             :theme-color="themeColor"
           >
+            <template #empty-message>
+              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            </template>
             <template #item-id="{ id }">
               <div class="player-wrapper">
                 <h5 class="text-h5">#{{ id }}</h5>

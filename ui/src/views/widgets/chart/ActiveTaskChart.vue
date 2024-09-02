@@ -16,7 +16,7 @@ watch(() => tab.value, () => {
   })
 })
 
-const { result, refetch } = useQuery(gql`
+const { result, refetch, error } = useQuery(gql`
 query GetActiveTasksMetrics($lastDays: Int!, $machine: String) {
     metricsActiveTasks(lastDays: $lastDays, machine: $machine) {
         name
@@ -49,6 +49,9 @@ const chartOptions = computed(() => {
     stroke: {
       curve: 'smooth',
       width: 2,
+    },
+    noData: {
+      text: error.value?.message || 'Loading...',
     },
     fill: {
       type: 'gradient',

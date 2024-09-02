@@ -196,6 +196,10 @@ func (r *queryResolver) Alerts(ctx context.Context) ([]*model.Alert, error) {
 
 // MetricsActiveTasks is the resolver for the metricsActiveTasks field.
 func (r *queryResolver) MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error) {
+	if !r.cfg.Features.Metrics.Enabled {
+		return nil, fmt.Errorf("metrics feature is disabled")
+	}
+
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
 
 	end := time.Now()
