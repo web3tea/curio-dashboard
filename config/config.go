@@ -28,7 +28,7 @@ type UserConfig struct {
 	Description string `toml:"description" comment:"Description for the user"`
 }
 
-type HttpConfig struct {
+type HTTPConfig struct {
 	Listen string `toml:"listen" comment:"Address to listen on for the API server"`
 }
 
@@ -43,7 +43,7 @@ type FeaturesConfig struct {
 }
 
 type Config struct {
-	Http      HttpConfig      `toml:"api" comment:"Http configuration"`
+	HTTP      HTTPConfig      `toml:"api" comment:"Http configuration"`
 	HarmonyDB HarmonyDBConfig `toml:"harmonydb" comment:"HarmonyDB database configuration"`
 	Chain     ChainConfig     `toml:"chain" comment:"Chain API configuration"`
 	Curio     CurioConfig     `toml:"curio" comment:"Curio configuration"`
@@ -60,7 +60,7 @@ func NewFromFile(filePath string) (*Config, error) {
 }
 
 var DefaultConfig = Config{
-	Http: HttpConfig{
+	HTTP: HTTPConfig{
 		Listen: ":9091",
 	},
 	HarmonyDB: HarmonyDBConfig{

@@ -261,6 +261,7 @@ export type Pipeline = {
   ticketValue?: Maybe<Scalars['ByteArray']['output']>;
   treeDCid?: Maybe<Scalars['String']['output']>;
   treeRCid?: Maybe<Scalars['String']['output']>;
+  userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
 };
 
 export enum PipelineStatus {

@@ -87,6 +87,9 @@ func (db *HarmonyDB) Select(ctx context.Context, sliceOfStructPtr any, sql strin
 		return err
 	}
 	defer rows.Close()
+	if rows.Err() != nil {
+		return rows.Err()
+	}
 	return dbscan.ScanAll(sliceOfStructPtr, dbscanRows{rows})
 }
 

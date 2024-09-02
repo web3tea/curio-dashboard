@@ -20,11 +20,53 @@ type SectorLoader interface {
 func (l *Loader) Sectors(ctx context.Context, actor *types.ActorID, offset int, limit int) ([]*model.Sector, error) {
 	var m []*model.SectorMeta
 	if actor == nil {
-		if err := l.db.Select(ctx, &m, `SELECT * FROM sectors_meta LIMIT $1 OFFSET $2`, limit, offset); err != nil {
+		if err := l.db.Select(ctx, &m, `SELECT
+    sp_id,
+    sector_num,
+    reg_seal_proof,
+    ticket_epoch,
+    ticket_value,
+    orig_sealed_cid,
+    orig_unsealed_cid,
+    cur_sealed_cid,
+    cur_unsealed_cid,
+    msg_cid_precommit,
+    msg_cid_commit,
+    msg_cid_update,
+    seed_epoch,
+    seed_value,
+    expiration_epoch,
+    is_cc,
+    deadline,
+    partition
+FROM
+    sectors_meta
+LIMIT $1 OFFSET $2`, limit, offset); err != nil {
 			return nil, err
 		}
 	} else {
-		if err := l.db.Select(ctx, &m, `SELECT * FROM sectors_meta WHERE sp_id = $1 LIMIT $2 OFFSET $3`, *actor, limit, offset); err != nil {
+		if err := l.db.Select(ctx, &m, `SELECT
+    sp_id,
+    sector_num,
+    reg_seal_proof,
+    ticket_epoch,
+    ticket_value,
+    orig_sealed_cid,
+    orig_unsealed_cid,
+    cur_sealed_cid,
+    cur_unsealed_cid,
+    msg_cid_precommit,
+    msg_cid_commit,
+    msg_cid_update,
+    seed_epoch,
+    seed_value,
+    expiration_epoch,
+    is_cc,
+    deadline,
+    partition
+FROM
+    sectors_meta
+WHERE sp_id = $1 LIMIT $2 OFFSET $3`, *actor, limit, offset); err != nil {
 			return nil, err
 		}
 	}
@@ -71,7 +113,19 @@ func (l *Loader) SectorsCount(ctx context.Context, actor *types.ActorID) (int, e
 
 func (l *Loader) SectorLocations(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorLocation, error) {
 	var locations []*model.SectorLocation
-	if err := l.db.Select(ctx, &locations, `SELECT * FROM sector_location WHERE miner_id = $1 AND sector_num = $2`, actor, sectorNumber); err != nil {
+	if err := l.db.Select(ctx, &locations, `SELECT
+    miner_id,
+    sector_num,
+    sector_filetype,
+    storage_id,
+    is_primary,
+    read_ts,
+    read_refs,
+    write_ts,
+    write_lock_owner
+FROM
+    sector_location 
+WHERE miner_id = $1 AND sector_num = $2`, actor, sectorNumber); err != nil {
 		return nil, err
 	}
 	return locations, nil
@@ -79,7 +133,22 @@ func (l *Loader) SectorLocations(ctx context.Context, actor types.ActorID, secto
 
 func (l *Loader) SectorPieces(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorMetaPiece, error) {
 	var pieces []*model.SectorMetaPiece
-	if err := l.db.Select(ctx, &pieces, `SELECT * FROM sectors_meta_pieces WHERE sp_id = $1 AND sector_num = $2`, actor, sectorNumber); err != nil {
+	if err := l.db.Select(ctx, &pieces, `SELECT
+    sp_id,
+    sector_num,
+    piece_num,
+    piece_cid,
+    piece_size,
+    requested_keep_data,
+    raw_data_size,
+    start_epoch,
+    orig_end_epoch,
+    f05_deal_id,
+    ddo_pam,
+    f05_deal_proposal
+FROM
+    sectors_meta_pieces
+WHERE sp_id = $1 AND sector_num = $2`, actor, sectorNumber); err != nil {
 		return nil, err
 	}
 	return pieces, nil

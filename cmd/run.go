@@ -48,7 +48,7 @@ var runCmd = &cli.Command{
 		}
 		defer closer()
 
-		curioAPI, closer, err := getCurioWebRpcV0(cctx, cfg)
+		curioAPI, closer, err := getCurioWebRPCV0(cctx, cfg)
 		if err != nil {
 			return fmt.Errorf("failed to get curio web rpc: %w", err)
 		}
@@ -78,7 +78,7 @@ var runCmd = &cli.Command{
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer stop()
 		go func() {
-			if err := e.Start(cfg.Http.Listen); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			if err := e.Start(cfg.HTTP.Listen); err != nil && !errors.Is(err, http.ErrServerClosed) {
 				e.Logger.Fatalf("shutting down the server: %s", err)
 			}
 		}()

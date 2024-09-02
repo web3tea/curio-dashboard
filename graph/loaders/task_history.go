@@ -18,7 +18,19 @@ type TaskHistoryLoader interface {
 // TaskHistories is the resolver for the taskHistories field.
 func (l *Loader) TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error) {
 	var out []*model.TaskHistory
-	if err := l.db.Select(ctx, &out, "SELECT * FROM harmony_task_history ORDER BY work_end desc LIMIT $1 OFFSET $2", limit, offset); err != nil {
+	if err := l.db.Select(ctx, &out, `SELECT
+    id,
+    task_id,
+    name,
+    posted,
+    work_start,
+    work_end,
+    result,
+    err,
+    completed_by_host_and_port
+FROM
+    harmony_task_history
+ORDER BY work_end desc LIMIT $1 OFFSET $2`, limit, offset); err != nil {
 		return nil, err
 	}
 	return out, nil
@@ -75,7 +87,20 @@ func (l *Loader) SubCompletedTask(ctx context.Context, last int) (<-chan *model.
 			last = 1
 		}
 		var tasks []*model.TaskHistory
-		if err = l.db.Select(ctx, &tasks, "SELECT * FROM harmony_task_history ORDER BY id DESC LIMIT $1", last); err != nil {
+		if err = l.db.Select(ctx, &tasks, `SELECT
+    id,
+    task_id,
+    name,
+    posted,
+    work_start,
+    work_end,
+    result,
+    err,
+    completed_by_host_and_port
+FROM
+    harmony_task_history
+ORDER BY id DESC 
+LIMIT $1`, last); err != nil {
 			return
 		}
 		if len(tasks) > 0 {
@@ -88,7 +113,20 @@ func (l *Loader) SubCompletedTask(ctx context.Context, last int) (<-chan *model.
 				return
 			case <-ticker.C:
 				var tasks []*model.TaskHistory
-				if err = l.db.Select(ctx, &tasks, "SELECT * FROM harmony_task_history WHERE work_end > $1 ORDER BY work_end", offset); err != nil {
+				if err = l.db.Select(ctx, &tasks, `SELECT
+    id,
+    task_id,
+    name,
+    posted,
+    work_start,
+    work_end,
+    result,
+    err,
+    completed_by_host_and_port
+FROM
+    harmony_task_history 
+WHERE work_end > $1 
+ORDER BY work_end`, offset); err != nil {
 					return
 				}
 				for _, t := range tasks {

@@ -9,3 +9,18 @@ issues:
   exclude:
     - scripts/
     - extern/
+    - ui/
+
+linters:
+  enable:
+    - rowserrcheck
+    - sqlclosecheck
+    - gofmt
+    - goimports
+    - stylecheck
+
+linters-settings:
+  rowserrcheck:
+    # database/sql is always checked
+    packages:
+      - github.com/yugabyte/pgx/v5

@@ -23,7 +23,12 @@ func (l *Loader) Config(ctx context.Context, layer string) (*model.Config, error
 // Configs is the resolver for the configs field.
 func (l *Loader) Configs(ctx context.Context) ([]*model.Config, error) {
 	var m []*model.Config
-	if err := l.db.Select(ctx, &m, "SELECT * FROM harmony_config"); err != nil {
+	if err := l.db.Select(ctx, &m, `SELECT
+    id,
+    title,
+    config
+FROM
+    harmony_config`); err != nil {
 		return nil, err
 	}
 	return m, nil

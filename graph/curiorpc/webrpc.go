@@ -15,7 +15,7 @@ type WebRPC interface {
 	ClusterTaskHistory(ctx context.Context) ([]webrpc.TaskHistorySummary, error)
 	ClusterNodeInfo(ctx context.Context, id int64) (*webrpc.MachineInfo, error)
 	DealsPending(ctx context.Context) ([]webrpc.OpenDealInfo, error)
-	DealsSealNow(ctx context.Context, spId, sectorNumber uint64) error
+	DealsSealNow(ctx context.Context, spID, sectorNumber uint64) error
 	HarmonyTaskStats(ctx context.Context) ([]webrpc.HarmonyTaskStats, error)
 	HarmonyTaskMachines(ctx context.Context, taskName string) ([]webrpc.HarmonyMachineDesc, error)
 	HarmonyTaskHistory(ctx context.Context, taskName string) ([]webrpc.HarmonyTaskHistory, error)

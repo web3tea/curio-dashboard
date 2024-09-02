@@ -267,6 +267,7 @@ type ComplexityRoot struct {
 		TicketValue              func(childComplexity int) int
 		TreeDCid                 func(childComplexity int) int
 		TreeRCid                 func(childComplexity int) int
+		UserSectorDurationEpochs func(childComplexity int) int
 	}
 
 	PipelineSummary struct {
@@ -1695,6 +1696,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Pipeline.TreeRCid(childComplexity), true
+
+	case "Pipeline.userSectorDurationEpochs":
+		if e.complexity.Pipeline.UserSectorDurationEpochs == nil {
+			break
+		}
+
+		return e.complexity.Pipeline.UserSectorDurationEpochs(childComplexity), true
 
 	case "PipelineSummary.commitMsg":
 		if e.complexity.PipelineSummary.CommitMsg == nil {
@@ -10255,6 +10263,47 @@ func (ec *executionContext) fieldContext_Pipeline_afterSynth(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Pipeline_userSectorDurationEpochs(ctx context.Context, field graphql.CollectedField, obj *model.Pipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Pipeline_userSectorDurationEpochs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UserSectorDurationEpochs, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Pipeline_userSectorDurationEpochs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Pipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Pipeline_status(ctx context.Context, field graphql.CollectedField, obj *model.Pipeline) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Pipeline_status(ctx, field)
 	if err != nil {
@@ -12177,6 +12226,8 @@ func (ec *executionContext) fieldContext_Query_pipelines(_ context.Context, fiel
 				return ec.fieldContext_Pipeline_taskIdSynth(ctx, field)
 			case "afterSynth":
 				return ec.fieldContext_Pipeline_afterSynth(ctx, field)
+			case "userSectorDurationEpochs":
+				return ec.fieldContext_Pipeline_userSectorDurationEpochs(ctx, field)
 			case "status":
 				return ec.fieldContext_Pipeline_status(ctx, field)
 			case "currentTask":
@@ -21974,6 +22025,8 @@ func (ec *executionContext) _Pipeline(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "userSectorDurationEpochs":
+			out.Values[i] = ec._Pipeline_userSectorDurationEpochs(ctx, field, obj)
 		case "status":
 			field := field
 

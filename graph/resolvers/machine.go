@@ -14,7 +14,16 @@ import (
 // Detail is the resolver for the detail field.
 func (r *machineResolver) Detail(ctx context.Context, obj *model.Machine) (*model.MachineDetail, error) {
 	var out model.MachineDetail
-	if err := r.db.QueryRow(ctx, "SELECT id,machine_name,tasks,layers,startup_time,miners,machine_id FROM harmony_machine_details WHERE machine_id = $1", obj.ID).
+	if err := r.db.QueryRow(ctx, `SELECT 
+    id,
+    machine_name,
+    tasks,
+    layers,
+    startup_time,
+    miners,
+    machine_id 
+FROM harmony_machine_details 
+WHERE machine_id = $1`, obj.ID).
 		Scan(&out.ID, &out.MachineName, &out.Tasks, &out.Layers, &out.StartupTime, &out.Miners, &out.MachineID); err != nil {
 		return nil, err
 	}
@@ -24,7 +33,18 @@ func (r *machineResolver) Detail(ctx context.Context, obj *model.Machine) (*mode
 // Tasks is the resolver for the tasks field.
 func (r *machineResolver) Tasks(ctx context.Context, obj *model.Machine) ([]*model.Task, error) {
 	var out []*model.Task
-	if err := r.db.Select(ctx, &out, "SELECT * FROM harmony_task WHERE owner_id = $1", obj.ID); err != nil {
+	if err := r.db.Select(ctx, &out, `SELECT
+    id,
+    initiated_by,
+    update_time,
+    posted_time,
+    owner_id,
+    added_by,
+    previous_task,
+    name
+FROM
+    harmony_task
+WHERE owner_id = $1`, obj.ID); err != nil {
 		return nil, err
 	}
 	return out, nil
@@ -33,7 +53,21 @@ func (r *machineResolver) Tasks(ctx context.Context, obj *model.Machine) ([]*mod
 // TaskHistories is the resolver for the taskHistories field.
 func (r *machineResolver) TaskHistories(ctx context.Context, obj *model.Machine, last int) ([]*model.TaskHistory, error) {
 	var out []*model.TaskHistory
-	if err := r.db.Select(ctx, &out, "SELECT * FROM harmony_task_history WHERE work_end > CURRENT_TIMESTAMP - INTERVAL '24 hours' AND harmony_task_history.completed_by_host_and_port = $1 ORDER BY work_end DESC LIMIT $2", obj.HostAndPort, last); err != nil {
+	if err := r.db.Select(ctx, &out, `SELECT
+    id,
+    task_id,
+    name,
+    posted,
+    work_start,
+    work_end,
+    result,
+    err,
+    completed_by_host_and_port
+FROM
+    harmony_task_history
+WHERE work_end > CURRENT_TIMESTAMP - INTERVAL '24 hours' 
+  AND harmony_task_history.completed_by_host_and_port = $1 
+ORDER BY work_end DESC LIMIT $2`, obj.HostAndPort, last); err != nil {
 		return nil, err
 	}
 	return out, nil

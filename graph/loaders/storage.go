@@ -13,7 +13,29 @@ type StorageLoader interface {
 
 func (l *Loader) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
 	var m []*model.StoragePath
-	if err := l.db.Select(ctx, &m, "SELECT * FROM storage_path"); err != nil {
+	if err := l.db.Select(ctx, &m, `SELECT
+    storage_id,
+    urls,
+    weight,
+    max_storage,
+    can_seal,
+    can_store,
+    groups,
+    allow_to,
+    allow_types,
+    deny_types,
+    capacity,
+    available,
+    fs_available,
+    reserved,
+    used,
+    last_heartbeat,
+    heartbeat_err,
+    allow_miners,
+    deny_miners
+FROM
+    storage_path
+`); err != nil {
 		return nil, err
 	}
 	for _, p := range m {

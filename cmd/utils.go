@@ -27,7 +27,7 @@ func getChainAPI(cctx *cli.Context, cfg config.ChainConfig) (api.Chain, jsonrpc.
 	return deps.GetFullNodeAPIV1Curio(cctx, apiInfo)
 }
 
-func getCurioWebRpcV0(ctx *cli.Context, cfg *config.Config) (curiorpc.WebRPC, jsonrpc.ClientCloser, error) {
+func getCurioWebRPCV0(ctx *cli.Context, cfg *config.Config) (curiorpc.WebRPC, jsonrpc.ClientCloser, error) {
 	var webRPCs []curiorpc.WebRPC
 	var closers []jsonrpc.ClientCloser
 
@@ -49,12 +49,12 @@ func getCurioWebRpcV0(ctx *cli.Context, cfg *config.Config) (curiorpc.WebRPC, js
 			continue
 		}
 
-		wRpc, closer, err := curiorpc.NewWebRPCV0(ctx.Context, rpcAddr, nil)
+		wRPC, closer, err := curiorpc.NewWebRPCV0(ctx.Context, rpcAddr, nil)
 		if err != nil {
 			log.Errorf("Not able to establish connection to curio with addr: %s, Reason: %s", rpcAddr, err.Error())
 			continue
 		}
-		webRPCs = append(webRPCs, wRpc)
+		webRPCs = append(webRPCs, wRPC)
 		closers = append(closers, closer)
 	}
 

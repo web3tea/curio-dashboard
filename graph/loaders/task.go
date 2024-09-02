@@ -22,7 +22,17 @@ func (l *Loader) Task(ctx context.Context, id int) (*model.Task, error) {
 
 func (l *Loader) Tasks(ctx context.Context) ([]*model.Task, error) {
 	var out []*model.Task
-	if err := l.db.Select(ctx, &out, "SELECT * FROM harmony_task"); err != nil {
+	if err := l.db.Select(ctx, &out, `SELECT
+    id,
+    initiated_by,
+    update_time,
+    posted_time,
+    owner_id,
+    added_by,
+    previous_task,
+    name
+FROM
+    harmony_task`); err != nil {
 		return nil, err
 	}
 	return out, nil
@@ -58,7 +68,19 @@ func (l *Loader) SubNewTask(ctx context.Context, last int) (<-chan *model.Task, 
 			last = 1
 		}
 		var tasks []*model.Task
-		if err = l.db.Select(ctx, &tasks, "SELECT * FROM harmony_task ORDER BY posted_time DESC LIMIT $1", last); err != nil {
+		if err = l.db.Select(ctx, &tasks, `SELECT
+    id,
+    initiated_by,
+    update_time,
+    posted_time,
+    owner_id,
+    added_by,
+    previous_task,
+    name
+FROM
+    harmony_task
+ORDER BY posted_time DESC 
+LIMIT $1`, last); err != nil {
 			return
 		}
 		if len(tasks) > 0 {
@@ -71,7 +93,19 @@ func (l *Loader) SubNewTask(ctx context.Context, last int) (<-chan *model.Task, 
 				return
 			case <-ticker.C:
 				var tasks []*model.Task
-				if err = l.db.Select(ctx, &tasks, "SELECT * FROM harmony_task WHERE posted_time > $1 ORDER BY posted_time", offset); err != nil {
+				if err = l.db.Select(ctx, &tasks, `SELECT
+    id,
+    initiated_by,
+    update_time,
+    posted_time,
+    owner_id,
+    added_by,
+    previous_task,
+    name
+FROM
+    harmony_task
+WHERE posted_time > $1 
+ORDER BY posted_time`, offset); err != nil {
 					return
 				}
 				for _, t := range tasks {

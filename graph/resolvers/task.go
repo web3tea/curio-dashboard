@@ -30,7 +30,15 @@ func (r *taskResolver) Owner(ctx context.Context, obj *model.Task) (*model.Machi
 		return nil, nil
 	}
 	var out model.Machine
-	if err := r.db.QueryRow(ctx, "SELECT id,last_contact,host_and_port,cpu,gpu,ram FROM harmony_machines WHERE id = $1", obj.OwnerID).
+	if err := r.db.QueryRow(ctx, `SELECT 
+    id,
+    last_contact,
+    host_and_port,
+    cpu,
+    gpu,
+    ram 
+FROM harmony_machines 
+WHERE id = $1`, obj.OwnerID).
 		Scan(&out.ID, &out.LastContact, &out.HostAndPort, &out.CPU, &out.Gpu, &out.RAM); err != nil {
 		return nil, err
 	}
@@ -40,7 +48,15 @@ func (r *taskResolver) Owner(ctx context.Context, obj *model.Task) (*model.Machi
 // AddedBy is the resolver for the addedBy field.
 func (r *taskResolver) AddedBy(ctx context.Context, obj *model.Task) (*model.Machine, error) {
 	var out model.Machine
-	if err := r.db.QueryRow(ctx, "SELECT id,last_contact,host_and_port,cpu,gpu,ram FROM harmony_machines WHERE id = $1", obj.AddedByID).
+	if err := r.db.QueryRow(ctx, `SELECT 
+    id,
+    last_contact,
+    host_and_port,
+    cpu,
+    gpu,
+    ram 
+FROM harmony_machines 
+WHERE id = $1`, obj.AddedByID).
 		Scan(&out.ID, &out.LastContact, &out.HostAndPort, &out.CPU, &out.Gpu, &out.RAM); err != nil {
 		return nil, err
 	}
@@ -63,7 +79,19 @@ func (r *taskResolver) PreviousTask(ctx context.Context, obj *model.Task) (*mode
 // Histories is the resolver for the histories field.
 func (r *taskResolver) Histories(ctx context.Context, obj *model.Task) ([]*model.TaskHistory, error) {
 	var out []*model.TaskHistory
-	if err := r.db.Select(ctx, &out, "SELECT * FROM harmony_task_history WHERE task_id = $1", obj.ID); err != nil {
+	if err := r.db.Select(ctx, &out, `SELECT
+    id,
+    task_id,
+    name,
+    posted,
+    work_start,
+    work_end,
+    result,
+    err,
+    completed_by_host_and_port
+FROM
+    harmony_task_history
+WHERE task_id = $1`, obj.ID); err != nil {
 		return nil, err
 	}
 	return out, nil

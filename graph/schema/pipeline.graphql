@@ -41,6 +41,7 @@ type Pipeline {
     failedReasonMsg: String!
     taskIdSynth: Int
     afterSynth: Boolean!
+    userSectorDurationEpochs: Int
 
     status: PipelineStatus!
     currentTask: Task

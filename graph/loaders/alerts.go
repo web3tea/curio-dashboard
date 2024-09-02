@@ -14,7 +14,13 @@ type AlertLoader interface {
 
 func (l *Loader) Alerts(ctx context.Context) ([]*model.Alert, error) {
 	var alerts []*model.Alert
-	if err := l.db.Select(ctx, &alerts, "SELECT * FROM alerts ORDER BY id DESC"); err != nil {
+	if err := l.db.Select(ctx, &alerts, `SELECT
+    id,
+    machine_name,
+    message
+FROM
+    alerts
+ORDER BY id DESC`); err != nil {
 		return nil, err
 	}
 	return alerts, nil
@@ -43,7 +49,13 @@ func (l *Loader) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert
 				return
 			case <-ticker.C:
 				var alerts []*model.Alert
-				if err = l.db.Select(ctx, &alerts, "SELECT * FROM alerts WHERE id > $1 ORDER BY id", offset); err != nil {
+				if err = l.db.Select(ctx, &alerts, `SELECT
+    id,
+    machine_name,
+    message
+FROM
+    alerts
+WHERE id > $1 ORDER BY id`, offset); err != nil {
 					return
 				}
 				for _, alert := range alerts {

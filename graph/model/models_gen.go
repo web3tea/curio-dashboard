@@ -164,6 +164,7 @@ type Pipeline struct {
 	FailedReasonMsg          string          `json:"failedReasonMsg"`
 	TaskIDSynth              *int            `json:"taskIdSynth"`
 	AfterSynth               bool            `json:"afterSynth"`
+	UserSectorDurationEpochs *int            `json:"userSectorDurationEpochs"`
 	Status                   PipelineStatus  `json:"status"`
 	CurrentTask              *Task           `json:"currentTask"`
 }
