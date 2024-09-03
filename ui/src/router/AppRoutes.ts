@@ -28,9 +28,9 @@ const AppRoutes = {
       component: () => import('@/views/storages/index.vue'),
     },
     {
-      name: 'Pipelines',
-      path: '/app/pipelines',
-      component: () => import('@/views/pipelines/index.vue'),
+      name: 'PoRep',
+      path: '/app/porep',
+      component: () => import('@/views/porep/index.vue'),
     },
     {
       name: 'Sectors',

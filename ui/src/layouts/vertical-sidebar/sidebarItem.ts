@@ -45,9 +45,9 @@ const sidebarItem: menu[] = [
     to: '/app/miners',
   },
   {
-    title: 'Pipelines',
+    title: 'PoRep',
     icon: VectorIcon,
-    to: '/app/pipelines',
+    to: '/app/porep',
   },
   {
     title: 'Sectors',

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
-import SectorList from '@/views/pipelines/SectorList.vue'
+import SectorList from '@/views/porep/SectorList.vue'
 
-const page = ref({ title: 'Pipelines' })
+const page = ref({ title: 'PoRep' })
 const breadcrumbs = ref([
   {
-    title: 'Pipelines',
+    title: 'PoRep',
     disabled: false,
     href: '#',
   },

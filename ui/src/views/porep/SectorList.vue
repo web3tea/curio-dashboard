@@ -6,16 +6,18 @@ import { computed, ComputedRef, ref } from 'vue'
 import { GetSectorsPipeline } from '@/views/query/pipeline'
 import { Pipeline } from '@/typed-graph'
 import type { Item } from 'vue3-easy-data-table'
+import PipelineStatus from '@/views/widgets/data/PipelineStatus.vue'
 
 const { result, loading, refetch, error } = useQuery(GetSectorsPipeline, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 const items: ComputedRef<[Pipeline]> = computed(() => result.value?.pipelines || [])
 const headers = [
-  { text: 'ID', value: 'id', sortable: true },
-  { text: 'Status', value: 'status' },
+  { text: 'Miner', value: 'spId' },
+  { text: 'Sector', value: 'sectorNumber' },
   { text: 'Created', value: 'createTime' },
-  { text: 'Action', value: 'action' },
+  { text: 'Running', value: 'running' },
+  { text: 'Status', value: 'status' },
 ]
 
 const searchField = ref('hostAndPort')
@@ -74,16 +76,33 @@ const itemsSelected = ref<Item[]>([])
               <small class="font-weight-bold">{{ spId }}</small>
               <h5 class="text-h6">{{ sectorNumber }}</h5>
             </template>
-            <template #item-status="{status}">
-              <v-chip
-                :color="status === 'Failed' ? 'error' : 'success'"
-                label
-                size="small"
-                variant="flat"
-              >{{ status }}</v-chip>
+            <template #item-running="item">
+              <div class="mt-3 mb-2 text-subtitle-1">
+                <span class="font-weight-semibold mr-2">Status :</span>
+                <span class="text-medium-emphasis">
+                  <v-chip
+                    :color="item.status === 'Failed' ? 'error' : 'success'"
+                    label
+                    size="small"
+                    variant="flat"
+                  >{{ item.status }}</v-chip>
+                </span>
+              </div>
+
+              <div class="text-subtitle-1">
+                <span class="font-weight-semibold mr-2">Task ID :</span>
+                <span class="text-medium-emphasis">{{ item.currentTask.id }}</span>
+              </div>
+              <div class="text-subtitle-1">
+                <span class="font-weight-semibold mr-2">Posted :</span>
+                <span class="text-medium-emphasis">{{ moment(item.currentTask.postedTime).calendar() }}</span>
+              </div>
             </template>
             <template #item-createTime="{createTime}">
               {{ moment(createTime).format() }}
+            </template>
+            <template #item-status="item">
+              <PipelineStatus :sector="item" />
             </template>
           </EasyDataTable>
         </v-card-text>
