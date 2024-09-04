@@ -6,7 +6,6 @@ package resolvers
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -16,7 +15,6 @@ import (
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
 	"github.com/strahe/curio-dashboard/types"
-	pgx "github.com/yugabyte/pgx/v5"
 )
 
 // Config is the resolver for the config field.
@@ -105,18 +103,23 @@ func (r *queryResolver) StorageStats(ctx context.Context) ([]*model.StorageStats
 
 // Sectors is the resolver for the sectors field.
 func (r *queryResolver) Sectors(ctx context.Context, actor *types.ActorID, sectorNumber *int, offset int, limit int) ([]*model.Sector, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
 	if actor != nil && sectorNumber != nil {
-		sector, err := r.loader.Sector(ctx, *actor, *sectorNumber)
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				return []*model.Sector{}, nil
-			}
-			return nil, err
-		}
-		return []*model.Sector{sector}, nil
+		return []*model.Sector{{SpID: *actor, SectorNum: *sectorNumber}}, nil
 	}
-	return r.loader.Sectors(ctx, actor, offset, limit)
+	metas, err := r.loader.SectorMetas(ctx, actor, offset, limit)
+	if err != nil {
+		return nil, err
+	}
+	var out []*model.Sector
+	for _, meta := range metas {
+		out = append(out, &model.Sector{
+			SpID:      meta.SpID,
+			SectorNum: meta.SectorNum,
+			Meta:      meta,
+		})
+	}
+	return out, nil
 }
 
 // SectorsCount is the resolver for the sectorsCount field.
@@ -127,7 +130,7 @@ func (r *queryResolver) SectorsCount(ctx context.Context, actor *types.ActorID) 
 
 // Sector is the resolver for the sector field.
 func (r *queryResolver) Sector(ctx context.Context, actor types.ActorID, sectorNumber int) (*model.Sector, error) {
-	return r.loader.Sector(ctx, actor, sectorNumber)
+	return &model.Sector{SpID: actor, SectorNum: sectorNumber}, nil
 }
 
 // Actors is the resolver for the actors field.

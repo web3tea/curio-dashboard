@@ -426,6 +426,8 @@ export type Sector = {
   locations: Array<Maybe<SectorLocation>>;
   meta?: Maybe<SectorMeta>;
   pieces: Array<Maybe<SectorMetaPiece>>;
+  sectorNum: Scalars['Int']['output'];
+  spID: Scalars['ActorID']['output'];
   tasks: Array<Maybe<Task>>;
 };
 

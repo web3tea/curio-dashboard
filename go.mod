@@ -22,11 +22,8 @@ require (
 	github.com/samber/lo v1.39.0
 	github.com/urfave/cli/v2 v2.27.2
 	github.com/vektah/gqlparser/v2 v2.5.16
-	github.com/xo/dburl v0.23.2
 	github.com/yugabyte/pgx/v5 v5.5.3-yb-2
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028
-	gorm.io/driver/postgres v1.5.9
-	gorm.io/driver/sqlite v1.5.6
 	gorm.io/gorm v1.25.11
 )
 

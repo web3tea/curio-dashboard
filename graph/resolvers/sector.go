@@ -19,15 +19,24 @@ func (r *sectorResolver) ID(ctx context.Context, obj *model.Sector) (string, err
 	return fmt.Sprintf("%d:%d", obj.SpID, obj.SectorNum), nil
 }
 
+// Meta is the resolver for the meta field.
+func (r *sectorResolver) Meta(ctx context.Context, obj *model.Sector) (*model.SectorMeta, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	if obj.Meta != nil {
+		return obj.Meta, nil
+	}
+	return r.loader.SectorMeta(ctx, obj.SpID, obj.SectorNum)
+}
+
 // Locations is the resolver for the locations field.
 func (r *sectorResolver) Locations(ctx context.Context, obj *model.Sector) ([]*model.SectorLocation, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
 	return r.loader.SectorLocations(ctx, obj.SpID, obj.SectorNum)
 }
 
 // Pieces is the resolver for the pieces field.
 func (r *sectorResolver) Pieces(ctx context.Context, obj *model.Sector) ([]*model.SectorMetaPiece, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
 	return r.loader.SectorPieces(ctx, obj.SpID, obj.SectorNum)
 }
 
@@ -38,7 +47,7 @@ func (r *sectorResolver) Tasks(ctx context.Context, obj *model.Sector) ([]*model
 
 // Events is the resolver for the events field.
 func (r *sectorResolver) Events(ctx context.Context, obj *model.Sector) ([]*model.TaskHistory, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
 	return r.loader.SectorEvents(ctx, obj.SpID, obj.SectorNum)
 }
 
@@ -46,3 +55,21 @@ func (r *sectorResolver) Events(ctx context.Context, obj *model.Sector) ([]*mode
 func (r *Resolver) Sector() graph.SectorResolver { return &sectorResolver{r} }
 
 type sectorResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *sectorResolver) SpID(ctx context.Context, obj *model.Sector) (*model.Actor, error) {
+	panic(fmt.Errorf("not implemented: SpID - spID"))
+}
+func (r *sectorResolver) Miner(ctx context.Context, obj *model.Sector) (*model.Actor, error) {
+	panic(fmt.Errorf("not implemented: Miner - miner"))
+}
+func (r *sectorResolver) SectorNumber(ctx context.Context, obj *model.Sector) (int, error) {
+	panic(fmt.Errorf("not implemented: SectorNumber - sectorNumber"))
+}
+
+const sectorDefaultCacheAge = time.Minute * 5

@@ -104,3 +104,7 @@ models:
         resolver: true
       currentTask:
         resolver: true
+  Sector:
+    fields:
+      meta:
+        resolver: true

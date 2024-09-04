@@ -72,9 +72,8 @@ const itemsSelected = ref<Item[]>([])
             <template #empty-message>
               <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
             </template>
-            <template #item-id="{spId, sectorNumber}">
-              <small class="font-weight-bold">{{ spId }}</small>
-              <h5 class="text-h6">{{ sectorNumber }}</h5>
+            <template #item-sectorNumber="{spId, sectorNumber}">
+              <RouterLink :to="{ name: 'SectorDetails', params: { miner: spId, sectorNumber: sectorNumber } }">{{ sectorNumber }}</RouterLink>
             </template>
             <template #item-running="item">
               <div class="mt-3 mb-2 text-subtitle-1">

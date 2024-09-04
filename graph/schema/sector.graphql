@@ -2,6 +2,8 @@ scalar JSONB
 
 type Sector {
     id: ID!
+    spID: ActorID!
+    sectorNum: Int!
     meta: SectorMeta
     locations: [SectorLocation]!
     pieces: [SectorMetaPiece]!
