@@ -1,5 +1,5 @@
 import gql from 'graphql-tag'
-import { taskHistoryFragment } from '@/views/query/task'
+import { taskFragment, taskHistoryFragment } from '@/views/query/task'
 
 const metaFragment = gql`
   fragment MetaAll on SectorMeta {
@@ -113,4 +113,17 @@ export const GetSectorEvents = gql`
     }
   }
   ${taskHistoryFragment}
+`
+
+export const GetSectorTasks = gql`
+    query GetSectorTasks($miner: ActorID!, $sectorNumber: Int!) {
+      sector(actor: $miner, sectorNumber: $sectorNumber) {
+        spID
+        sectorNum
+        tasks {
+          ...TaskAll
+        }
+      }
+    }
+    ${taskFragment}
 `

@@ -7,6 +7,7 @@ import UiChildCard from '@/components/shared/UiChildCard.vue'
 import PiecesInfo from '@/views/sectors/PiecesInfo.vue'
 import SectorLocations from '@/views/sectors/SectorLocations.vue'
 import SectorEvents from '@/views/sectors/SectorEvents.vue'
+import SectorTasks from '@/views/sectors/SectorTasks.vue'
 
 const page = ref({ title: 'Sector Details' })
 const breadcrumbs = ref([
@@ -58,11 +59,11 @@ const meta: ComputedRef<SectorMeta> = computed(() => result.value?.sector.meta |
         <div class="d-flex align-center flex-column flex-sm-row text-medium-emphasis ga-4">
           <div class="d-flex align-center">
             <UserIcon />
-            <span class="text-subtitle-1 font-weight-medium ml-2">Miner: {{ meta.spId }}</span>
+            <span class="text-subtitle-1 font-weight-medium ml-2">Miner: {{ miner }}</span>
           </div>
           <div class="d-flex align-center">
             <BoxIcon />
-            <span class="text-subtitle-1 font-weight-medium ml-2">Sector: {{ meta.sectorNum }}</span>
+            <span class="text-subtitle-1 font-weight-medium ml-2">Sector: {{ sectorNumber }}</span>
           </div>
           <div class="d-flex align-center">
             <TrashIcon />
@@ -139,6 +140,9 @@ const meta: ComputedRef<SectorMeta> = computed(() => result.value?.sector.meta |
     </v-col>
     <v-col cols="12">
       <PiecesInfo :miner="miner" :sector-number="sectorNumber" />
+    </v-col>
+    <v-col cols="12">
+      <SectorTasks :miner="miner" :sector-number="sectorNumber" />
     </v-col>
     <v-col cols="8">
       <SectorLocations :miner="miner" :sector-number="sectorNumber" />

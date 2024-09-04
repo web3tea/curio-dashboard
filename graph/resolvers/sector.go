@@ -42,7 +42,8 @@ func (r *sectorResolver) Pieces(ctx context.Context, obj *model.Sector) ([]*mode
 
 // Tasks is the resolver for the tasks field.
 func (r *sectorResolver) Tasks(ctx context.Context, obj *model.Sector) ([]*model.Task, error) {
-	panic(fmt.Errorf("not implemented: Tasks - tasks"))
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	return r.loader.SectorTasks(ctx, obj.SpID, obj.SectorNum)
 }
 
 // Events is the resolver for the events field.

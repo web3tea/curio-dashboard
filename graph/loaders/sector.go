@@ -16,9 +16,25 @@ type SectorLoader interface {
 	SectorLocations(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorLocation, error)
 	SectorPieces(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorMetaPiece, error)
 	SectorEvents(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.TaskHistory, error)
+	SectorTasks(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.Task, error)
 }
 
 var _ SectorLoader = &Loader{}
+
+func (l *Loader) SectorTasks(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.Task, error) {
+	var tasks []*model.Task
+	if err := l.db.Select(ctx, &tasks, `
+WITH task_ids AS (
+    SELECT unnest(get_sdr_pipeline_tasks($1, $2)) AS task_id
+)
+SELECT ht.id, ht.name, ht.posted_time, ht.update_time, ht.initiated_by, ht.owner_id, ht.previous_task, ht.added_by
+FROM task_ids
+INNER JOIN harmony_task ht ON ht.id = task_id;
+`, actor, sectorNumber); err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
 
 func (l *Loader) SectorMetas(ctx context.Context, actor *types.ActorID, offset int, limit int) ([]*model.SectorMeta, error) {
 	var m []*model.SectorMeta
