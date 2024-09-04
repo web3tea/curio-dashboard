@@ -50,6 +50,7 @@ To build the dashboard, follow these steps:
 
 2. **Edit the Configuration**
    Customize the `config.toml` file to suit your environment.
+   Or you can use a [minimal configuration file](minimal.config.toml).
 
 3. **Start the Backend**
    ```bash

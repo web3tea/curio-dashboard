@@ -1,0 +1,13 @@
+# Chain API configuration
+[chain]
+    # List of chain API to connect to
+    apis = ["token:/ip4/127.0.0.1/tcp/1234/http"]
+
+[harmonydb]
+    # URL to connect to the HarmonyDB database
+    url = "postgres://yugabyte:yugabyte@127.0.0.1:5433/curio?search_path=curio&target_session_attrs=any"
+
+# Curio configuration
+[curio]
+    # List of Curio WebRPC to connect to
+    apis = ["http://127.0.0.1:4701"]

@@ -52,7 +52,7 @@ type Config struct {
 }
 
 func NewFromFile(filePath string) (*Config, error) {
-	cfg := Config{}
+	cfg := DefaultConfig
 	if _, err := toml.DecodeFile(filePath, &cfg); err != nil {
 		return nil, err
 	}
