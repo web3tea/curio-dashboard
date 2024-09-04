@@ -14,19 +14,50 @@ const { result, loading, refetch, error } = useQuery(GetMachines, null, () => ({
 }))
 const items: ComputedRef<[Machine]> = computed(() => result.value?.machines || [])
 
+const allLayers = computed(() => {
+  const layers = new Set<string>()
+  items.value.forEach(item => {
+    item.detail?.layers.split(',').forEach(layer => {
+      layers.add(layer)
+    })
+  })
+  return Array.from(layers)
+})
+
+const allSupportTasks = computed(() => {
+  const tasks = new Set<string>()
+  items.value.forEach(item => {
+    item.detail?.tasks.split(',').forEach(task => {
+      tasks.add(task)
+    })
+  })
+  return Array.from(tasks)
+})
 const searchField = ref('hostAndPort')
 const searchValue = ref('')
+const selectLayer = ref('')
+const selectSupportTask = ref('')
+
+const filterItems = computed(() => {
+  return items.value.filter(item => {
+    if (selectLayer.value && !item.detail?.layers.includes(selectLayer.value)) {
+      return false
+    }
+    return !(selectSupportTask.value && !item.detail?.tasks.includes(selectSupportTask.value))
+  })
+})
 
 const headers: Header[] = [
-  { text: 'ID', value: 'id', sortable: true },
+  { text: 'ID', value: 'id' },
   { text: 'Name', value: 'detail.machineName' },
   { text: 'Last Contact', value: 'lastContact', sortable: true },
   { text: 'Startup', value: 'detail.startupTime', sortable: true },
   { text: 'CPU', value: 'cpu', sortable: true },
   { text: 'GPU', value: 'gpu', sortable: true },
-  { text: 'RAM', value: 'ram' },
+  { text: 'RAM', value: 'ram', sortable: true },
   { text: 'Host and Port', value: 'hostAndPort' },
-  { text: 'Action', value: 'operation' },
+  { text: 'Layers', value: 'detail.layers' },
+  { text: 'Support Tasks', value: 'detail.tasks' },
 ]
 
 const themeColor = ref('rgb(var(--v-theme-primary))')
@@ -67,7 +98,7 @@ const itemsSelected = ref<Item[]>([])
           <EasyDataTable
             v-model:items-selected="itemsSelected"
             :headers="headers"
-            :items="items"
+            :items="filterItems"
             :loading="loading"
             :rows-per-page="100"
             :search-field="searchField"
@@ -75,6 +106,34 @@ const itemsSelected = ref<Item[]>([])
             table-class-name="customize-table"
             :theme-color="themeColor"
           >
+            <template #header-detail.layers="header">
+              <v-autocomplete
+                v-model="selectLayer"
+                aria-label="autocomplete"
+                class="remove-details"
+                clear-icon="$close"
+                clearable
+                color="primary"
+                :items="allLayers"
+                :label="header.text.toUpperCase()"
+                single-line
+                variant="outlined"
+              />
+            </template>
+            <template #header-detail.tasks="header">
+              <v-autocomplete
+                v-model="selectSupportTask"
+                aria-label="autocomplete"
+                class="remove-details"
+                clear-icon="$close"
+                clearable
+                color="primary"
+                :items="allSupportTasks"
+                :label="header.text.toUpperCase()"
+                single-line
+                variant="outlined"
+              />
+            </template>
             <template #empty-message>
               <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
             </template>
@@ -91,6 +150,16 @@ const itemsSelected = ref<Item[]>([])
             </template>
             <template #item-ram="{ ram }">
               <div>{{ formatBytes(ram).combined }}</div>
+            </template>
+            <template #item-detail.layers="{ detail }">
+              <v-chip-group column>
+                <v-chip v-for="layer in detail.layers.split(',')" :key="layer">{{ layer }}</v-chip>
+              </v-chip-group>
+            </template>
+            <template #item-detail.tasks="{ detail }">
+              <v-chip-group column>
+                <v-chip v-for="task in detail.tasks.split(',')" :key="task">{{ task }}</v-chip>
+              </v-chip-group>
             </template>
             <template #item-operation="{}">
               <div class="operation-wrapper">
