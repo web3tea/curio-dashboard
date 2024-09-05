@@ -3,6 +3,7 @@ import gql from 'graphql-tag'
 export const GetActors = gql`
   query GetActors {
     actors {
+      id
       address
       layers
       qualityAdjustedPower
@@ -18,6 +19,7 @@ export const GetActors = gql`
 export const GetMinerPower = gql`
   query GetMinerPower($address: Address) {
     minerPower(address: $address) {
+      id
       minerPower {
         rawBytePower
         qualityAdjPower

@@ -39,6 +39,7 @@ FROM
 		return nil, err
 	}
 	for _, p := range m {
+		p.ID = p.StorageID
 		switch {
 		case p.CanStore && p.CanSeal:
 			p.Type = model.StorageTypeHybrid

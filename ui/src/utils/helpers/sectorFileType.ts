@@ -17,6 +17,5 @@ const sectorFileTypeMap: { [key: number]: string } = {
 }
 
 export function sectorFileTypeToName (fileType: SectorFileType): string {
-  console.log('fileType', sectorFileTypeMap[fileType])
   return sectorFileTypeMap[fileType] || 'Unknown'
 }

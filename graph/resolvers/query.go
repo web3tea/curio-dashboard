@@ -261,6 +261,9 @@ func (r *queryResolver) MinerPower(ctx context.Context, address *types.Address) 
 			QualityAdjPower: &types.BigInt{Int: mp.TotalPower.QualityAdjPower.Int},
 		}
 	}
+	if address != nil {
+		out.ID = address.String()
+	}
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Hour)
 	return out, nil
 }

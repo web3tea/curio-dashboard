@@ -46,6 +46,7 @@ type MinerPendingBeneficiaryChange {
 }
 
 type MinerPower {
+    id: ID!
     minerPower:  PowerClaim!
     totalPower:  PowerClaim!
     hasMinPower: Boolean!

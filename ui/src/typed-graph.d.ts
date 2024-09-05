@@ -27,6 +27,7 @@ export type Actor = {
   actorBalance: Scalars['BigInt']['output'];
   address: Scalars['Address']['output'];
   deadlines?: Maybe<Array<Maybe<ActorDeadline>>>;
+  id: Scalars['ID']['output'];
   layers?: Maybe<Array<Scalars['String']['output']>>;
   qualityAdjustedPower: Scalars['BigInt']['output'];
   rawBytePower: Scalars['BigInt']['output'];
@@ -153,6 +154,7 @@ export type MinerPendingBeneficiaryChange = {
 export type MinerPower = {
   __typename?: 'MinerPower';
   hasMinPower: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
   minerPower: PowerClaim;
   totalPower: PowerClaim;
 };

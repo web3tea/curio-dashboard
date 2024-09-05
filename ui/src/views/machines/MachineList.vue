@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, watch } from 'vue'
 import moment from 'moment'
 import type { Header, Item } from 'vue3-easy-data-table'
 import { EyeOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue'
@@ -35,8 +35,12 @@ const allSupportTasks = computed(() => {
 })
 const searchField = ref('hostAndPort')
 const searchValue = ref('')
-const selectLayer = ref('')
-const selectSupportTask = ref('')
+const selectLayer = ref(null)
+const selectSupportTask = ref(null)
+
+watch(selectSupportTask, () => {
+  console.log(selectSupportTask.value)
+})
 
 const filterItems = computed(() => {
   return items.value.filter(item => {

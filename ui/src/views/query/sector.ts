@@ -118,6 +118,7 @@ export const GetSectorEvents = gql`
 export const GetSectorTasks = gql`
     query GetSectorTasks($miner: ActorID!, $sectorNumber: Int!) {
       sector(actor: $miner, sectorNumber: $sectorNumber) {
+        id
         spID
         sectorNum
         tasks {

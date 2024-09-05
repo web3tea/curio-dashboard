@@ -76,6 +76,7 @@ type MinerPendingBeneficiaryChange struct {
 }
 
 type MinerPower struct {
+	ID          string      `json:"id"`
 	MinerPower  *PowerClaim `json:"minerPower"`
 	TotalPower  *PowerClaim `json:"totalPower"`
 	HasMinPower bool        `json:"hasMinPower"`

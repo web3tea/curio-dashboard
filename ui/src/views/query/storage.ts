@@ -3,6 +3,7 @@ import gql from 'graphql-tag'
 export const GetStoragePaths = gql`
   query GetStoragePaths {
     storagePaths {
+      id
       storageId
       urls
       weight

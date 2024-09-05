@@ -15,6 +15,11 @@ import (
 	types1 "github.com/strahe/curio-dashboard/types"
 )
 
+// ID is the resolver for the id field.
+func (r *actorResolver) ID(ctx context.Context, obj *model.Actor) (string, error) {
+	return obj.Address.String(), nil
+}
+
 // QualityAdjustedPower is the resolver for the qualityAdjustedPower field.
 func (r *actorResolver) QualityAdjustedPower(ctx context.Context, obj *model.Actor) (*types1.BigInt, error) {
 	p, err := obj.Power(ctx, r.fullNode)

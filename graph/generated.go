@@ -67,6 +67,7 @@ type ComplexityRoot struct {
 		ActorBalance          func(childComplexity int) int
 		Address               func(childComplexity int) int
 		Deadlines             func(childComplexity int) int
+		ID                    func(childComplexity int) int
 		Layers                func(childComplexity int) int
 		QualityAdjustedPower  func(childComplexity int) int
 		RawBytePower          func(childComplexity int) int
@@ -176,6 +177,7 @@ type ComplexityRoot struct {
 
 	MinerPower struct {
 		HasMinPower func(childComplexity int) int
+		ID          func(childComplexity int) int
 		MinerPower  func(childComplexity int) int
 		TotalPower  func(childComplexity int) int
 	}
@@ -482,6 +484,8 @@ type ComplexityRoot struct {
 }
 
 type ActorResolver interface {
+	ID(ctx context.Context, obj *model.Actor) (string, error)
+
 	QualityAdjustedPower(ctx context.Context, obj *model.Actor) (*types.BigInt, error)
 	RawBytePower(ctx context.Context, obj *model.Actor) (*types.BigInt, error)
 	ActorBalance(ctx context.Context, obj *model.Actor) (*types.BigInt, error)
@@ -641,6 +645,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Actor.Deadlines(childComplexity), true
+
+	case "Actor.id":
+		if e.complexity.Actor.ID == nil {
+			break
+		}
+
+		return e.complexity.Actor.ID(childComplexity), true
 
 	case "Actor.layers":
 		if e.complexity.Actor.Layers == nil {
@@ -1157,6 +1168,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MinerPower.HasMinPower(childComplexity), true
+
+	case "MinerPower.id":
+		if e.complexity.MinerPower.ID == nil {
+			break
+		}
+
+		return e.complexity.MinerPower.ID(childComplexity), true
 
 	case "MinerPower.minerPower":
 		if e.complexity.MinerPower.MinerPower == nil {
@@ -3560,6 +3578,50 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _Actor_id(ctx context.Context, field graphql.CollectedField, obj *model.Actor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Actor_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Actor().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Actor_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Actor",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Actor_address(ctx context.Context, field graphql.CollectedField, obj *model.Actor) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Actor_address(ctx, field)
 	if err != nil {
@@ -5957,6 +6019,8 @@ func (ec *executionContext) fieldContext_Miner_power(_ context.Context, field gr
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "id":
+				return ec.fieldContext_MinerPower_id(ctx, field)
 			case "minerPower":
 				return ec.fieldContext_MinerPower_minerPower(ctx, field)
 			case "totalPower":
@@ -7017,6 +7081,50 @@ func (ec *executionContext) fieldContext_MinerPendingBeneficiaryChange_approvedB
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerPower_id(ctx context.Context, field graphql.CollectedField, obj *model.MinerPower) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerPower_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerPower_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerPower",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12038,6 +12146,8 @@ func (ec *executionContext) fieldContext_Query_actors(_ context.Context, field g
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "id":
+				return ec.fieldContext_Actor_id(ctx, field)
 			case "address":
 				return ec.fieldContext_Actor_address(ctx, field)
 			case "layers":
@@ -12097,6 +12207,8 @@ func (ec *executionContext) fieldContext_Query_actor(ctx context.Context, field 
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "id":
+				return ec.fieldContext_Actor_id(ctx, field)
 			case "address":
 				return ec.fieldContext_Actor_address(ctx, field)
 			case "layers":
@@ -12724,6 +12836,8 @@ func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, f
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "id":
+				return ec.fieldContext_MinerPower_id(ctx, field)
 			case "minerPower":
 				return ec.fieldContext_MinerPower_minerPower(ctx, field)
 			case "totalPower":
@@ -20233,6 +20347,42 @@ func (ec *executionContext) _Actor(ctx context.Context, sel ast.SelectionSet, ob
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Actor")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Actor_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "address":
 			out.Values[i] = ec._Actor_address(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -21646,6 +21796,11 @@ func (ec *executionContext) _MinerPower(ctx context.Context, sel ast.SelectionSe
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("MinerPower")
+		case "id":
+			out.Values[i] = ec._MinerPower_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "minerPower":
 			out.Values[i] = ec._MinerPower_minerPower(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
