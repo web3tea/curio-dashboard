@@ -10,7 +10,7 @@ go-deps:
 go:
 	go build -o curio-dashboard ./cmd
 
-go-dist: ui
+go-dist:
 	go build -o curio-dashboard -tags dist ./cmd
 
 ui-deps:
