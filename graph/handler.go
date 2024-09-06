@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/99designs/gqlgen/graphql"
+
 	logging "github.com/ipfs/go-log/v2"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -69,6 +71,19 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 		Cache: lru.New(100),
 	})
 	srv.Use(cachecontrol.Extension{})
+
+	srv.AroundResponses(func(ctx context.Context, next graphql.ResponseHandler) *graphql.Response {
+		oc := graphql.GetOperationContext(ctx)
+		ns := next(ctx)
+
+		if oc != nil && ns != nil {
+			log.Debugw("request", "operation", oc.OperationName,
+				"duration", time.Since(oc.Stats.OperationStart).String(),
+				"variables", oc.Variables)
+		}
+		return ns
+	})
+
 	return echo.WrapHandler(srv)
 }
 
