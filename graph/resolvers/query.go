@@ -73,20 +73,16 @@ func (r *queryResolver) TaskHistoriesCount(ctx context.Context, start time.Time,
 	return r.loader.TaskHistoriesCount(ctx, start, end, machine, name, success)
 }
 
-// TaskAggregatesByDay is the resolver for the taskAggregatesByDay field.
-func (r *queryResolver) TaskAggregatesByDay(ctx context.Context, lastDays int) ([]*model.TaskAggregate, error) {
-	now := time.Now()
-	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-
-	return r.loader.TaskAggregatesByDay(ctx, today.Add(-time.Hour*24*time.Duration(lastDays)), now)
-}
-
-// TaskAggregatesByHour is the resolver for the taskAggregatesByHour field.
-func (r *queryResolver) TaskAggregatesByHour(ctx context.Context, lastHours int) ([]*model.TaskAggregate, error) {
-	now := time.Now()
-	currentHour := time.Now().Truncate(time.Hour)
-	start := currentHour.Add(-time.Hour * time.Duration(lastHours))
-	return r.loader.TaskAggregatesByHour(ctx, start, now)
+// TaskHistoriesAggregate is the resolver for the taskHistoriesAggregate field.
+func (r *queryResolver) TaskHistoriesAggregate(ctx context.Context, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error) {
+	if start.IsZero() || end.IsZero() {
+		return nil, fmt.Errorf("start and end time must be provided")
+	}
+	if start.After(end) {
+		return nil, fmt.Errorf("start time must be before end time")
+	}
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.TaskHistoriesAggregate(ctx, start, end, interval)
 }
 
 // StoragePaths is the resolver for the storagePaths field.

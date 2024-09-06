@@ -16,10 +16,8 @@ type Query {
     tasksCount: Int!
     taskHistories(offset: Int!, limit: Int!): [TaskHistory]
     taskHistoriesCount(start: Time!, end: Time!, machine: String, name: String, success: Boolean): Int!
-#    taskSummary(lastDays: Int!): [TaskSummary]
-#    taskSummaryByDay(lastDays: Int!): [TaskSummaryDay]
-    taskAggregatesByDay(lastDays: Int!): [TaskAggregate]
-    taskAggregatesByHour(lastHours: Int!): [TaskAggregate]
+    taskHistoriesAggregate(start: Time!, end: Time!, interval: TaskHistoriesAggregateInterval!): [TaskAggregate]
+
     # storage
     storagePaths: [StoragePath]
     storageStats: [StorageStats]
@@ -54,4 +52,9 @@ type Query {
     miner(address: Address!): Miner
     # if address is empty, return all miners power
     minerPower(address: Address): MinerPower
+}
+
+enum TaskHistoriesAggregateInterval {
+    day
+    hour
 }

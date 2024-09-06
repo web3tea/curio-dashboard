@@ -78,3 +78,14 @@ export const SubscribeNewTask = gql`
     }
   }
 `
+
+export const GetTaskHistoriesAggregation = gql`
+    query GetTaskHistoriesAggregation($start: Time!, $end: Time!, $interval: TaskHistoriesAggregateInterval!) {
+      taskHistoriesAggregate(start: $start, end: $end, interval: $interval) {
+        time
+        total
+        success
+        failure
+      }
+    }
+`

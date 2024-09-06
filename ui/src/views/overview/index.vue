@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ActiveTaskChart from '@/views/widgets/chart/ActiveTaskChart.vue'
 import MinerPower from '@/views/widgets/statistics/MinerPower.vue'
 import CompletedTasks from '@/views/widgets/statistics/CompletedTasks.vue'
 import MiningOverviewChart from '@/views/widgets/chart/MiningOverviewChart.vue'
@@ -7,6 +6,7 @@ import RecentTasksTable from '@/views/widgets/data/RecentTasksTable.vue'
 import NewTasks from '@/views/widgets/data/NewTasks.vue'
 import ChainConnectivity from '@/views/widgets/data/ChainConnectivity.vue'
 import StorageOverview from '@/views/widgets/statistics/StorageOverview.vue'
+import CompletedTaskOverviewChart from '@/views/widgets/chart/CompletedTaskOverviewChart.vue'
 </script>
 
 <template>
@@ -42,7 +42,7 @@ import StorageOverview from '@/views/widgets/statistics/StorageOverview.vue'
   </v-row>
   <v-row class="mb-0">
     <v-col cols="12" md="8">
-      <ActiveTaskChart />
+      <CompletedTaskOverviewChart />
     </v-col>
     <v-col cols="12" md="4">
       <MiningOverviewChart />

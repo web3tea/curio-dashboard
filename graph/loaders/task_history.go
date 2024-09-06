@@ -144,3 +144,26 @@ ORDER BY work_end`, offset); err != nil {
 	}()
 	return taskChan, nil
 }
+
+func (l *Loader) TaskHistoriesAggregate(ctx context.Context, start, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error) {
+	var out []*model.TaskAggregate
+	err := l.db.Select(ctx, &out, `
+SELECT
+    DATE_TRUNC($1, work_end) AS time,
+    COUNT(*) AS total,
+    COUNT(CASE WHEN result = true THEN 1 END) AS success,
+    COUNT(CASE WHEN result = false THEN 1 END) AS failure
+FROM
+    harmony_task_history
+WHERE
+    work_end BETWEEN $2 AND $3
+GROUP BY
+    time
+ORDER BY
+    time;
+`, interval, start, end)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}

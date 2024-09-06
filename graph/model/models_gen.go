@@ -393,3 +393,44 @@ func (e *StorageType) UnmarshalGQL(v interface{}) error {
 func (e StorageType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
+
+type TaskHistoriesAggregateInterval string
+
+const (
+	TaskHistoriesAggregateIntervalDay  TaskHistoriesAggregateInterval = "day"
+	TaskHistoriesAggregateIntervalHour TaskHistoriesAggregateInterval = "hour"
+)
+
+var AllTaskHistoriesAggregateInterval = []TaskHistoriesAggregateInterval{
+	TaskHistoriesAggregateIntervalDay,
+	TaskHistoriesAggregateIntervalHour,
+}
+
+func (e TaskHistoriesAggregateInterval) IsValid() bool {
+	switch e {
+	case TaskHistoriesAggregateIntervalDay, TaskHistoriesAggregateIntervalHour:
+		return true
+	}
+	return false
+}
+
+func (e TaskHistoriesAggregateInterval) String() string {
+	return string(e)
+}
+
+func (e *TaskHistoriesAggregateInterval) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TaskHistoriesAggregateInterval(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TaskHistoriesAggregateInterval", str)
+	}
+	return nil
+}
+
+func (e TaskHistoriesAggregateInterval) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}

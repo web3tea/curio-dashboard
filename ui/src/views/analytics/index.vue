@@ -1,7 +1,13 @@
 <script setup lang="ts">
-// imported components
+import ActiveTaskChart from '@/views/widgets/chart/ActiveTaskChart.vue'
 </script>
 
 <template>
-  <p>analytics</p>
+  <v-row class="my-0">
+    <v-col
+      cols="12"
+    >
+      <ActiveTaskChart />
+    </v-col>
+  </v-row>
 </template>

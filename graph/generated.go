@@ -290,34 +290,33 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Actor                func(childComplexity int, address types.Address) int
-		Actors               func(childComplexity int) int
-		Alerts               func(childComplexity int) int
-		Config               func(childComplexity int, layer string) int
-		Configs              func(childComplexity int) int
-		DealsPending         func(childComplexity int) int
-		Machine              func(childComplexity int, id int) int
-		MachineSummary       func(childComplexity int) int
-		Machines             func(childComplexity int) int
-		MetricsActiveTasks   func(childComplexity int, lastDays int, machine *string) int
-		Miner                func(childComplexity int, address types.Address) int
-		MinerPower           func(childComplexity int, address *types.Address) int
-		MiningSummaryByDay   func(childComplexity int, start time.Time, end time.Time) int
-		NodesInfo            func(childComplexity int) int
-		Pipelines            func(childComplexity int) int
-		PipelinesSummary     func(childComplexity int) int
-		Sector               func(childComplexity int, actor types.ActorID, sectorNumber int) int
-		Sectors              func(childComplexity int, actor *types.ActorID, sectorNumber *int, offset int, limit int) int
-		SectorsCount         func(childComplexity int, actor *types.ActorID) int
-		StoragePaths         func(childComplexity int) int
-		StorageStats         func(childComplexity int) int
-		Task                 func(childComplexity int, id int) int
-		TaskAggregatesByDay  func(childComplexity int, lastDays int) int
-		TaskAggregatesByHour func(childComplexity int, lastHours int) int
-		TaskHistories        func(childComplexity int, offset int, limit int) int
-		TaskHistoriesCount   func(childComplexity int, start time.Time, end time.Time, machine *string, name *string, success *bool) int
-		Tasks                func(childComplexity int) int
-		TasksCount           func(childComplexity int) int
+		Actor                  func(childComplexity int, address types.Address) int
+		Actors                 func(childComplexity int) int
+		Alerts                 func(childComplexity int) int
+		Config                 func(childComplexity int, layer string) int
+		Configs                func(childComplexity int) int
+		DealsPending           func(childComplexity int) int
+		Machine                func(childComplexity int, id int) int
+		MachineSummary         func(childComplexity int) int
+		Machines               func(childComplexity int) int
+		MetricsActiveTasks     func(childComplexity int, lastDays int, machine *string) int
+		Miner                  func(childComplexity int, address types.Address) int
+		MinerPower             func(childComplexity int, address *types.Address) int
+		MiningSummaryByDay     func(childComplexity int, start time.Time, end time.Time) int
+		NodesInfo              func(childComplexity int) int
+		Pipelines              func(childComplexity int) int
+		PipelinesSummary       func(childComplexity int) int
+		Sector                 func(childComplexity int, actor types.ActorID, sectorNumber int) int
+		Sectors                func(childComplexity int, actor *types.ActorID, sectorNumber *int, offset int, limit int) int
+		SectorsCount           func(childComplexity int, actor *types.ActorID) int
+		StoragePaths           func(childComplexity int) int
+		StorageStats           func(childComplexity int) int
+		Task                   func(childComplexity int, id int) int
+		TaskHistories          func(childComplexity int, offset int, limit int) int
+		TaskHistoriesAggregate func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
+		TaskHistoriesCount     func(childComplexity int, start time.Time, end time.Time, machine *string, name *string, success *bool) int
+		Tasks                  func(childComplexity int) int
+		TasksCount             func(childComplexity int) int
 	}
 
 	Sector struct {
@@ -548,8 +547,7 @@ type QueryResolver interface {
 	TasksCount(ctx context.Context) (int, error)
 	TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error)
 	TaskHistoriesCount(ctx context.Context, start time.Time, end time.Time, machine *string, name *string, success *bool) (int, error)
-	TaskAggregatesByDay(ctx context.Context, lastDays int) ([]*model.TaskAggregate, error)
-	TaskAggregatesByHour(ctx context.Context, lastHours int) ([]*model.TaskAggregate, error)
+	TaskHistoriesAggregate(ctx context.Context, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error)
 	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
 	Sectors(ctx context.Context, actor *types.ActorID, sectorNumber *int, offset int, limit int) ([]*model.Sector, error)
@@ -2011,30 +2009,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Task(childComplexity, args["id"].(int)), true
 
-	case "Query.taskAggregatesByDay":
-		if e.complexity.Query.TaskAggregatesByDay == nil {
-			break
-		}
-
-		args, err := ec.field_Query_taskAggregatesByDay_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.TaskAggregatesByDay(childComplexity, args["lastDays"].(int)), true
-
-	case "Query.taskAggregatesByHour":
-		if e.complexity.Query.TaskAggregatesByHour == nil {
-			break
-		}
-
-		args, err := ec.field_Query_taskAggregatesByHour_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.TaskAggregatesByHour(childComplexity, args["lastHours"].(int)), true
-
 	case "Query.taskHistories":
 		if e.complexity.Query.TaskHistories == nil {
 			break
@@ -2046,6 +2020,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.TaskHistories(childComplexity, args["offset"].(int), args["limit"].(int)), true
+
+	case "Query.taskHistoriesAggregate":
+		if e.complexity.Query.TaskHistoriesAggregate == nil {
+			break
+		}
+
+		args, err := ec.field_Query_taskHistoriesAggregate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TaskHistoriesAggregate(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["interval"].(model.TaskHistoriesAggregateInterval)), true
 
 	case "Query.taskHistoriesCount":
 		if e.complexity.Query.TaskHistoriesCount == nil {
@@ -3375,33 +3361,36 @@ func (ec *executionContext) field_Query_sectors_args(ctx context.Context, rawArg
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_taskAggregatesByDay_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_taskHistoriesAggregate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["lastDays"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastDays"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+	var arg0 time.Time
+	if tmp, ok := rawArgs["start"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+		arg0, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["lastDays"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_taskAggregatesByHour_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["lastHours"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("lastHours"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+	args["start"] = arg0
+	var arg1 time.Time
+	if tmp, ok := rawArgs["end"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+		arg1, err = ec.unmarshalNTime2timeᚐTime(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["lastHours"] = arg0
+	args["end"] = arg1
+	var arg2 model.TaskHistoriesAggregateInterval
+	if tmp, ok := rawArgs["interval"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("interval"))
+		arg2, err = ec.unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["interval"] = arg2
 	return args, nil
 }
 
@@ -11647,8 +11636,8 @@ func (ec *executionContext) fieldContext_Query_taskHistoriesCount(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_taskAggregatesByDay(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_taskAggregatesByDay(ctx, field)
+func (ec *executionContext) _Query_taskHistoriesAggregate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskHistoriesAggregate(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -11661,7 +11650,7 @@ func (ec *executionContext) _Query_taskAggregatesByDay(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskAggregatesByDay(rctx, fc.Args["lastDays"].(int))
+		return ec.resolvers.Query().TaskHistoriesAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["interval"].(model.TaskHistoriesAggregateInterval))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11675,7 +11664,7 @@ func (ec *executionContext) _Query_taskAggregatesByDay(ctx context.Context, fiel
 	return ec.marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_taskAggregatesByDay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_taskHistoriesAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -11704,71 +11693,7 @@ func (ec *executionContext) fieldContext_Query_taskAggregatesByDay(ctx context.C
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_taskAggregatesByDay_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_taskAggregatesByHour(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_taskAggregatesByHour(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskAggregatesByHour(rctx, fc.Args["lastHours"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.TaskAggregate)
-	fc.Result = res
-	return ec.marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_taskAggregatesByHour(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "time":
-				return ec.fieldContext_TaskAggregate_time(ctx, field)
-			case "total":
-				return ec.fieldContext_TaskAggregate_total(ctx, field)
-			case "success":
-				return ec.fieldContext_TaskAggregate_success(ctx, field)
-			case "failure":
-				return ec.fieldContext_TaskAggregate_failure(ctx, field)
-			case "tasks":
-				return ec.fieldContext_TaskAggregate_tasks(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type TaskAggregate", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_taskAggregatesByHour_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_taskHistoriesAggregate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -22967,7 +22892,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "taskAggregatesByDay":
+		case "taskHistoriesAggregate":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -22976,26 +22901,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_taskAggregatesByDay(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "taskAggregatesByHour":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_taskAggregatesByHour(ctx, field)
+				res = ec._Query_taskHistoriesAggregate(ctx, field)
 				return res
 			}
 
@@ -25474,6 +25380,16 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdash
 		return graphql.Null
 	}
 	return ec._Task(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, v interface{}) (model.TaskHistoriesAggregateInterval, error) {
+	var res model.TaskHistoriesAggregateInterval
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, sel ast.SelectionSet, v model.TaskHistoriesAggregateInterval) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) marshalNTaskHistory2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v model.TaskHistory) graphql.Marshaler {

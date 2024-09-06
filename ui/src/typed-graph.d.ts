@@ -327,9 +327,8 @@ export type Query = {
   storagePaths?: Maybe<Array<Maybe<StoragePath>>>;
   storageStats?: Maybe<Array<Maybe<StorageStats>>>;
   task?: Maybe<Task>;
-  taskAggregatesByDay?: Maybe<Array<Maybe<TaskAggregate>>>;
-  taskAggregatesByHour?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
+  taskHistoriesAggregate?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistoriesCount: Scalars['Int']['output'];
   tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
@@ -397,19 +396,16 @@ export type QueryTaskArgs = {
 };
 
 
-export type QueryTaskAggregatesByDayArgs = {
-  lastDays: Scalars['Int']['input'];
-};
-
-
-export type QueryTaskAggregatesByHourArgs = {
-  lastHours: Scalars['Int']['input'];
-};
-
-
 export type QueryTaskHistoriesArgs = {
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
+};
+
+
+export type QueryTaskHistoriesAggregateArgs = {
+  end: Scalars['Time']['input'];
+  interval: TaskHistoriesAggregateInterval;
+  start: Scalars['Time']['input'];
 };
 
 
@@ -581,6 +577,11 @@ export type TaskAggregate = {
   time: Scalars['Time']['output'];
   total: Scalars['Int']['output'];
 };
+
+export enum TaskHistoriesAggregateInterval {
+  Day = 'day',
+  Hour = 'hour'
+}
 
 export type TaskHistory = {
   __typename?: 'TaskHistory';
