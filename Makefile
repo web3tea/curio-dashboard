@@ -2,16 +2,15 @@ all: go-deps ui-deps ui go
 all-in-one: go-deps ui-deps ui go-dist
 aio: all-in-one
 
-
 go-deps:
 	git submodule update --init --recursive
 	make -C extern/filecoin-ffi
 
 go:
-	go build -o curio-dashboard ./cmd
+	go build -ldflags="-s -w" -o curio-dashboard ./cmd
 
 go-dist:
-	go build -o curio-dashboard -tags dist ./cmd
+	go build -ldflags="-s -w" -o curio-dashboard -tags dist ./cmd
 
 ui-deps:
 	cd ui && yarn install
