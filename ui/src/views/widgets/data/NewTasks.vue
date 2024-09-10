@@ -6,9 +6,11 @@ import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeNewTask } from '@/views/query/task'
 import { Task } from '@/typed-graph'
 import moment from 'moment'
+import { PlayerPauseIcon, PlayerPlayIcon } from 'vue-tabler-icons'
 
 const maxLen = 10
-const { result, loading, error } = useSubscription(SubscribeNewTask, {
+const isStop = ref(false)
+const { result, loading, stop, start, error } = useSubscription(SubscribeNewTask, {
   last: maxLen,
 })
 
@@ -36,6 +38,15 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
 
 <template>
   <UiTitleCard class-name="px-0 pb-0 rounded-md" title="New Added Tasks">
+    <template #action>
+      <v-btn
+        :icon="isStop ? PlayerPlayIcon : PlayerPauseIcon"
+        round
+        :rounded="true"
+        variant="text"
+        @click="isStop = !isStop; isStop ? stop() : start()"
+      />
+    </template>
     <EasyDataTable
       :headers="headers"
       hide-footer

@@ -5,6 +5,7 @@ import { GetNodeInfos } from '@/views/query/chain'
 import { computed, ComputedRef, ref } from 'vue'
 import { NodeInfo } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
+import { ReloadIcon } from 'vue-tabler-icons'
 
 const headers = [
   { text: 'Address', value: 'address' },
@@ -15,7 +16,7 @@ const headers = [
 
 const themeColor = ref('rgb(var(--v-theme-primary))')
 
-const { result, loading, error } = useQuery(GetNodeInfos, null, () => ({
+const { result, loading, refetch, error } = useQuery(GetNodeInfos, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -25,6 +26,17 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
 
 <template>
   <UiTitleCard class-name="px-0 pb-0 rounded-md" title="Chain Connectivity">
+    <template #action>
+      <v-btn
+        :disabled="loading"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      >
+        <ReloadIcon />
+      </v-btn>
+    </template>
     <EasyDataTable
       :headers="headers"
       hide-footer

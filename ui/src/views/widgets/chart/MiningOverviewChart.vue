@@ -6,6 +6,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetMiningSummary } from '@/views/query/mining'
 import { MiningSummaryDay } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
+import { ReloadIcon } from 'vue-tabler-icons'
 
 const theme = useTheme()
 const InfoColor = theme.current.value.colors.info
@@ -14,7 +15,7 @@ const customizer = useCustomizerStore()
 const end = new Date()
 const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000) // todo: props
 
-const { result, error } = useQuery(GetMiningSummary, {
+const { result, refetch, loading, error } = useQuery(GetMiningSummary, {
   start,
   end,
 }, () => ({
@@ -109,10 +110,27 @@ const totalWonBlocks = computed(() => {
 
 <template>
   <UiTitleCard class-name="pt-5 px-0 rounded-md overflow-hidden" title="Mining Overview">
+    <template #action>
+      <v-btn
+        :disabled="loading"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      >
+        <ReloadIcon />
+      </v-btn>
+    </template>
     <div class="px-5">
       <h6 class="text-h6 text-lightText mb-4">This Week Total Mined</h6>
       <h3 class="text-h3 mb-0">{{ totalWonBlocks }}</h3>
     </div>
-    <apexchart height="370" :options="chartOptions" :series="chartSeries" type="bar" />
+    <apexchart
+      height="370"
+      :loading="loading"
+      :options="chartOptions"
+      :series="chartSeries"
+      type="bar"
+    />
   </UiTitleCard>
 </template>

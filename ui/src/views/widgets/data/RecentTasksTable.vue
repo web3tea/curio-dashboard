@@ -7,9 +7,11 @@ import { SubscribeCompletedTask } from '@/views/query/task'
 import { TaskHistory } from '@/typed-graph'
 import moment from 'moment'
 import { formatDuration } from '@/utils/helpers/formatDuration'
+import { PlayerPauseIcon, PlayerPlayIcon } from 'vue-tabler-icons'
 
 const maxMessages = 10
-const { result, loading, error } = useSubscription(SubscribeCompletedTask, {
+const isStop = ref(false)
+const { result, loading, stop, start, error } = useSubscription(SubscribeCompletedTask, {
   last: maxMessages,
 })
 
@@ -42,6 +44,15 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
 
 <template>
   <UiTitleCard class-name="px-0 pb-0 rounded-md" title="Recently Finished Tasks">
+    <template #action>
+      <v-btn
+        :icon="isStop ? PlayerPlayIcon : PlayerPauseIcon"
+        round
+        :rounded="true"
+        variant="text"
+        @click="isStop = !isStop; isStop ? stop() : start()"
+      />
+    </template>
     <EasyDataTable
       :headers="headers"
       hide-footer

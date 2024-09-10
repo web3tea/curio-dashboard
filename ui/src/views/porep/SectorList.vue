@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import moment from 'moment'
 import { useQuery } from '@vue/apollo-composable'
-import { ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue'
+import { SearchOutlined } from '@ant-design/icons-vue'
 import { computed, ComputedRef, ref } from 'vue'
 import { GetSectorsPipeline } from '@/views/query/pipeline'
 import { Pipeline } from '@/typed-graph'
@@ -50,7 +50,7 @@ const itemsSelected = ref<Item[]>([])
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
                 <v-btn round rounded variant="text" @click="refetch">
-                  <ReloadOutlined />
+                  <ReloadIcon />
                 </v-btn>
               </div>
             </v-col>

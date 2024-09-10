@@ -6,6 +6,7 @@ import { StorageStats } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { GetStorageStats } from '@/views/query/storage'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { ReloadIcon } from 'vue-tabler-icons'
 
 const headers = [
   { text: 'Type', value: 'type' },
@@ -17,7 +18,7 @@ const headers = [
 
 const themeColor = ref('rgb(var(--v-theme-primary))')
 
-const { result, loading, error } = useQuery(GetStorageStats, null, () => ({
+const { result, loading, refetch, error } = useQuery(GetStorageStats, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -31,6 +32,17 @@ function usePercentage (available: number, total: number) {
 
 <template>
   <UiTitleCard class-name="px-0 pb-0 rounded-md" title="Storage Usages">
+    <template #action>
+      <v-btn
+        :disabled="loading"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      >
+        <ReloadIcon />
+      </v-btn>
+    </template>
     <EasyDataTable
       :headers="headers"
       hide-footer

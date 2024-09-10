@@ -131,7 +131,13 @@ const areaChart = computed(() => {
             density="compact"
             hide-slider
           >
-            <v-tab class="mr-1" rounded="md" value="7" variant="outlined"> Week </v-tab>
+            <v-tab
+              class="mr-1"
+              rounded="md"
+              size="small"
+              value="7"
+              variant="outlined"
+            > Week </v-tab>
             <v-tab rounded="md" value="30" variant="outlined"> Month </v-tab>
           </v-tabs>
         </div>
