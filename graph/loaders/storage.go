@@ -38,21 +38,6 @@ FROM
 `); err != nil {
 		return nil, err
 	}
-	for _, p := range m {
-		p.ID = p.StorageID
-		switch {
-		case p.CanStore && p.CanSeal:
-			p.Type = model.StorageTypeHybrid
-		case p.CanSeal:
-			p.Type = model.StorageTypeSeal
-		case p.CanStore:
-			p.Type = model.StorageTypeStore
-		default:
-			p.Type = model.StorageTypeReadonly
-		}
-		p.Used = p.Capacity - p.Available - p.Reserved // todo: debug this
-	}
-
 	return m, nil
 }
 

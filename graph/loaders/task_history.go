@@ -11,7 +11,7 @@ import (
 
 type TaskHistoryLoader interface {
 	TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error)
-	SubCompletedTask(ctx context.Context, last int) (<-chan *model.TaskHistory, error)
+	SubCompletedTask(ctx context.Context, hostPort *string, last int) (<-chan *model.TaskHistory, error)
 	TaskHistoriesCount(ctx context.Context, start, end time.Time, name *string) (int, error)
 }
 
@@ -64,10 +64,13 @@ func (l *Loader) TaskHistoriesCount(ctx context.Context, start, end time.Time, m
 	return count, row.Scan(&count)
 }
 
-func (l *Loader) SubCompletedTask(ctx context.Context, last int) (<-chan *model.TaskHistory, error) {
+func (l *Loader) SubCompletedTask(ctx context.Context, hostPort *string, last int) (<-chan *model.TaskHistory, error) {
 	taskChan := make(chan *model.TaskHistory)
 
-	log.Infof("SubCompletedTask: last=%d", last)
+	slog := log.With("hostPort", hostPort, "last", last)
+
+	slog.Infof("SubCompletedTask start")
+
 	go func() {
 		var err error
 		var offset time.Time
@@ -77,9 +80,9 @@ func (l *Loader) SubCompletedTask(ctx context.Context, last int) (<-chan *model.
 			ticker.Stop()
 			close(taskChan)
 			if err != nil {
-				log.Infof("SubCompletedTask done, err: %v", err)
+				slog.Errorw("SubCompletedTask", "err", err)
 			} else {
-				log.Infof("SubCompletedTask done")
+				slog.Info("SubCompletedTask done")
 			}
 		}()
 
@@ -99,8 +102,9 @@ func (l *Loader) SubCompletedTask(ctx context.Context, last int) (<-chan *model.
     completed_by_host_and_port
 FROM
     harmony_task_history
-ORDER BY id DESC 
-LIMIT $1`, last); err != nil {
+WHERE ($1::text IS NULL OR completed_by_host_and_port = $1)
+ORDER BY work_end DESC 
+LIMIT $2`, hostPort, last); err != nil {
 			return
 		}
 		if len(tasks) > 0 {
@@ -124,9 +128,10 @@ LIMIT $1`, last); err != nil {
     err,
     completed_by_host_and_port
 FROM
-    harmony_task_history 
-WHERE work_end > $1 
-ORDER BY work_end`, offset); err != nil {
+    harmony_task_history
+WHERE work_end > $2
+AND ($1::text IS NULL OR completed_by_host_and_port = $1)
+ORDER BY work_end`, hostPort, offset); err != nil {
 					return
 				}
 				for _, t := range tasks {

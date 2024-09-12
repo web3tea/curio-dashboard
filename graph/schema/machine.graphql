@@ -10,4 +10,5 @@ type Machine {
     detail: MachineDetail
     tasks: [Task]
     taskHistories(last: Int!): [TaskHistory]
+    storages: [StoragePath]
 }

@@ -9,10 +9,21 @@ import moment from 'moment'
 import { formatDuration } from '@/utils/helpers/formatDuration'
 import { PlayerPauseIcon, PlayerPlayIcon } from 'vue-tabler-icons'
 
-const maxMessages = 10
+const props = defineProps({
+  maxMessages: {
+    type: Number,
+    default: 10,
+  },
+  host: {
+    type: String,
+    default: null,
+  },
+})
+
 const isStop = ref(false)
 const { result, loading, stop, start, error } = useSubscription(SubscribeCompletedTask, {
-  last: maxMessages,
+  last: props.maxMessages,
+  host: props.host,
 })
 
 const tasks = ref<TaskHistory[]>([])
@@ -20,7 +31,7 @@ const tasks = ref<TaskHistory[]>([])
 watch(
   result,
   data => {
-    if (tasks.value.length >= maxMessages) {
+    if (tasks.value.length >= props.maxMessages) {
       tasks.value.pop()
     }
     tasks.value.unshift(data.completedTask)

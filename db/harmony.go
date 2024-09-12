@@ -55,6 +55,18 @@ func (db *HarmonyDB) Close() {
 	db.pgx.Close()
 }
 
+type Qry interface {
+	Next() bool
+	Err() error
+	Close()
+	Scan(...any) error
+	Values() ([]any, error)
+}
+
+type Query struct {
+	Qry
+}
+
 type Row interface {
 	Scan(...any) error
 }
@@ -96,4 +108,16 @@ func (db *HarmonyDB) Select(ctx context.Context, sliceOfStructPtr any, sql strin
 func (db *HarmonyDB) Exec(ctx context.Context, sql string, arguments ...any) (count int, err error) {
 	res, err := db.pgx.Exec(ctx, sql, arguments...)
 	return int(res.RowsAffected()), err
+}
+
+func (db *HarmonyDB) Query(ctx context.Context, sql string, arguments ...any) (*Query, error) {
+	q, err := db.pgx.Query(ctx, sql, arguments...)
+	if err != nil {
+		return nil, err
+	}
+	if q.Err() != nil {
+		q.Close()
+		return nil, q.Err()
+	}
+	return &Query{q}, err
 }

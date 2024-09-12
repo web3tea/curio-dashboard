@@ -10,6 +10,38 @@ type MachineLoader interface {
 	Machine(ctx context.Context, id int) (*model.Machine, error)
 	Machines(ctx context.Context) ([]*model.Machine, error)
 	MachineDetails(ctx context.Context) ([]*model.MachineDetail, error)
+	MachineStorages(ctx context.Context, hostPort string) ([]*model.StoragePath, error)
+}
+
+func (l *Loader) MachineStorages(ctx context.Context, hostPort string) ([]*model.StoragePath, error) {
+	var ss []*model.StoragePath
+	err := l.db.Select(ctx, &ss, `SELECT 
+    storage_id, 
+    urls,
+    weight, 
+    max_storage, 
+    can_seal, 
+    can_store, 
+    groups, 
+    allow_to, 
+    allow_types, 
+    deny_types, 
+    capacity, 
+    available, 
+    fs_available, 
+    reserved, 
+    used, 
+    allow_miners, 
+    deny_miners, 
+    last_heartbeat, 
+    heartbeat_err 
+FROM storage_path 
+WHERE urls 
+          LIKE '%' || $1 || '%'`, hostPort)
+	if err != nil {
+		return nil, err
+	}
+	return ss, nil
 }
 
 func (l *Loader) Machine(ctx context.Context, id int) (*model.Machine, error) {

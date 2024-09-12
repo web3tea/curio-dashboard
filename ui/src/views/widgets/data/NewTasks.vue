@@ -8,10 +8,21 @@ import { Task } from '@/typed-graph'
 import moment from 'moment'
 import { PlayerPauseIcon, PlayerPlayIcon } from 'vue-tabler-icons'
 
-const maxLen = 10
+const props = defineProps({
+  maxLen: {
+    type: Number,
+    default: 10,
+  },
+  machineID: {
+    type: Number,
+    default: null,
+  },
+})
+
 const isStop = ref(false)
 const { result, loading, stop, start, error } = useSubscription(SubscribeNewTask, {
-  last: maxLen,
+  last: props.maxLen,
+  machineID: props.machineID,
 })
 
 const tasks = ref<Task[]>([])
@@ -19,7 +30,7 @@ const tasks = ref<Task[]>([])
 watch(
   result,
   data => {
-    if (tasks.value.length >= maxLen) {
+    if (tasks.value.length >= props.maxLen) {
       tasks.value.pop()
     }
     tasks.value.unshift(data.newTask)

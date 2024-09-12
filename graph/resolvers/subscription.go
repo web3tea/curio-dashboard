@@ -17,13 +17,13 @@ func (r *subscriptionResolver) Alerts(ctx context.Context, offset int) (<-chan *
 }
 
 // CompletedTask is the resolver for the completedTask field.
-func (r *subscriptionResolver) CompletedTask(ctx context.Context, last int) (<-chan *model.TaskHistory, error) {
-	return r.loader.SubCompletedTask(ctx, last)
+func (r *subscriptionResolver) CompletedTask(ctx context.Context, machine *string, last int) (<-chan *model.TaskHistory, error) {
+	return r.loader.SubCompletedTask(ctx, machine, last)
 }
 
 // NewTask is the resolver for the newTask field.
-func (r *subscriptionResolver) NewTask(ctx context.Context, last int) (<-chan *model.Task, error) {
-	return r.loader.SubNewTask(ctx, last)
+func (r *subscriptionResolver) NewTask(ctx context.Context, machineID *int, last int) (<-chan *model.Task, error) {
+	return r.loader.SubNewTask(ctx, machineID, last)
 }
 
 // Subscription returns graph.SubscriptionResolver implementation.

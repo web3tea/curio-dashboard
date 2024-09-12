@@ -16,11 +16,16 @@ const AppRoutes = {
       path: '/app/analytics',
       component: () => import('@/views/analytics/index.vue'),
     },
-
     {
       name: 'Machines',
       path: '/app/machines',
       component: () => import('@/views/machines/index.vue'),
+    },
+    {
+      name: 'MachineInfo',
+      path: '/app/machines/:id',
+      component: () => import('@/views/machines/MachineInfo.vue'),
+      props: true,
     },
     {
       name: 'Storages',

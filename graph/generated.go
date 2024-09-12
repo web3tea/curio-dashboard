@@ -53,6 +53,7 @@ type ResolverRoot interface {
 	Query() QueryResolver
 	Sector() SectorResolver
 	SectorMeta() SectorMetaResolver
+	StoragePath() StoragePathResolver
 	Subscription() SubscriptionResolver
 	Task() TaskResolver
 	TaskAggregate() TaskAggregateResolver
@@ -103,6 +104,7 @@ type ComplexityRoot struct {
 		ID            func(childComplexity int) int
 		LastContact   func(childComplexity int) int
 		RAM           func(childComplexity int) int
+		Storages      func(childComplexity int) int
 		TaskHistories func(childComplexity int, last int) int
 		Tasks         func(childComplexity int) int
 	}
@@ -420,8 +422,8 @@ type ComplexityRoot struct {
 
 	Subscription struct {
 		Alerts        func(childComplexity int, offset int) int
-		CompletedTask func(childComplexity int, last int) int
-		NewTask       func(childComplexity int, last int) int
+		CompletedTask func(childComplexity int, machine *string, last int) int
+		NewTask       func(childComplexity int, machineID *int, last int) int
 	}
 
 	Task struct {
@@ -499,6 +501,7 @@ type MachineResolver interface {
 	Detail(ctx context.Context, obj *model.Machine) (*model.MachineDetail, error)
 	Tasks(ctx context.Context, obj *model.Machine) ([]*model.Task, error)
 	TaskHistories(ctx context.Context, obj *model.Machine, last int) ([]*model.TaskHistory, error)
+	Storages(ctx context.Context, obj *model.Machine) ([]*model.StoragePath, error)
 }
 type MachineSummaryResolver interface {
 	Total(ctx context.Context, obj *model.MachineSummary) (int, error)
@@ -577,10 +580,15 @@ type SectorResolver interface {
 type SectorMetaResolver interface {
 	ID(ctx context.Context, obj *model.SectorMeta) (string, error)
 }
+type StoragePathResolver interface {
+	ID(ctx context.Context, obj *model.StoragePath) (string, error)
+
+	Type(ctx context.Context, obj *model.StoragePath) (model.StorageType, error)
+}
 type SubscriptionResolver interface {
 	Alerts(ctx context.Context, offset int) (<-chan *model.Alert, error)
-	CompletedTask(ctx context.Context, last int) (<-chan *model.TaskHistory, error)
-	NewTask(ctx context.Context, last int) (<-chan *model.Task, error)
+	CompletedTask(ctx context.Context, machine *string, last int) (<-chan *model.TaskHistory, error)
+	NewTask(ctx context.Context, machineID *int, last int) (<-chan *model.Task, error)
 }
 type TaskResolver interface {
 	InitiatedBy(ctx context.Context, obj *model.Task) (*model.Machine, error)
@@ -811,6 +819,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Machine.RAM(childComplexity), true
+
+	case "Machine.storages":
+		if e.complexity.Machine.Storages == nil {
+			break
+		}
+
+		return e.complexity.Machine.Storages(childComplexity), true
 
 	case "Machine.taskHistories":
 		if e.complexity.Machine.TaskHistories == nil {
@@ -2627,7 +2642,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Subscription.CompletedTask(childComplexity, args["last"].(int)), true
+		return e.complexity.Subscription.CompletedTask(childComplexity, args["machine"].(*string), args["last"].(int)), true
 
 	case "Subscription.newTask":
 		if e.complexity.Subscription.NewTask == nil {
@@ -2639,7 +2654,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Subscription.NewTask(childComplexity, args["last"].(int)), true
+		return e.complexity.Subscription.NewTask(childComplexity, args["machineID"].(*int), args["last"].(int)), true
 
 	case "Task.addedBy":
 		if e.complexity.Task.AddedBy == nil {
@@ -3502,30 +3517,48 @@ func (ec *executionContext) field_Subscription_alerts_args(ctx context.Context, 
 func (ec *executionContext) field_Subscription_completedTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["last"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+	var arg0 *string
+	if tmp, ok := rawArgs["machine"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("machine"))
+		arg0, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["last"] = arg0
+	args["machine"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg1
 	return args, nil
 }
 
 func (ec *executionContext) field_Subscription_newTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["last"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+	var arg0 *int
+	if tmp, ok := rawArgs["machineID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("machineID"))
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["last"] = arg0
+	args["machineID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["last"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg1
 	return args, nil
 }
 
@@ -4983,6 +5016,91 @@ func (ec *executionContext) fieldContext_Machine_taskHistories(ctx context.Conte
 	if fc.Args, err = ec.field_Machine_taskHistories_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Machine_storages(ctx context.Context, field graphql.CollectedField, obj *model.Machine) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Machine_storages(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Machine().Storages(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.StoragePath)
+	fc.Result = res
+	return ec.marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Machine_storages(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Machine",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_StoragePath_id(ctx, field)
+			case "storageId":
+				return ec.fieldContext_StoragePath_storageId(ctx, field)
+			case "type":
+				return ec.fieldContext_StoragePath_type(ctx, field)
+			case "urls":
+				return ec.fieldContext_StoragePath_urls(ctx, field)
+			case "weight":
+				return ec.fieldContext_StoragePath_weight(ctx, field)
+			case "maxStorage":
+				return ec.fieldContext_StoragePath_maxStorage(ctx, field)
+			case "canSeal":
+				return ec.fieldContext_StoragePath_canSeal(ctx, field)
+			case "canStore":
+				return ec.fieldContext_StoragePath_canStore(ctx, field)
+			case "groups":
+				return ec.fieldContext_StoragePath_groups(ctx, field)
+			case "allowTo":
+				return ec.fieldContext_StoragePath_allowTo(ctx, field)
+			case "allowTypes":
+				return ec.fieldContext_StoragePath_allowTypes(ctx, field)
+			case "denyTypes":
+				return ec.fieldContext_StoragePath_denyTypes(ctx, field)
+			case "capacity":
+				return ec.fieldContext_StoragePath_capacity(ctx, field)
+			case "available":
+				return ec.fieldContext_StoragePath_available(ctx, field)
+			case "fsAvailable":
+				return ec.fieldContext_StoragePath_fsAvailable(ctx, field)
+			case "reserved":
+				return ec.fieldContext_StoragePath_reserved(ctx, field)
+			case "used":
+				return ec.fieldContext_StoragePath_used(ctx, field)
+			case "lastHeartbeat":
+				return ec.fieldContext_StoragePath_lastHeartbeat(ctx, field)
+			case "heartbeatErr":
+				return ec.fieldContext_StoragePath_heartbeatErr(ctx, field)
+			case "allowMiners":
+				return ec.fieldContext_StoragePath_allowMiners(ctx, field)
+			case "denyMiners":
+				return ec.fieldContext_StoragePath_denyMiners(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type StoragePath", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -11176,6 +11294,8 @@ func (ec *executionContext) fieldContext_Query_machine(ctx context.Context, fiel
 				return ec.fieldContext_Machine_tasks(ctx, field)
 			case "taskHistories":
 				return ec.fieldContext_Machine_taskHistories(ctx, field)
+			case "storages":
+				return ec.fieldContext_Machine_storages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Machine", field.Name)
 		},
@@ -11248,6 +11368,8 @@ func (ec *executionContext) fieldContext_Query_machines(_ context.Context, field
 				return ec.fieldContext_Machine_tasks(ctx, field)
 			case "taskHistories":
 				return ec.fieldContext_Machine_taskHistories(ctx, field)
+			case "storages":
+				return ec.fieldContext_Machine_storages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Machine", field.Name)
 		},
@@ -15036,7 +15158,7 @@ func (ec *executionContext) _StoragePath_id(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return ec.resolvers.StoragePath().ID(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15057,8 +15179,8 @@ func (ec *executionContext) fieldContext_StoragePath_id(_ context.Context, field
 	fc = &graphql.FieldContext{
 		Object:     "StoragePath",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
 		},
@@ -15124,7 +15246,7 @@ func (ec *executionContext) _StoragePath_type(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
+		return ec.resolvers.StoragePath().Type(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15145,8 +15267,8 @@ func (ec *executionContext) fieldContext_StoragePath_type(_ context.Context, fie
 	fc = &graphql.FieldContext{
 		Object:     "StoragePath",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type StorageType does not have child fields")
 		},
@@ -16506,7 +16628,7 @@ func (ec *executionContext) _Subscription_completedTask(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().CompletedTask(rctx, fc.Args["last"].(int))
+		return ec.resolvers.Subscription().CompletedTask(rctx, fc.Args["machine"].(*string), fc.Args["last"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16595,7 +16717,7 @@ func (ec *executionContext) _Subscription_newTask(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().NewTask(rctx, fc.Args["last"].(int))
+		return ec.resolvers.Subscription().NewTask(rctx, fc.Args["machineID"].(*int), fc.Args["last"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16817,6 +16939,8 @@ func (ec *executionContext) fieldContext_Task_initiatedBy(_ context.Context, fie
 				return ec.fieldContext_Machine_tasks(ctx, field)
 			case "taskHistories":
 				return ec.fieldContext_Machine_taskHistories(ctx, field)
+			case "storages":
+				return ec.fieldContext_Machine_storages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Machine", field.Name)
 		},
@@ -17007,6 +17131,8 @@ func (ec *executionContext) fieldContext_Task_owner(_ context.Context, field gra
 				return ec.fieldContext_Machine_tasks(ctx, field)
 			case "taskHistories":
 				return ec.fieldContext_Machine_taskHistories(ctx, field)
+			case "storages":
+				return ec.fieldContext_Machine_storages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Machine", field.Name)
 		},
@@ -17115,6 +17241,8 @@ func (ec *executionContext) fieldContext_Task_addedBy(_ context.Context, field g
 				return ec.fieldContext_Machine_tasks(ctx, field)
 			case "taskHistories":
 				return ec.fieldContext_Machine_taskHistories(ctx, field)
+			case "storages":
+				return ec.fieldContext_Machine_storages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Machine", field.Name)
 		},
@@ -20884,6 +21012,39 @@ func (ec *executionContext) _Machine(ctx context.Context, sel ast.SelectionSet, 
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "storages":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Machine_storages(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -23796,44 +23957,106 @@ func (ec *executionContext) _StoragePath(ctx context.Context, sel ast.SelectionS
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("StoragePath")
 		case "id":
-			out.Values[i] = ec._StoragePath_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._StoragePath_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "storageId":
 			out.Values[i] = ec._StoragePath_storageId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "type":
-			out.Values[i] = ec._StoragePath_type(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._StoragePath_type(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "urls":
 			out.Values[i] = ec._StoragePath_urls(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "weight":
 			out.Values[i] = ec._StoragePath_weight(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "maxStorage":
 			out.Values[i] = ec._StoragePath_maxStorage(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "canSeal":
 			out.Values[i] = ec._StoragePath_canSeal(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "canStore":
 			out.Values[i] = ec._StoragePath_canStore(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "groups":
 			out.Values[i] = ec._StoragePath_groups(ctx, field, obj)
@@ -23846,44 +24069,44 @@ func (ec *executionContext) _StoragePath(ctx context.Context, sel ast.SelectionS
 		case "capacity":
 			out.Values[i] = ec._StoragePath_capacity(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "available":
 			out.Values[i] = ec._StoragePath_available(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "fsAvailable":
 			out.Values[i] = ec._StoragePath_fsAvailable(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "reserved":
 			out.Values[i] = ec._StoragePath_reserved(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "used":
 			out.Values[i] = ec._StoragePath_used(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "lastHeartbeat":
 			out.Values[i] = ec._StoragePath_lastHeartbeat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "heartbeatErr":
 			out.Values[i] = ec._StoragePath_heartbeatErr(ctx, field, obj)
 		case "allowMiners":
 			out.Values[i] = ec._StoragePath_allowMiners(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "denyMiners":
 			out.Values[i] = ec._StoragePath_denyMiners(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))

@@ -44,8 +44,8 @@ export const taskFragment = gql`
 `
 
 export const SubscribeCompletedTask = gql`
-  subscription SubscribeCompletedTask($last: Int!) {
-    completedTask(last: $last) {
+  subscription SubscribeCompletedTask($host: String, $last: Int!) {
+    completedTask(machine: $host, last: $last) {
       id
       taskId
       name
@@ -66,8 +66,8 @@ export const GetTaskHistoriesCount = gql`
 `
 
 export const SubscribeNewTask = gql`
-  subscription SubscribeNewTask($last: Int!) {
-    newTask(last: $last) {
+  subscription SubscribeNewTask($machineID: Int, $last: Int!) {
+    newTask(machineID: $machineID, last: $last) {
       id
       name
       postedTime

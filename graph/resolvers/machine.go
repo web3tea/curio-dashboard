@@ -6,8 +6,10 @@ package resolvers
 
 import (
 	"context"
+	"time"
 
 	"github.com/strahe/curio-dashboard/graph"
+	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
@@ -71,6 +73,16 @@ ORDER BY work_end DESC LIMIT $2`, obj.HostAndPort, last); err != nil {
 		return nil, err
 	}
 	return out, nil
+}
+
+// Storages is the resolver for the storages field.
+func (r *machineResolver) Storages(ctx context.Context, obj *model.Machine) ([]*model.StoragePath, error) {
+	ss, err := r.loader.MachineStorages(ctx, obj.HostAndPort)
+	if err != nil {
+		return nil, err
+	}
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return ss, nil
 }
 
 // Machine returns graph.MachineResolver implementation.

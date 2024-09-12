@@ -45,10 +45,12 @@ func (l *Loader) TasksCount(ctx context.Context) (int, error) {
 	return count, err
 }
 
-func (l *Loader) SubNewTask(ctx context.Context, last int) (<-chan *model.Task, error) {
+func (l *Loader) SubNewTask(ctx context.Context, hostID *int, last int) (<-chan *model.Task, error) {
 	taskChan := make(chan *model.Task)
 
-	log.Infof("SubNewTask: last=%d", last)
+	slog := log.With("hostID", hostID)
+	slog.Infof("SubNewTask started")
+
 	go func() {
 		var err error
 		var offset time.Time
@@ -58,9 +60,9 @@ func (l *Loader) SubNewTask(ctx context.Context, last int) (<-chan *model.Task, 
 			ticker.Stop()
 			close(taskChan)
 			if err != nil {
-				log.Infof("SubNewTask done, err: %v", err)
+				slog.Errorw("SubNewTask", "err", err)
 			} else {
-				log.Infof("SubNewTask done")
+				slog.Info("SubNewTask done")
 			}
 		}()
 
@@ -79,8 +81,9 @@ func (l *Loader) SubNewTask(ctx context.Context, last int) (<-chan *model.Task, 
     name
 FROM
     harmony_task
+WHERE ($1::int IS NULL OR owner_id = $1)
 ORDER BY posted_time DESC 
-LIMIT $1`, last); err != nil {
+LIMIT $2`, hostID, last); err != nil {
 			return
 		}
 		if len(tasks) > 0 {
@@ -104,8 +107,9 @@ LIMIT $1`, last); err != nil {
     name
 FROM
     harmony_task
-WHERE posted_time > $1 
-ORDER BY posted_time`, offset); err != nil {
+WHERE ($1::int IS NULL OR owner_id = $1)
+AND posted_time > $2
+ORDER BY posted_time`, hostID, offset); err != nil {
 					return
 				}
 				for _, t := range tasks {

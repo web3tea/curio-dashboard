@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -77,9 +78,11 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 		ns := next(ctx)
 
 		if oc != nil && ns != nil {
-			log.Debugw("request", "operation", oc.OperationName,
-				"duration", time.Since(oc.Stats.OperationStart).String(),
-				"variables", oc.Variables)
+			if !strings.HasPrefix(oc.OperationName, "Sub") {
+				log.Debugw("request", "operation", oc.OperationName,
+					"duration", time.Since(oc.Stats.OperationStart).String(),
+					"variables", oc.Variables)
+			}
 		}
 		return ns
 	})

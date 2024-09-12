@@ -10,7 +10,6 @@ import { formatBytes } from '@/utils/helpers/formatBytes'
 
 const { result, loading, refetch, error } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
-  pollInterval: 10000,
 }))
 const items: ComputedRef<[Machine]> = computed(() => result.value?.machines || [])
 
@@ -54,12 +53,12 @@ const filterItems = computed(() => {
 const headers: Header[] = [
   { text: 'ID', value: 'id' },
   { text: 'Name', value: 'detail.machineName' },
+  { text: 'Host', value: 'hostAndPort' },
   { text: 'Last Contact', value: 'lastContact', sortable: true },
   { text: 'Startup', value: 'detail.startupTime', sortable: true },
   { text: 'CPU', value: 'cpu', sortable: true },
   { text: 'GPU', value: 'gpu', sortable: true },
   { text: 'RAM', value: 'ram', sortable: true },
-  { text: 'Host and Port', value: 'hostAndPort' },
   { text: 'Layers', value: 'detail.layers' },
   { text: 'Support Tasks', value: 'detail.tasks' },
 ]
@@ -141,10 +140,11 @@ const itemsSelected = ref<Item[]>([])
             <template #empty-message>
               <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
             </template>
-            <template #[`item.id`]="{ id }">
-              <div class="player-wrapper">
-                <h5 class="text-h5">#{{ id }}</h5>
-              </div>
+            <template #item-id="{ id }">
+              <RouterLink :to="{ name: 'MachineInfo', params: { id: Number(id) } }">{{ id }}</RouterLink>
+            </template>
+            <template #item-hostAndPort="{ id, hostAndPort }">
+              <RouterLink :to="{ name: 'MachineInfo', params: { id: id } }">{{ hostAndPort }}</RouterLink>
             </template>
             <template #item-lastContact="{ lastContact }">
               <div :title="lastContact">{{ moment(lastContact).calendar() }}</div>

@@ -67,6 +67,7 @@ export type Machine = {
   id: Scalars['Int']['output'];
   lastContact: Scalars['Time']['output'];
   ram: Scalars['Int']['output'];
+  storages?: Maybe<Array<Maybe<StoragePath>>>;
   taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
   tasks?: Maybe<Array<Maybe<Task>>>;
 };
@@ -545,11 +546,13 @@ export type SubscriptionAlertsArgs = {
 
 export type SubscriptionCompletedTaskArgs = {
   last: Scalars['Int']['input'];
+  machine?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type SubscriptionNewTaskArgs = {
   last: Scalars['Int']['input'];
+  machineID?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Task = {
