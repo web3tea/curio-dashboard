@@ -25,6 +25,11 @@ type Alert struct {
 	Message     string `json:"message"`
 }
 
+type GaugeCountValue struct {
+	Key   string `json:"key"`
+	Value int    `json:"value"`
+}
+
 type MachineDetail struct {
 	ID          int       `json:"id"`
 	MachineName string    `json:"machineName"`
@@ -36,6 +41,25 @@ type MachineDetail struct {
 	Miners      string    `json:"miners"`
 	MinersArray []string  `json:"minersArray"`
 	MachineID   int       `json:"machineId"`
+}
+
+type MachineMetrics struct {
+	CPUUsage                   float64            `json:"cpuUsage"`
+	GpuUsage                   float64            `json:"gpuUsage"`
+	RAMUsage                   float64            `json:"ramUsage"`
+	ActiveTasks                []*GaugeCountValue `json:"activeTasks"`
+	AddedTasks                 []*GaugeCountValue `json:"addedTasks"`
+	TasksCompleted             []*GaugeCountValue `json:"tasksCompleted"`
+	TasksStarted               []*GaugeCountValue `json:"tasksStarted"`
+	GoRoutines                 int                `json:"goRoutines"`
+	GoVersion                  string             `json:"goVersion"`
+	GoThreads                  int                `json:"goThreads"`
+	ProcessCPUSecondsTotal     int                `json:"processCpuSecondsTotal"`
+	ProcessStartTimeSeconds    int                `json:"processStartTimeSeconds"`
+	ProcessVirtualMemoryBytes  int                `json:"processVirtualMemoryBytes"`
+	ProcessResidentMemoryBytes int                `json:"processResidentMemoryBytes"`
+	ProcessOpenFds             int                `json:"processOpenFds"`
+	ProcessMaxFds              int                `json:"processMaxFds"`
 }
 
 type MetricsActiveTask struct {
@@ -223,18 +247,6 @@ type StorageUsage struct {
 }
 
 type Subscription struct {
-}
-
-type TaskHistory struct {
-	ID                     int       `json:"id"`
-	TaskID                 int       `json:"taskId"`
-	Name                   string    `json:"name"`
-	Posted                 time.Time `json:"posted"`
-	WorkStart              time.Time `json:"workStart"`
-	WorkEnd                time.Time `json:"workEnd"`
-	Result                 bool      `json:"result"`
-	Err                    *string   `json:"err"`
-	CompletedByHostAndPort string    `json:"completedByHostAndPort"`
 }
 
 type TaskNameAggregate struct {

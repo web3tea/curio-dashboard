@@ -6,8 +6,12 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
+	"net/http"
 	"time"
 
+	io_prometheus_client "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
@@ -68,7 +72,7 @@ func (r *machineResolver) TaskHistories(ctx context.Context, obj *model.Machine,
 FROM
     harmony_task_history
 WHERE work_end > CURRENT_TIMESTAMP - INTERVAL '24 hours' 
-  AND harmony_task_history.completed_by_host_and_port = $1 
+  AND completed_by_host_and_port = $1 
 ORDER BY work_end DESC LIMIT $2`, obj.HostAndPort, last); err != nil {
 		return nil, err
 	}
@@ -83,6 +87,97 @@ func (r *machineResolver) Storages(ctx context.Context, obj *model.Machine) ([]*
 	}
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
 	return ss, nil
+}
+
+// Metrics is the resolver for the metrics field.
+func (r *machineResolver) Metrics(ctx context.Context, obj *model.Machine) (*model.MachineMetrics, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, fmt.Sprintf("http://%s/debug/metrics", obj.HostAndPort), nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("Error fetching metrics: %v", err)
+	}
+	defer resp.Body.Close() // nolint: errcheck
+
+	var parser expfmt.TextParser
+	metrics, err := parser.TextToMetricFamilies(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing metrics: %v", err)
+	}
+
+	var result model.MachineMetrics
+
+	parserFunc := func(name string, m *io_prometheus_client.Metric) {
+		switch name {
+		case "go_info":
+			for _, label := range m.Label {
+				if label.GetName() == "version" {
+					result.GoVersion = label.GetValue()
+				}
+			}
+		case "go_goroutines":
+			result.GoRoutines = int(m.GetGauge().GetValue())
+		case "process_cpu_seconds_total":
+			result.ProcessCPUSecondsTotal = int(m.GetCounter().GetValue())
+		case "process_start_time_seconds":
+			result.ProcessStartTimeSeconds = int(m.GetGauge().GetValue())
+		case "process_virtual_memory_bytes":
+			result.ProcessVirtualMemoryBytes = int(m.GetGauge().GetValue())
+		case "process_resident_memory_bytes":
+			result.ProcessResidentMemoryBytes = int(m.GetGauge().GetValue())
+		case "process_open_fds":
+			result.ProcessOpenFds = int(m.GetGauge().GetValue())
+		case "process_max_fds":
+			result.ProcessMaxFds = int(m.GetGauge().GetValue())
+		case "go_threads":
+			result.GoThreads = int(m.GetGauge().GetValue())
+		case "curio_harmonytask_cpu_usage":
+			result.CPUUsage = m.GetGauge().GetValue()
+		case "curio_harmonytask_ram_usage":
+			result.RAMUsage = m.GetGauge().GetValue()
+		case "curio_harmonytask_gpu_usage":
+			result.GpuUsage = m.GetGauge().GetValue()
+		case "curio_harmonytask_active_tasks":
+			for _, label := range m.Label {
+				result.ActiveTasks = append(result.ActiveTasks, &model.GaugeCountValue{
+					Key:   label.GetValue(),
+					Value: int(m.GetGauge().GetValue()),
+				})
+			}
+		case "curio_harmonytask_added_tasks":
+			for _, label := range m.Label {
+				result.AddedTasks = append(result.AddedTasks, &model.GaugeCountValue{
+					Key:   label.GetValue(),
+					Value: int(m.GetGauge().GetValue()),
+				})
+			}
+		case "curio_harmonytask_tasks_completed":
+			for _, label := range m.Label {
+				result.TasksCompleted = append(result.TasksCompleted, &model.GaugeCountValue{
+					Key:   label.GetValue(),
+					Value: int(m.GetGauge().GetValue()),
+				})
+			}
+		case "curio_harmonytask_tasks_started":
+			for _, label := range m.Label {
+				result.TasksStarted = append(result.TasksStarted, &model.GaugeCountValue{
+					Key:   label.GetValue(),
+					Value: int(m.GetGauge().GetValue()),
+				})
+			}
+		}
+	}
+
+	//var result []metric
+	for name, mf := range metrics {
+		for _, m := range mf.Metric {
+			parserFunc(name, m)
+		}
+	}
+	return &result, nil
 }
 
 // Machine returns graph.MachineResolver implementation.

@@ -54,6 +54,17 @@ const AppRoutes = {
       component: () => import('@/views/configurations/index.vue'),
     },
     {
+      name: 'ConfigurationEdit',
+      path: '/app/configurations/:layer',
+      component: () => import('@/views/configurations/ConfigurationEdit.vue'),
+      props: true,
+    },
+    {
+      name: 'ConfigurationCreate',
+      path: '/app/configurations/create',
+      component: () => import('@/views/configurations/ConfigurationCreate.vue'),
+    },
+    {
       name: 'Miners',
       path: '/app/miners',
       component: () => import('@/views/miners/index.vue'),

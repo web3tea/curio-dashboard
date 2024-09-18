@@ -8,6 +8,7 @@ import NewTasks from '@/views/widgets/data/NewTasks.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMachine } from '@/views/query/machine'
 import { Machine } from '@/typed-graph'
+import MachineMetrics from '@/views/machines/MachineMetrics.vue'
 
 const props = defineProps({
   id: {
@@ -40,6 +41,11 @@ const machine: ComputedRef<Machine> = computed(() => result.value?.machine || {}
 
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
+  <v-row>
+    <v-col cols="12">
+      <MachineMetrics :id="Number(props.id)" />
+    </v-col>
+  </v-row>
   <v-row>
     <v-col cols="12">
       <MachineTasks :id="Number(props.id)" />

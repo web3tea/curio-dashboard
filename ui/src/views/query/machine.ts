@@ -23,6 +23,38 @@ export const machineBaseFragment = gql`
   }
 `
 
+export const machineMetricsFragment = gql`
+  fragment MachineMetricsAll on MachineMetrics {
+    cpuUsage
+    gpuUsage
+    ramUsage
+    activeTasks {
+      key
+      value
+    }
+    addedTasks {
+      key
+      value
+    }
+    tasksCompleted {
+      key
+      value
+    }
+    tasksStarted {
+      key
+      value
+    }
+    goRoutines
+    goVersion
+    goThreads
+    processCpuSecondsTotal
+    processStartTimeSeconds
+    processVirtualMemoryBytes
+    processResidentMemoryBytes
+    processOpenFds
+  }
+`
+
 export const GetMachines = gql`
   query GetMachines {
     machines {
@@ -84,4 +116,21 @@ export const GetMachineStorages = gql`
       }
     }
     ${storagePathFragment}
+`
+
+export const GetMachineInfo = gql`
+    query GetMachineMetrics($id: Int!) {
+      machine(id: $id) {
+        ...MachineBaseAll
+        metrics {
+          ...MachineMetricsAll
+        }
+        detail {
+          ...MachineDetailAll
+        }
+      }
+    }
+    ${machineMetricsFragment}
+    ${machineBaseFragment}
+    ${machineDetailFragment}
 `

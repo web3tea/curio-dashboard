@@ -55,6 +55,10 @@ export const SubscribeCompletedTask = gql`
       result
       err
       completedByHostAndPort
+      completedBy {
+        id
+        hostAndPort
+      }
     }
   }
 `
@@ -73,7 +77,10 @@ export const SubscribeNewTask = gql`
       postedTime
       updateTime
       ownerId
-      addedByID
+      addedBy {
+        id
+        hostAndPort
+      }
       initiatedByID
     }
   }

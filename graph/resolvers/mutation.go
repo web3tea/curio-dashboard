@@ -20,6 +20,9 @@ func (r *mutationResolver) CreateConfig(ctx context.Context, title string, confi
 	if !errors.Is(err, pgx.ErrNoRows) {
 		return nil, fmt.Errorf("config %s already exists", title)
 	}
+	if title == "" || config == "" {
+		return nil, fmt.Errorf("title and config must be non-empty")
+	}
 	_, err = r.db.Exec(ctx, "INSERT INTO harmony_config (title, config) VALUES ($1, $2)", title, config)
 	if err != nil {
 		return nil, err

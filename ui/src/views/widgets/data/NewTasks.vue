@@ -41,7 +41,7 @@ const headers = [
   { text: 'Name', value: 'name' },
   { text: 'ID', value: 'id' },
   { text: 'Posted', value: 'postedTime' },
-  { text: 'AddedBy', value: 'addedByID' },
+  { text: 'AddedBy', value: 'addedBy' },
 ]
 const themeColor = ref('rgb(var(--v-theme-primary))')
 
@@ -72,6 +72,9 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
       </template>
       <template #item-postedTime="{postedTime}">
         {{ moment(postedTime).calendar() }}
+      </template>
+      <template #item-addedBy="{addedBy}">
+        <RouterLink :to="{ name: 'MachineInfo', params: { id: addedBy.id } }">{{ addedBy.hostAndPort }}</RouterLink>
       </template>
     </EasyDataTable>
   </UiTitleCard>

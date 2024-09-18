@@ -52,7 +52,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
       <template #item-reachable="{ reachable }">
         <v-chip class="px-0" size="small" variant="text">
           <v-avatar class="mr-2" :color=" reachable ? 'success' : 'error'" size="8" variant="flat" />
-          <p class="text-h6 mb-0">{{ reachable ? 'yes' : 'no' }}</p>
+          <p class="text-h6 mb-0">{{ reachable ? 'ok' : 'no' }}</p>
         </v-chip>
       </template>
       <template #item-syncState="{ syncState }">

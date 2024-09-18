@@ -82,6 +82,10 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
       <template #item-workStart="{workStart}">
         {{ moment(workStart).calendar() }}
       </template>
+      <template #item-completedByHostAndPort="{completedByHostAndPort, completedBy }">
+        <RouterLink v-if="completedBy" :to="{ name: 'MachineInfo', params: { id: completedBy.id } }">{{ completedBy.hostAndPort }}</RouterLink>
+        <span v-else>{{ completedByHostAndPort }}</span>
+      </template>
       <template #item-queued="{posted, workStart}">
         {{ formatDuration(new Date(workStart).getTime() - new Date(posted).getTime()) }}
       </template>

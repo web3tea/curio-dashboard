@@ -19,12 +19,6 @@ const props = defineProps({
   config: String,
 })
 
-const emit = defineEmits(['updateDialog'])
-
-function closeDialog () {
-  emit('updateDialog', false)
-}
-
 const customizer = useCustomizerStore()
 
 const extensions = computed(() => {
@@ -48,7 +42,6 @@ function saveEdit () {
       config: editConfig.value,
     }).then(() => {
       saveLoading.value = false
-      closeDialog()
     })
   } else {
     updateConfig({
@@ -56,7 +49,6 @@ function saveEdit () {
       config: editConfig.value,
     }).then(() => {
       saveLoading.value = false
-      closeDialog()
     })
   }
 }
@@ -68,7 +60,6 @@ function saveEdit () {
     <v-toolbar>
       <v-btn
         icon="true"
-        @click="closeDialog"
       ><v-icon :icon="mdiClose" /></v-btn>
       <v-toolbar-title>{{ props.title }}</v-toolbar-title>
       <v-spacer />

@@ -8,4 +8,5 @@ type TaskHistory {
     result: Boolean!
     err: String
     completedByHostAndPort: String!
+    completedBy: Machine
 }

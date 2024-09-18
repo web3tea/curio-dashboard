@@ -58,6 +58,12 @@ export type Config = {
   usedBy: Array<Maybe<MachineDetail>>;
 };
 
+export type GaugeCountValue = {
+  __typename?: 'GaugeCountValue';
+  key: Scalars['String']['output'];
+  value: Scalars['Int']['output'];
+};
+
 export type Machine = {
   __typename?: 'Machine';
   cpu: Scalars['Int']['output'];
@@ -66,6 +72,7 @@ export type Machine = {
   hostAndPort: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   lastContact: Scalars['Time']['output'];
+  metrics?: Maybe<MachineMetrics>;
   ram: Scalars['Int']['output'];
   storages?: Maybe<Array<Maybe<StoragePath>>>;
   taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
@@ -89,6 +96,26 @@ export type MachineDetail = {
   startupTime: Scalars['Time']['output'];
   tasks: Scalars['String']['output'];
   tasksArray?: Maybe<Array<Scalars['String']['output']>>;
+};
+
+export type MachineMetrics = {
+  __typename?: 'MachineMetrics';
+  activeTasks: Array<Maybe<GaugeCountValue>>;
+  addedTasks: Array<Maybe<GaugeCountValue>>;
+  cpuUsage: Scalars['Float']['output'];
+  goRoutines: Scalars['Int']['output'];
+  goThreads: Scalars['Int']['output'];
+  goVersion: Scalars['String']['output'];
+  gpuUsage: Scalars['Float']['output'];
+  processCpuSecondsTotal: Scalars['Int']['output'];
+  processMaxFds: Scalars['Int']['output'];
+  processOpenFds: Scalars['Int']['output'];
+  processResidentMemoryBytes: Scalars['Int']['output'];
+  processStartTimeSeconds: Scalars['Int']['output'];
+  processVirtualMemoryBytes: Scalars['Int']['output'];
+  ramUsage: Scalars['Float']['output'];
+  tasksCompleted: Array<Maybe<GaugeCountValue>>;
+  tasksStarted: Array<Maybe<GaugeCountValue>>;
 };
 
 export type MachineSummary = {
@@ -588,6 +615,7 @@ export enum TaskHistoriesAggregateInterval {
 
 export type TaskHistory = {
   __typename?: 'TaskHistory';
+  completedBy?: Maybe<Machine>;
   completedByHostAndPort: Scalars['String']['output'];
   err?: Maybe<Scalars['String']['output']>;
   id: Scalars['Int']['output'];

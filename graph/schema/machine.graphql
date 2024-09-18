@@ -11,4 +11,29 @@ type Machine {
     tasks: [Task]
     taskHistories(last: Int!): [TaskHistory]
     storages: [StoragePath]
+    metrics: MachineMetrics
+}
+
+type GaugeCountValue {
+    key: String!
+    value: Int!
+}
+
+type MachineMetrics {
+    cpuUsage: Float!
+    gpuUsage: Float!
+    ramUsage: Float!
+    activeTasks: [GaugeCountValue]!
+    addedTasks: [GaugeCountValue]!
+    tasksCompleted: [GaugeCountValue]!
+    tasksStarted: [GaugeCountValue]!
+    goRoutines: Int!
+    goVersion: String!
+    goThreads: Int!
+    processCpuSecondsTotal: Int!
+    processStartTimeSeconds: Int!
+    processVirtualMemoryBytes: Int!
+    processResidentMemoryBytes: Int!
+    processOpenFds: Int!
+    processMaxFds: Int!
 }

@@ -157,7 +157,7 @@ const itemsSelected = ref<Item[]>([])
             </template>
             <template #item-detail.layers="{ detail }">
               <v-chip-group column>
-                <v-chip v-for="layer in detail.layers.split(',')" :key="layer">{{ layer }}</v-chip>
+                <v-chip v-for="layer in detail.layers.split(',')" :key="layer" :to="{name: 'ConfigurationEdit', params: {layer: layer}}">{{ layer }}</v-chip>
               </v-chip-group>
             </template>
             <template #item-detail.tasks="{ detail }">

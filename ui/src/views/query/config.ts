@@ -14,6 +14,19 @@ export const GetConfigs = gql`
   }
 `
 
+export const GetConfig = gql`
+    query GetConfig($layer: String!) {
+      config(layer: $layer) {
+        id
+        title
+        config
+        usedBy {
+          machineId
+          machineName
+        }
+      }
+    }`
+
 export const UpdateConfig = gql`
   mutation UpdateConfig($title: String!, $config: String!) {
     updateConfig(title: $title, config: $config) {
