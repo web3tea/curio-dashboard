@@ -19,7 +19,7 @@
 
 - **Curio Node**: A reachable Curio Web API, e.g., `http://localhost:4701`.
 - **YugabyteDB**: Distributed database used by the Curio cluster.
-- **Prometheus**: Collects metrics from the Curio cluster for monitoring.
+- **Prometheus**: Collects metrics from the Curio cluster for monitoring. (Optional)
 - **Lotus Daemon Node**: Required for blockchain data retrieval.
 
 ## Usage
@@ -28,7 +28,8 @@
 
 ```bash
 # Pull the latest Docker image
-docker pull ghcr.io/strahe/curio-dashboard:latest  # Or use a specific version tag
+docker pull ghcr.io/strahe/curio-dashboard:latest  # The Latest release Or use a specific version tag
+# docker pull ghcr.io/strahe/curio-dashboard:main # Use the main branch for the latest changes 
 
 # Generate the default configuration file
 docker run --rm ghcr.io/strahe/curio-dashboard:latest config default > config.toml
@@ -84,4 +85,4 @@ Follow these steps to build the dashboard from source:
 
 4. **Access the Dashboard**
    - Production URL: [http://localhost:9091](http://localhost:9091) (available only with `make aio`)
-   - GraphQL Playground: [http://127.0.0.1:9091/playground](http://127.0.0.1:9091/playground)
+   - Development URL: [http://localhost:3000](http://localhost:3000) (`cd ui; yarn dev`)
