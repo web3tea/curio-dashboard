@@ -1,11 +1,13 @@
 type Miner {
+    id: Address!
     info: MinerInfo
     power:MinerPower
+    balance: MinerBalance
 #    deadlines: [MinerDeadline!]
 #    partitions(dix: Int!): [MinerPartition!]
 #    faults: MinerFaults
 #    recoveries: MinerRecoveries
-    availableBalance: BigInt
+#    availableBalance: BigInt
 }
 
 type PowerClaim {
@@ -19,13 +21,13 @@ type MinerInfo {
     newWorker: Address!
     controlAddresses: [Address!]
     workerChangeEpoch: Int!
-    peerId: String
+    peerId: String!
     multiAddrs: [String!]
     windowPoStProofType: Int!
     sectorSize: Int!
     windowPoStPartitionSectors: Int!
     consensusFaultElapsed: Int!
-    pendingOwnerAddress: Address
+    pendingOwnerAddress: Address!
     beneficiary: Address!
     beneficiaryTerm:MinerBeneficiaryTerm
     pendingBeneficiaryChange: MinerPendingBeneficiaryChange
@@ -33,12 +35,12 @@ type MinerInfo {
 
 type MinerBeneficiaryTerm  {
     quota:      BigInt!
-    usedQuota:  Int!
+    usedQuota:  BigInt!
     expiration: Int!
 }
 
 type MinerPendingBeneficiaryChange {
-    newBeneficiary:Address
+    newBeneficiary:        Address!
     newQuota:              BigInt!
     newExpiration:         Int!
     approvedByBeneficiary: Boolean!
@@ -50,4 +52,13 @@ type MinerPower {
     minerPower:  PowerClaim!
     totalPower:  PowerClaim!
     hasMinPower: Boolean!
+}
+
+type MinerBalance {
+    id: Address!
+    balance: BigInt!
+    available: BigInt!
+    initialPledge: BigInt!
+    vesting: BigInt!
+    preCommitDeposits: BigInt!
 }

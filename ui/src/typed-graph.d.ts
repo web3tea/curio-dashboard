@@ -139,16 +139,27 @@ export type MetricsActiveTask = {
 
 export type Miner = {
   __typename?: 'Miner';
-  availableBalance?: Maybe<Scalars['BigInt']['output']>;
+  balance?: Maybe<MinerBalance>;
+  id: Scalars['Address']['output'];
   info?: Maybe<MinerInfo>;
   power?: Maybe<MinerPower>;
+};
+
+export type MinerBalance = {
+  __typename?: 'MinerBalance';
+  available: Scalars['BigInt']['output'];
+  balance: Scalars['BigInt']['output'];
+  id: Scalars['Address']['output'];
+  initialPledge: Scalars['BigInt']['output'];
+  preCommitDeposits: Scalars['BigInt']['output'];
+  vesting: Scalars['BigInt']['output'];
 };
 
 export type MinerBeneficiaryTerm = {
   __typename?: 'MinerBeneficiaryTerm';
   expiration: Scalars['Int']['output'];
   quota: Scalars['BigInt']['output'];
-  usedQuota: Scalars['Int']['output'];
+  usedQuota: Scalars['BigInt']['output'];
 };
 
 export type MinerInfo = {
@@ -160,9 +171,9 @@ export type MinerInfo = {
   multiAddrs?: Maybe<Array<Scalars['String']['output']>>;
   newWorker: Scalars['Address']['output'];
   owner: Scalars['Address']['output'];
-  peerId?: Maybe<Scalars['String']['output']>;
+  peerId: Scalars['String']['output'];
   pendingBeneficiaryChange?: Maybe<MinerPendingBeneficiaryChange>;
-  pendingOwnerAddress?: Maybe<Scalars['Address']['output']>;
+  pendingOwnerAddress: Scalars['Address']['output'];
   sectorSize: Scalars['Int']['output'];
   windowPoStPartitionSectors: Scalars['Int']['output'];
   windowPoStProofType: Scalars['Int']['output'];
@@ -174,7 +185,7 @@ export type MinerPendingBeneficiaryChange = {
   __typename?: 'MinerPendingBeneficiaryChange';
   approvedByBeneficiary: Scalars['Boolean']['output'];
   approvedByNominee: Scalars['Boolean']['output'];
-  newBeneficiary?: Maybe<Scalars['Address']['output']>;
+  newBeneficiary: Scalars['Address']['output'];
   newExpiration: Scalars['Int']['output'];
   newQuota: Scalars['BigInt']['output'];
 };

@@ -47,6 +47,7 @@ type ResolverRoot interface {
 	Machine() MachineResolver
 	MachineSummary() MachineSummaryResolver
 	Miner() MinerResolver
+	MinerBalance() MinerBalanceResolver
 	Mutation() MutationResolver
 	Pipeline() PipelineResolver
 	PipelineSummary() PipelineSummaryResolver
@@ -166,9 +167,19 @@ type ComplexityRoot struct {
 	}
 
 	Miner struct {
-		AvailableBalance func(childComplexity int) int
-		Info             func(childComplexity int) int
-		Power            func(childComplexity int) int
+		Balance func(childComplexity int) int
+		ID      func(childComplexity int) int
+		Info    func(childComplexity int) int
+		Power   func(childComplexity int) int
+	}
+
+	MinerBalance struct {
+		Available         func(childComplexity int) int
+		Balance           func(childComplexity int) int
+		ID                func(childComplexity int) int
+		InitialPledge     func(childComplexity int) int
+		PreCommitDeposits func(childComplexity int) int
+		Vesting           func(childComplexity int) int
 	}
 
 	MinerBeneficiaryTerm struct {
@@ -545,7 +556,14 @@ type MachineSummaryResolver interface {
 type MinerResolver interface {
 	Info(ctx context.Context, obj *model.Miner) (*model.MinerInfo, error)
 	Power(ctx context.Context, obj *model.Miner) (*model.MinerPower, error)
-	AvailableBalance(ctx context.Context, obj *model.Miner) (*types.BigInt, error)
+	Balance(ctx context.Context, obj *model.Miner) (*model.MinerBalance, error)
+}
+type MinerBalanceResolver interface {
+	Balance(ctx context.Context, obj *model.MinerBalance) (*types.BigInt, error)
+	Available(ctx context.Context, obj *model.MinerBalance) (*types.BigInt, error)
+	InitialPledge(ctx context.Context, obj *model.MinerBalance) (*types.BigInt, error)
+	Vesting(ctx context.Context, obj *model.MinerBalance) (*types.BigInt, error)
+	PreCommitDeposits(ctx context.Context, obj *model.MinerBalance) (*types.BigInt, error)
 }
 type MutationResolver interface {
 	CreateConfig(ctx context.Context, title string, config string) (*model.Config, error)
@@ -1157,12 +1175,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MetricsActiveTask.Series(childComplexity), true
 
-	case "Miner.availableBalance":
-		if e.complexity.Miner.AvailableBalance == nil {
+	case "Miner.balance":
+		if e.complexity.Miner.Balance == nil {
 			break
 		}
 
-		return e.complexity.Miner.AvailableBalance(childComplexity), true
+		return e.complexity.Miner.Balance(childComplexity), true
+
+	case "Miner.id":
+		if e.complexity.Miner.ID == nil {
+			break
+		}
+
+		return e.complexity.Miner.ID(childComplexity), true
 
 	case "Miner.info":
 		if e.complexity.Miner.Info == nil {
@@ -1177,6 +1202,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Miner.Power(childComplexity), true
+
+	case "MinerBalance.available":
+		if e.complexity.MinerBalance.Available == nil {
+			break
+		}
+
+		return e.complexity.MinerBalance.Available(childComplexity), true
+
+	case "MinerBalance.balance":
+		if e.complexity.MinerBalance.Balance == nil {
+			break
+		}
+
+		return e.complexity.MinerBalance.Balance(childComplexity), true
+
+	case "MinerBalance.id":
+		if e.complexity.MinerBalance.ID == nil {
+			break
+		}
+
+		return e.complexity.MinerBalance.ID(childComplexity), true
+
+	case "MinerBalance.initialPledge":
+		if e.complexity.MinerBalance.InitialPledge == nil {
+			break
+		}
+
+		return e.complexity.MinerBalance.InitialPledge(childComplexity), true
+
+	case "MinerBalance.preCommitDeposits":
+		if e.complexity.MinerBalance.PreCommitDeposits == nil {
+			break
+		}
+
+		return e.complexity.MinerBalance.PreCommitDeposits(childComplexity), true
+
+	case "MinerBalance.vesting":
+		if e.complexity.MinerBalance.Vesting == nil {
+			break
+		}
+
+		return e.complexity.MinerBalance.Vesting(childComplexity), true
 
 	case "MinerBeneficiaryTerm.expiration":
 		if e.complexity.MinerBeneficiaryTerm.Expiration == nil {
@@ -7081,6 +7148,50 @@ func (ec *executionContext) fieldContext_MetricsActiveTask_series(_ context.Cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Miner_id(ctx context.Context, field graphql.CollectedField, obj *model.Miner) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Miner_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Miner_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Miner",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Miner_info(ctx context.Context, field graphql.CollectedField, obj *model.Miner) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Miner_info(ctx, field)
 	if err != nil {
@@ -7205,8 +7316,8 @@ func (ec *executionContext) fieldContext_Miner_power(_ context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Miner_availableBalance(ctx context.Context, field graphql.CollectedField, obj *model.Miner) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Miner_availableBalance(ctx, field)
+func (ec *executionContext) _Miner_balance(ctx context.Context, field graphql.CollectedField, obj *model.Miner) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Miner_balance(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7219,7 +7330,7 @@ func (ec *executionContext) _Miner_availableBalance(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Miner().AvailableBalance(rctx, obj)
+		return ec.resolvers.Miner().Balance(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7228,14 +7339,292 @@ func (ec *executionContext) _Miner_availableBalance(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.BigInt)
+	res := resTmp.(*model.MinerBalance)
 	fc.Result = res
-	return ec.marshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalOMinerBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBalance(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Miner_availableBalance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Miner_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Miner",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_MinerBalance_id(ctx, field)
+			case "balance":
+				return ec.fieldContext_MinerBalance_balance(ctx, field)
+			case "available":
+				return ec.fieldContext_MinerBalance_available(ctx, field)
+			case "initialPledge":
+				return ec.fieldContext_MinerBalance_initialPledge(ctx, field)
+			case "vesting":
+				return ec.fieldContext_MinerBalance_vesting(ctx, field)
+			case "preCommitDeposits":
+				return ec.fieldContext_MinerBalance_preCommitDeposits(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MinerBalance", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerBalance_id(ctx context.Context, field graphql.CollectedField, obj *model.MinerBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerBalance_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerBalance_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerBalance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerBalance_balance(ctx context.Context, field graphql.CollectedField, obj *model.MinerBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerBalance_balance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MinerBalance().Balance(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*types.BigInt)
+	fc.Result = res
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerBalance_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerBalance",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type BigInt does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerBalance_available(ctx context.Context, field graphql.CollectedField, obj *model.MinerBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerBalance_available(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MinerBalance().Available(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*types.BigInt)
+	fc.Result = res
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerBalance_available(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerBalance",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type BigInt does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerBalance_initialPledge(ctx context.Context, field graphql.CollectedField, obj *model.MinerBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerBalance_initialPledge(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MinerBalance().InitialPledge(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*types.BigInt)
+	fc.Result = res
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerBalance_initialPledge(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerBalance",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type BigInt does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerBalance_vesting(ctx context.Context, field graphql.CollectedField, obj *model.MinerBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerBalance_vesting(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MinerBalance().Vesting(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*types.BigInt)
+	fc.Result = res
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerBalance_vesting(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerBalance",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type BigInt does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MinerBalance_preCommitDeposits(ctx context.Context, field graphql.CollectedField, obj *model.MinerBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MinerBalance_preCommitDeposits(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MinerBalance().PreCommitDeposits(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*types.BigInt)
+	fc.Result = res
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MinerBalance_preCommitDeposits(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MinerBalance",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
@@ -7316,9 +7705,9 @@ func (ec *executionContext) _MinerBeneficiaryTerm_usedQuota(ctx context.Context,
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.BigInt)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBeneficiaryTerm_usedQuota(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7328,7 +7717,7 @@ func (ec *executionContext) fieldContext_MinerBeneficiaryTerm_usedQuota(_ contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type BigInt does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7616,11 +8005,14 @@ func (ec *executionContext) _MinerInfo_peerId(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_peerId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7874,11 +8266,14 @@ func (ec *executionContext) _MinerInfo_pendingOwnerAddress(ctx context.Context, 
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*types.Address)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_pendingOwnerAddress(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -8061,11 +8456,14 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_newBeneficiary(ctx co
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*types.Address)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerPendingBeneficiaryChange_newBeneficiary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13893,12 +14291,14 @@ func (ec *executionContext) fieldContext_Query_miner(ctx context.Context, field 
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "id":
+				return ec.fieldContext_Miner_id(ctx, field)
 			case "info":
 				return ec.fieldContext_Miner_info(ctx, field)
 			case "power":
 				return ec.fieldContext_Miner_power(ctx, field)
-			case "availableBalance":
-				return ec.fieldContext_Miner_availableBalance(ctx, field)
+			case "balance":
+				return ec.fieldContext_Miner_balance(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Miner", field.Name)
 		},
@@ -22893,6 +23293,11 @@ func (ec *executionContext) _Miner(ctx context.Context, sel ast.SelectionSet, ob
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Miner")
+		case "id":
+			out.Values[i] = ec._Miner_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "info":
 			field := field
 
@@ -22959,7 +23364,7 @@ func (ec *executionContext) _Miner(ctx context.Context, sel ast.SelectionSet, ob
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "availableBalance":
+		case "balance":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -22968,7 +23373,226 @@ func (ec *executionContext) _Miner(ctx context.Context, sel ast.SelectionSet, ob
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Miner_availableBalance(ctx, field, obj)
+				res = ec._Miner_balance(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var minerBalanceImplementors = []string{"MinerBalance"}
+
+func (ec *executionContext) _MinerBalance(ctx context.Context, sel ast.SelectionSet, obj *model.MinerBalance) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, minerBalanceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MinerBalance")
+		case "id":
+			out.Values[i] = ec._MinerBalance_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "balance":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MinerBalance_balance(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "available":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MinerBalance_available(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "initialPledge":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MinerBalance_initialPledge(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "vesting":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MinerBalance_vesting(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "preCommitDeposits":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MinerBalance_preCommitDeposits(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -23099,6 +23723,9 @@ func (ec *executionContext) _MinerInfo(ctx context.Context, sel ast.SelectionSet
 			}
 		case "peerId":
 			out.Values[i] = ec._MinerInfo_peerId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "multiAddrs":
 			out.Values[i] = ec._MinerInfo_multiAddrs(ctx, field, obj)
 		case "windowPoStProofType":
@@ -23123,6 +23750,9 @@ func (ec *executionContext) _MinerInfo(ctx context.Context, sel ast.SelectionSet
 			}
 		case "pendingOwnerAddress":
 			out.Values[i] = ec._MinerInfo_pendingOwnerAddress(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "beneficiary":
 			out.Values[i] = ec._MinerInfo_beneficiary(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -23168,6 +23798,9 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange(ctx context.Context, 
 			out.Values[i] = graphql.MarshalString("MinerPendingBeneficiaryChange")
 		case "newBeneficiary":
 			out.Values[i] = ec._MinerPendingBeneficiaryChange_newBeneficiary(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "newQuota":
 			out.Values[i] = ec._MinerPendingBeneficiaryChange_newQuota(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -27919,6 +28552,13 @@ func (ec *executionContext) marshalOMiner2ᚖgithubᚗcomᚋstraheᚋcurioᚑdas
 		return graphql.Null
 	}
 	return ec._Miner(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMinerBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBalance(ctx context.Context, sel ast.SelectionSet, v *model.MinerBalance) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MinerBalance(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMinerBeneficiaryTerm2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBeneficiaryTerm(ctx context.Context, sel ast.SelectionSet, v *model.MinerBeneficiaryTerm) graphql.Marshaler {

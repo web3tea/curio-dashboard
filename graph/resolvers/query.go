@@ -209,7 +209,14 @@ func (r *queryResolver) MetricsActiveTasks(ctx context.Context, lastDays int, ma
 
 // Miner is the resolver for the miner field.
 func (r *queryResolver) Miner(ctx context.Context, address types.Address) (*model.Miner, error) {
-	panic(fmt.Errorf("not implemented: Miner - miner"))
+	act, err := r.fullNode.StateGetActor(ctx, address.Address, types2.EmptyTSK)
+	if err != nil {
+		return nil, err
+	}
+	return &model.Miner{
+		ID:    address,
+		Actor: *act,
+	}, nil
 }
 
 // MinerPower is the resolver for the minerPower field.

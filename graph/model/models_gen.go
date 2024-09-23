@@ -69,7 +69,7 @@ type MetricsActiveTask struct {
 
 type MinerBeneficiaryTerm struct {
 	Quota      types.BigInt `json:"quota"`
-	UsedQuota  int          `json:"usedQuota"`
+	UsedQuota  types.BigInt `json:"usedQuota"`
 	Expiration int          `json:"expiration"`
 }
 
@@ -79,24 +79,24 @@ type MinerInfo struct {
 	NewWorker                  types.Address                  `json:"newWorker"`
 	ControlAddresses           []*types.Address               `json:"controlAddresses"`
 	WorkerChangeEpoch          int                            `json:"workerChangeEpoch"`
-	PeerID                     *string                        `json:"peerId"`
+	PeerID                     string                         `json:"peerId"`
 	MultiAddrs                 []string                       `json:"multiAddrs"`
 	WindowPoStProofType        int                            `json:"windowPoStProofType"`
 	SectorSize                 int                            `json:"sectorSize"`
 	WindowPoStPartitionSectors int                            `json:"windowPoStPartitionSectors"`
 	ConsensusFaultElapsed      int                            `json:"consensusFaultElapsed"`
-	PendingOwnerAddress        *types.Address                 `json:"pendingOwnerAddress"`
+	PendingOwnerAddress        types.Address                  `json:"pendingOwnerAddress"`
 	Beneficiary                types.Address                  `json:"beneficiary"`
 	BeneficiaryTerm            *MinerBeneficiaryTerm          `json:"beneficiaryTerm"`
 	PendingBeneficiaryChange   *MinerPendingBeneficiaryChange `json:"pendingBeneficiaryChange"`
 }
 
 type MinerPendingBeneficiaryChange struct {
-	NewBeneficiary        *types.Address `json:"newBeneficiary"`
-	NewQuota              types.BigInt   `json:"newQuota"`
-	NewExpiration         int            `json:"newExpiration"`
-	ApprovedByBeneficiary bool           `json:"approvedByBeneficiary"`
-	ApprovedByNominee     bool           `json:"approvedByNominee"`
+	NewBeneficiary        types.Address `json:"newBeneficiary"`
+	NewQuota              types.BigInt  `json:"newQuota"`
+	NewExpiration         int           `json:"newExpiration"`
+	ApprovedByBeneficiary bool          `json:"approvedByBeneficiary"`
+	ApprovedByNominee     bool          `json:"approvedByNominee"`
 }
 
 type MinerPower struct {

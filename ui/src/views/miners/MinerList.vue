@@ -82,6 +82,9 @@ const headers :Header[] = [
                 <h5 class="text-h5">#{{ id }}</h5>
               </div>
             </template>
+            <template #item-address="{ address }">
+              <RouterLink :to="{ name: 'MinerDetails', params: { id: address } }">{{ address }}</RouterLink>
+            </template>
             <template #item-actorBalance="{ actorBalance }">
               {{ formatFIL(actorBalance) }}
             </template>
