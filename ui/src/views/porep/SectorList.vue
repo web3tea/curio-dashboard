@@ -90,18 +90,18 @@ const itemsSelected = ref<Item[]>([])
 
               <div class="text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Task ID :</span>
-                <span class="text-medium-emphasis">{{ item.currentTask.id }}</span>
+                <span class="text-medium-emphasis">{{ item.currentTask?.id }}</span>
               </div>
               <div class="text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Posted :</span>
-                <span class="text-medium-emphasis">{{ moment(item.currentTask.postedTime).calendar() }}</span>
+                <span class="text-medium-emphasis">{{ moment(item.currentTask?.postedTime).calendar() }}</span>
               </div>
             </template>
             <template #item-createTime="{createTime}">
               {{ moment(createTime).format() }}
             </template>
             <template #item-status="item">
-              <PipelineStatus :sector="item" />
+              <PipelineStatus :id="item.id" :sector="item" />
             </template>
           </EasyDataTable>
         </v-card-text>

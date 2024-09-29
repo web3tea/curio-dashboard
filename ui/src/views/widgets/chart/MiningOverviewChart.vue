@@ -94,10 +94,15 @@ const chartSeries = computed(() => {
     seriesMap[item.miner].push([item.day, item.wonBlock])
   })
 
-  return Object.keys(seriesMap).map(miner => ({
-    name: miner,
-    data: seriesMap[miner],
-  }))
+  return Object.keys(seriesMap).length > 0
+    ? Object.keys(seriesMap).map(miner => ({
+      name: miner,
+      data: seriesMap[miner],
+    }))
+    : [{
+      name: 'No Data',
+      data: Array.from({ length: 7 }, (_, i) => [new Date(start.getTime() + i * 24 * 60 * 60 * 1000).getTime(), 0]),
+    }]
 })
 
 const totalWonBlocks = computed(() => {

@@ -20,12 +20,9 @@ const { result, loading, refetch, error } = useQuery(GetMinerFull, {
   fetchPolicy: 'cache-first',
 }))
 
-const miner = result.value?.miner
-const info = miner?.info
-const power = miner?.power
-const balance = miner?.balance
-
 const cols1 = computed(() => {
+  const miner = result.value?.miner
+  const info = miner?.info
   return [
     { title: 'ID', subtext: miner?.id, cols: 12, sm: 6 },
     { title: 'Owner', subtext: info?.owner, cols: 12, sm: 6 },
@@ -40,6 +37,9 @@ const cols1 = computed(() => {
 })
 
 const cols2 = computed(() => {
+  const miner = result.value?.miner
+  const power = miner?.power
+  const balance = miner?.balance
   return [
     {
       title: 'Raw Byte Power',

@@ -36,7 +36,9 @@ func (r *minerResolver) Info(ctx context.Context, obj *model.Miner) (*model.Mine
 			return &types.Address{Address: addr}
 		}),
 		WorkerChangeEpoch: int(mi.WorkerChangeEpoch),
-		PeerID:            lo.If(mi.PeerId != nil, mi.PeerId.String()).Else(""),
+		PeerID: lo.IfF(mi.PeerId != nil, func() string {
+			return mi.PeerId.String()
+		}).Else(""),
 		MultiAddrs: lo.Map(mi.Multiaddrs, func(addr abi.Multiaddrs, idx int) string {
 			ma, err := multiaddr.NewMultiaddrBytes(addr)
 			if err != nil {

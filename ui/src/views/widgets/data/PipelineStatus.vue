@@ -74,6 +74,10 @@ const chartOptions = computed(() => {
     tooltip: {
       enabled: false,
     },
+    responsive: [{
+      breakpoint: undefined,
+      options: {},
+    }],
   }
 })
 
