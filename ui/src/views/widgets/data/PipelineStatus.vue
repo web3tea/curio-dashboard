@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
 import { useTheme } from 'vuetify'
-import { Pipeline } from '@/typed-graph'
+import { Porep } from '@/typed-graph'
 import { computed, PropType } from 'vue'
 
 const theme = useTheme()
 
 const props = defineProps({
   sector: {
-    type: Object as PropType<Pipeline>,
+    type: Object as PropType<Porep>,
     required: true,
   },
 })
@@ -33,7 +33,7 @@ const chartSeries = computed(() => [
   {
     data: Object.entries(valueMap).map(([key, value]) => ({
       x: value.label,
-      y: (props.sector[key as keyof Pipeline] as boolean) ? value.value : -value.value,
+      y: (props.sector[key as keyof Porep] as boolean) ? value.value : -value.value,
     })),
   },
 ])

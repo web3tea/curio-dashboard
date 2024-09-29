@@ -4,7 +4,9 @@ type Sector {
     id: ID!
     spID: ActorID!
     sectorNum: Int!
+    status: PorepStatus!
     meta: SectorMeta
+    porep: Porep
     locations: [SectorLocation]!
     pieces: [SectorMetaPiece]!
     tasks: [Task]!

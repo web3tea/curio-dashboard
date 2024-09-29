@@ -140,10 +140,15 @@ func (r *queryResolver) Actor(ctx context.Context, address types.Address) (*mode
 	return r.loader.Actor(ctx, address)
 }
 
-// Pipelines is the resolver for the pipelines field.
-func (r *queryResolver) Pipelines(ctx context.Context) ([]*model.Pipeline, error) {
+// Poreps is the resolver for the poreps field.
+func (r *queryResolver) Poreps(ctx context.Context) ([]*model.Porep, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
-	return r.loader.Pipelines(ctx)
+	return r.loader.Poreps(ctx)
+}
+
+// Porep is the resolver for the porep field.
+func (r *queryResolver) Porep(ctx context.Context, sp types.ActorID, sectorNumber int) (*model.Porep, error) {
+	return r.loader.Porep(ctx, sp, sectorNumber)
 }
 
 // PipelinesSummary is the resolver for the pipelinesSummary field.

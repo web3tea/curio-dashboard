@@ -6,8 +6,11 @@ package resolvers
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
+
+	"github.com/strahe/curio-dashboard/graph/loaders"
 
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
@@ -19,13 +22,37 @@ func (r *sectorResolver) ID(ctx context.Context, obj *model.Sector) (string, err
 	return fmt.Sprintf("%d:%d", obj.SpID, obj.SectorNum), nil
 }
 
+// Status is the resolver for the status field.
+func (r *sectorResolver) Status(ctx context.Context, obj *model.Sector) (model.PorepStatus, error) {
+	porep, err := r.loader.Porep(ctx, obj.SpID, obj.SectorNum)
+	if err == nil {
+		r := &porepResolver{r.Resolver}
+		return r.Status(ctx, porep)
+	}
+	_, err = r.loader.SectorMeta(ctx, obj.SpID, obj.SectorNum)
+	if err == nil {
+		return model.PorepStatusActive, nil
+	}
+	return model.PorepStatusUnknown, nil
+}
+
 // Meta is the resolver for the meta field.
 func (r *sectorResolver) Meta(ctx context.Context, obj *model.Sector) (*model.SectorMeta, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
 	if obj.Meta != nil {
 		return obj.Meta, nil
 	}
-	return r.loader.SectorMeta(ctx, obj.SpID, obj.SectorNum)
+	m, err := r.loader.SectorMeta(ctx, obj.SpID, obj.SectorNum)
+	if errors.Is(err, loaders.ErrorNotFound) {
+		return nil, nil
+	}
+	return m, nil
+}
+
+// Porep is the resolver for the porep field.
+func (r *sectorResolver) Porep(ctx context.Context, obj *model.Sector) (*model.Porep, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	return r.loader.Porep(ctx, obj.SpID, obj.SectorNum)
 }
 
 // Locations is the resolver for the locations field.
@@ -63,14 +90,4 @@ type sectorResolver struct{ *Resolver }
 //   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //     it when you're done.
 //   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *sectorResolver) SpID(ctx context.Context, obj *model.Sector) (*model.Actor, error) {
-	panic(fmt.Errorf("not implemented: SpID - spID"))
-}
-func (r *sectorResolver) Miner(ctx context.Context, obj *model.Sector) (*model.Actor, error) {
-	panic(fmt.Errorf("not implemented: Miner - miner"))
-}
-func (r *sectorResolver) SectorNumber(ctx context.Context, obj *model.Sector) (int, error) {
-	panic(fmt.Errorf("not implemented: SectorNumber - sectorNumber"))
-}
-
 const sectorDefaultCacheAge = time.Minute * 5

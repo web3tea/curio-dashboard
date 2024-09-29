@@ -146,7 +146,7 @@ type OpenSectorPiece struct {
 	IsSnap                        bool          `json:"isSnap"`
 }
 
-type Pipeline struct {
+type Porep struct {
 	ID                       string          `json:"id"`
 	SpID                     types.ActorID   `json:"spId"`
 	SectorNumber             int             `json:"sectorNumber"`
@@ -190,7 +190,7 @@ type Pipeline struct {
 	TaskIDSynth              *int            `json:"taskIdSynth"`
 	AfterSynth               bool            `json:"afterSynth"`
 	UserSectorDurationEpochs *int            `json:"userSectorDurationEpochs"`
-	Status                   PipelineStatus  `json:"status"`
+	Status                   PorepStatus     `json:"status"`
 	CurrentTask              *Task           `json:"currentTask"`
 }
 
@@ -270,70 +270,74 @@ type TaskSummaryDay struct {
 	TotalCount int       `json:"totalCount"`
 }
 
-type PipelineStatus string
+type PorepStatus string
 
 const (
-	PipelineStatusSdr              PipelineStatus = "SDR"
-	PipelineStatusTreeD            PipelineStatus = "TreeD"
-	PipelineStatusTreeRc           PipelineStatus = "TreeRC"
-	PipelineStatusSynthetic        PipelineStatus = "Synthetic"
-	PipelineStatusPreCommitMsg     PipelineStatus = "PreCommitMsg"
-	PipelineStatusPreCommitMsgWait PipelineStatus = "PreCommitMsgWait"
-	PipelineStatusWaitSeed         PipelineStatus = "WaitSeed"
-	PipelineStatusPoRep            PipelineStatus = "PoRep"
-	PipelineStatusClearCache       PipelineStatus = "ClearCache"
-	PipelineStatusMoveStorage      PipelineStatus = "MoveStorage"
-	PipelineStatusCommitMsg        PipelineStatus = "CommitMsg"
-	PipelineStatusCommitMsgWait    PipelineStatus = "CommitMsgWait"
-	PipelineStatusFailed           PipelineStatus = "Failed"
-	PipelineStatusSuccess          PipelineStatus = "Success"
-	PipelineStatusUnknown          PipelineStatus = "Unknown"
+	PorepStatusSdr              PorepStatus = "SDR"
+	PorepStatusTreeD            PorepStatus = "TreeD"
+	PorepStatusTreeRc           PorepStatus = "TreeRC"
+	PorepStatusSynthetic        PorepStatus = "Synthetic"
+	PorepStatusPreCommitMsg     PorepStatus = "PreCommitMsg"
+	PorepStatusPreCommitMsgWait PorepStatus = "PreCommitMsgWait"
+	PorepStatusWaitSeed         PorepStatus = "WaitSeed"
+	PorepStatusPoRep            PorepStatus = "PoRep"
+	PorepStatusClearCache       PorepStatus = "ClearCache"
+	PorepStatusMoveStorage      PorepStatus = "MoveStorage"
+	PorepStatusCommitMsg        PorepStatus = "CommitMsg"
+	PorepStatusCommitMsgWait    PorepStatus = "CommitMsgWait"
+	PorepStatusFailed           PorepStatus = "Failed"
+	PorepStatusSuccess          PorepStatus = "Success"
+	PorepStatusOnChain          PorepStatus = "OnChain"
+	PorepStatusActive           PorepStatus = "Active"
+	PorepStatusUnknown          PorepStatus = "Unknown"
 )
 
-var AllPipelineStatus = []PipelineStatus{
-	PipelineStatusSdr,
-	PipelineStatusTreeD,
-	PipelineStatusTreeRc,
-	PipelineStatusSynthetic,
-	PipelineStatusPreCommitMsg,
-	PipelineStatusPreCommitMsgWait,
-	PipelineStatusWaitSeed,
-	PipelineStatusPoRep,
-	PipelineStatusClearCache,
-	PipelineStatusMoveStorage,
-	PipelineStatusCommitMsg,
-	PipelineStatusCommitMsgWait,
-	PipelineStatusFailed,
-	PipelineStatusSuccess,
-	PipelineStatusUnknown,
+var AllPorepStatus = []PorepStatus{
+	PorepStatusSdr,
+	PorepStatusTreeD,
+	PorepStatusTreeRc,
+	PorepStatusSynthetic,
+	PorepStatusPreCommitMsg,
+	PorepStatusPreCommitMsgWait,
+	PorepStatusWaitSeed,
+	PorepStatusPoRep,
+	PorepStatusClearCache,
+	PorepStatusMoveStorage,
+	PorepStatusCommitMsg,
+	PorepStatusCommitMsgWait,
+	PorepStatusFailed,
+	PorepStatusSuccess,
+	PorepStatusOnChain,
+	PorepStatusActive,
+	PorepStatusUnknown,
 }
 
-func (e PipelineStatus) IsValid() bool {
+func (e PorepStatus) IsValid() bool {
 	switch e {
-	case PipelineStatusSdr, PipelineStatusTreeD, PipelineStatusTreeRc, PipelineStatusSynthetic, PipelineStatusPreCommitMsg, PipelineStatusPreCommitMsgWait, PipelineStatusWaitSeed, PipelineStatusPoRep, PipelineStatusClearCache, PipelineStatusMoveStorage, PipelineStatusCommitMsg, PipelineStatusCommitMsgWait, PipelineStatusFailed, PipelineStatusSuccess, PipelineStatusUnknown:
+	case PorepStatusSdr, PorepStatusTreeD, PorepStatusTreeRc, PorepStatusSynthetic, PorepStatusPreCommitMsg, PorepStatusPreCommitMsgWait, PorepStatusWaitSeed, PorepStatusPoRep, PorepStatusClearCache, PorepStatusMoveStorage, PorepStatusCommitMsg, PorepStatusCommitMsgWait, PorepStatusFailed, PorepStatusSuccess, PorepStatusOnChain, PorepStatusActive, PorepStatusUnknown:
 		return true
 	}
 	return false
 }
 
-func (e PipelineStatus) String() string {
+func (e PorepStatus) String() string {
 	return string(e)
 }
 
-func (e *PipelineStatus) UnmarshalGQL(v interface{}) error {
+func (e *PorepStatus) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = PipelineStatus(str)
+	*e = PorepStatus(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid PipelineStatus", str)
+		return fmt.Errorf("%s is not a valid PorepStatus", str)
 	}
 	return nil
 }
 
-func (e PipelineStatus) MarshalGQL(w io.Writer) {
+func (e PorepStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

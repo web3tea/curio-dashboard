@@ -13,66 +13,66 @@ import (
 )
 
 // ID is the resolver for the id field.
-func (r *pipelineResolver) ID(ctx context.Context, obj *model.Pipeline) (string, error) {
+func (r *porepResolver) ID(ctx context.Context, obj *model.Porep) (string, error) {
 	return fmt.Sprintf("%d-%d", obj.SpID, obj.SectorNumber), nil
 }
 
 // Status is the resolver for the status field.
-func (r *pipelineResolver) Status(ctx context.Context, obj *model.Pipeline) (model.PipelineStatus, error) {
+func (r *porepResolver) Status(ctx context.Context, obj *model.Porep) (model.PorepStatus, error) {
 	if obj.Failed {
-		return model.PipelineStatusFailed, nil
+		return model.PorepStatusFailed, nil
 	} else if obj.AfterCommitMsgSuccess {
-		return model.PipelineStatusSuccess, nil
+		return model.PorepStatusSuccess, nil
 	} else if obj.AfterCommitMsg {
-		return model.PipelineStatusCommitMsgWait, nil
+		return model.PorepStatusCommitMsgWait, nil
 	} else if !obj.AfterFinalize && obj.TaskIDFinalize != nil {
-		return model.PipelineStatusClearCache, nil
+		return model.PorepStatusClearCache, nil
 	} else if !obj.AfterMoveStorage && obj.TaskIDMoveStorage != nil {
-		return model.PipelineStatusMoveStorage, nil
+		return model.PorepStatusMoveStorage, nil
 	} else if !obj.AfterPorep && obj.AfterPrecommitMsgSuccess {
-		return model.PipelineStatusPoRep, nil
+		return model.PorepStatusPoRep, nil
 	} else if !obj.AfterPrecommitMsgSuccess && obj.AfterPrecommitMsg {
-		return model.PipelineStatusPreCommitMsgWait, nil
+		return model.PorepStatusPreCommitMsgWait, nil
 	} else if !obj.AfterPrecommitMsg && obj.AfterSynth {
-		return model.PipelineStatusPreCommitMsg, nil
+		return model.PorepStatusPreCommitMsg, nil
 	} else if !obj.AfterSynth && obj.AfterTreeR {
-		return model.PipelineStatusSynthetic, nil
+		return model.PorepStatusSynthetic, nil
 	} else if !obj.AfterTreeR && obj.AfterTreeD {
-		return model.PipelineStatusTreeRc, nil
+		return model.PorepStatusTreeRc, nil
 	} else if !obj.AfterTreeD && obj.AfterTreeR {
-		return model.PipelineStatusTreeD, nil
+		return model.PorepStatusTreeD, nil
 	} else if !obj.AfterSdr {
-		return model.PipelineStatusSdr, nil
+		return model.PorepStatusSdr, nil
 	} else {
-		return model.PipelineStatusUnknown, nil
+		return model.PorepStatusUnknown, nil
 	}
 }
 
 // CurrentTask is the resolver for the currentTask field.
-func (r *pipelineResolver) CurrentTask(ctx context.Context, obj *model.Pipeline) (*model.Task, error) {
+func (r *porepResolver) CurrentTask(ctx context.Context, obj *model.Porep) (*model.Task, error) {
 	status, err := r.Status(ctx, obj)
 	if err != nil {
 		return nil, err
 	}
 	var taskID *int
 	switch status {
-	case model.PipelineStatusSdr:
+	case model.PorepStatusSdr:
 		taskID = obj.TaskIDSdr
-	case model.PipelineStatusTreeD:
+	case model.PorepStatusTreeD:
 		taskID = obj.TaskIDTreeD
-	case model.PipelineStatusTreeRc:
+	case model.PorepStatusTreeRc:
 		taskID = obj.TaskIDTreeC
-	case model.PipelineStatusSynthetic:
+	case model.PorepStatusSynthetic:
 		taskID = obj.TaskIDSynth
-	case model.PipelineStatusPreCommitMsg:
+	case model.PorepStatusPreCommitMsg:
 		taskID = obj.TaskIDPrecommitMsg
-	case model.PipelineStatusPoRep:
+	case model.PorepStatusPoRep:
 		taskID = obj.TaskIDPorep
-	case model.PipelineStatusMoveStorage:
+	case model.PorepStatusMoveStorage:
 		taskID = obj.TaskIDMoveStorage
-	case model.PipelineStatusClearCache:
+	case model.PorepStatusClearCache:
 		taskID = obj.TaskIDFinalize
-	case model.PipelineStatusCommitMsgWait:
+	case model.PorepStatusCommitMsgWait:
 		taskID = obj.TaskIDCommitMsg
 	}
 	if taskID != nil {
@@ -86,7 +86,7 @@ func (r *pipelineResolver) CurrentTask(ctx context.Context, obj *model.Pipeline)
 	return nil, nil
 }
 
-// Pipeline returns graph.PipelineResolver implementation.
-func (r *Resolver) Pipeline() graph.PipelineResolver { return &pipelineResolver{r} }
+// Porep returns graph.PorepResolver implementation.
+func (r *Resolver) Porep() graph.PorepResolver { return &porepResolver{r} }
 
-type pipelineResolver struct{ *Resolver }
+type porepResolver struct{ *Resolver }

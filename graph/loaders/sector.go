@@ -2,7 +2,6 @@ package loaders
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/strahe/curio-dashboard/types"
 
@@ -117,7 +116,7 @@ WHERE sp_id = $1
 		return nil, err
 	}
 	if len(mm) == 0 {
-		return nil, fmt.Errorf("sector meta not found")
+		return nil, ErrorNotFound
 	}
 	return mm[0], nil
 }

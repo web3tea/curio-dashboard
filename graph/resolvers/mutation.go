@@ -11,6 +11,7 @@ import (
 
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/strahe/curio-dashboard/types"
 	pgx "github.com/yugabyte/pgx/v5"
 )
 
@@ -42,6 +43,14 @@ func (r *mutationResolver) UpdateConfig(ctx context.Context, title string, confi
 	}
 	c.Config = config
 	return c, nil
+}
+
+// RemoveSector is the resolver for the removeSector field.
+func (r *mutationResolver) RemoveSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error) {
+	if err := r.curioAPI.SectorRemove(ctx, int(miner), sectorNumber); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // Mutation returns graph.MutationResolver implementation.

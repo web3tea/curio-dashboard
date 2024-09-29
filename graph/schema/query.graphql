@@ -31,8 +31,9 @@ type Query {
     actors: [Actor]
     actor(address: Address!): Actor
 
-    # pipeline
-    pipelines: [Pipeline]
+    # porep
+    poreps: [Porep]
+    porep(sp: ActorID!, sectorNumber: Int!): Porep
     pipelinesSummary: [PipelineSummary]
 
     # chain

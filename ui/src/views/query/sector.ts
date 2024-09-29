@@ -1,5 +1,6 @@
 import gql from 'graphql-tag'
 import { taskFragment, taskHistoryFragment } from '@/views/query/task'
+import { porepAllFragment } from '@/views/query/porep'
 
 const metaFragment = gql`
   fragment MetaAll on SectorMeta {
@@ -61,12 +62,25 @@ export const GetSectorMeta = gql`
   query GetSectorMeta($miner: ActorID!, $sectorNumber: Int!) {
     sector(actor: $miner, sectorNumber: $sectorNumber) {
       id
+      status
       meta {
         ...MetaAll
       }
     }
   }
   ${metaFragment}
+`
+
+export const GetSectorPoRep = gql`
+  query GetSectorPoRep($miner: ActorID!, $sectorNumber: Int!) {
+    sector(actor: $miner, sectorNumber: $sectorNumber) {
+      id
+      porep {
+        ...PorepAll
+      }
+    }
+  }
+  ${porepAllFragment}
 `
 
 export const GetSectorPieces = gql`
@@ -127,4 +141,10 @@ export const GetSectorTasks = gql`
       }
     }
     ${taskFragment}
+`
+
+export const RemoveSector = gql`
+    mutation RemoveSector($miner: ActorID!, $sectorNumber: Int!) {
+      removeSector(miner: $miner, sectorNumber: $sectorNumber)
+    }
 `

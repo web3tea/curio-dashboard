@@ -96,7 +96,7 @@ models:
     model: "github.com/strahe/curio-dashboard/types.BigInt"
   JSONB:
     model: "github.com/strahe/curio-dashboard/types.JSONB"
-  Pipeline:
+  Porep:
     fields:
       id:
         resolver: true

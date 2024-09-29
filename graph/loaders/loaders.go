@@ -1,6 +1,7 @@
 package loaders
 
 import (
+	"fmt"
 	"time"
 
 	logging "github.com/ipfs/go-log/v2"
@@ -10,7 +11,10 @@ import (
 	"gorm.io/gorm"
 )
 
-var log = logging.Logger("loaders")
+var (
+	log           = logging.Logger("loaders")
+	ErrorNotFound = fmt.Errorf("not found")
+)
 
 type Loader struct {
 	db    *db.HarmonyDB

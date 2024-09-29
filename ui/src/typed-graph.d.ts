@@ -208,6 +208,7 @@ export type MiningSummaryDay = {
 export type Mutation = {
   __typename?: 'Mutation';
   createConfig?: Maybe<Config>;
+  removeSector: Scalars['Boolean']['output'];
   updateConfig?: Maybe<Config>;
 };
 
@@ -215,6 +216,12 @@ export type Mutation = {
 export type MutationCreateConfigArgs = {
   config: Scalars['String']['input'];
   title: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveSectorArgs = {
+  miner: Scalars['ActorID']['input'];
+  sectorNumber: Scalars['Int']['input'];
 };
 
 
@@ -256,8 +263,21 @@ export type OpenSectorPiece = {
   spID: Scalars['ActorID']['output'];
 };
 
-export type Pipeline = {
-  __typename?: 'Pipeline';
+export type PipelineSummary = {
+  __typename?: 'PipelineSummary';
+  commitMsg: Scalars['Int']['output'];
+  done: Scalars['Int']['output'];
+  failed: Scalars['Int']['output'];
+  id: Scalars['ActorID']['output'];
+  porep: Scalars['Int']['output'];
+  precommitMsg: Scalars['Int']['output'];
+  sdr: Scalars['Int']['output'];
+  trees: Scalars['Int']['output'];
+  waitSeed: Scalars['Int']['output'];
+};
+
+export type Porep = {
+  __typename?: 'Porep';
   afterCommitMsg: Scalars['Boolean']['output'];
   afterCommitMsgSuccess: Scalars['Boolean']['output'];
   afterFinalize: Scalars['Boolean']['output'];
@@ -287,7 +307,7 @@ export type Pipeline = {
   seedEpoch?: Maybe<Scalars['Int']['output']>;
   seedValue?: Maybe<Scalars['ByteArray']['output']>;
   spId: Scalars['ActorID']['output'];
-  status: PipelineStatus;
+  status: PorepStatus;
   taskIdCommitMsg?: Maybe<Scalars['Int']['output']>;
   taskIdFinalize?: Maybe<Scalars['Int']['output']>;
   taskIdMoveStorage?: Maybe<Scalars['Int']['output']>;
@@ -305,12 +325,14 @@ export type Pipeline = {
   userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
 };
 
-export enum PipelineStatus {
+export enum PorepStatus {
+  Active = 'Active',
   ClearCache = 'ClearCache',
   CommitMsg = 'CommitMsg',
   CommitMsgWait = 'CommitMsgWait',
   Failed = 'Failed',
   MoveStorage = 'MoveStorage',
+  OnChain = 'OnChain',
   PoRep = 'PoRep',
   PreCommitMsg = 'PreCommitMsg',
   PreCommitMsgWait = 'PreCommitMsgWait',
@@ -322,19 +344,6 @@ export enum PipelineStatus {
   Unknown = 'Unknown',
   WaitSeed = 'WaitSeed'
 }
-
-export type PipelineSummary = {
-  __typename?: 'PipelineSummary';
-  commitMsg: Scalars['Int']['output'];
-  done: Scalars['Int']['output'];
-  failed: Scalars['Int']['output'];
-  id: Scalars['ActorID']['output'];
-  porep: Scalars['Int']['output'];
-  precommitMsg: Scalars['Int']['output'];
-  sdr: Scalars['Int']['output'];
-  trees: Scalars['Int']['output'];
-  waitSeed: Scalars['Int']['output'];
-};
 
 export type PowerClaim = {
   __typename?: 'PowerClaim';
@@ -358,8 +367,9 @@ export type Query = {
   minerPower?: Maybe<MinerPower>;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
-  pipelines?: Maybe<Array<Maybe<Pipeline>>>;
   pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
+  porep?: Maybe<Porep>;
+  poreps?: Maybe<Array<Maybe<Porep>>>;
   sector?: Maybe<Sector>;
   sectors?: Maybe<Array<Maybe<Sector>>>;
   sectorsCount: Scalars['Int']['output'];
@@ -408,6 +418,12 @@ export type QueryMinerPowerArgs = {
 export type QueryMiningSummaryByDayArgs = {
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
+};
+
+
+export type QueryPorepArgs = {
+  sectorNumber: Scalars['Int']['input'];
+  sp: Scalars['ActorID']['input'];
 };
 
 
@@ -463,8 +479,10 @@ export type Sector = {
   locations: Array<Maybe<SectorLocation>>;
   meta?: Maybe<SectorMeta>;
   pieces: Array<Maybe<SectorMetaPiece>>;
+  porep?: Maybe<Porep>;
   sectorNum: Scalars['Int']['output'];
   spID: Scalars['ActorID']['output'];
+  status: PorepStatus;
   tasks: Array<Maybe<Task>>;
 };
 

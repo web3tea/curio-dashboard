@@ -1,4 +1,4 @@
-type Pipeline {
+type Porep {
     id: ID!
     spId: ActorID!
     sectorNumber: Int!
@@ -43,11 +43,11 @@ type Pipeline {
     afterSynth: Boolean!
     userSectorDurationEpochs: Int
 
-    status: PipelineStatus!
+    status: PorepStatus!
     currentTask: Task
 }
 
-enum PipelineStatus {
+enum PorepStatus {
     SDR
     TreeD
     TreeRC
@@ -62,5 +62,7 @@ enum PipelineStatus {
     CommitMsgWait
     Failed
     Success
+    OnChain
+    Active
     Unknown
 }

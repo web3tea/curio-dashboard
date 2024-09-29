@@ -2,7 +2,6 @@ package loaders
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/strahe/curio-dashboard/graph/model"
 )
@@ -93,7 +92,7 @@ WHERE host_and_port = $1`, hostPort); err != nil {
 		return nil, err
 	}
 	if len(res) == 0 {
-		return nil, fmt.Errorf("machine not found")
+		return nil, ErrorNotFound
 	}
 	return res[0], nil
 }
