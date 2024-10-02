@@ -46,3 +46,13 @@ export const CreateConfig = gql`
     }
   }
 `
+
+export const RemoveConfig = gql`
+  mutation RemoveConfig($title: String!) {
+    removeConfig(title: $title) {
+      id
+      title
+      config
+    }
+  }
+`

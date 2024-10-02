@@ -8,12 +8,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
-
-	"github.com/strahe/curio-dashboard/graph/loaders"
 
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
+	"github.com/strahe/curio-dashboard/graph/loaders"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
@@ -83,11 +81,3 @@ func (r *sectorResolver) Events(ctx context.Context, obj *model.Sector) ([]*mode
 func (r *Resolver) Sector() graph.SectorResolver { return &sectorResolver{r} }
 
 type sectorResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-const sectorDefaultCacheAge = time.Minute * 5

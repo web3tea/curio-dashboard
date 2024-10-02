@@ -6,25 +6,29 @@ import { StreamLanguage } from '@codemirror/language'
 import { toml } from '@codemirror/legacy-modes/mode/toml'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { useMutation } from '@vue/apollo-composable'
-import { CreateConfig } from '@/views/query/config'
+import { CreateConfig, GetConfigs } from '@/views/query/config'
 import { useCustomizerStore } from '@/stores/customizer'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const editConfig = ref('')
 const editTitle = ref('')
-const saveLoading = ref(false)
 
-const { mutate: createConfig, error } = useMutation(CreateConfig)
-
-function saveEdit () {
-  saveLoading.value = true
-  createConfig({
+const { mutate: createConfig, loading, onDone, error } = useMutation(CreateConfig, () => ({
+  variables: {
     title: editTitle.value,
     config: editConfig.value,
-  }).then(() => {
-  }).finally(() => {
-    saveLoading.value = false
-  })
-}
+  },
+  refetchQueries: [{
+    query: GetConfigs,
+  }],
+  awaitRefetchQueries: true,
+}))
+
+onDone(() => {
+  router.push({ name: 'Configurations' })
+})
 
 const breadcrumbs = ref([
   {
@@ -55,13 +59,13 @@ const extensions = computed(() => {
     <template #action>
       <v-btn
         color="primary"
-        :loading="saveLoading"
-        @click="saveEdit"
+        :loading="loading"
+        @click="createConfig"
       >
         <template #append>
           <DeviceFloppyIcon />
         </template>
-        Save
+        Create
       </v-btn>
     </template>
     <v-label class="mb-1">Layer</v-label>

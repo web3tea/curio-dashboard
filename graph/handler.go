@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 
 	logging "github.com/ipfs/go-log/v2"
 
@@ -73,6 +74,7 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 	})
 	srv.Use(cachecontrol.Extension{})
 
+	// log requests
 	srv.AroundResponses(func(ctx context.Context, next graphql.ResponseHandler) *graphql.Response {
 		oc := graphql.GetOperationContext(ctx)
 		ns := next(ctx)
@@ -85,6 +87,20 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 			}
 		}
 		return ns
+	})
+
+	// log errors
+	srv.SetErrorPresenter(func(ctx context.Context, e error) *gqlerror.Error {
+		err := graphql.DefaultErrorPresenter(ctx, e)
+		if err != nil {
+			log.Errorw("request", "path", err.Path.String(), "error", err.Error())
+		}
+		return err
+	})
+
+	srv.SetRecoverFunc(func(ctx context.Context, err interface{}) error {
+		log.Error(err)
+		return gqlerror.Errorf("internal server error")
 	})
 
 	return echo.WrapHandler(srv)

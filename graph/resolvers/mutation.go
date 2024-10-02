@@ -45,6 +45,31 @@ func (r *mutationResolver) UpdateConfig(ctx context.Context, title string, confi
 	return c, nil
 }
 
+// RemoveConfig is the resolver for the removeConfig field.
+func (r *mutationResolver) RemoveConfig(ctx context.Context, title string) (*model.Config, error) {
+	machines, err := r.loader.ConfigUsed(ctx, title)
+	if err != nil {
+		return nil, err
+	}
+	if len(machines) > 0 {
+		return nil, fmt.Errorf("config %s is used by %d machines", title, len(machines))
+	}
+
+	cfg, err := r.loader.Config(ctx, title)
+	if err != nil {
+		return nil, err
+	}
+
+	ct, err := r.db.Exec(ctx, "DELETE FROM harmony_config WHERE title = $1", title)
+	if err != nil {
+		return nil, err
+	}
+	if ct == 0 {
+		return nil, fmt.Errorf("config %s not found", title)
+	}
+	return cfg, nil
+}
+
 // RemoveSector is the resolver for the removeSector field.
 func (r *mutationResolver) RemoveSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error) {
 	if err := r.curioAPI.SectorRemove(ctx, int(miner), sectorNumber); err != nil {

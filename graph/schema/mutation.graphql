@@ -1,5 +1,6 @@
 type Mutation {
     createConfig(title: String!, config: String!): Config
     updateConfig(title: String!, config: String!): Config
+    removeConfig(title: String!): Config
     removeSector(miner: ActorID!, sectorNumber: Int!): Boolean!
 }

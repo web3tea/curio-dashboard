@@ -208,6 +208,7 @@ export type MiningSummaryDay = {
 export type Mutation = {
   __typename?: 'Mutation';
   createConfig?: Maybe<Config>;
+  removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
   updateConfig?: Maybe<Config>;
 };
@@ -215,6 +216,11 @@ export type Mutation = {
 
 export type MutationCreateConfigArgs = {
   config: Scalars['String']['input'];
+  title: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveConfigArgs = {
   title: Scalars['String']['input'];
 };
 

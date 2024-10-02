@@ -1,6 +1,8 @@
 package resolvers
 
 import (
+	"time"
+
 	"github.com/filecoin-project/lotus/api/v1api"
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/prometheus/client_golang/api"
@@ -15,6 +17,8 @@ import (
 // This file will not be regenerated automatically.
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
+
+const sectorDefaultCacheAge = time.Minute * 5
 
 var log = logging.Logger("resolvers")
 

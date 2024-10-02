@@ -5,6 +5,7 @@ import { computed, ComputedRef, ref } from 'vue'
 import { Config } from '@/typed-graph'
 import { GetConfigs } from '@/views/query/config'
 import { Item } from 'vue3-easy-data-table'
+import ConfigRemoveDialog from '@/views/configurations/ConfigRemoveDialog.vue'
 
 const { result, loading, refetch, error } = useQuery(GetConfigs, null, () => ({
   fetchPolicy: 'cache-first',
@@ -15,6 +16,7 @@ const headers = [
   { text: 'ID', value: 'id', sortable: true },
   { text: 'Layer', value: 'title' },
   { text: 'Used By', value: 'usedBy' },
+  { text: '    ', value: 'action' },
 ]
 
 const itemsSelected = ref<Item[]>([])
@@ -88,6 +90,9 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
               <v-chip-group column>
                 <v-chip v-for="by in usedBy" :key="by.machineId" :to="{name: 'MachineInfo', params: {id: by.machineId}}">{{ by.machineName || by.machineId }}</v-chip>
               </v-chip-group>
+            </template>
+            <template #item-action="{ id, title, usedBy }">
+              <ConfigRemoveDialog v-if="usedBy.length === 0 && id > 100" :title="title" />
             </template>
           </EasyDataTable>
         </v-card-text>

@@ -229,6 +229,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateConfig func(childComplexity int, title string, config string) int
+		RemoveConfig func(childComplexity int, title string) int
 		RemoveSector func(childComplexity int, miner types.ActorID, sectorNumber int) int
 		UpdateConfig func(childComplexity int, title string, config string) int
 	}
@@ -572,6 +573,7 @@ type MinerBalanceResolver interface {
 type MutationResolver interface {
 	CreateConfig(ctx context.Context, title string, config string) (*model.Config, error)
 	UpdateConfig(ctx context.Context, title string, config string) (*model.Config, error)
+	RemoveConfig(ctx context.Context, title string) (*model.Config, error)
 	RemoveSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error)
 }
 type PipelineSummaryResolver interface {
@@ -1474,6 +1476,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateConfig(childComplexity, args["title"].(string), args["config"].(string)), true
+
+	case "Mutation.removeConfig":
+		if e.complexity.Mutation.RemoveConfig == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeConfig_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveConfig(childComplexity, args["title"].(string)), true
 
 	case "Mutation.removeSector":
 		if e.complexity.Mutation.RemoveSector == nil {
@@ -3414,6 +3428,21 @@ func (ec *executionContext) field_Mutation_createConfig_args(ctx context.Context
 		}
 	}
 	args["config"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["title"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["title"] = arg0
 	return args, nil
 }
 
@@ -9187,6 +9216,68 @@ func (ec *executionContext) fieldContext_Mutation_updateConfig(ctx context.Conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_updateConfig_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_removeConfig(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_removeConfig(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveConfig(rctx, fc.Args["title"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Config)
+	fc.Result = res
+	return ec.marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_removeConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Config_id(ctx, field)
+			case "title":
+				return ec.fieldContext_Config_title(ctx, field)
+			case "config":
+				return ec.fieldContext_Config_config(ctx, field)
+			case "usedBy":
+				return ec.fieldContext_Config_usedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Config", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_removeConfig_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -24451,6 +24542,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateConfig":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateConfig(ctx, field)
+			})
+		case "removeConfig":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_removeConfig(ctx, field)
 			})
 		case "removeSector":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
