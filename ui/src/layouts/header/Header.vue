@@ -2,7 +2,6 @@
 import { ref, watch } from 'vue'
 // icons
 import { MenuFoldOutlined } from '@ant-design/icons-vue'
-import { AdjustmentsHorizontalIcon, LanguageIcon, SearchIcon } from 'vue-tabler-icons'
 
 import LanguageDD from './LanguageDD.vue'
 import NotificationDD from './NotificationDD.vue'
@@ -11,6 +10,7 @@ import Searchbar from './SearchBarPanel.vue'
 import FullScreen from './FullScreen.vue'
 import { useCustomizerStore } from '@/stores/customizer'
 import Logo from '@/layouts/logo/Logo.vue'
+import { IconAdjustmentsHorizontal, IconLanguage, IconSearch } from '@tabler/icons-vue'
 
 const customizer = useCustomizerStore()
 const priority = ref(customizer.horizontalLayout ? 0 : 0)
@@ -48,7 +48,7 @@ watch(priority, newPriority => {
           variant="flat"
           v-bind="props"
         >
-          <SearchIcon :style="{ fontSize: '17px' }" />
+          <IconSearch :size="17" />
         </v-btn>
       </template>
       <v-sheet class="search-sheet v-col-12 pa-0" width="320">
@@ -60,7 +60,7 @@ watch(priority, newPriority => {
           variant="solo"
         >
           <template #prepend-inner>
-            <SearchIcon :style="{ fontSize: '17px' }" />
+            <IconSearch :size="17" />
           </template>
         </v-text-field>
       </v-sheet>
@@ -80,7 +80,7 @@ watch(priority, newPriority => {
           size="small"
           v-bind="props"
         >
-          <LanguageIcon />
+          <IconLanguage />
         </v-btn>
       </template>
       <v-sheet rounded="md" width="200">
@@ -97,7 +97,7 @@ watch(priority, newPriority => {
           icon
           v-bind="props"
         >
-          <v-icon :icon="AdjustmentsHorizontalIcon" />
+          <v-icon :icon="IconAdjustmentsHorizontal" />
         </v-btn>
       </template>
       <v-card>

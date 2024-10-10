@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import moment from 'moment'
 import { useQuery } from '@vue/apollo-composable'
-import { SearchOutlined } from '@ant-design/icons-vue'
 import { computed, ComputedRef, ref } from 'vue'
 import { GetSectorsPoreps } from '@/views/query/porep'
 import { Porep } from '@/typed-graph'
 import type { Item } from 'vue3-easy-data-table'
 import PipelineStatus from '@/views/widgets/data/PipelineStatus.vue'
+import { IconReload, IconSearch } from '@tabler/icons-vue'
 
 const { result, loading, refetch, error } = useQuery(GetSectorsPoreps, null, () => ({
   fetchPolicy: 'cache-first',
@@ -28,10 +28,7 @@ const selectStatus = ref(null)
 
 const filterItems = computed(() => {
   return items.value.filter(item => {
-    if (selectStatus.value && item.status !== selectStatus.value) {
-      return false
-    }
-    return true
+    return !(selectStatus.value && item.status !== selectStatus.value)
   })
 })
 
@@ -61,14 +58,14 @@ const allStatus = computed(() => {
                 variant="outlined"
               >
                 <template #prepend-inner>
-                  <SearchOutlined :style="{ fontSize: '14px' }" />
+                  <IconSearch :size="14" />
                 </template>
               </v-text-field>
             </v-col>
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
                 <v-btn round rounded variant="text" @click="refetch">
-                  <ReloadIcon />
+                  <IconReload />
                 </v-btn>
               </div>
             </v-col>

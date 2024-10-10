@@ -5,7 +5,7 @@ import { GetNodeInfos } from '@/views/query/chain'
 import { computed, ComputedRef, ref } from 'vue'
 import { NodeInfo } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
-import { ReloadIcon } from 'vue-tabler-icons'
+import { IconReload } from '@tabler/icons-vue'
 
 const headers = [
   { text: 'Address', value: 'address' },
@@ -34,7 +34,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
         variant="text"
         @click="refetch"
       >
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <EasyDataTable

@@ -1,11 +1,11 @@
 import {
-  BoxIcon,
-  ChartHistogramIcon,
-  DatabaseIcon,
-  HomeIcon,
-  ServerIcon, SettingsIcon, UsersIcon,
-  VectorIcon,
-} from 'vue-tabler-icons'
+  IconBox,
+  IconChartHistogram,
+  IconDatabase,
+  IconHome,
+  IconServer, IconSettings, IconUsers,
+  IconVector,
+} from '@tabler/icons-vue'
 
 export interface menu {
   header?: string;
@@ -28,61 +28,61 @@ export interface menu {
 const horizontalItems: menu[] = [
   {
     title: 'Dashboard',
-    icon: HomeIcon,
+    icon: IconHome,
     to: '#',
     children: [
       {
         title: 'Overview',
-        icon: HomeIcon,
+        icon: IconHome,
         to: '/app/overview',
       },
       {
         title: 'Analytics',
-        icon: ChartHistogramIcon,
+        icon: IconChartHistogram,
         to: '/app/analytics',
       },
     ],
   },
   {
     title: 'Sealing',
-    icon: VectorIcon,
+    icon: IconVector,
     to: '#',
     children: [
       {
         title: 'Miners',
-        icon: UsersIcon,
+        icon: IconUsers,
         to: '/app/miners',
       },
       {
         title: 'PoRep',
-        icon: VectorIcon,
+        icon: IconVector,
         to: '/app/porep',
       },
       {
         title: 'Sectors',
-        icon: BoxIcon,
+        icon: IconBox,
         to: '/app/sectors',
       },
     ],
   },
   {
     title: 'Cluster',
-    icon: ServerIcon,
+    icon: IconServer,
     to: '#',
     children: [
       {
         title: 'Machines',
-        icon: ServerIcon,
+        icon: IconServer,
         to: '/app/machines',
       },
       {
         title: 'Storages',
-        icon: DatabaseIcon,
+        icon: IconDatabase,
         to: '/app/storages',
       },
       {
         title: 'Configurations',
-        icon: SettingsIcon,
+        icon: IconSettings,
         to: '/app/configurations',
       },
     ],

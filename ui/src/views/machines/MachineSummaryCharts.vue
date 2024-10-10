@@ -5,8 +5,7 @@ import { GetMachinesSummary } from '@/views/query/machine'
 import { MachineSummary } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import moment from 'moment'
-import { mdiExpansionCard } from '@mdi/js'
-import { BrandSpeedtestIcon, CpuIcon, ServerIcon } from 'vue-tabler-icons'
+import { IconBrandSpeedtest, IconCpu, IconServer } from '@tabler/icons-vue'
 
 const { result } = useQuery(GetMachinesSummary, null, () => ({
   fetchPolicy: 'cache-first',
@@ -16,10 +15,10 @@ const { result } = useQuery(GetMachinesSummary, null, () => ({
 const stats: ComputedRef<MachineSummary> = computed(() => result.value?.machineSummary)
 
 const cards = computed(() => [
-  { value: stats.value?.total || 0, text: 'Machine', icon: ServerIcon, color: 'primary', duedate: moment().calendar() },
-  { value: stats.value?.totalCpu || 0, text: 'CPU', icon: CpuIcon, color: 'info', duedate: moment().calendar() },
-  { value: stats.value?.totalGpu || 0, text: 'GPU', icon: mdiExpansionCard, color: 'success', duedate: moment().calendar() },
-  { value: formatBytes(stats.value?.totalRam || 0).combined, text: 'RAM', icon: BrandSpeedtestIcon, color: 'warning', duedate: moment().calendar() },
+  { value: stats.value?.total || 0, text: 'Machine', icon: IconServer, color: 'primary', duedate: moment().calendar() },
+  { value: stats.value?.totalCpu || 0, text: 'CPU', icon: IconCpu, color: 'info', duedate: moment().calendar() },
+  { value: stats.value?.totalGpu || 0, text: 'GPU', icon: IconCpu, color: 'success', duedate: moment().calendar() },
+  { value: formatBytes(stats.value?.totalRam || 0).combined, text: 'RAM', icon: IconBrandSpeedtest, color: 'warning', duedate: moment().calendar() },
 ])
 
 </script>

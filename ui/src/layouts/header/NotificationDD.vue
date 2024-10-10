@@ -4,6 +4,7 @@ import { BellOutlined, CheckCircleOutlined } from '@ant-design/icons-vue'
 import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeAlerts } from '@/layouts/header/graphql'
 import { useAlertsStore } from '@/stores/alerts'
+import { IconExclamationCircle } from '@tabler/icons-vue'
 import moment from 'moment'
 
 const alertStore = useAlertsStore()
@@ -84,7 +85,7 @@ function markAllRead () {
             >
               <template #prepend>
                 <v-avatar class="mr-3 py-2 text-success" color="warning" size="36" variant="flat">
-                  <ExclamationCircleIcon />
+                  <IconExclamationCircle />
                 </v-avatar>
               </template>
               <div class="d-inline-flex justify-space-between w-100">

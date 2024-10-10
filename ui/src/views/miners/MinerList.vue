@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { EyeIcon, ReloadIcon, SearchIcon } from 'vue-tabler-icons'
+import { IconEye, IconReload, IconSearch } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Actor } from '@/typed-graph'
@@ -48,14 +48,14 @@ const headers :Header[] = [
                 variant="outlined"
               >
                 <template #prepend-inner>
-                  <SearchIcon />
+                  <IconSearch />
                 </template>
               </v-text-field>
             </v-col>
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
                 <v-btn round rounded variant="text" @click="refetch">
-                  <ReloadIcon />
+                  <IconReload />
                 </v-btn>
               </div>
             </v-col>
@@ -109,7 +109,7 @@ const headers :Header[] = [
                   title="More"
                   variant="text"
                 >
-                  <EyeIcon />
+                  <IconEye />
                 </v-btn>
               </div>
             </template>

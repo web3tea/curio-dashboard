@@ -10,7 +10,6 @@ import pinia from '../stores'
 import router from '../router'
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar'
 import Vue3EasyDataTable from 'vue3-easy-data-table'
-import VueTablerIcons from 'vue-tabler-icons'
 import Antd from 'ant-design-vue'
 import { vMaska } from 'maska/vue'
 
@@ -28,7 +27,6 @@ export function registerPlugins (app: App) {
     .use(router)
     .use(pinia)
     .use(i18n)
-    .use(VueTablerIcons)
     .use(PerfectScrollbarPlugin)
     .use(Antd)
     .use(VueApexCharts)

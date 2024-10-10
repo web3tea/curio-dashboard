@@ -7,6 +7,7 @@ import { computed, ComputedRef } from 'vue'
 import { SectorLocation } from '@/typed-graph'
 import type { Header } from 'vue3-easy-data-table'
 import { sectorFileTypeToName } from '@/utils/helpers/sectorFileType'
+import { IconReload } from '@tabler/icons-vue'
 
 const props = defineProps({
   miner: {
@@ -43,7 +44,7 @@ const headers :Header[] = [
   <UiChildCard :loading="loading" title="Sector Locations ">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <EasyDataTable

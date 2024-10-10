@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { LogoutIcon } from 'vue-tabler-icons'
 import { useAuthStore } from '@/stores/auth'
+
+import { IconLogout } from '@tabler/icons-vue'
 
 const authStore = useAuthStore()
 </script>
@@ -24,7 +25,7 @@ const authStore = useAuthStore()
           variant="text"
           @click="authStore.logout"
         >
-          <LogoutIcon :style="{ fontSize: '20px' }" />
+          <IconLogout :size="20" />
         </v-btn>
       </div>
     </div>

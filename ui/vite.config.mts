@@ -6,8 +6,9 @@ import Vue from '@vitejs/plugin-vue'
 import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 // Utilities
-import { defineConfig } from 'vite'
+import { defineConfig, type PluginOption } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -34,6 +35,7 @@ export default defineConfig({
       //   }],
       // },
     }),
+    visualizer() as PluginOption,
   ],
   build: {
     chunkSizeWarningLimit: 1024 * 7,

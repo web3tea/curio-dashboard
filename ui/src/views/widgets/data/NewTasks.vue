@@ -6,7 +6,7 @@ import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeNewTask } from '@/views/query/task'
 import { Task } from '@/typed-graph'
 import moment from 'moment'
-import { PlayerPauseIcon, PlayerPlayIcon } from 'vue-tabler-icons'
+import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
 
 const props = defineProps({
   maxLen: {
@@ -51,7 +51,7 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
   <UiTitleCard class-name="px-0 pb-0 rounded-md" title="New Added Tasks">
     <template #action>
       <v-btn
-        :icon="isStop ? PlayerPlayIcon : PlayerPauseIcon"
+        :icon="isStop ? IconPlayerPlay : IconPlayerPause"
         round
         :rounded="true"
         variant="text"

@@ -6,7 +6,7 @@ import { StorageStats } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { GetStorageStats } from '@/views/query/storage'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { ReloadIcon } from 'vue-tabler-icons'
+import { IconReload } from '@tabler/icons-vue'
 
 const headers = [
   { text: 'Type', value: 'type' },
@@ -40,7 +40,7 @@ function usePercentage (available: number, total: number) {
         variant="text"
         @click="refetch"
       >
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <EasyDataTable

@@ -3,6 +3,7 @@ import { GetStoragePaths } from '@/views/query/storage'
 import { useQuery } from '@vue/apollo-composable'
 import { StoragePath } from '@/typed-graph'
 import { computed, ComputedRef, ref } from 'vue'
+import { IconReload, IconSearch } from '@tabler/icons-vue'
 
 const { result, loading, refetch, error } = useQuery(GetStoragePaths, null, () => ({
   fetchPolicy: 'cache-first',
@@ -67,14 +68,14 @@ const tabs = [
                 variant="outlined"
               >
                 <template #prepend-inner>
-                  <SearchIcon />
+                  <IconSearch />
                 </template>
               </v-text-field>
             </v-col>
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
                 <v-btn round :rounded="true" variant="text" @click="refetch">
-                  <ReloadIcon />
+                  <IconReload />
                 </v-btn>
               </div>
             </v-col>

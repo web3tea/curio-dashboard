@@ -6,6 +6,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetSectorMeta } from '@/views/query/sector'
 import { computed, ComputedRef } from 'vue'
 import { PorepStatus, SectorMeta } from '@/typed-graph'
+import { IconBox, IconBrandRedux, IconReload, IconTrash, IconUser } from '@tabler/icons-vue'
 
 const props = defineProps(
   {
@@ -35,24 +36,24 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
   <UiChildCard :loading="loading" title="Sector Info">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <div class="d-flex align-center flex-column flex-sm-row text-medium-emphasis ga-4">
       <div class="d-flex align-center">
-        <UserIcon />
+        <IconUser />
         <span class="text-subtitle-1 font-weight-medium ml-2">Miner: {{ miner }}</span>
       </div>
       <div class="d-flex align-center">
-        <BoxIcon />
+        <IconBox />
         <span class="text-subtitle-1 font-weight-medium ml-2">Sector: {{ sectorNumber }}</span>
       </div>
       <div class="d-flex align-center">
-        <TrashIcon />
+        <IconTrash />
         <span class="text-subtitle-1 font-weight-medium ml-2">IsCC: {{ meta.isCC ? 'Yes' : 'No' }}</span>
       </div>
       <div class="d-flex align-center">
-        <BrandReduxIcon />
+        <IconBrandRedux />
         <span class="text-subtitle-1 font-weight-medium ml-2">Status: {{ status }}</span>
       </div>
     </div>

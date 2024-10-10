@@ -5,6 +5,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { StoragePath } from '@/typed-graph'
 import { GetMachineStorages } from '@/views/query/machine'
+import { IconReload } from '@tabler/icons-vue'
 
 const props = defineProps({
   id: {
@@ -27,7 +28,7 @@ const paths: ComputedRef<[StoragePath]> = computed(() => result.value?.machine.s
   <UiChildCard :loading="loading" title="Storages ">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <StoragePathTable :error="error" hide-footer :items="paths" :loading="loading" />

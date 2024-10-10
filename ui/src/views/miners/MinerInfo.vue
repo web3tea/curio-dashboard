@@ -6,6 +6,7 @@ import { computed } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { formatFIL } from '@/utils/helpers/formatFIL'
+import { IconReload } from '@tabler/icons-vue'
 
 const props = defineProps({
   id: {
@@ -66,7 +67,7 @@ const cols2 = computed(() => {
   <UiChildCard :loading="loading" title="Basic Info">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <v-row class="py-2 mx-0 details-content">

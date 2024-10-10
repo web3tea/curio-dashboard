@@ -6,7 +6,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetMiningSummary } from '@/views/query/mining'
 import { MiningSummaryDay } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
-import { ReloadIcon } from 'vue-tabler-icons'
+import { IconReload } from '@tabler/icons-vue'
 
 const theme = useTheme()
 const InfoColor = theme.current.value.colors.info
@@ -123,7 +123,7 @@ const totalWonBlocks = computed(() => {
         variant="text"
         @click="refetch"
       >
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <div class="px-5">

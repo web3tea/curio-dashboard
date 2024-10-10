@@ -6,6 +6,7 @@ import { GetSectorPieces } from '@/views/query/sector'
 import { computed, ComputedRef } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
 
 const props = defineProps({
   miner: {
@@ -45,7 +46,7 @@ const headers :Header[] = [
   <UiChildCard :loading="loading" title="Pieces Info">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <EasyDataTable
@@ -62,7 +63,7 @@ const headers :Header[] = [
       </template>
       <template #item-f05DealProposal="{ f05DealProposal }">
         <v-btn v-if="f05DealProposal" :icon="true" :rounded="true">
-          <InfoCircleIcon />
+          <IconInfoCircle />
           <v-dialog activator="parent">
             <v-card>
               <v-card-text>
@@ -76,7 +77,7 @@ const headers :Header[] = [
       </template>
       <template #item-ddoPam="{ ddoPam }">
         <v-btn v-if="ddoPam" :icon="true" :rounded="true">
-          <InfoCircleIcon />
+          <IconInfoCircle />
           <v-dialog activator="parent">
             <v-card>
               <v-card-text>

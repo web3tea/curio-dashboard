@@ -6,6 +6,7 @@ import { computed, ComputedRef } from 'vue'
 import { Task } from '@/typed-graph'
 import type { Header } from 'vue3-easy-data-table'
 import { GetMachineTasks } from '@/views/query/machine'
+import { IconReload } from '@tabler/icons-vue'
 
 const props = defineProps({
   id: {
@@ -36,7 +37,7 @@ const headers :Header[] = [
   <UiChildCard :loading="loading" title="Running Tasks ">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <EasyDataTable

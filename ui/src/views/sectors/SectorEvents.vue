@@ -4,9 +4,7 @@ import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { TaskHistory } from '@/typed-graph'
 import moment from 'moment'
-import {
-  CircleXIcon, SquareCheckIcon,
-} from 'vue-tabler-icons'
+import { IconCircleX, IconReload, IconSquareCheck } from '@tabler/icons-vue'
 import { GetSectorEvents } from '@/views/query/sector'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatDuration } from '@/utils/helpers/formatDuration'
@@ -35,7 +33,7 @@ const events: ComputedRef<[TaskHistory]> = computed(() => result.value?.sector.e
   <UiChildCard :loading="loading" title="Sector Events ">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <perfect-scrollbar :style="{ 'max-height': '680px' }">
@@ -43,7 +41,7 @@ const events: ComputedRef<[TaskHistory]> = computed(() => result.value?.sector.e
         <template v-for="task in events" :key="task.id">
           <v-timeline-item :dot-color="task.result ? 'success' : 'error'" fill-dot>
             <template #icon>
-              <component :is="task.result ? SquareCheckIcon : CircleXIcon " :style="{ fontSize: '16px' }" />
+              <component :is="task.result ? IconSquareCheck : IconCircleX" :style="{ fontSize: '16px' }" />
             </template>
             <template #opposite>
               <span class="text-subtitle-2 text-medium-emphasis">{{ moment(task.workEnd).fromNow() }}</span>

@@ -4,9 +4,7 @@ import { ref, watch } from 'vue'
 import { useSubscription } from '@vue/apollo-composable'
 import { TaskHistory } from '@/typed-graph'
 import moment from 'moment'
-import {
-  CircleXIcon, SquareCheckIcon,
-} from 'vue-tabler-icons'
+import { IconCircleX, IconSquareCheck } from '@tabler/icons-vue'
 import { SubscribeCompletedTask } from '@/views/query/task'
 import { formatDuration } from '@/utils/helpers/formatDuration'
 
@@ -34,7 +32,7 @@ watch(
     <template v-for="task in tasks" :key="task.id">
       <v-timeline-item :dot-color="task.result ? 'success' : 'error'" fill-dot>
         <template #icon>
-          <component :is="task.result ? SquareCheckIcon : CircleXIcon " :style="{ fontSize: '16px' }" />
+          <component :is="task.result ? IconSquareCheck : IconCircleX " :style="{ fontSize: '16px' }" />
         </template>
         <template #opposite>
           <span class="text-subtitle-2 text-medium-emphasis">{{ moment(task.workEnd).fromNow() }}</span>

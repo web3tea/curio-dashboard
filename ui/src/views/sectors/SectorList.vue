@@ -6,6 +6,7 @@ import { Actor, Sector, SectorLocation } from '@/typed-graph'
 import type { Header, Item, ServerOptions } from 'vue3-easy-data-table'
 import { GetSectors } from '@/views/query/sector'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
+import { IconEye, IconInfoCircle, IconReload } from '@tabler/icons-vue'
 
 const serverOptions = ref<ServerOptions>({
   page: 1,
@@ -115,7 +116,7 @@ function formatLocationDetails (location: SectorLocation): string {
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
                 <v-btn round :rounded="true" variant="text" @click="refetch">
-                  <ReloadIcon />
+                  <IconReload />
                 </v-btn>
               </div>
             </v-col>
@@ -144,7 +145,7 @@ function formatLocationDetails (location: SectorLocation): string {
                 <template #activator="{ props }">
                   {{ locations.some((location: SectorLocation) => location.sectorFiletype === 2) ? 'Yes' : 'No' }}
                   <v-icon color="primary" v-bind="props">
-                    <InfoCircleIcon />
+                    <IconInfoCircle />
                   </v-icon>
                 </template>
                 <span>
@@ -157,7 +158,7 @@ function formatLocationDetails (location: SectorLocation): string {
                 <template #activator="{ props }">
                   {{ locations.some((location: SectorLocation) => location.sectorFiletype === 1) ? 'Yes' : 'No' }}
                   <v-icon color="primary" v-bind="props">
-                    <InfoCircleIcon />
+                    <IconInfoCircle />
                   </v-icon>
                 </template>
                 <span>
@@ -170,7 +171,7 @@ function formatLocationDetails (location: SectorLocation): string {
                 <template #activator="{ props }">
                   {{ sealProofToSize(meta.regSealProof) }}
                   <v-icon color="primary" v-bind="props">
-                    <InfoCircleIcon />
+                    <IconInfoCircle />
                   </v-icon>
                 </template>
                 <span>
@@ -181,7 +182,7 @@ function formatLocationDetails (location: SectorLocation): string {
             <template #item-action="{ meta }">
               <div class="operation-wrapper">
                 <RouterLink :to="{ name: 'SectorDetails', params: { miner: meta.spId, sectorNumber: meta.sectorNum } }">
-                  <EyeIcon />
+                  <IconEye />
                 </RouterLink>
 
               </div>

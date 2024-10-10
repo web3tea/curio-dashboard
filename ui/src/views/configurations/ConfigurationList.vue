@@ -5,6 +5,7 @@ import { computed, ComputedRef, ref } from 'vue'
 import { Config } from '@/typed-graph'
 import { GetConfigs } from '@/views/query/config'
 import { Item } from 'vue3-easy-data-table'
+import { IconPlus, IconReload, IconSearch } from '@tabler/icons-vue'
 import ConfigRemoveDialog from '@/views/configurations/ConfigRemoveDialog.vue'
 
 const { result, loading, refetch, error } = useQuery(GetConfigs, null, () => ({
@@ -42,7 +43,7 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
                 variant="outlined"
               >
                 <template #prepend-inner>
-                  <SearchIcon :style="{ fontSize: '14px' }" />
+                  <IconSearch :size="16" />
                 </template>
               </v-text-field>
             </v-col>
@@ -50,7 +51,7 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
               <div class="d-flex ga-2 justify-end">
                 <v-btn color="primary" :to="{name: 'ConfigurationCreate'}" variant="flat">
                   <template #prepend>
-                    <PlusIcon />
+                    <IconPlus />
                   </template>
                   Create
                 </v-btn>
@@ -61,7 +62,7 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
                   variant="text"
                   @click="refetch"
                 >
-                  <ReloadIcon />
+                  <IconReload />
                 </v-btn>
               </div>
             </v-col>

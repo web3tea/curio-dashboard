@@ -7,7 +7,7 @@ import { SubscribeCompletedTask } from '@/views/query/task'
 import { TaskHistory } from '@/typed-graph'
 import moment from 'moment'
 import { formatDuration } from '@/utils/helpers/formatDuration'
-import { PlayerPauseIcon, PlayerPlayIcon } from 'vue-tabler-icons'
+import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
 
 const props = defineProps({
   maxMessages: {
@@ -57,7 +57,7 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
   <UiTitleCard class-name="px-0 pb-0 rounded-md" title="Recently Finished Tasks">
     <template #action>
       <v-btn
-        :icon="isStop ? PlayerPlayIcon : PlayerPauseIcon"
+        :icon="isStop ? IconPlayerPlay : IconPlayerPause"
         round
         :rounded="true"
         variant="text"

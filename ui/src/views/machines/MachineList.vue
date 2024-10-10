@@ -2,7 +2,8 @@
 import { computed, ComputedRef, ref, watch } from 'vue'
 import moment from 'moment'
 import type { Header, Item } from 'vue3-easy-data-table'
-import { EyeOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons-vue'
+import { EyeOutlined, SearchOutlined } from '@ant-design/icons-vue'
+import { IconReload } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMachines } from '@/views/query/machine'
 import { Machine } from '@/typed-graph'
@@ -90,7 +91,7 @@ const itemsSelected = ref<Item[]>([])
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
                 <v-btn round rounded="true" variant="text" @click="refetch">
-                  <ReloadOutlined />
+                  <IconReload />
                 </v-btn>
               </div>
             </v-col>

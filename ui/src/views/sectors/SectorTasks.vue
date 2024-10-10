@@ -6,6 +6,7 @@ import { GetSectorTasks } from '@/views/query/sector'
 import { computed, ComputedRef } from 'vue'
 import { Task } from '@/typed-graph'
 import type { Header } from 'vue3-easy-data-table'
+import { IconReload } from '@tabler/icons-vue'
 
 const props = defineProps({
   miner: {
@@ -41,7 +42,7 @@ const headers :Header[] = [
   <UiChildCard :loading="loading" title="Sector Tasks ">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
-        <ReloadIcon />
+        <IconReload />
       </v-btn>
     </template>
     <EasyDataTable

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-// icons
-import { ArrowsMaximizeIcon, ArrowsMinimizeIcon } from 'vue-tabler-icons'
+
+import { IconArrowsMaximize, IconArrowsMinimize } from '@tabler/icons-vue'
 
 const fullscreen = ref(false)
 
@@ -24,8 +24,8 @@ function toggleFullscreen () {
       size="small"
       @click="toggleFullscreen"
     >
-      <ArrowsMaximizeIcon v-if="!fullscreen" />
-      <ArrowsMinimizeIcon v-if="fullscreen" />
+      <IconArrowsMaximize v-if="!fullscreen" />
+      <IconArrowsMinimize v-if="fullscreen" />
     </v-btn>
   </div>
 </template>
