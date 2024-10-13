@@ -198,6 +198,12 @@ export type MinerPower = {
   totalPower: PowerClaim;
 };
 
+export type MiningCount = {
+  __typename?: 'MiningCount';
+  exclude: Scalars['Int']['output'];
+  include: Scalars['Int']['output'];
+};
+
 export type MiningSummaryDay = {
   __typename?: 'MiningSummaryDay';
   day: Scalars['Time']['output'];
@@ -371,6 +377,7 @@ export type Query = {
   metricsActiveTasks?: Maybe<Array<Maybe<MetricsActiveTask>>>;
   miner?: Maybe<Miner>;
   minerPower?: Maybe<MinerPower>;
+  miningCount: MiningCount;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
   pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
@@ -418,6 +425,13 @@ export type QueryMinerArgs = {
 
 export type QueryMinerPowerArgs = {
   address?: InputMaybe<Scalars['Address']['input']>;
+};
+
+
+export type QueryMiningCountArgs = {
+  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  end: Scalars['Time']['input'];
+  start: Scalars['Time']['input'];
 };
 
 

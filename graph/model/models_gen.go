@@ -106,6 +106,11 @@ type MinerPower struct {
 	HasMinPower bool        `json:"hasMinPower"`
 }
 
+type MiningCount struct {
+	Include int `json:"include"`
+	Exclude int `json:"exclude"`
+}
+
 type MiningSummaryDay struct {
 	Day      time.Time     `json:"day"`
 	Miner    types.ActorID `json:"miner"`

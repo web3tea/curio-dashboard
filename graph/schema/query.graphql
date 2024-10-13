@@ -42,6 +42,7 @@ type Query {
     # mining
 #    miningSummaryByDay(lastDays: Int!): [MiningSummaryDay]
     miningSummaryByDay(start: Time!, end: Time!): [MiningSummaryDay]
+    miningCount(start: Time!, end: Time!, actor: ActorID): MiningCount!
 
     dealsPending: [OpenSectorPiece]
 

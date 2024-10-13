@@ -186,6 +186,12 @@ func (r *queryResolver) MiningSummaryByDay(ctx context.Context, start time.Time,
 	return r.loader.MiningSummaryByDay(ctx, start, end)
 }
 
+// MiningCount is the resolver for the miningCount field.
+func (r *queryResolver) MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCount, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.MiningCount(ctx, start, end, actor)
+}
+
 // DealsPending is the resolver for the dealsPending field.
 func (r *queryResolver) DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)

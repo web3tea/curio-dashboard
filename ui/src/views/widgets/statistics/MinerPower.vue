@@ -3,9 +3,9 @@
 import { GetMinerPower } from '@/views/query/miner'
 import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
-import { RiseOutlined } from '@ant-design/icons-vue'
 import { MinerPower } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { IconBolt } from '@tabler/icons-vue'
 
 const props = defineProps({
   miner: {
@@ -20,18 +20,6 @@ const { result } = useQuery(GetMinerPower, {
 }))
 
 const minerPower: ComputedRef<MinerPower> = computed(() => result.value?.minerPower || {})
-
-const card = computed(() => ({
-  name: 'Total QA Power',
-  qaPower: minerPower.value?.minerPower?.qualityAdjPower,
-  rawPower: minerPower.value?.minerPower?.rawBytePower,
-  percent: ((minerPower.value?.minerPower?.qualityAdjPower / minerPower.value?.totalPower?.qualityAdjPower) * 100),
-  icon: RiseOutlined,
-  rate: '2.13 %', // TODO: get from API
-}))
-
-const color = computed(() => Number(card.value.percent) < 0 ? 'error' : 'primary')
-
 </script>
 
 <template>
@@ -40,24 +28,22 @@ const color = computed(() => Number(card.value.percent) < 0 ? 'error' : 'primary
       <v-card-text>
         <div class="d-flex align-items-center justify-space-between">
           <div>
-            <h6 class="text-h6 text-lightText mb-1">{{ card.name }}</h6>
-            <h4 class="text-h4 d-flex align-center mb-0">
-              {{ formatBytes(card.qaPower).combined }}
-              <v-chip
-                :border="`${color} solid thin opacity-50`"
-                class="ml-2"
-                :color="color"
-                label
-                size="small"
-              >
-                <template #prepend>
-                  <component :is="card.icon" :class="'mr-1 text-' + color" :style="{ fontSize: '12px' }" />
-                </template>
-                {{ card.rate }}
-              </v-chip>
-            </h4>
-            <span class="text-lightText text-caption pt-5 d-block">You own <span :class="'text-' + color">{{ card.percent.toFixed(2) }}%</span> of the total network power.</span>
+            <h5 class="text-h5">Total Power</h5>
+            <h3 class="text-h3 my-2">{{ formatBytes(minerPower.minerPower?.qualityAdjPower).combined }}</h3>
+            <h6 class="text-caption font-weight-medium mb-0">
+              Raw Bytes Power: {{ formatBytes(minerPower.minerPower?.rawBytePower).combined }}
+            </h6>
           </div>
+          <span class="d-flex align-center">
+            <v-btn
+              class="text-info"
+              icon="true"
+              rounded="md"
+              variant="flat"
+            >
+              <IconBolt :size="20" />
+            </v-btn>
+          </span>
         </div>
       </v-card-text>
     </v-card>

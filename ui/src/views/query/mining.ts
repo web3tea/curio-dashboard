@@ -9,3 +9,12 @@ export const GetMiningSummary = gql`
     }
   }
 `
+
+export const GetMiningBlockCount = gql`
+    query GetMiningBlockCount($start: Time!, $end: Time!, $miner: ActorID) {
+        miningCount(start: $start, end: $end, actor: $miner) {
+          include
+          exclude
+        }
+    }
+`

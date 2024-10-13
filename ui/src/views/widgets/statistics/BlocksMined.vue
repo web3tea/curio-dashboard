@@ -1,12 +1,13 @@
 <script setup lang="ts">
+
+import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetTaskHistoriesCount } from '@/views/query/task'
-import { IconBolt } from '@tabler/icons-vue'
-import { computed } from 'vue'
+import { GetMiningBlockCount } from '@/views/query/mining'
+import { MiningCount } from '@/typed-graph'
+import { IconBox } from '@tabler/icons-vue'
 
 const props = defineProps({
-  machine: String,
-  name: String,
+  sp: String,
   lastHours: {
     type: Number,
     default: 24,
@@ -16,27 +17,16 @@ const props = defineProps({
 const currentEnd = new Date()
 const currentStart = new Date(currentEnd.getTime() - props.lastHours * 60 * 60 * 1000)
 
-const { result: current } = useQuery(GetTaskHistoriesCount, {
-  machine: props.machine,
-  name: props.name,
+const { result } = useQuery(GetMiningBlockCount, {
+  sp: props.sp,
   end: currentEnd,
   start: currentStart,
 })
 
-const { result: failed } = useQuery(GetTaskHistoriesCount, {
-  machine: props.machine,
-  name: props.name,
-  success: false,
-  end: currentEnd,
-  start: currentStart,
+const count: ComputedRef<MiningCount> = computed(() => result.value?.miningCount || {
+  include: 0,
+  exclude: 0,
 })
-
-const card = computed(() => ({
-  name: 'Completed Tasks' + ` (${props.lastHours}h)`,
-  current: current.value?.taskHistoriesCount,
-  failed: failed.value?.taskHistoriesCount,
-  failedRate: ((failed.value?.taskHistoriesCount / current.value?.taskHistoriesCount) * 100),
-}))
 
 </script>
 
@@ -46,20 +36,20 @@ const card = computed(() => ({
       <v-card-text>
         <div class="d-flex align-items-center justify-space-between">
           <div>
-            <h5 class="text-h5">Tasks Completed</h5>
-            <h3 class="text-h3 my-2">{{ card.current }}</h3>
+            <h5 class="text-h5">Blocks Mined</h5>
+            <h3 class="text-h3 my-2">{{ count.include }}</h3>
             <h6 class="text-caption font-weight-medium mb-0">
               {{ currentStart.toLocaleString('default', { month: 'short', day: 'numeric', hour: 'numeric' }) }} - {{ currentEnd.toLocaleString('default', { month: 'short', day: 'numeric', hour: 'numeric' }) }}
             </h6>
           </div>
           <span class="d-flex align-center">
             <v-btn
-              class="text-info"
+              class="text-success"
               icon="true"
               rounded="md"
               variant="flat"
             >
-              <IconBolt :size="20" />
+              <IconBox :size="20" />
             </v-btn>
           </span>
         </div>

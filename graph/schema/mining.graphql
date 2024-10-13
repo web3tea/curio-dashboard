@@ -3,3 +3,8 @@ type MiningSummaryDay {
     miner: ActorID!
     wonBlock: Int!
 }
+
+type MiningCount {
+    include: Int!
+    exclude: Int!
+}
