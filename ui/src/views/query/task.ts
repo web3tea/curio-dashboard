@@ -96,3 +96,14 @@ export const GetTaskHistoriesAggregation = gql`
       }
     }
 `
+
+export const GetTasksStats = gql`
+    query GetTasksStats($start: Time!, $end: Time!, $machine: String) {
+        tasksStats(start: $start, end: $end, machine: $machine) {
+            name
+            total
+            success
+            failure
+        }
+    }
+`

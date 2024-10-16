@@ -261,6 +261,13 @@ type TaskNameAggregate struct {
 	Failure int    `json:"failure"`
 }
 
+type TaskStats struct {
+	Name    string `json:"name"`
+	Total   int    `json:"total"`
+	Success int    `json:"success"`
+	Failure int    `json:"failure"`
+}
+
 type TaskSummary struct {
 	Name       string `json:"name"`
 	TrueCount  int    `json:"trueCount"`

@@ -394,6 +394,7 @@ export type Query = {
   taskHistoriesCount: Scalars['Int']['output'];
   tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
+  tasksStats?: Maybe<Array<Maybe<TaskStats>>>;
 };
 
 
@@ -490,6 +491,13 @@ export type QueryTaskHistoriesCountArgs = {
   name?: InputMaybe<Scalars['String']['input']>;
   start: Scalars['Time']['input'];
   success?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+
+export type QueryTasksStatsArgs = {
+  end: Scalars['Time']['input'];
+  machine?: InputMaybe<Scalars['String']['input']>;
+  start: Scalars['Time']['input'];
 };
 
 export type Sector = {
@@ -678,6 +686,14 @@ export type TaskHistory = {
 
 export type TaskNameAggregate = {
   __typename?: 'TaskNameAggregate';
+  failure: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  success: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+};
+
+export type TaskStats = {
+  __typename?: 'TaskStats';
   failure: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   success: Scalars['Int']['output'];

@@ -172,3 +172,20 @@ ORDER BY
 	}
 	return out, nil
 }
+
+func (l *Loader) TasksStats(ctx context.Context, start, end time.Time, machine *string) ([]*model.TaskStats, error) {
+	var stats []*model.TaskStats
+	err := l.db.Select(ctx, &stats, `
+SELECT name, count(case when result = 'true' then 1 end) as success,
+		count(case when result = 'false' then 1 end) as failure, count(*) as total
+FROM harmony_task_history 
+WHERE work_end BETWEEN $1 AND $2
+  AND ($3::text IS NULL OR completed_by_host_and_port = $3)
+GROUP BY name 
+ORDER BY total desc`, start, end, machine)
+
+	if err != nil {
+		return nil, err
+	}
+	return stats, nil
+}

@@ -12,3 +12,10 @@ type TaskAggregate {
     failure: Int!
     tasks: [TaskNameAggregate]!
 }
+
+type TaskStats {
+    name: String!
+    total: Int!
+    success: Int!
+    failure: Int!
+}

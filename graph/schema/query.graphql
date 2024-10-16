@@ -17,7 +17,7 @@ type Query {
     taskHistories(offset: Int!, limit: Int!): [TaskHistory]
     taskHistoriesCount(start: Time!, end: Time!, machine: String, name: String, success: Boolean): Int!
     taskHistoriesAggregate(start: Time!, end: Time!, interval: TaskHistoriesAggregateInterval!): [TaskAggregate]
-
+    tasksStats(start: Time!, end: Time!, machine: String): [TaskStats]
     # storage
     storagePaths: [StoragePath]
     storageStats: [StorageStats]

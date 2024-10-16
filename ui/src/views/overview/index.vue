@@ -66,5 +66,4 @@ import BlocksMined from '@/views/widgets/statistics/BlocksMined.vue'
       <NewTasks />
     </v-col>
   </v-row>
-
 </template>

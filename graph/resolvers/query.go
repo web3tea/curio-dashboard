@@ -85,6 +85,16 @@ func (r *queryResolver) TaskHistoriesAggregate(ctx context.Context, start time.T
 	return r.loader.TaskHistoriesAggregate(ctx, start, end, interval)
 }
 
+// TasksStats is the resolver for the tasksStats field.
+func (r *queryResolver) TasksStats(ctx context.Context, start time.Time, end time.Time, machine *string) ([]*model.TaskStats, error) {
+	stats, err := r.loader.TasksStats(ctx, start, end, machine)
+	if err != nil {
+		return nil, err
+	}
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return stats, nil
+}
+
 // StoragePaths is the resolver for the storagePaths field.
 func (r *queryResolver) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
