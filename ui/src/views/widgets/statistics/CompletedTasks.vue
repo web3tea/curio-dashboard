@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
 import { GetTaskHistoriesCount } from '@/views/query/task'
-import { IconBolt } from '@tabler/icons-vue'
+import { IconSubtask } from '@tabler/icons-vue'
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -33,8 +33,8 @@ const { result: failed } = useQuery(GetTaskHistoriesCount, {
 
 const card = computed(() => ({
   name: 'Completed Tasks' + ` (${props.lastHours}h)`,
-  current: current.value?.taskHistoriesCount,
-  failed: failed.value?.taskHistoriesCount,
+  current: current.value?.taskHistoriesCount || 0,
+  failed: failed.value?.taskHistoriesCount || 0,
   failedRate: ((failed.value?.taskHistoriesCount / current.value?.taskHistoriesCount) * 100),
 }))
 
@@ -54,12 +54,11 @@ const card = computed(() => ({
           </div>
           <span class="d-flex align-center">
             <v-btn
-              class="text-info"
               icon="true"
               rounded="md"
               variant="flat"
             >
-              <IconBolt :size="20" />
+              <IconSubtask :size="20" />
             </v-btn>
           </span>
         </div>

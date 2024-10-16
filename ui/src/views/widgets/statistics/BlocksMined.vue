@@ -44,7 +44,6 @@ const count: ComputedRef<MiningCount> = computed(() => result.value?.miningCount
           </div>
           <span class="d-flex align-center">
             <v-btn
-              class="text-success"
               icon="true"
               rounded="md"
               variant="flat"

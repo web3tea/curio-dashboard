@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-// icons
-import { MenuFoldOutlined } from '@ant-design/icons-vue'
-
+import { ref } from 'vue'
 import LanguageDD from './LanguageDD.vue'
 import NotificationDD from './NotificationDD.vue'
 import ProfileDD from './ProfileDD.vue'
@@ -10,13 +7,13 @@ import Searchbar from './SearchBarPanel.vue'
 import FullScreen from './FullScreen.vue'
 import { useCustomizerStore } from '@/stores/customizer'
 import Logo from '@/layouts/logo/Logo.vue'
-import { IconAdjustmentsHorizontal, IconLanguage, IconSearch } from '@tabler/icons-vue'
+import { IconLanguage, IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand, IconSearch } from '@tabler/icons-vue'
+import Theme from '@/layouts/header/Theme.vue'
+import Orientation from '@/layouts/header/Orientation.vue'
 
 const customizer = useCustomizerStore()
 const priority = ref(customizer.horizontalLayout ? 0 : 0)
-watch(priority, newPriority => {
-  priority.value = newPriority
-})
+
 </script>
 
 <template>
@@ -34,7 +31,8 @@ watch(priority, newPriority => {
       variant="text"
       @click.stop="customizer.setMiniSidebar(!customizer.miniSidebar)"
     >
-      <MenuFoldOutlined :style="{ fontSize: '16px' }" />
+      <IconLayoutSidebarLeftCollapse v-if="customizer.miniSidebar" size="20" />
+      <IconLayoutSidebarLeftExpand v-else size="20" />
     </v-btn>
     <!-- search mobile -->
     <v-menu class="hidden-lg-and-up" :close-on-content-click="false" offset="10, 0">
@@ -69,7 +67,9 @@ watch(priority, newPriority => {
       <Searchbar />
     </v-sheet>
     <v-spacer />
+    <Orientation />
     <FullScreen />
+    <Theme />
     <v-menu :close-on-content-click="false" location="bottom" offset="6, 80">
       <template #activator="{ props }">
         <v-btn
@@ -86,43 +86,6 @@ watch(priority, newPriority => {
       <v-sheet rounded="md" width="200">
         <LanguageDD />
       </v-sheet>
-    </v-menu>
-    <v-menu
-      :close-on-content-click="false"
-      location="bottom"
-      offset="6, 80"
-    >
-      <template #activator="{ props }">
-        <v-btn
-          icon
-          v-bind="props"
-        >
-          <v-icon :icon="IconAdjustmentsHorizontal" />
-        </v-btn>
-      </template>
-      <v-card>
-        <v-list>
-          <v-list-item>
-            <v-switch
-              color="purple"
-              hide-details
-              label="Dark Mode"
-              :model-value="customizer.dark"
-              @click.stop="customizer.setDark(!customizer.dark)"
-            />
-          </v-list-item>
-
-          <v-list-item>
-            <v-switch
-              color="purple"
-              hide-details
-              label="Horizontal Layout"
-              :model-value="customizer.horizontalLayout"
-              @click.stop="customizer.setHorizontalLayout(!customizer.horizontalLayout)"
-            />
-          </v-list-item>
-        </v-list>
-      </v-card>
     </v-menu>
     <NotificationDD />
     <v-menu :close-on-content-click="false" offset="8, 0">

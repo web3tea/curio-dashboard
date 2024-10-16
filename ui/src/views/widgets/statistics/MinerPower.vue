@@ -36,7 +36,6 @@ const minerPower: ComputedRef<MinerPower> = computed(() => result.value?.minerPo
           </div>
           <span class="d-flex align-center">
             <v-btn
-              class="text-info"
               icon="true"
               rounded="md"
               variant="flat"
