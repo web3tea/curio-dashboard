@@ -46,10 +46,10 @@ const card = computed(() => ({
       <v-card-text>
         <div class="d-flex align-items-center justify-space-between">
           <div>
-            <h5 class="text-h5">Tasks Completed</h5>
+            <h5 class="text-h5">{{ $t('fields.Tasks Completed') }}</h5>
             <h3 class="text-h3 my-2">{{ card.current }}</h3>
             <h6 class="text-caption font-weight-medium mb-0">
-              {{ currentStart.toLocaleString('default', { month: 'short', day: 'numeric', hour: 'numeric' }) }} - {{ currentEnd.toLocaleString('default', { month: 'short', day: 'numeric', hour: 'numeric' }) }}
+              {{ $d(currentStart, 'short') }} - {{ $d(currentEnd, 'short') }}
             </h6>
           </div>
           <span class="d-flex align-center">

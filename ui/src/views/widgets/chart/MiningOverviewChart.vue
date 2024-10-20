@@ -114,7 +114,7 @@ const totalWonBlocks = computed(() => {
 </script>
 
 <template>
-  <UiTitleCard class-name="pt-5 px-0 rounded-md overflow-hidden" title="Mining Overview">
+  <UiTitleCard class-name="pt-5 px-0 rounded-md overflow-hidden" :title="$t('fields.Mining Overview')">
     <template #action>
       <v-btn
         :disabled="loading"
@@ -127,7 +127,7 @@ const totalWonBlocks = computed(() => {
       </v-btn>
     </template>
     <div class="px-5">
-      <h6 class="text-h6 text-lightText mb-4">This Week Total Mined</h6>
+      <h6 class="text-h6 text-lightText mb-4">{{ $t('msgs.weekBlock') }}</h6>
       <h3 class="text-h3 mb-0">{{ totalWonBlocks }}</h3>
     </div>
     <apexchart

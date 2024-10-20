@@ -25,7 +25,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" title="Chain Connectivity">
+  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Chain Connectivity')">
     <template #action>
       <v-btn
         :disabled="loading"

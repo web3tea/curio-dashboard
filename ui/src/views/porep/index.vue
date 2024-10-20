@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import SectorList from '@/views/porep/SectorList.vue'
 
-const page = ref({ title: 'PoRep' })
 const breadcrumbs = ref([
   {
     title: 'PoRep',
@@ -19,7 +18,7 @@ const breadcrumbs = ref([
 </script>
 
 <template>
-  <BaseBreadcrumb :breadcrumbs="breadcrumbs" :title="page.title" />
+  <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12" md="12">
       <SectorList />

@@ -19,7 +19,6 @@ const props = defineProps(
   }
 )
 
-const page = ref({ title: 'Sector Details' })
 const breadcrumbs = ref([
   {
     title: 'Sectors',
@@ -35,7 +34,7 @@ const breadcrumbs = ref([
 
 </script>
 <template>
-  <BaseBreadcrumb :breadcrumbs="breadcrumbs" :title="page.title" />
+  <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12">
       <SectorInfo :miner="miner" :sector-number="sectorNumber" />

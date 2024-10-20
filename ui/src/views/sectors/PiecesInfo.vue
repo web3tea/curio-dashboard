@@ -7,6 +7,9 @@ import { computed, ComputedRef } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   miner: {
@@ -43,7 +46,7 @@ const headers :Header[] = [
 </script>
 
 <template>
-  <UiChildCard :loading="loading" title="Pieces Info">
+  <UiChildCard :loading="loading" :title="t('fields.Pieces Info')">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
         <IconReload />

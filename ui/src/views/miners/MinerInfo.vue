@@ -7,6 +7,9 @@ import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { formatFIL } from '@/utils/helpers/formatFIL'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   id: {
@@ -25,15 +28,15 @@ const cols1 = computed(() => {
   const miner = result.value?.miner
   const info = miner?.info
   return [
-    { title: 'ID', subtext: miner?.id, cols: 12, sm: 6 },
-    { title: 'Owner', subtext: info?.owner, cols: 12, sm: 6 },
-    { title: 'Worker', subtext: info?.worker, cols: 12, sm: 6 },
-    { title: 'Beneficiary', subtext: info?.beneficiary, cols: 12, sm: 6 },
-    { title: 'Sector Size', subtext: formatBytes(info?.sectorSize).combined, cols: 12, sm: 6 },
-    { title: 'Window PoSt Proof Type', subtext: info?.windowPoStProofType, cols: 12, sm: 6 },
-    { title: 'Control Addresses', subtext: info?.controlAddresses, cols: 12, sm: 12 },
-    { title: 'Peer ID', subtext: info?.peerId, cols: 12, sm: 12 },
-    { title: 'Multi Addrs', subtext: info?.multiAddrs, cols: 12, sm: 12 },
+    { title: t('fields.ID'), subtext: miner?.id, cols: 12, sm: 6 },
+    { title: t('fields.Owner'), subtext: info?.owner, cols: 12, sm: 6 },
+    { title: t('fields.Worker'), subtext: info?.worker, cols: 12, sm: 6 },
+    { title: t('fields.Beneficiary'), subtext: info?.beneficiary, cols: 12, sm: 6 },
+    { title: t('fields.Sector Size'), subtext: formatBytes(info?.sectorSize).combined, cols: 12, sm: 6 },
+    { title: t('fields.Window PoSt Proof Type'), subtext: info?.windowPoStProofType, cols: 12, sm: 6 },
+    { title: t('fields.Control Addresses'), subtext: info?.controlAddresses, cols: 12, sm: 12 },
+    { title: t('fields.Peer ID'), subtext: info?.peerId, cols: 12, sm: 12 },
+    { title: t('fields.Multi Addrs'), subtext: info?.multiAddrs, cols: 12, sm: 12 },
   ]
 })
 
@@ -43,28 +46,28 @@ const cols2 = computed(() => {
   const balance = miner?.balance
   return [
     {
-      title: 'Raw Byte Power',
+      title: t('fields.Raw Byte Power'),
       subtext: formatBytes(power?.rawBytePower).combined + ' / ' + (power?.rawBytePower | 0 / power?.totalPower?.rawBytePower).toFixed(2) + '%',
       cols: 12,
       sm: 6,
     },
     {
-      title: 'Quality Adjusted Power',
+      title: t('fields.Quality Adjusted Power'),
       subtext: formatBytes(power?.qualityAdjPower).combined + ' / ' + (power?.qualityAdjPower | 0 / power?.totalPower?.qualityAdjPower).toFixed(2) + '%',
       cols: 12,
       sm: 6,
     },
-    { title: 'Balance', subtext: formatFIL(balance?.balance), cols: 12, sm: 6 },
-    { title: 'Initial Pledge', subtext: formatFIL(balance?.initialPledge), cols: 12, sm: 6 },
-    { title: 'Pre Commit Deposits', subtext: formatFIL(balance?.preCommitDeposits), cols: 12, sm: 6 },
-    { title: 'Vesting', subtext: formatFIL(balance?.vesting), cols: 12, sm: 6 },
-    { title: 'Available', subtext: formatFIL(balance?.available), cols: 12, sm: 6 },
+    { title: t('fields.Balance'), subtext: formatFIL(balance?.balance), cols: 12, sm: 6 },
+    { title: t('fields.Initial Pledge'), subtext: formatFIL(balance?.initialPledge), cols: 12, sm: 6 },
+    { title: t('fields.Pre Commit Deposits'), subtext: formatFIL(balance?.preCommitDeposits), cols: 12, sm: 6 },
+    { title: t('fields.Vesting'), subtext: formatFIL(balance?.vesting), cols: 12, sm: 6 },
+    { title: t('fields.Available Balance'), subtext: formatFIL(balance?.available), cols: 12, sm: 6 },
   ]
 })
 </script>
 
 <template>
-  <UiChildCard :loading="loading" title="Basic Info">
+  <UiChildCard :loading="loading" :title="t('fields.Basic Info')">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
         <IconReload />

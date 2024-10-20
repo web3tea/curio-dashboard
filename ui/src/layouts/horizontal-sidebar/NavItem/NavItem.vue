@@ -1,5 +1,17 @@
-<script setup>
-const props = defineProps({ item: Object, level: Number })
+<script setup lang="ts">
+import { menu } from '@/layouts/horizontal-sidebar/horizontalItems'
+import { PropType } from 'vue'
+
+const props = defineProps({
+  item: {
+    type: Object as PropType<menu>,
+    required: true,
+  },
+  level: {
+    type: Number,
+    required: false,
+  },
+})
 </script>
 
 <template>
@@ -7,7 +19,7 @@ const props = defineProps({ item: Object, level: Number })
   <router-link class="navItemLink rounded-0" :disabled="item.disabled" :to="`${item.to}`">
     <!---If icon-->
     <component :is="props.item.icon" :level="props.level" :style="{ fontSize: '16px' }" />
-    <span>{{ item.title }}</span>
+    <span>{{ $t("nav."+item.title) }}</span>
     <!---If Caption-->
     <small v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
       {{ item.subCaption }}

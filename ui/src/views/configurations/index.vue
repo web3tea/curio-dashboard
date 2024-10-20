@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import { ref, shallowRef } from 'vue'
+import { ref } from 'vue'
 
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
-
 import ConfigurationList from '@/views/configurations/ConfigurationList.vue'
 
-const page = ref({ title: 'Configurations' })
-
-const breadcrumbs = shallowRef([
+const breadcrumbs = ref([
   {
     title: 'Configurations',
     disabled: false,
@@ -22,7 +19,7 @@ const breadcrumbs = shallowRef([
 </script>
 
 <template>
-  <BaseBreadcrumb :breadcrumbs="breadcrumbs" :title="page.title" />
+  <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <ConfigurationList />
 </template>
 <style lang="scss">

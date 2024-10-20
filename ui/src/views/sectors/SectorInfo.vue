@@ -7,6 +7,9 @@ import { GetSectorMeta } from '@/views/query/sector'
 import { computed, ComputedRef } from 'vue'
 import { PorepStatus, SectorMeta } from '@/typed-graph'
 import { IconBox, IconBrandRedux, IconReload, IconTrash, IconUser } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps(
   {
@@ -33,7 +36,7 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
 </script>
 
 <template>
-  <UiChildCard :loading="loading" title="Sector Info">
+  <UiChildCard :loading="loading" :title="t('fields.Sector Info')">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
         <IconReload />
@@ -42,19 +45,19 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
     <div class="d-flex align-center flex-column flex-sm-row text-medium-emphasis ga-4">
       <div class="d-flex align-center">
         <IconUser />
-        <span class="text-subtitle-1 font-weight-medium ml-2">Miner: {{ miner }}</span>
+        <span class="text-subtitle-1 font-weight-medium ml-2">{{ t('fields.Miner') }}: {{ miner }}</span>
       </div>
       <div class="d-flex align-center">
         <IconBox />
-        <span class="text-subtitle-1 font-weight-medium ml-2">Sector: {{ sectorNumber }}</span>
+        <span class="text-subtitle-1 font-weight-medium ml-2">{{ t('fields.Sector') }}: {{ sectorNumber }}</span>
       </div>
       <div class="d-flex align-center">
         <IconTrash />
-        <span class="text-subtitle-1 font-weight-medium ml-2">IsCC: {{ meta.isCC ? 'Yes' : 'No' }}</span>
+        <span class="text-subtitle-1 font-weight-medium ml-2">{{ t('fields.IsCC') }}: {{ meta.isCC ? 'Yes' : 'No' }}</span>
       </div>
       <div class="d-flex align-center">
         <IconBrandRedux />
-        <span class="text-subtitle-1 font-weight-medium ml-2">Status: {{ status }}</span>
+        <span class="text-subtitle-1 font-weight-medium ml-2">{{ t('fields.Status') }}: {{ status }}</span>
       </div>
     </div>
     <v-divider class="my-4" />

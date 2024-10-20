@@ -7,6 +7,9 @@ import { GetConfigs } from '@/views/query/config'
 import { Item } from 'vue3-easy-data-table'
 import { IconPlus, IconReload, IconSearch } from '@tabler/icons-vue'
 import ConfigRemoveDialog from '@/views/configurations/ConfigRemoveDialog.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const { result, loading, refetch, error } = useQuery(GetConfigs, null, () => ({
   fetchPolicy: 'cache-first',
@@ -53,7 +56,7 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
                   <template #prepend>
                     <IconPlus />
                   </template>
-                  Create
+                  {{ t('fields.Create') }}
                 </v-btn>
                 <v-btn
                   icon="true"

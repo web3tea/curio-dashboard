@@ -1,13 +1,20 @@
-<script setup>
-import { onMounted, ref } from 'vue'
-import { string } from 'yup'
-const props = defineProps({ item: Object, level: Number })
+<script setup lang="ts">
+import { onMounted, PropType, ref } from 'vue'
+import { menu } from '@/layouts/vertical-sidebar/sidebarItem'
 
-const relativeURL = ref(string)
+const props = defineProps({
+  item: {
+    type: Object as PropType<menu>,
+    required: true,
+  },
+  level: Number,
+})
+
+const relativeURL = ref('')
 
 onMounted(async () => {
   try {
-    relativeURL.value = await import.meta.env.BASE_URL
+    relativeURL.value = import.meta.env.BASE_URL
   } catch (error) {
     console.error('Error url not found:', error)
   }
@@ -30,7 +37,7 @@ onMounted(async () => {
     <template #prepend>
       <component :is="props.item.icon" class="iconClass" :level="props.level" />
     </template>
-    <v-list-item-title>{{ $t(item.title) }}</v-list-item-title>
+    <v-list-item-title>{{ $t("nav."+item.title) }}</v-list-item-title>
     <!---If Caption-->
     <v-list-item-subtitle v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
       {{ item.subCaption }}
@@ -63,7 +70,7 @@ onMounted(async () => {
     <template #prepend>
       <component :is="props.item.icon" class="iconClass" :level="props.level" />
     </template>
-    <v-list-item-title>{{ $t(item.title) }}</v-list-item-title>
+    <v-list-item-title>{{ $t("nav."+item.title) }}</v-list-item-title>
     <!---If Caption-->
     <v-list-item-subtitle v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
       {{ item.subCaption }}

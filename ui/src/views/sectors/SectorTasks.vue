@@ -7,6 +7,9 @@ import { computed, ComputedRef } from 'vue'
 import { Task } from '@/typed-graph'
 import type { Header } from 'vue3-easy-data-table'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   miner: {
@@ -39,7 +42,7 @@ const headers :Header[] = [
 </script>
 
 <template>
-  <UiChildCard :loading="loading" title="Sector Tasks ">
+  <UiChildCard :loading="loading" :title="t('fields.Sector Tasks')">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
         <IconReload />

@@ -15,7 +15,7 @@ export interface menu {
   divider?: boolean;
   chip?: string;
   chipColor?: string;
-  chipVariant?: string;
+  chipVariant?: NonNullable<'flat' | 'text' | 'elevated' | 'tonal' | 'outlined' | 'plain'> | undefined;
   chipIcon?: string;
   children?: menu[];
   disabled?: boolean;

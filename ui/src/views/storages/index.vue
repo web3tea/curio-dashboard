@@ -4,7 +4,6 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import StoragePathList from '@/views/storages/StoragePathList.vue'
 import StorageUsageChart from '@/views/storages/StorageUsageChart.vue'
 
-const page = ref({ title: 'Storages' })
 const breadcrumbs = ref([
   {
     title: 'Storages',
@@ -21,7 +20,7 @@ const breadcrumbs = ref([
 </script>
 
 <template>
-  <BaseBreadcrumb :breadcrumbs="breadcrumbs" :title="page.title" />
+  <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12" lg="12">
       <StorageUsageChart />

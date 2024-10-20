@@ -31,7 +31,7 @@ function usePercentage (available: number, total: number) {
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" title="Storage Usages">
+  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Storage Usages')">
     <template #action>
       <v-btn
         :disabled="loading"

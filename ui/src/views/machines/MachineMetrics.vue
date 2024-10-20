@@ -6,6 +6,9 @@ import { computed } from 'vue'
 import moment from 'moment'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   id: {
@@ -57,7 +60,7 @@ const details = computed(() => {
 </script>
 
 <template>
-  <UiChildCard :loading="loading" title="Basic Info">
+  <UiChildCard :loading="loading" :title="t('fields.Basic Info')">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
         <IconReload />

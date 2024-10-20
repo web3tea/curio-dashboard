@@ -8,6 +8,9 @@ import { IconCircleX, IconReload, IconSquareCheck } from '@tabler/icons-vue'
 import { GetSectorEvents } from '@/views/query/sector'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatDuration } from '@/utils/helpers/formatDuration'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   miner: {
@@ -30,7 +33,7 @@ const events: ComputedRef<[TaskHistory]> = computed(() => result.value?.sector.e
 </script>
 
 <template>
-  <UiChildCard :loading="loading" title="Sector Events ">
+  <UiChildCard :loading="loading" :title="t('fields.Sector Events')">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
         <IconReload />

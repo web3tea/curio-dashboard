@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// icons
 import { RightOutlined } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 

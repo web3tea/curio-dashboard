@@ -6,6 +6,9 @@ import { computed, ComputedRef } from 'vue'
 import { StoragePath } from '@/typed-graph'
 import { GetMachineStorages } from '@/views/query/machine'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   id: {
@@ -25,7 +28,7 @@ const paths: ComputedRef<[StoragePath]> = computed(() => result.value?.machine.s
 </script>
 
 <template>
-  <UiChildCard :loading="loading" title="Storages ">
+  <UiChildCard :loading="loading" :title="t('fields.Storages')">
     <template #action>
       <v-btn round :rounded="true" variant="text" @click="refetch">
         <IconReload />

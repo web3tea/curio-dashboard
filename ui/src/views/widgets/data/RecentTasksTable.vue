@@ -54,7 +54,7 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" title="Recently Finished Tasks">
+  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Recently Finished Tasks')">
     <template #action>
       <v-btn
         :icon="isStop ? IconPlayerPlay : IconPlayerPause"

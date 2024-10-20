@@ -4,7 +4,6 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import { ref } from 'vue'
 import MinerList from '@/views/miners/MinerList.vue'
 
-const page = ref({ title: 'Miners' })
 const breadcrumbs = ref([
   {
     title: 'Miners',
@@ -21,7 +20,7 @@ const breadcrumbs = ref([
 </script>
 
 <template>
-  <BaseBreadcrumb :breadcrumbs="breadcrumbs" :title="page.title" />
+  <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12" lg="12">
       <MinerList />

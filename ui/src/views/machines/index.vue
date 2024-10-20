@@ -4,12 +4,11 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import MachineList from '@/views/machines/MachineList.vue'
 import WidgetMachineSummaryCharts from '@/views/machines/MachineSummaryCharts.vue'
 
-const page = ref({ title: 'Machines' })
 const breadcrumbs = ref([
   {
-    title: 'Machine',
+    title: 'Machines',
     disabled: false,
-    href: '#',
+    href: '/app/machines',
   },
   {
     title: 'List',
@@ -21,7 +20,7 @@ const breadcrumbs = ref([
 </script>
 
 <template>
-  <BaseBreadcrumb :breadcrumbs="breadcrumbs" :title="page.title" />
+  <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12" lg="12">
       <WidgetMachineSummaryCharts />

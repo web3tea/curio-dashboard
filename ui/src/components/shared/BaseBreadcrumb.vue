@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { computed, PropType } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 type Breadcrumb = {
   title: string;
   disabled: boolean;
@@ -7,24 +12,44 @@ type Breadcrumb = {
 
 const props = defineProps({
   title: String,
-  breadcrumbs: Array as () => Breadcrumb[],
+  breadcrumbs: {
+    type: Array as PropType<Breadcrumb[]>,
+    required: true,
+  },
   icon: String,
 })
+
+const getTitle = (breadcrumb: Breadcrumb, index: number) => {
+  if (index === props.breadcrumbs.length - 1) {
+    if (breadcrumb.title === 'List') {
+      return t(`nav.List`)
+    }
+    return breadcrumb.title
+  }
+  return t(`nav.${breadcrumb.title}`)
+}
+
+const breadcrumbs = computed(() => {
+  return props.breadcrumbs.map((breadcrumb, index) => ({
+    ...breadcrumb,
+    title: getTitle(breadcrumb, index),
+  }))
+})
+
 </script>
 
-// ===============================|| Theme Breadcrumb ||=============================== //
 <template>
   <v-row class="page-breadcrumb mb-0 mt-n2">
     <v-col cols="12" md="12">
       <v-card elevation="0" variant="text">
         <v-row class="align-center" no-gutters>
           <v-col sm="12">
-            <v-breadcrumbs class="text-h6 pa-1 font-weight-medium mb-0" :items="props.breadcrumbs">
+            <v-breadcrumbs class="text-h6 pa-1 font-weight-medium mb-0" :items="breadcrumbs">
               <template #divider>
                 <div class="d-flex align-center">/</div>
               </template>
               <template #prepend>
-                <router-link class="text-lightText text-h6 text-decoration-none" to="/"> Home </router-link>
+                <router-link class="text-lightText text-h6 text-decoration-none" to="/"> {{ $t('nav.Home') }} </router-link>
                 <div class="d-flex align-center px-2">/</div>
               </template>
             </v-breadcrumbs>

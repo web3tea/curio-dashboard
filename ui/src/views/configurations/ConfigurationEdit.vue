@@ -9,6 +9,10 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import { GetConfig, UpdateConfig } from '@/views/query/config'
 import { useCustomizerStore } from '@/stores/customizer'
 import { Config } from '@/typed-graph'
+import { useI18n } from 'vue-i18n'
+import { IconDeviceFloppy, IconPencil } from '@tabler/icons-vue'
+
+const { t } = useI18n()
 
 const props = defineProps({
   layer: {
@@ -75,7 +79,7 @@ const extensions = computed(() => {
 
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
-  <UiParentCard title="Edit Configuration">
+  <UiParentCard :title="t('fields.Edit Configuration')">
     <template #action>
       <v-btn
         v-if="enableEdit"
@@ -84,9 +88,9 @@ const extensions = computed(() => {
         @click="saveEdit"
       >
         <template #append>
-          <DeviceFloppyIcon />
+          <IconDeviceFloppy />
         </template>
-        Save
+        {{ t('fields.Save') }}
       </v-btn>
       <v-btn
         v-else
@@ -94,9 +98,9 @@ const extensions = computed(() => {
         @click="enableEdit = true"
       >
         <template #append>
-          <PencilIcon />
+          <IconPencil />
         </template>
-        Edit
+        {{ t('fields.Edit') }}
       </v-btn>
     </template>
     <v-label class="mb-1">Layer</v-label>
