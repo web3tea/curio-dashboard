@@ -3,7 +3,12 @@
     <!-- Loader start -->
     <LoaderWrapper />
     <!-- Loader end -->
-    <RouterView />
+    <!--    <RouterView />-->
+    <RouterView v-slot="{ Component }">
+      <KeepAlive>
+        <component :is="Component" />
+      </KeepAlive>
+    </RouterView>
   </v-app>
 </template>
 <script setup lang="ts">

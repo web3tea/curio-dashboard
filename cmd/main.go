@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/filecoin-project/curio/build"
 	lcli "github.com/filecoin-project/lotus/cli"
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/urfave/cli/v2"
@@ -12,7 +13,7 @@ func main() {
 	app := &cli.App{
 		Name:                 "curio-dashboard",
 		Usage:                "A dashboard for the Curio",
-		Version:              "0.0.1", // todo:
+		Version:              "0.0.6+v" + build.BuildVersion,
 		EnableBashCompletion: true,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{

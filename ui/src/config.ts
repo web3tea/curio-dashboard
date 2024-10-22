@@ -11,7 +11,7 @@ const config: ConfigProps = {
   customizerDrawer: false,
   miniSidebar: false,
   horizontalLayout: false, // Horizontal layout
-  dark: false,
+  dark: true,
 }
 
 export default config

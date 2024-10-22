@@ -23,5 +23,4 @@ go.work.sum
 curio-dashboard
 .idea
 qodana.yaml
-web
 config.toml

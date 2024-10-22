@@ -9,6 +9,7 @@ import { useMutation } from '@vue/apollo-composable'
 import { CreateConfig, GetConfigs } from '@/views/query/config'
 import { useCustomizerStore } from '@/stores/customizer'
 import { useRouter } from 'vue-router'
+import { IconDeviceFloppy } from '@tabler/icons-vue'
 
 const router = useRouter()
 
@@ -63,7 +64,7 @@ const extensions = computed(() => {
         @click="createConfig"
       >
         <template #append>
-          <DeviceFloppyIcon />
+          <IconDeviceFloppy />
         </template>
         Create
       </v-btn>

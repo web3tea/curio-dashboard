@@ -8,20 +8,20 @@ import (
 	"strings"
 	"time"
 
+	"github.com/vektah/gqlparser/v2/ast"
+
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/vektah/gqlparser/v2/gqlerror"
-
-	logging "github.com/ipfs/go-log/v2"
-
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
+	logging "github.com/ipfs/go-log/v2"
 	"github.com/labstack/echo/v4"
 	"github.com/strahe/curio-dashboard/config"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 var log = logging.Logger("graph")
@@ -67,10 +67,10 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 	//srv.AddTransport(transport.GET{})
 	//srv.AddTransport(transport.POST{})
 	//srv.AddTransport(transport.MultipartForm{})
-	srv.SetQueryCache(lru.New(1000))
+	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
 	srv.Use(extension.Introspection{})
 	srv.Use(extension.AutomaticPersistedQuery{
-		Cache: lru.New(100),
+		Cache: lru.New[string](100),
 	})
 	srv.Use(cachecontrol.Extension{})
 

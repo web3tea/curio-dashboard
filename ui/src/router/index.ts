@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppRoutes from '@/router/AppRoutes'
 import AuthRoutes from '@/router/AuthRoutes'
 import { useAuthStore } from '@/stores/auth'
+import { useUIStore } from '@/stores/ui'
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +41,16 @@ router.beforeEach(async (to, from, next) => {
   } else {
     next()
   }
+})
+
+router.beforeEach(() => {
+  const uiStore = useUIStore()
+  uiStore.isLoading = true
+})
+
+router.afterEach(() => {
+  const uiStore = useUIStore()
+  uiStore.isLoading = false
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

@@ -65,7 +65,7 @@ FROM
     mining_tasks
 WHERE
     won = true AND
-    ($1 IS NULL OR sp_id = $1) AND
+    ($1::int IS NULL OR sp_id = $1) AND
     base_compute_time BETWEEN $2 AND $3
 GROUP BY
     included;`, actor, start, end)
