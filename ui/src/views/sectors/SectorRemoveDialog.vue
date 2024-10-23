@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { RemoveSector } from '@/views/query/sector'
+import { IconTrash } from '@tabler/icons-vue'
 
 const props = defineProps({
   miner: {
@@ -34,7 +35,7 @@ function removeSector () {
 <template>
   <v-btn color="error">
     <template #append>
-      <TrashIcon />
+      <IconTrash />
     </template>
     Remove
     <v-dialog v-model="dialog" activator="parent" max-width="600">

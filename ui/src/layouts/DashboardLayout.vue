@@ -26,10 +26,12 @@ const customizer = useCustomizerStore()
       <v-main class="page-wrapper">
         <v-container fluid>
           <div>
-            <!-- Loader start -->
             <LoaderWrapper />
-            <!-- Loader end -->
-            <RouterView />
+            <RouterView v-slot="{ Component }">
+              <KeepAlive>
+                <component :is="Component" />
+              </KeepAlive>
+            </RouterView>
           </div>
         </v-container>
         <v-container class="pt-0" fluid>

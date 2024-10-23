@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { GetConfigs, RemoveConfig } from '@/views/query/config'
+import { IconTrash } from '@tabler/icons-vue'
 
 const props = defineProps({
   title: {
@@ -31,7 +32,7 @@ onDone(() => {
 <template>
   <v-btn color="error">
     <template #append>
-      <TrashIcon />
+      <IconTrash />
     </template>
     Remove
     <v-dialog v-model="dialog" activator="parent" max-width="600">

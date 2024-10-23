@@ -1,9 +1,6 @@
 <template>
   <v-app>
-    <!-- Loader start -->
     <LoaderWrapper />
-    <!-- Loader end -->
-    <!--    <RouterView />-->
     <RouterView v-slot="{ Component }">
       <KeepAlive>
         <component :is="Component" />
