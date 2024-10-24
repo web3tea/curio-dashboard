@@ -90,6 +90,9 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
             <template #item-id="{ id, title }">
               <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: title } }">{{ id }}</RouterLink>
             </template>
+            <template #item-title="{ title }">
+              <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: title } }">{{ title }}</RouterLink>
+            </template>
             <template #item-usedBy="{ usedBy }">
               <v-chip-group column>
                 <v-chip v-for="by in usedBy" :key="by.machineId" :to="{name: 'MachineInfo', params: {id: by.machineId}}">{{ by.machineName || by.machineId }}</v-chip>

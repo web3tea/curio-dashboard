@@ -3,6 +3,8 @@ import { ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { GetConfigs, RemoveConfig } from '@/views/query/config'
 import { IconTrash } from '@tabler/icons-vue'
+import { useUIStore } from '@/stores/ui'
+const uiStore = useUIStore()
 
 const props = defineProps({
   title: {
@@ -25,6 +27,10 @@ const { mutate: removeConfig, loading, onDone, error } = useMutation(RemoveConfi
 
 onDone(() => {
   dialog.value = false
+  uiStore.appendMsg({
+    type: 'success',
+    msg: `Configuration ${props.title} successfully removed`,
+  })
 })
 
 </script>
@@ -36,18 +42,25 @@ onDone(() => {
     </template>
     Remove
     <v-dialog v-model="dialog" activator="parent" max-width="600">
-      <v-card>
+      <v-card
+        subtitle="Are you sure you want to remove this configuration?"
+        title="Remove Configuration"
+      >
         <v-card-text>
-          Are you sure you want to remove this config ?
           <v-chip color="error" label>{{ props.title }}</v-chip>
-          <v-alert v-if="error" class="mt-4" color="error" :text="error.message" />
+          <v-alert
+            v-if="error"
+            class="mt-4"
+            color="error"
+            :text="error.message"
+          />
         </v-card-text>
         <v-card-actions>
           <v-btn
-            block
             color="error"
             :loading="loading"
-            variant="tonal"
+            text="true"
+            variant="outlined"
             @click="removeConfig({ title: props.title })"
           > Confirm </v-btn>
         </v-card-actions>

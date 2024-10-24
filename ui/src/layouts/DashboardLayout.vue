@@ -6,8 +6,15 @@ import VerticalHeader from '@/layouts/header/Header.vue'
 import HorizontalSidebar from '@/layouts/horizontal-sidebar/HorizontalSidebar.vue'
 import FooterPanel from '@/layouts/footer/FooterPanel.vue'
 import { useCustomizerStore } from '@/stores/customizer'
+import { useUIStore } from '@/stores/ui'
+import { storeToRefs } from 'pinia'
+import { IconX } from '@tabler/icons-vue'
 
+const uiStore = useUIStore()
 const customizer = useCustomizerStore()
+
+const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
+
 </script>
 
 <template>
@@ -23,6 +30,20 @@ const customizer = useCustomizerStore()
       <VerticalHeader />
       <HorizontalSidebar v-if="customizer.horizontalLayout" />
 
+      <v-snackbar
+        v-model="showSnackbar"
+        :color="snackbarMsg?.type"
+        location="top"
+        rounded="md"
+      >
+        <v-icon class="mr-1" icon="$checkboxMarkedCircleOutline" />
+        {{ snackbarMsg?.msg }}
+        <template #actions>
+          <v-btn color="white" variant="text" @click="showSnackbar = false">
+            <IconX />
+          </v-btn>
+        </template>
+      </v-snackbar>
       <v-main class="page-wrapper">
         <v-container fluid>
           <div>

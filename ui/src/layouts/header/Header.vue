@@ -10,9 +10,14 @@ import Logo from '@/layouts/logo/Logo.vue'
 import { IconLanguage, IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand, IconSearch } from '@tabler/icons-vue'
 import Theme from '@/layouts/header/Theme.vue'
 import Orientation from '@/layouts/header/Orientation.vue'
+import { useUIStore } from '@/stores/ui'
+import { storeToRefs } from 'pinia'
 
 const customizer = useCustomizerStore()
 const priority = ref(customizer.horizontalLayout ? 0 : 0)
+
+const uiStore = useUIStore()
+const { isOnline } = storeToRefs(uiStore)
 
 </script>
 
@@ -66,6 +71,9 @@ const priority = ref(customizer.horizontalLayout ? 0 : 0)
     <v-sheet class="d-none d-lg-block" width="250">
       <Searchbar />
     </v-sheet>
+    <v-badge :color="isOnline ? 'success': 'error'" inline>
+      <v-icon>mdi-home-outline</v-icon>
+    </v-badge>
     <v-spacer />
     <Orientation />
     <FullScreen />

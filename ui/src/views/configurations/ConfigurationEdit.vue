@@ -11,7 +11,9 @@ import { useCustomizerStore } from '@/stores/customizer'
 import { Config } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
 import { IconDeviceFloppy, IconPencil } from '@tabler/icons-vue'
+import { useUIStore } from '@/stores/ui'
 
+const uiStore = useUIStore()
 const { t } = useI18n()
 
 const props = defineProps({
@@ -33,26 +35,28 @@ const config: ComputedRef<Config> = computed(() => result.value?.config)
 
 const editConfig = ref(config.value?.config)
 const editTitle = ref(config.value?.title)
-const saveLoading = ref(false)
 
 watch(result, () => {
   editConfig.value = config.value?.config
   editTitle.value = config.value?.title
 })
 
-const { mutate: updateConfig } = useMutation(UpdateConfig)
+const { mutate: updateConfig, loading, onDone } = useMutation(UpdateConfig)
 
 function saveEdit () {
-  saveLoading.value = true
   updateConfig({
     title: editTitle.value,
     config: editConfig.value,
-  }).then(() => {
-    enableEdit.value = false
-  }).finally(() => {
-    saveLoading.value = false
   })
 }
+
+onDone(() => {
+  enableEdit.value = false
+  uiStore.appendMsg({
+    type: 'success',
+    msg: `Configuration ${editTitle.value} updated successfully`,
+  })
+})
 
 const breadcrumbs = ref([
   {
@@ -84,7 +88,7 @@ const extensions = computed(() => {
       <v-btn
         v-if="enableEdit"
         color="primary"
-        :loading="saveLoading"
+        :loading="loading"
         @click="saveEdit"
       >
         <template #append>
