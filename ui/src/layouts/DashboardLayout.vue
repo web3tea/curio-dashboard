@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import LoaderWrapper from './LoaderWrapper.vue'
-import VerticalSidebarVue from './vertical-sidebar/VerticalSidebar.vue'
+import LoaderWrapper from '@/layouts/LoaderWrapper.vue'
+import VerticalSidebarVue from '@/layouts/vertical-sidebar/VerticalSidebar.vue'
 import VerticalHeader from '@/layouts/header/Header.vue'
-import HorizontalSidebar from './horizontal-sidebar/HorizontalSidebar.vue'
-import FooterPanel from './footer/FooterPanel.vue'
+import HorizontalSidebar from '@/layouts/horizontal-sidebar/HorizontalSidebar.vue'
+import FooterPanel from '@/layouts/footer/FooterPanel.vue'
 import { useCustomizerStore } from '@/stores/customizer'
 
 const customizer = useCustomizerStore()
