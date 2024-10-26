@@ -12,24 +12,30 @@ const options: I18nOptions = {
   datetimeFormats: {
     en: {
       short: {
-        year: 'numeric',
-        month: 'short',
+        month: 'numeric',
         day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
       },
       long: {
         year: 'numeric',
-        month: 'short',
+        month: 'numeric',
         day: 'numeric',
-        weekday: 'short',
         hour: 'numeric',
         minute: 'numeric',
+        second: 'numeric',
       },
     },
     zh: {
       short: {
-        year: 'numeric',
-        month: 'short',
+        month: 'numeric',
         day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false,
       },
       long: {
         year: 'numeric',

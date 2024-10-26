@@ -81,11 +81,18 @@ models:
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
       - github.com/99designs/gqlgen/graphql.UintID
+  Uint:
+    model:
+      - github.com/99designs/gqlgen/graphql.Uint
   Int:
     model:
       - github.com/99designs/gqlgen/graphql.Int
+  Uint64:
+    model:
+      - github.com/99designs/gqlgen/graphql.Uint64
+  Int64:
+    model:
       - github.com/99designs/gqlgen/graphql.Int64
-      - github.com/99designs/gqlgen/graphql.Int32
   ActorID:
     model: "github.com/strahe/curio-dashboard/types.ActorID"
   ByteArray:

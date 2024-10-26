@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import LoaderWrapper from '@/layouts/LoaderWrapper.vue'
 import VerticalSidebarVue from '@/layouts/vertical-sidebar/VerticalSidebar.vue'
 import VerticalHeader from '@/layouts/header/Header.vue'
@@ -12,7 +12,7 @@ import { IconX } from '@tabler/icons-vue'
 
 const uiStore = useUIStore()
 const customizer = useCustomizerStore()
-
+const route = useRoute()
 const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
 
 </script>
@@ -26,9 +26,9 @@ const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
       ]"
       :theme="customizer.dark ? 'DarkTheme' : 'LightTheme'"
     >
-      <VerticalSidebarVue v-if="!customizer.horizontalLayout" />
       <VerticalHeader />
       <HorizontalSidebar v-if="customizer.horizontalLayout" />
+      <VerticalSidebarVue v-else />
 
       <v-snackbar
         v-model="showSnackbar"
@@ -50,7 +50,7 @@ const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
             <LoaderWrapper />
             <RouterView v-slot="{ Component }">
               <KeepAlive>
-                <component :is="Component" />
+                <component :is="Component" :key="route.fullPath" />
               </KeepAlive>
             </RouterView>
           </div>

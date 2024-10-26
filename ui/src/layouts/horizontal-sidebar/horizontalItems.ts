@@ -2,7 +2,7 @@ import {
   IconBox,
   IconChartHistogram,
   IconDatabase,
-  IconHome,
+  IconHome, IconParking,
   IconServer, IconSettings, IconUsers,
   IconVector,
 } from '@tabler/icons-vue'
@@ -62,6 +62,11 @@ const horizontalItems: menu[] = [
         title: 'Sectors',
         icon: IconBox,
         to: '/app/sectors',
+      },
+      {
+        title: 'Deals',
+        icon: IconParking,
+        to: '/app/deals/pending',
       },
     ],
   },

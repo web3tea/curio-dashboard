@@ -19,6 +19,7 @@ export type Scalars = {
   JSON: { input: any; output: any; }
   JSONB: { input: any; output: any; }
   Time: { input: any; output: any; }
+  Uint64: { input: any; output: any; }
 };
 
 export type Actor = {
@@ -214,6 +215,7 @@ export type MiningSummaryDay = {
 export type Mutation = {
   __typename?: 'Mutation';
   createConfig?: Maybe<Config>;
+  dealSealNow: Scalars['Boolean']['output'];
   removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
   updateConfig?: Maybe<Config>;
@@ -223,6 +225,12 @@ export type Mutation = {
 export type MutationCreateConfigArgs = {
   config: Scalars['String']['input'];
   title: Scalars['String']['input'];
+};
+
+
+export type MutationDealSealNowArgs = {
+  miner: Scalars['ActorID']['input'];
+  sectorNumber: Scalars['Uint64']['input'];
 };
 
 

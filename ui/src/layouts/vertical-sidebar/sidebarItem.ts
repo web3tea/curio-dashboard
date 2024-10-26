@@ -2,7 +2,7 @@ import {
   IconBox,
   IconChartHistogram,
   IconDatabase,
-  IconHome,
+  IconHome, IconParking,
   IconServer,
   IconSettings,
   IconUsers,
@@ -53,6 +53,11 @@ const sidebarItem: menu[] = [
     title: 'Sectors',
     icon: IconBox,
     to: '/app/sectors',
+  },
+  {
+    title: 'Deals',
+    icon: IconParking,
+    to: '/app/deals/pending',
   },
   { header: 'Cluster' },
   {

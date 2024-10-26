@@ -75,6 +75,11 @@ const AppRoutes = {
       component: () => import('@/views/miners/MinerDetails.vue'),
       props: true,
     },
+    {
+      name: 'PendingDeals',
+      path: '/app/deals/pending',
+      component: () => import('@/views/deals/index.vue'),
+    },
   ],
 }
 

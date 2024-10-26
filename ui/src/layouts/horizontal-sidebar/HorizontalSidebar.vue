@@ -15,13 +15,9 @@ const { mdAndUp } = useDisplay()
     <div class="horizontalMenu">
       <v-container class="py-0" fluid>
         <ul class="gap-1 horizontal-navbar px-0">
-          <!---Menu Loop -->
           <li v-for="(item, i) in sidebarMenu" :key="i" class="navItem">
-            <!---If Has Child -->
             <NavCollapse v-if="item.children" :item="item" :level="0" />
-            <!---Single Item-->
             <NavItem v-else :item="item" />
-            <!---End Single Item-->
           </li>
         </ul>
       </v-container>
