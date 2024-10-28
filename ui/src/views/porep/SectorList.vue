@@ -4,26 +4,22 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { GetSectorsPoreps } from '@/views/query/porep'
 import { Porep } from '@/typed-graph'
-import type { Item } from 'vue3-easy-data-table'
 import PipelineStatus from '@/views/widgets/data/PipelineStatus.vue'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 
-const { result, loading, refetch, error } = useQuery(GetSectorsPoreps, null, () => ({
+const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 const items: ComputedRef<[Porep]> = computed(() => result.value?.poreps || [])
 const headers = [
-  { text: 'Miner', value: 'spId' },
-  { text: 'Sector', value: 'sectorNumber' },
-  { text: 'Created', value: 'createTime' },
-  { text: 'Status', value: 'status' },
-  { text: '', value: 'card' },
+  { title: 'Miner', key: 'spId' },
+  { title: 'Sector', key: 'sectorNumber' },
+  { title: 'Created', key: 'createTime' },
+  { title: 'Status', key: 'status' },
+  { title: '', key: 'card' },
 ]
 
-const searchField = ['spId', 'sectorNumber', 'status']
 const searchValue = ref('')
-const themeColor = ref('rgb(var(--v-theme-primary))')
-const itemsSelected = ref<Item[]>([])
 const selectStatus = ref(null)
 
 const filterItems = computed(() => {
@@ -64,30 +60,27 @@ const allStatus = computed(() => {
             </v-col>
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
-                <v-btn round rounded variant="text" @click="refetch">
-                  <IconReload />
-                </v-btn>
+                <v-btn
+                  :icon="IconReload"
+                  round
+                  rounded
+                  variant="text"
+                  @click="refetch"
+                />
               </div>
             </v-col>
           </v-row>
         </v-card-item>
         <v-divider />
         <v-card-text class="pa-0">
-          <EasyDataTable
-            v-model:items-selected="itemsSelected"
+          <v-data-table-virtual
             :headers="headers"
+            hover
             :items="filterItems"
             :loading="loading"
-            :rows-per-page="100"
-            :search-field="searchField"
-            :search-value="searchValue"
-            table-class-name="customize-table"
-            :theme-color="themeColor"
+            :search="searchValue"
           >
-            <template #empty-message>
-              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
-            </template>
-            <template #header-status="header">
+            <template #header.status="{ column }">
               <v-autocomplete
                 v-model="selectStatus"
                 aria-label="autocomplete"
@@ -96,16 +89,15 @@ const allStatus = computed(() => {
                 clearable
                 color="primary"
                 :items="allStatus"
-                :label="header.text.toUpperCase()"
+                :label="column?.title?.toUpperCase()"
                 single-line
                 variant="outlined"
               />
             </template>
-
-            <template #item-sectorNumber="{spId, sectorNumber}">
-              <RouterLink :to="{ name: 'SectorDetails', params: { miner: spId, sectorNumber: sectorNumber } }">{{ sectorNumber }}</RouterLink>
+            <template #item.sectorNumber="{ item }">
+              <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.spId, sectorNumber: item.sectorNumber } }">{{ item.sectorNumber }}</RouterLink>
             </template>
-            <template #item-status="item">
+            <template #item.status="{ item }">
               <div class="mt-3 mb-2 text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Status :</span>
                 <span class="text-medium-emphasis">
@@ -117,7 +109,6 @@ const allStatus = computed(() => {
                   >{{ item.status }}</v-chip>
                 </span>
               </div>
-
               <div class="text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Task ID :</span>
                 <span class="text-medium-emphasis">{{ item.currentTask?.id }}</span>
@@ -127,13 +118,13 @@ const allStatus = computed(() => {
                 <span class="text-medium-emphasis">{{ moment(item.currentTask?.postedTime).calendar() }}</span>
               </div>
             </template>
-            <template #item-createTime="{createTime}">
-              {{ moment(createTime).format() }}
+            <template #item.createTime="{value}">
+              {{ moment(value).format() }}
             </template>
-            <template #item-card="item">
+            <template #item.card="{item}">
               <PipelineStatus :id="item.id" :sector="item" />
             </template>
-          </EasyDataTable>
+          </v-data-table-virtual>
         </v-card-text>
       </v-card>
     </v-col>
@@ -144,3 +135,4 @@ const allStatus = computed(() => {
 <style scoped lang="scss">
 
 </style>
+c

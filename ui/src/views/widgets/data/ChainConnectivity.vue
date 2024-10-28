@@ -2,21 +2,19 @@
 
 import { useQuery } from '@vue/apollo-composable'
 import { GetNodeInfos } from '@/views/query/chain'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef } from 'vue'
 import { NodeInfo } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { IconReload } from '@tabler/icons-vue'
 
 const headers = [
-  { text: 'Address', value: 'address' },
-  { text: 'Reachability', value: 'reachable' },
-  { text: 'Sync Status', value: 'syncState' },
-  { text: 'Version', value: 'version' },
+  { title: 'Address', key: 'address', sortable: false },
+  { title: 'Reachability', key: 'reachable' },
+  { title: 'Sync Status', key: 'syncState' },
+  { title: 'Version', key: 'version' },
 ]
 
-const themeColor = ref('rgb(var(--v-theme-primary))')
-
-const { result, loading, refetch, error } = useQuery(GetNodeInfos, null, () => ({
+const { result, loading, refetch } = useQuery(GetNodeInfos, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -29,39 +27,20 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
     <template #action>
       <v-btn
         :disabled="loading"
+        :icon="IconReload"
         round
         :rounded="true"
         variant="text"
         @click="refetch"
-      >
-        <IconReload />
-      </v-btn>
+      />
     </template>
-    <EasyDataTable
+    <v-data-table-virtual
       :headers="headers"
-      hide-footer
+      height="300"
+      hover
       :items="items"
       :loading="loading"
-      :rows-per-page="100"
-      table-class-name="customize-table"
-      :theme-color="themeColor"
-    >
-      <template #empty-message>
-        {{ error?.message || 'No Data' }}
-      </template>
-      <template #item-reachable="{ reachable }">
-        <v-chip class="px-0" size="small" variant="text">
-          <v-avatar class="mr-2" :color=" reachable ? 'success' : 'error'" size="8" variant="flat" />
-          <p class="text-h6 mb-0">{{ reachable ? 'ok' : 'no' }}</p>
-        </v-chip>
-      </template>
-      <template #item-syncState="{ syncState }">
-        <v-chip class="px-0" size="small" variant="text">
-          <v-avatar class="mr-2" :color=" syncState === 'ok' ? 'success' : 'error'" size="8" variant="flat" />
-          <p class="text-h6 mb-0">{{ syncState }}</p>
-        </v-chip>
-      </template>
-    </EasyDataTable>
+    />
   </UiTitleCard>
 </template>
 

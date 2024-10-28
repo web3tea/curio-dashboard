@@ -20,14 +20,11 @@ function toggleOrientation () {
     <v-btn
       class="text-secondary ml-sm-2 ml-1"
       color="darkText"
-      icon="true"
+      :icon="customizer.horizontalLayout? IconGripVertical:IconGripHorizontal"
       rounded="sm"
       size="small"
       @click="toggleOrientation"
-    >
-      <IconGripHorizontal v-if="!customizer.horizontalLayout" />
-      <IconGripVertical v-if="customizer.horizontalLayout" />
-    </v-btn>
+    />
   </div>
 </template>
 

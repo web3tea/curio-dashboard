@@ -20,7 +20,7 @@ const props = defineProps({
 })
 
 const isStop = ref(false)
-const { result, loading, stop, start, error } = useSubscription(SubscribeNewTask, {
+const { result, loading, stop, start } = useSubscription(SubscribeNewTask, {
   last: props.maxLen,
   machineID: props.machineID,
 })
@@ -38,13 +38,11 @@ watch(
 )
 
 const headers = [
-  { text: 'Name', value: 'name' },
-  { text: 'ID', value: 'id' },
-  { text: 'Posted', value: 'postedTime' },
-  { text: 'AddedBy', value: 'addedBy' },
+  { title: 'Name', key: 'name' },
+  { title: 'ID', key: 'id' },
+  { title: 'Posted', key: 'postedTime' },
+  { title: 'AddedBy', key: 'addedBy' },
 ]
-const themeColor = ref('rgb(var(--v-theme-primary))')
-
 </script>
 
 <template>
@@ -58,24 +56,18 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
         @click="isStop = !isStop; isStop ? stop() : start()"
       />
     </template>
-    <EasyDataTable
+    <v-data-table-virtual
       :headers="headers"
-      hide-footer
+      hover
       :items="tasks"
       :loading="loading"
-      :rows-per-page="100"
-      table-class-name="customize-table"
-      :theme-color="themeColor"
     >
-      <template #empty-message>
-        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      <template #item.postedTime="{ item }">
+        {{ moment(item.postedTime).calendar() }}
       </template>
-      <template #item-postedTime="{postedTime}">
-        {{ moment(postedTime).calendar() }}
+      <template #item.addedBy="{ item }">
+        <RouterLink :to="{ name: 'MachineInfo', params: { id: item.addedBy.id } }">{{ item.addedBy.hostAndPort }}</RouterLink>
       </template>
-      <template #item-addedBy="{addedBy}">
-        <RouterLink :to="{ name: 'MachineInfo', params: { id: addedBy.id } }">{{ addedBy.hostAndPort }}</RouterLink>
-      </template>
-    </EasyDataTable>
+    </v-data-table-virtual>
   </UiTitleCard>
 </template>

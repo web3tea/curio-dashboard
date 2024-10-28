@@ -69,9 +69,13 @@ const cols2 = computed(() => {
 <template>
   <UiChildCard :loading="loading" :title="t('fields.Basic Info')">
     <template #action>
-      <v-btn round :rounded="true" variant="text" @click="refetch">
-        <IconReload />
-      </v-btn>
+      <v-btn
+        :icon="IconReload"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      />
     </template>
     <v-row class="py-2 mx-0 details-content">
       <v-col cols="12" sm="6">

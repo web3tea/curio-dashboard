@@ -28,13 +28,17 @@ const paths: ComputedRef<[StoragePath]> = computed(() => result.value?.machine.s
 </script>
 
 <template>
-  <UiChildCard :loading="loading" :title="t('fields.Storages')">
+  <UiChildCard :title="t('fields.Storages')">
     <template #action>
-      <v-btn round :rounded="true" variant="text" @click="refetch">
-        <IconReload />
-      </v-btn>
+      <v-btn
+        :icon="IconReload"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      />
     </template>
-    <StoragePathTable :error="error" hide-footer :items="paths" :loading="loading" />
+    <StoragePathTable :error="error" :items="paths" :loading="loading" />
   </UiChildCard>
 </template>
 

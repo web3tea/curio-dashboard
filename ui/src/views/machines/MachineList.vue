@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ComputedRef, ref, watch } from 'vue'
 import moment from 'moment'
-import type { Header, Item } from 'vue3-easy-data-table'
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons-vue'
 import { IconReload } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
@@ -9,7 +8,7 @@ import { GetMachines } from '@/views/query/machine'
 import { Machine } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
-const { result, loading, refetch, error } = useQuery(GetMachines, null, () => ({
+const { result, loading, refetch } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 const items: ComputedRef<[Machine]> = computed(() => result.value?.machines || [])
@@ -33,7 +32,6 @@ const allSupportTasks = computed(() => {
   })
   return Array.from(tasks)
 })
-const searchField = ref('hostAndPort')
 const searchValue = ref('')
 const selectLayer = ref(null)
 const selectSupportTask = ref(null)
@@ -51,21 +49,18 @@ const filterItems = computed(() => {
   })
 })
 
-const headers: Header[] = [
-  { text: 'ID', value: 'id' },
-  { text: 'Name', value: 'detail.machineName' },
-  { text: 'Host', value: 'hostAndPort' },
-  { text: 'Last Contact', value: 'lastContact', sortable: true },
-  { text: 'Startup', value: 'detail.startupTime', sortable: true },
-  { text: 'CPU', value: 'cpu', sortable: true },
-  { text: 'GPU', value: 'gpu', sortable: true },
-  { text: 'RAM', value: 'ram', sortable: true },
-  { text: 'Layers', value: 'detail.layers' },
-  { text: 'Support Tasks', value: 'detail.tasks' },
+const headers = [
+  { title: 'ID', value: 'id' },
+  { title: 'Name', value: 'detail.machineName' },
+  { title: 'Host', value: 'hostAndPort' },
+  { title: 'Last Contact', value: 'lastContact', sortable: true },
+  { title: 'Startup', value: 'detail.startupTime', sortable: true },
+  { title: 'CPU', value: 'cpu', sortable: true },
+  { title: 'GPU', value: 'gpu', sortable: true },
+  { title: 'RAM', value: 'ram', sortable: true },
+  { title: 'Layers', value: 'detail.layers' },
+  { title: 'Support Tasks', value: 'detail.tasks' },
 ]
-
-const themeColor = ref('rgb(var(--v-theme-primary))')
-const itemsSelected = ref<Item[]>([])
 </script>
 
 <template>
@@ -90,27 +85,27 @@ const itemsSelected = ref<Item[]>([])
             </v-col>
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
-                <v-btn round rounded="true" variant="text" @click="refetch">
-                  <IconReload />
-                </v-btn>
+                <v-btn
+                  :icon="IconReload"
+                  round
+                  rounded="true"
+                  variant="text"
+                  @click="refetch"
+                />
               </div>
             </v-col>
           </v-row>
         </v-card-item>
         <v-divider />
         <v-card-text class="pa-0">
-          <EasyDataTable
-            v-model:items-selected="itemsSelected"
+          <v-data-table-virtual
             :headers="headers"
+            hover
             :items="filterItems"
             :loading="loading"
-            :rows-per-page="100"
-            :search-field="searchField"
-            :search-value="searchValue"
-            table-class-name="customize-table"
-            :theme-color="themeColor"
+            :search="searchValue"
           >
-            <template #header-detail.layers="header">
+            <template #header.detail.layers="{column}">
               <v-autocomplete
                 v-model="selectLayer"
                 aria-label="autocomplete"
@@ -119,12 +114,12 @@ const itemsSelected = ref<Item[]>([])
                 clearable
                 color="primary"
                 :items="allLayers"
-                :label="header.text.toUpperCase()"
+                :label="column?.title?.toUpperCase()"
                 single-line
                 variant="outlined"
               />
             </template>
-            <template #header-detail.tasks="header">
+            <template #header.detail.tasks="{column}">
               <v-autocomplete
                 v-model="selectSupportTask"
                 aria-label="autocomplete"
@@ -133,40 +128,37 @@ const itemsSelected = ref<Item[]>([])
                 clearable
                 color="primary"
                 :items="allSupportTasks"
-                :label="header.text.toUpperCase()"
+                :label="column?.title?.toUpperCase()"
                 single-line
                 variant="outlined"
               />
             </template>
-            <template #empty-message>
-              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            <template #item.id="{ value }">
+              <RouterLink :to="{ name: 'MachineInfo', params: { id: Number(value) } }">{{ value }}</RouterLink>
             </template>
-            <template #item-id="{ id }">
-              <RouterLink :to="{ name: 'MachineInfo', params: { id: Number(id) } }">{{ id }}</RouterLink>
+            <template #item.hostAndPort="{ item }">
+              <RouterLink :to="{ name: 'MachineInfo', params: { id: item.id } }">{{ item.hostAndPort }}</RouterLink>
             </template>
-            <template #item-hostAndPort="{ id, hostAndPort }">
-              <RouterLink :to="{ name: 'MachineInfo', params: { id: id } }">{{ hostAndPort }}</RouterLink>
+            <template #item.lastContact="{ value }">
+              <div :title="value">{{ moment(value).calendar() }}</div>
             </template>
-            <template #item-lastContact="{ lastContact }">
-              <div :title="lastContact">{{ moment(lastContact).calendar() }}</div>
+            <template #item.detail.startupTime="{ value }">
+              <div :title="value">{{ moment(value).calendar() }}</div>
             </template>
-            <template #item-detail.startupTime="{ detail }">
-              <div :title="detail.startupTime">{{ moment(detail.startupTime).calendar() }}</div>
+            <template #item.ram="{ value }">
+              <div>{{ formatBytes(value).combined }}</div>
             </template>
-            <template #item-ram="{ ram }">
-              <div>{{ formatBytes(ram).combined }}</div>
-            </template>
-            <template #item-detail.layers="{ detail }">
+            <template #item.detail.layers="{ value }">
               <v-chip-group column>
-                <v-chip v-for="layer in detail.layers.split(',')" :key="layer" :to="{name: 'ConfigurationEdit', params: {layer: layer}}">{{ layer }}</v-chip>
+                <v-chip v-for="layer in value.split(',')" :key="layer" :to="{name: 'ConfigurationEdit', params: {layer: layer}}">{{ layer }}</v-chip>
               </v-chip-group>
             </template>
-            <template #item-detail.tasks="{ detail }">
+            <template #item.detail.tasks="{ value }">
               <v-chip-group column>
-                <v-chip v-for="task in detail.tasks.split(',')" :key="task">{{ task }}</v-chip>
+                <v-chip v-for="task in value.split(',')" :key="task">{{ task }}</v-chip>
               </v-chip-group>
             </template>
-            <template #item-operation="{}">
+            <template #item.operation="{}">
               <div class="operation-wrapper">
                 <v-btn
                   color="secondary"
@@ -179,7 +171,7 @@ const itemsSelected = ref<Item[]>([])
                 </v-btn>
               </div>
             </template>
-          </EasyDataTable>
+          </v-data-table-virtual>
         </v-card-text>
       </v-card>
     </v-col>

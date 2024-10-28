@@ -5,7 +5,6 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetSectorLocations } from '@/views/query/sector'
 import { computed, ComputedRef } from 'vue'
 import { SectorLocation } from '@/typed-graph'
-import type { Header } from 'vue3-easy-data-table'
 import { sectorFileTypeToName } from '@/utils/helpers/sectorFileType'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
@@ -23,7 +22,7 @@ const props = defineProps({
   },
 })
 
-const { result, loading, refetch, error } = useQuery(GetSectorLocations, {
+const { result, loading, refetch } = useQuery(GetSectorLocations, {
   miner: props.miner,
   sectorNumber: props.sectorNumber,
 }, () => ({
@@ -32,40 +31,38 @@ const { result, loading, refetch, error } = useQuery(GetSectorLocations, {
 
 const locations: ComputedRef<[SectorLocation]> = computed(() => result.value?.sector.locations || [])
 
-const headers :Header[] = [
-  { text: 'File type', value: 'sectorFiletype' },
-  { text: 'Storage Id', value: 'storageId' },
-  { text: 'Is Primary', value: 'isPrimary' },
-  { text: 'ReadTs', value: 'readTs' },
-  { text: 'ReadRefs', value: 'readRefs' },
-  { text: 'WriteTs', value: 'writeTs' },
-  { text: 'WriteLockOwner', value: 'writeLockOwner' },
+const headers = [
+  { title: 'File type', key: 'sectorFiletype' },
+  { title: 'Storage Id', key: 'storageId' },
+  { title: 'Is Primary', key: 'isPrimary' },
+  { title: 'ReadTs', key: 'readTs' },
+  { title: 'ReadRefs', key: 'readRefs' },
+  { title: 'WriteTs', key: 'writeTs' },
+  { title: 'WriteLockOwner', key: 'writeLockOwner' },
 ]
 </script>
 
 <template>
-  <UiChildCard :loading="loading" :title="t('fields.Sector Locations')">
+  <UiChildCard :title="t('fields.Sector Locations')">
     <template #action>
-      <v-btn round :rounded="true" variant="text" @click="refetch">
-        <IconReload />
-      </v-btn>
+      <v-btn
+        :icon="IconReload"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      />
     </template>
-    <EasyDataTable
+    <v-data-table-virtual
       :headers="headers"
-      hide-footer
+      hover
       :items="locations"
       :loading="loading"
-      :rows-per-page="100"
-      table-class-name="customize-table"
-      theme-color="primary"
     >
-      <template #empty-message>
-        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      <template #item.sectorFiletype="{ item }">
+        <v-chip>{{ sectorFileTypeToName(item.sectorFiletype) }}</v-chip>
       </template>
-      <template #item-sectorFiletype="{ sectorFiletype }">
-        <v-chip>{{ sectorFileTypeToName(sectorFiletype) }}</v-chip>
-      </template>
-    </EasyDataTable>
+    </v-data-table-virtual>
   </UiChildCard>
 </template>
 

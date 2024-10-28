@@ -91,7 +91,7 @@ const extensions = computed(() => {
         :loading="loading"
         @click="saveEdit"
       >
-        <template #append>
+        <template #prepend>
           <IconDeviceFloppy />
         </template>
         {{ t('fields.Save') }}
@@ -101,7 +101,7 @@ const extensions = computed(() => {
         color="error"
         @click="enableEdit = true"
       >
-        <template #append>
+        <template #prepend>
           <IconPencil />
         </template>
         {{ t('fields.Edit') }}

@@ -39,9 +39,7 @@ const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
         <v-icon class="mr-1" icon="$checkboxMarkedCircleOutline" />
         {{ snackbarMsg?.msg }}
         <template #actions>
-          <v-btn color="white" variant="text" @click="showSnackbar = false">
-            <IconX />
-          </v-btn>
+          <v-btn color="white" :icon="IconX" variant="text" @click="showSnackbar = false" />
         </template>
       </v-snackbar>
       <v-main class="page-wrapper">

@@ -72,9 +72,13 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
         </v-col>
         <v-col cols="12" md="3">
           <div class="d-flex ga-2 justify-end">
-            <v-btn round rounded variant="text" @click="refetch">
-              <IconReload />
-            </v-btn>
+            <v-btn
+              :icon="IconReload"
+              round
+              rounded
+              variant="text"
+              @click="refetch"
+            />
           </div>
         </v-col>
       </v-row>
@@ -85,6 +89,7 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
         :group-by="groupBy"
         :headers="headers"
         height="780"
+        hover
         :items="items"
         :loading="loading"
         multi-sort

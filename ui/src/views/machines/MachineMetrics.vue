@@ -33,9 +33,9 @@ const details = computed(() => {
     { title: 'Host', subtext: machine?.hostAndPort, cols: 6, sm: 3 },
     { title: 'Last Contact', subtext: moment(machine?.lastContact).fromNow(), cols: 6, sm: 3 },
     { title: 'Startup', subtext: moment(details?.startupTime).calendar(), cols: 6, sm: 3 },
-    { title: 'CPU Usage', subtext: `${metrics?.cpuUsage}/${machine.cpu}`, cols: 6, sm: 3 },
-    { title: 'GPU Usage', subtext: `${metrics?.gpuUsage}/${machine.gpu}`, cols: 6, sm: 3 },
-    { title: 'RAM Usage', subtext: `${formatBytes(metrics?.ramUsage).combined}/${formatBytes(machine.ram).combined}`, cols: 6, sm: 3 },
+    { title: 'CPU Usage', subtext: `${metrics?.cpuUsage}/${machine?.cpu}`, cols: 6, sm: 3 },
+    { title: 'GPU Usage', subtext: `${metrics?.gpuUsage}/${machine?.gpu}`, cols: 6, sm: 3 },
+    { title: 'RAM Usage', subtext: `${formatBytes(metrics?.ramUsage).combined}/${formatBytes(machine?.ram).combined}`, cols: 6, sm: 3 },
   ]
   if (metrics) {
     res.push(
@@ -62,9 +62,13 @@ const details = computed(() => {
 <template>
   <UiChildCard :loading="loading" :title="t('fields.Basic Info')">
     <template #action>
-      <v-btn round :rounded="true" variant="text" @click="refetch">
-        <IconReload />
-      </v-btn>
+      <v-btn
+        :icon="IconReload"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      />
     </template>
     <v-row class="py-2 mx-0 details-content">
       <v-col

@@ -35,9 +35,13 @@ const events: ComputedRef<[TaskHistory]> = computed(() => result.value?.sector.e
 <template>
   <UiChildCard :loading="loading" :title="t('fields.Sector Events')">
     <template #action>
-      <v-btn round :rounded="true" variant="text" @click="refetch">
-        <IconReload />
-      </v-btn>
+      <v-btn
+        :icon="IconReload"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      />
     </template>
     <perfect-scrollbar :style="{ 'max-height': '680px' }">
       <v-timeline class="my-1 custom-timeline timeline-icon-circle justify-start px-5" line-color="borderLight" side="end">

@@ -68,15 +68,19 @@ const tabs = [
                 variant="outlined"
               >
                 <template #prepend-inner>
-                  <IconSearch />
+                  <IconSearch :size="14" />
                 </template>
               </v-text-field>
             </v-col>
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
-                <v-btn round :rounded="true" variant="text" @click="refetch">
-                  <IconReload />
-                </v-btn>
+                <v-btn
+                  :icon="IconReload"
+                  round
+                  :rounded="true"
+                  variant="text"
+                  @click="refetch"
+                />
               </div>
             </v-col>
           </v-row>

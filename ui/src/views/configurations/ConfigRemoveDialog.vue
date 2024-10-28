@@ -37,7 +37,7 @@ onDone(() => {
 
 <template>
   <v-btn color="error">
-    <template #append>
+    <template #prepend>
       <IconTrash />
     </template>
     Remove

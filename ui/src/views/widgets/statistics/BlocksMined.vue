@@ -44,12 +44,11 @@ const count: ComputedRef<MiningCount> = computed(() => result.value?.miningCount
           </div>
           <span class="d-flex align-center">
             <v-btn
-              icon="true"
+              :icon="IconBox"
               rounded="md"
+              size="small"
               variant="flat"
-            >
-              <IconBox :size="20" />
-            </v-btn>
+            />
           </span>
         </div>
       </v-card-text>

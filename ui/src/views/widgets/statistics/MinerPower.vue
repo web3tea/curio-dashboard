@@ -36,12 +36,11 @@ const minerPower: ComputedRef<MinerPower> = computed(() => result.value?.minerPo
           </div>
           <span class="d-flex align-center">
             <v-btn
-              icon="true"
+              :icon="IconBolt"
               rounded="md"
+              size="small"
               variant="flat"
-            >
-              <IconBolt :size="20" />
-            </v-btn>
+            />
           </span>
         </div>
       </v-card-text>

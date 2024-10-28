@@ -36,16 +36,15 @@ const failedPercentage = (item: TaskStats) => {
     <template #action>
       <v-btn
         :disabled="loading"
+        :icon="IconReload"
         round
         :rounded="true"
         variant="text"
         @click="refetch"
-      >
-        <IconReload />
-      </v-btn>
+      />
     </template>
-    <v-table class="bordered-table" density="comfortable" hover>
-      <thead class="bg-containerBg">
+    <v-table density="comfortable" hover :loading="loading">
+      <thead>
         <tr>
           <th class="text-left text-caption font-weight-bold text-uppercase">Task</th>
           <th class="text-left text-caption font-weight-bold text-uppercase">Success</th>

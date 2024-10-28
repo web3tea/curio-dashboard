@@ -19,13 +19,10 @@ function toggleFullscreen () {
     <v-btn
       class="text-secondary ml-sm-2 ml-1"
       color="darkText"
-      icon="true"
+      :icon="fullscreen ? IconArrowsMinimize:IconArrowsMaximize"
       rounded="sm"
       size="small"
       @click="toggleFullscreen"
-    >
-      <IconArrowsMaximize v-if="!fullscreen" />
-      <IconArrowsMinimize v-if="fullscreen" />
-    </v-btn>
+    />
   </div>
 </template>

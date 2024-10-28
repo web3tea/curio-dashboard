@@ -69,7 +69,7 @@ const extensions = computed(() => {
         :loading="loading"
         @click="createConfig"
       >
-        <template #append>
+        <template #prepend>
           <IconDeviceFloppy />
         </template>
         Create

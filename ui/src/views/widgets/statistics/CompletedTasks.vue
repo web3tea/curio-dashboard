@@ -54,12 +54,11 @@ const card = computed(() => ({
           </div>
           <span class="d-flex align-center">
             <v-btn
-              icon="true"
+              :icon="IconSubtask"
               rounded="md"
+              size="small"
               variant="flat"
-            >
-              <IconSubtask :size="20" />
-            </v-btn>
+            />
           </span>
         </div>
       </v-card-text>

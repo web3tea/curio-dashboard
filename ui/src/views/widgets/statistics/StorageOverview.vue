@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef } from 'vue'
 import { StorageStats } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { GetStorageStats } from '@/views/query/storage'
@@ -9,16 +9,14 @@ import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
 
 const headers = [
-  { text: 'Type', value: 'type' },
-  { text: 'Capacity', value: 'totalCapacity' },
-  { text: 'Available', value: 'totalAvailable' },
-  { text: 'Reserved', value: 'totalReserved' },
-  { text: '', value: 'progress', width: 300 },
+  { title: 'Type', key: 'type' },
+  { title: 'Capacity', key: 'totalCapacity' },
+  { title: 'Available', key: 'totalAvailable' },
+  { title: 'Reserved', key: 'totalReserved' },
+  { title: '', key: 'progress', width: 300 },
 ]
 
-const themeColor = ref('rgb(var(--v-theme-primary))')
-
-const { result, loading, refetch, error } = useQuery(GetStorageStats, null, () => ({
+const { result, loading, refetch } = useQuery(GetStorageStats, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
@@ -35,48 +33,42 @@ function usePercentage (available: number, total: number) {
     <template #action>
       <v-btn
         :disabled="loading"
+        :icon="IconReload"
         round
         :rounded="true"
         variant="text"
         @click="refetch"
-      >
-        <IconReload />
-      </v-btn>
+      />
     </template>
-    <EasyDataTable
+    <v-data-table-virtual
       :headers="headers"
-      hide-footer
+      :height="300"
+      hover
       :items="items"
       :loading="loading"
-      :rows-per-page="100"
-      table-class-name="customize-table"
-      :theme-color="themeColor"
     >
-      <template #empty-message>
-        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      <template #item.totalCapacity="{item}">
+        {{ formatBytes(item.totalCapacity).combined }}
       </template>
-      <template #item-totalCapacity="{totalCapacity}">
-        {{ formatBytes(totalCapacity).combined }}
+      <template #item.totalAvailable="{item}">
+        {{ formatBytes(item.totalAvailable).combined }}
       </template>
-      <template #item-totalAvailable="{totalAvailable}">
-        {{ formatBytes(totalAvailable).combined }}
+      <template #item.totalReserved="{item}">
+        {{ formatBytes(item.totalReserved).combined }}
       </template>
-      <template #item-totalReserved="{totalReserved}">
-        {{ formatBytes(totalReserved).combined }}
-      </template>
-      <template #item-progress="{totalCapacity, totalAvailable}">
+      <template #item.progress="{item}">
         <div class="d-flex align-center">
           <v-progress-linear
             aria-label="progressbar"
-            :color="usePercentage(totalAvailable, totalCapacity) > 90 ? 'error' : 'success'"
+            :color="usePercentage(item.totalAvailable, item.totalCapacity) > 90 ? 'error' : 'success'"
             height="20"
-            :model-value="usePercentage(totalAvailable, totalCapacity)"
+            :model-value="usePercentage(item.totalAvailable, item.totalCapacity)"
             rounded
           />
-          <span class="text-caption text-lightText ml-8 d-block">{{ usePercentage(totalAvailable, totalCapacity).toFixed(2) }}%</span>
+          <span class="text-caption text-lightText ml-8 d-block">{{ usePercentage(item.totalAvailable, item.totalCapacity).toFixed(2) }}%</span>
         </div>
       </template>
-    </EasyDataTable>
+    </v-data-table-virtual>
   </UiTitleCard>
 </template>
 

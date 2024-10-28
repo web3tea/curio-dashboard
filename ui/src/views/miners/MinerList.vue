@@ -1,33 +1,28 @@
 <script setup lang="ts">
 
-import { IconEye, IconReload, IconSearch } from '@tabler/icons-vue'
+import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Actor } from '@/typed-graph'
-import type { Header, Item } from 'vue3-easy-data-table'
 import { GetActors } from '@/views/query/miner'
 import { formatFIL } from '@/utils/helpers/formatFIL'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
-const { result, loading, refetch, error } = useQuery(GetActors, null, () => ({
+const { result, loading, refetch } = useQuery(GetActors, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 const items: ComputedRef<[Actor]> = computed(() => result.value?.actors || [])
 
-const searchField = ref('address')
 const searchValue = ref('')
-const itemsSelected = ref<Item[]>([])
-const themeColor = ref('rgb(var(--v-theme-primary))')
 
-const headers :Header[] = [
-  { text: 'Address', value: 'address' },
-  { text: 'Layers', value: 'layers' },
-  { text: 'Balance', value: 'actorBalance' },
-  { text: 'Available Balance', value: 'actorAvailableBalance' },
-  { text: 'Worker Balance', value: 'workerBalance' },
-  { text: 'QA Power', value: 'qualityAdjustedPower' },
-  { text: 'RAW Power', value: 'rawBytePower' },
-  { text: 'action', value: 'action' },
+const headers = [
+  { title: 'Address', key: 'address' },
+  { title: 'Layers', key: 'layers' },
+  { title: 'Balance', key: 'actorBalance' },
+  { title: 'Available Balance', key: 'actorAvailableBalance' },
+  { title: 'Worker Balance', key: 'workerBalance' },
+  { title: 'QA Power', key: 'qualityAdjustedPower' },
+  { title: 'RAW Power', key: 'rawBytePower' },
 ]
 
 </script>
@@ -48,72 +43,58 @@ const headers :Header[] = [
                 variant="outlined"
               >
                 <template #prepend-inner>
-                  <IconSearch />
+                  <IconSearch :size="14" />
                 </template>
               </v-text-field>
             </v-col>
             <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
-                <v-btn round rounded variant="text" @click="refetch">
-                  <IconReload />
-                </v-btn>
+                <v-btn
+                  :icon="IconReload"
+                  round
+                  rounded
+                  variant="text"
+                  @click="refetch"
+                />
               </div>
             </v-col>
           </v-row>
         </v-card-item>
         <v-divider />
         <v-card-text class="pa-0">
-          <EasyDataTable
-            v-model:items-selected="itemsSelected"
+          <v-data-table-virtual
             :headers="headers"
+            hover
             :items="items"
             :loading="loading"
-            :rows-per-page="100"
-            :search-field="searchField"
-            :search-value="searchValue"
-            table-class-name="customize-table"
-            :theme-color="themeColor"
+            :search="searchValue"
           >
-            <template #empty-message>
-              <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+            <template #item.address="{ item }">
+              <RouterLink :to="{ name: 'MinerDetails', params: { id: item.address } }">{{ item.address }}</RouterLink>
             </template>
-            <template #[`item.id`]="{ id }">
-              <div class="player-wrapper">
-                <h5 class="text-h5">#{{ id }}</h5>
-              </div>
+            <template #item.actorBalance="{ item }">
+              {{ formatFIL(item.actorBalance) }}
             </template>
-            <template #item-address="{ address }">
-              <RouterLink :to="{ name: 'MinerDetails', params: { id: address } }">{{ address }}</RouterLink>
+            <template #item.layers="{ item }">
+              <v-chip-group>
+                <v-chip v-for="layer in item.layers" :key="layer">
+                  <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: layer } }">{{ layer }}</RouterLink>
+                </v-chip>
+              </v-chip-group>
             </template>
-            <template #item-actorBalance="{ actorBalance }">
-              {{ formatFIL(actorBalance) }}
+            <template #item.actorAvailableBalance="{ item }">
+              {{ formatFIL(item.actorAvailableBalance) }}
             </template>
-            <template #item-actorAvailableBalance="{ actorAvailableBalance }">
-              {{ formatFIL(actorAvailableBalance) }}
+            <template #item.workerBalance="{ item }">
+              {{ formatFIL(item.workerBalance) }}
             </template>
-            <template #item-workerBalance="{ workerBalance }">
-              {{ formatFIL(workerBalance) }}
+            <template #item.qualityAdjustedPower="{ item }">
+              {{ formatBytes(item.qualityAdjustedPower).combined }}
             </template>
-            <template #item-qualityAdjustedPower="{ qualityAdjustedPower }">
-              {{ formatBytes(qualityAdjustedPower).combined }}
+            <template #item.rawBytePower="{ item }">
+              {{ formatBytes(item.rawBytePower).combined }}
             </template>
-            <template #item-rawBytePower="{ rawBytePower }">
-              {{ formatBytes(rawBytePower).combined }}
-            </template>
-            <template #item-action="{}">
-              <div class="operation-wrapper">
-                <v-btn
-                  color="secondary"
-                  round
-                  rounded
-                  title="More"
-                  variant="text"
-                >
-                  <IconEye />
-                </v-btn>
-              </div>
-            </template>
-          </EasyDataTable>
+          </v-data-table-virtual>
         </v-card-text>
       </v-card>
     </v-col>

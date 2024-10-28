@@ -20,14 +20,11 @@ function toggleTheme () {
     <v-btn
       class="text-secondary ml-sm-2 ml-1"
       color="darkText"
-      icon="true"
+      :icon="customizer.dark?IconSun:IconMoon"
       rounded="sm"
       size="small"
       @click="toggleTheme"
-    >
-      <IconMoon v-if="!customizer.dark" />
-      <IconSun v-if="customizer.dark" />
-    </v-btn>
+    />
   </div>
 </template>
 

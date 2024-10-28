@@ -118,13 +118,12 @@ const totalWonBlocks = computed(() => {
     <template #action>
       <v-btn
         :disabled="loading"
+        :icon="IconReload"
         round
         :rounded="true"
         variant="text"
         @click="refetch"
-      >
-        <IconReload />
-      </v-btn>
+      />
     </template>
     <div class="px-5">
       <h6 class="text-h6 text-lightText mb-4">{{ $t('msgs.weekBlock') }}</h6>

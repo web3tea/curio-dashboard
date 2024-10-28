@@ -38,9 +38,13 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
 <template>
   <UiChildCard :loading="loading" :title="t('fields.Sector Info')">
     <template #action>
-      <v-btn round :rounded="true" variant="text" @click="refetch">
-        <IconReload />
-      </v-btn>
+      <v-btn
+        :icon="IconReload"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      />
     </template>
     <div class="d-flex align-center flex-column flex-sm-row text-medium-emphasis ga-4">
       <div class="d-flex align-center">

@@ -19,14 +19,12 @@ const authStore = useAuthStore()
       <div class="ml-auto">
         <v-btn
           color="primary"
-          icon
+          :icon="IconLogout"
           rounded="sm"
           size="large"
           variant="text"
           @click="authStore.logout"
-        >
-          <IconLogout :size="20" />
-        </v-btn>
+        />
       </div>
     </div>
   </div>

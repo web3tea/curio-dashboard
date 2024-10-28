@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Header } from 'vue3-easy-data-table'
 import { SectorMetaPiece } from '@/typed-graph'
 import { useQuery } from '@vue/apollo-composable'
 import { GetSectorPieces } from '@/views/query/sector'
@@ -22,7 +21,7 @@ const props = defineProps({
   },
 })
 
-const { result, loading, refetch, error } = useQuery(GetSectorPieces, {
+const { result, loading, refetch } = useQuery(GetSectorPieces, {
   miner: props.miner,
   sectorNumber: props.sectorNumber,
 }, () => ({
@@ -31,69 +30,70 @@ const { result, loading, refetch, error } = useQuery(GetSectorPieces, {
 
 const pieces: ComputedRef<[SectorMetaPiece]> = computed(() => result.value?.sector.pieces || [])
 
-const headers :Header[] = [
-  { text: 'Piece', value: 'pieceNum' },
-  { text: 'StartEpoch', value: 'startEpoch' },
-  { text: 'EndEpoch', value: 'origEndEpoch' },
-  { text: 'Raw Data Size', value: 'rawDataSize' },
-  { text: 'Piece Size', value: 'pieceSize' },
-  { text: 'Piece CID', value: 'pieceCID' },
-  { text: 'Keep Data', value: 'requestedKeepData' },
-  { text: 'f05 DealID', value: 'f05DealID' },
-  { text: 'f05 DealProposal', value: 'f05DealProposal' },
-  { text: 'ddo Pam', value: 'ddoPam' },
+const headers = [
+  { title: 'Piece', key: 'pieceNum' },
+  { title: 'StartEpoch', key: 'startEpoch' },
+  { title: 'EndEpoch', key: 'origEndEpoch' },
+  { title: 'Raw Data Size', key: 'rawDataSize' },
+  { title: 'Piece Size', key: 'pieceSize' },
+  { title: 'Piece CID', key: 'pieceCID' },
+  { title: 'Keep Data', key: 'requestedKeepData' },
+  { title: 'f05 DealID', key: 'f05DealID' },
+  { title: 'f05 DealProposal', key: 'f05DealProposal' },
+  { title: 'ddo Pam', key: 'ddoPam' },
 ]
+
 </script>
 
 <template>
-  <UiChildCard :loading="loading" :title="t('fields.Pieces Info')">
+  <UiChildCard :title="t('fields.Pieces Info')">
     <template #action>
-      <v-btn round :rounded="true" variant="text" @click="refetch">
-        <IconReload />
-      </v-btn>
+      <v-btn
+        :icon="IconReload"
+        round
+        :rounded="true"
+        variant="text"
+        @click="refetch"
+      />
     </template>
-    <EasyDataTable
+    <v-data-table-virtual
+      fixed-header
       :headers="headers"
-      hide-footer
+      height="400"
+      hover
       :items="pieces"
       :loading="loading"
-      :rows-per-page="100"
-      table-class-name="customize-table"
-      theme-color="primary"
     >
-      <template #empty-message>
-        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
-      </template>
-      <template #item-f05DealProposal="{ f05DealProposal }">
-        <v-btn v-if="f05DealProposal" :icon="true" :rounded="true">
+      <template #item.f05DealProposal="{ item }">
+        <v-btn v-if="item.f05DealProposal" :icon="true" :rounded="true">
           <IconInfoCircle />
           <v-dialog activator="parent">
             <v-card>
               <v-card-text>
                 <pre>
-                      {{ JSON.stringify(f05DealProposal, null, 2) }}
-                    </pre>
+                  {{ JSON.stringify(item.f05DealProposal, null, 2) }}
+                </pre>
               </v-card-text>
             </v-card>
           </v-dialog>
         </v-btn>
       </template>
-      <template #item-ddoPam="{ ddoPam }">
-        <v-btn v-if="ddoPam" :icon="true" :rounded="true">
+      <template #item.ddoPam="{ item }">
+        <v-btn v-if="item.ddoPam" :icon="true" :rounded="true">
           <IconInfoCircle />
           <v-dialog activator="parent">
             <v-card>
               <v-card-text>
                 <pre>
-                      {{ JSON.stringify(ddoPam, null, 2) }}
-                    </pre>
+                  {{ JSON.stringify(item.ddoPam, null, 2) }}
+                </pre>
               </v-card-text>
             </v-card>
           </v-dialog>
         </v-btn>
       </template>
 
-      <template #item-pieceCID="{ pieceCID }">
+      <template #item.pieceCID="{ item }">
         <v-text-field
           aria-label="website"
           class="pr-0"
@@ -101,19 +101,19 @@ const headers :Header[] = [
           hide-details="auto"
           max-width="250"
           min-width="200"
-          :model-value="pieceCID"
+          :model-value="item.pieceCID"
           readonly
           single-line
           variant="outlined"
         />
       </template>
-      <template #item-rawDataSize="{ rawDataSize }">
-        <v-chip>{{ formatBytes(rawDataSize).combined }}</v-chip>
+      <template #item.rawDataSize="{ item }">
+        <v-chip>{{ formatBytes(item.rawDataSize ?? 0).combined }}</v-chip>
       </template>
-      <template #item-pieceSize="{ pieceSize }">
-        <v-chip>{{ formatBytes(pieceSize).combined }}</v-chip>
+      <template #item.pieceSize="{ item }">
+        <v-chip>{{ formatBytes(item.pieceSize).combined }}</v-chip>
       </template>
-    </EasyDataTable>
+    </v-data-table-virtual>
   </UiChildCard>
 </template>
 

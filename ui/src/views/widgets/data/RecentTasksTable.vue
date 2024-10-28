@@ -12,7 +12,7 @@ import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
 const props = defineProps({
   maxMessages: {
     type: Number,
-    default: 10,
+    default: 20,
   },
   host: {
     type: String,
@@ -21,7 +21,7 @@ const props = defineProps({
 })
 
 const isStop = ref(false)
-const { result, loading, stop, start, error } = useSubscription(SubscribeCompletedTask, {
+const { result, loading, stop, start } = useSubscription(SubscribeCompletedTask, {
   last: props.maxMessages,
   host: props.host,
 })
@@ -39,17 +39,16 @@ watch(
 )
 
 const headers = [
-  { text: 'Name', value: 'name' },
-  { text: 'ID', value: 'taskId' },
-  { text: 'Machine', value: 'completedByHostAndPort' },
-  { text: 'Posted', value: 'posted' },
-  { text: 'Start', value: 'workStart' },
-  { text: 'Queued', value: 'queued' },
-  { text: 'Took', value: 'took' },
-  { text: 'Result', value: 'result' },
-  { text: 'Error', value: 'err' },
+  { title: 'Name', key: 'name' },
+  { title: 'ID', key: 'taskId' },
+  { title: 'Machine', key: 'completedByHostAndPort' },
+  { title: 'Posted', key: 'posted' },
+  { title: 'Start', key: 'workStart' },
+  { title: 'Queued', key: 'queued' },
+  { title: 'Took', key: 'took' },
+  { title: 'Result', key: 'result' },
+  { title: 'Error', key: 'err' },
 ]
-const themeColor = ref('rgb(var(--v-theme-primary))')
 
 </script>
 
@@ -64,40 +63,35 @@ const themeColor = ref('rgb(var(--v-theme-primary))')
         @click="isStop = !isStop; isStop ? stop() : start()"
       />
     </template>
-    <EasyDataTable
+    <v-data-table-virtual
       :headers="headers"
-      hide-footer
+      height="500"
+      hover
       :items="tasks"
       :loading="loading"
-      :rows-per-page="100"
-      table-class-name="customize-table"
-      :theme-color="themeColor"
     >
-      <template #empty-message>
-        <p class="text-high-emphasis">{{ error?.message || 'No Data' }} </p>
+      <template #item.posted="{ item }">
+        {{ moment(item.posted).calendar() }}
       </template>
-      <template #item-posted="{posted}">
-        {{ moment(posted).calendar() }}
+      <template #item.workStart="{ item }">
+        {{ moment(item.workStart).calendar() }}
       </template>
-      <template #item-workStart="{workStart}">
-        {{ moment(workStart).calendar() }}
+      <template #item.completedByHostAndPort="{ item }">
+        <RouterLink v-if="item.completedBy" :to="{ name: 'MachineInfo', params: { id: item.completedBy.id } }">{{ item.completedBy.hostAndPort }}</RouterLink>
+        <span v-else>{{ item.completedByHostAndPort }}</span>
       </template>
-      <template #item-completedByHostAndPort="{completedByHostAndPort, completedBy }">
-        <RouterLink v-if="completedBy" :to="{ name: 'MachineInfo', params: { id: completedBy.id } }">{{ completedBy.hostAndPort }}</RouterLink>
-        <span v-else>{{ completedByHostAndPort }}</span>
+      <template #item.queued="{ item }">
+        {{ formatDuration(new Date(item.workStart).getTime() - new Date(item.posted).getTime()) }}
       </template>
-      <template #item-queued="{posted, workStart}">
-        {{ formatDuration(new Date(workStart).getTime() - new Date(posted).getTime()) }}
+      <template #item.took="{ item }">
+        {{ formatDuration(new Date(item.workEnd).getTime() - new Date(item.workStart).getTime()) }}
       </template>
-      <template #item-took="{workStart, workEnd}">
-        {{ formatDuration(new Date(workEnd).getTime() - new Date(workStart).getTime()) }}
-      </template>
-      <template #item-result="{ result }">
+      <template #item.result="{ item }">
         <v-chip class="px-0" size="small" variant="text">
-          <v-avatar class="mr-2" :color=" result ? 'success' : 'error'" size="8" variant="flat" />
-          <p class="text-h6 mb-0">{{ result ? 'success' : 'failure' }}</p>
+          <v-avatar class="mr-2" :color="item.result ? 'success' : 'error'" size="8" variant="flat" />
+          <p class="text-h6 mb-0">{{ item.result ? 'success' : 'failure' }}</p>
         </v-chip>
       </template>
-    </EasyDataTable>
+    </v-data-table-virtual>
   </UiTitleCard>
 </template>

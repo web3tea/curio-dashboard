@@ -30,29 +30,24 @@ const { isOnline } = storeToRefs(uiStore)
       v-if="!customizer.horizontalLayout"
       class="hidden-md-and-down text-secondary mr-3"
       color="darkText"
-      icon
+      :icon="customizer.miniSidebar? IconLayoutSidebarLeftCollapse:IconLayoutSidebarLeftExpand"
       rounded="sm"
       size="small"
       variant="text"
       @click.stop="customizer.setMiniSidebar(!customizer.miniSidebar)"
-    >
-      <IconLayoutSidebarLeftCollapse v-if="customizer.miniSidebar" size="20" />
-      <IconLayoutSidebarLeftExpand v-else size="20" />
-    </v-btn>
+    />
     <!-- search mobile -->
     <v-menu class="hidden-lg-and-up" :close-on-content-click="false" offset="10, 0">
       <template #activator="{ props }">
         <v-btn
           class="hidden-lg-and-up text-secondary ml-1"
           color="lightsecondary"
-          icon
+          :icon="IconSearch"
           rounded="sm"
           size="small"
           variant="flat"
           v-bind="props"
-        >
-          <IconSearch :size="17" />
-        </v-btn>
+        />
       </template>
       <v-sheet class="search-sheet v-col-12 pa-0" width="320">
         <v-text-field
@@ -83,13 +78,11 @@ const { isOnline } = storeToRefs(uiStore)
         <v-btn
           class="ml-sm-2 ml-1"
           color="darkText"
-          icon
+          :icon="IconLanguage"
           rounded="sm"
           size="small"
           v-bind="props"
-        >
-          <IconLanguage />
-        </v-btn>
+        />
       </template>
       <v-sheet rounded="md" width="200">
         <LanguageDD />
