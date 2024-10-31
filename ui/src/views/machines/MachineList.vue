@@ -99,6 +99,7 @@ const headers = [
         <v-divider />
         <v-card-text class="pa-0">
           <v-data-table-virtual
+            fixed-header
             :headers="headers"
             hover
             :items="filterItems"

@@ -54,6 +54,7 @@ const headers = [
       />
     </template>
     <v-data-table-virtual
+      fixed-header
       :headers="headers"
       hover
       :items="locations"

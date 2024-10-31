@@ -64,6 +64,7 @@ const headers = [
       />
     </template>
     <v-data-table-virtual
+      fixed-header
       :headers="headers"
       height="500"
       hover

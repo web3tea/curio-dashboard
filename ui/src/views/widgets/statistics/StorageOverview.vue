@@ -41,6 +41,7 @@ function usePercentage (available: number, total: number) {
       />
     </template>
     <v-data-table-virtual
+      fixed-header
       :headers="headers"
       :height="300"
       hover

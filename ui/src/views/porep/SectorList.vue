@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import moment from 'moment'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { GetSectorsPoreps } from '@/views/query/porep'
 import { Porep } from '@/typed-graph'
-import PipelineStatus from '@/views/widgets/data/PipelineStatus.vue'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { useLocaleTimeAgo } from '@/utils/helpers/timeAgo'
 
 const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
   fetchPolicy: 'cache-first',
@@ -15,25 +14,16 @@ const headers = [
   { title: 'Miner', key: 'spId' },
   { title: 'Sector', key: 'sectorNumber' },
   { title: 'Created', key: 'createTime' },
-  { title: 'Status', key: 'status' },
-  { title: '', key: 'card' },
+  { title: 'State', key: 'status' },
+  { title: 'Task', key: 'task' },
 ]
 
 const searchValue = ref('')
 const selectStatus = ref(null)
-
 const filterItems = computed(() => {
   return items.value.filter(item => {
     return !(selectStatus.value && item.status !== selectStatus.value)
   })
-})
-
-const allStatus = computed(() => {
-  const res = new Set<string>()
-  items.value.forEach(item => {
-    res.add(item.status)
-  })
-  return Array.from(res)
 })
 
 </script>
@@ -74,55 +64,40 @@ const allStatus = computed(() => {
         <v-divider />
         <v-card-text class="pa-0">
           <v-data-table-virtual
+            fixed-header
             :headers="headers"
             hover
+            item-value="id"
             :items="filterItems"
             :loading="loading"
             :search="searchValue"
           >
-            <template #header.status="{ column }">
-              <v-autocomplete
-                v-model="selectStatus"
-                aria-label="autocomplete"
-                class="remove-details"
-                clear-icon="$close"
-                clearable
-                color="primary"
-                :items="allStatus"
-                :label="column?.title?.toUpperCase()"
-                single-line
-                variant="outlined"
-              />
+            <template #item.spId="{ value }">
+              <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">{{ value }}</RouterLink>
             </template>
             <template #item.sectorNumber="{ item }">
               <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.spId, sectorNumber: item.sectorNumber } }">{{ item.sectorNumber }}</RouterLink>
             </template>
             <template #item.status="{ item }">
-              <div class="mt-3 mb-2 text-subtitle-1">
-                <span class="font-weight-semibold mr-2">Status :</span>
-                <span class="text-medium-emphasis">
-                  <v-chip
-                    :color="item.status === 'Failed' ? 'error' : 'success'"
-                    label
-                    size="small"
-                    variant="flat"
-                  >{{ item.status }}</v-chip>
-                </span>
-              </div>
+              <v-chip
+                :color="item.status === 'Failed' ? 'error' : 'success'"
+                label
+                size="small"
+                variant="flat"
+              >{{ item.status }}</v-chip>
+            </template>
+            <template #item.task="{ item }">
               <div class="text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Task ID :</span>
                 <span class="text-medium-emphasis">{{ item.currentTask?.id }}</span>
               </div>
               <div class="text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Posted :</span>
-                <span class="text-medium-emphasis">{{ moment(item.currentTask?.postedTime).calendar() }}</span>
+                <span class="text-medium-emphasis">{{ item.currentTask?.postedTime ? useLocaleTimeAgo(item.currentTask?.postedTime) : 'N/A' }}</span>
               </div>
             </template>
             <template #item.createTime="{value}">
-              {{ moment(value).format() }}
-            </template>
-            <template #item.card="{item}">
-              <PipelineStatus :id="item.id" :sector="item" />
+              {{ $d(value, 'short') }}
             </template>
           </v-data-table-virtual>
         </v-card-text>
@@ -135,4 +110,3 @@ const allStatus = computed(() => {
 <style scoped lang="scss">
 
 </style>
-c

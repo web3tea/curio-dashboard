@@ -6,6 +6,7 @@ import { OpenSectorPiece } from '@/typed-graph'
 import { DealSealNow, GetPendingDeals } from '@/views/query/deal'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
+import { formatBytes } from '@/utils/helpers/formatBytes'
 const uiStore = useUIStore()
 
 const { result, loading, refetch } = useQuery(GetPendingDeals, null, () => ({
@@ -86,6 +87,7 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
     <v-divider />
     <v-card-text class="pa-0">
       <v-data-table-virtual
+        fixed-header
         :group-by="groupBy"
         :headers="headers"
         height="780"
@@ -95,6 +97,7 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
         multi-sort
         :search="search"
         :sort-by="sortBy"
+        sticky
       >
         <template #item.createdAt="{ item }">
           {{ $d(item.createdAt, 'short') }}
@@ -123,6 +126,12 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
               </v-btn>
             </td>
           </tr>
+        </template>
+        <template #item.pieceSize="{ value }">
+          {{ formatBytes(value, 2).combined }}
+        </template>
+        <template #item.dataRawSize="{ value }">
+          {{ formatBytes(value, 2).combined }}
         </template>
       </v-data-table-virtual>
     </v-card-text>

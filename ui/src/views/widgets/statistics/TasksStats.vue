@@ -23,11 +23,17 @@ const { result, refetch, loading } = useQuery(GetTasksStats, {
   start: currentStart,
 })
 
+const headers = [
+  { title: 'Task', key: 'name' },
+  { title: 'Success', key: 'success' },
+  { title: 'Failure', key: 'failure' },
+]
+
 const items: ComputedRef<TaskStats[]> = computed(() => result.value?.tasksStats || [])
 
 const failedPercentage = (item: TaskStats) => {
   const total = item.success + item.failure
-  return item.failure > 0 ? ((item.failure / total) * 100).toFixed(2) + '%' : '0%'
+  return item.failure > 0 ? ((item.failure / total) * 100) : 0
 }
 </script>
 
@@ -43,24 +49,20 @@ const failedPercentage = (item: TaskStats) => {
         @click="refetch"
       />
     </template>
-    <v-table density="comfortable" hover :loading="loading">
-      <thead>
-        <tr>
-          <th class="text-left text-caption font-weight-bold text-uppercase">Task</th>
-          <th class="text-left text-caption font-weight-bold text-uppercase">Success</th>
-          <th class="text-left text-caption font-weight-bold text-uppercase">Failure</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in items" :key="item.name">
-          <td class="py-3">
-            {{ item.name }}
-          </td>
-          <td class="py-3">{{ item.success }}</td>
-          <td class="py-3">{{ item.failure }}  ({{ failedPercentage(item) }})</td>
-        </tr>
-      </tbody>
-    </v-table>
+    <v-data-table-virtual
+      fixed-header
+      :headers="headers"
+      height="600"
+      hover
+      :items="items"
+      :loading="loading"
+    >
+      <template #item.failure="{item}">
+        <p :style="{ color: failedPercentage(item) > 80 ? 'red' : failedPercentage(item) > 30 ? 'yellow' : 'inherit' }">
+          {{ item.failure }} ({{ failedPercentage(item).toFixed(2) }}%)
+        </p>
+      </template>
+    </v-data-table-virtual>
   </UiTitleCard>
 </template>
 

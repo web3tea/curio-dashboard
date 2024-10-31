@@ -69,5 +69,27 @@
   },
   "msgs": {
     "weekBlock": "本周出块数"
+  },
+  "common": {
+    "timeAgo": {
+      "just-now": "刚刚",
+      "ago": "{0} 之前",
+      "in": "in {0}",
+      "last-month": "上个月",
+      "next-month": "下个月",
+      "month": "月 | 月",
+      "last-year": "上一年",
+      "next-year": "下一年",
+      "year": "年 | 年",
+      "yesterday": "昨天",
+      "tomorrow": "明天",
+      "day": "天 | 天",
+      "last-week": "上个星期",
+      "next-week": "下个星期",
+      "week": "周 | 周",
+      "hour": "小时 | 小时",
+      "minute": "分钟 | 分钟",
+      "second": "秒 | 秒"
+    }
   }
 }

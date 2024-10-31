@@ -2,10 +2,11 @@
 import { VNumberInput } from 'vuetify/labs/VNumberInput'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
-import { Actor, Sector, SectorLocation } from '@/typed-graph'
+import { Actor, Sector } from '@/typed-graph'
 import { GetSectors } from '@/views/query/sector'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
+import StorageSimpleCard from '@/views/widgets/data/StorageSimpleCard.vue'
 
 const page = ref(1)
 const rowsPerPage = ref(50)
@@ -97,13 +98,14 @@ function handleRefetch (): void {
     <v-divider />
     <v-card-text class="pa-0">
       <v-data-table-virtual
+        fixed-header
         :headers="headers"
         hover
         :items="items"
         :loading="loading"
       >
-        <template #item.meta.spId="{ item }">
-          <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.meta?.spId, sectorNumber: item.meta?.sectorNum } }">{{ item.meta?.spId }}</RouterLink>
+        <template #item.meta.spId="{ value }">
+          <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">{{ value }}</RouterLink>
         </template>
         <template #item.meta.sectorNum="{ item }">
           <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.meta?.spId, sectorNumber: item.meta?.sectorNum } }">{{ item.meta?.sectorNum }}</RouterLink>
@@ -115,27 +117,32 @@ function handleRefetch (): void {
           {{ item.meta?.isCC ? 'Yes' : 'No' }}
         </template>
         <template #item.hasUnsealed="{ item }">
-          <v-tooltip aria-label="tooltip" location="bottom">
+          <v-tooltip aria-label="tooltip" location="bottom" open-on-focus>
             <template #activator="{ props }">
-              {{ item.locations?.some((location: SectorLocation|null) => location?.sectorFiletype === 1) ? 'Yes' : 'No' }}
-              <v-icon color="primary" v-bind="props">
+              {{ item.locations?.some(location => location?.sectorFiletype === 1) ? 'Yes' : 'No' }}
+              <v-icon v-if="item.locations?.find(location => location?.sectorFiletype === 1)" color="primary" v-bind="props">
                 <IconInfoCircle />
               </v-icon>
             </template>
+            StorageID: {{ item.locations?.find(location => location?.sectorFiletype === 1)?.storageId }}
           </v-tooltip>
         </template>
         <template #item.hasSealed="{ item }">
-          <v-tooltip aria-label="tooltip" location="bottom">
+          <v-dialog>
             <template #activator="{ props }">
-              {{ item.locations?.some((location: SectorLocation|null) => location?.sectorFiletype === 2) ? 'Yes' : 'No' }}
+              {{ item.locations?.some(location => location?.sectorFiletype === 2) ? 'Yes' : 'No' }}
               <v-icon color="primary" v-bind="props">
                 <IconInfoCircle />
               </v-icon>
             </template>
-          </v-tooltip>
+
+            <template #default="{ isActive }">
+              <StorageSimpleCard v-if="isActive" :id="item.locations?.find(location => location?.sectorFiletype === 2)!.storageId" />
+            </template>
+          </v-dialog>
         </template>
         <template #item.meta.regSealProof="{ item }">
-          <v-tooltip aria-label="tooltip" location="bottom">
+          <v-tooltip aria-label="tooltip" close-delay="5000" location="bottom">
             <template #activator="{ props }">
               {{ sealProofToSize(item.meta?.regSealProof || 0) }}
               <v-icon color="primary" v-bind="props">
@@ -150,5 +157,4 @@ function handleRefetch (): void {
 </template>
 
 <style scoped lang="scss">
-
 </style>

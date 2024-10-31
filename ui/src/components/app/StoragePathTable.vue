@@ -37,6 +37,7 @@ const headers = [
 
 <template>
   <v-data-table-virtual
+    fixed-header
     :headers="headers"
     :items="props.items"
     :loading="props.loading"
