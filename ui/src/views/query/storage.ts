@@ -25,6 +25,16 @@ export const storagePathFragment = gql`
     denyMiners
   }`
 
+export const storageLivenessFragment = gql`
+  fragment StorageLivenessAll on StorageLiveness {
+    storageId
+    url
+    lastChecked
+    lastLive
+    lastDead
+    lastDeadReason
+  }`
+
 export const GetStoragePaths = gql`
   query GetStoragePaths {
     storagePaths {
@@ -45,3 +55,19 @@ export const GetStorageStats = gql`
       totalUsed
     }
   }`
+
+export const GetStorage = gql`
+  query GetStorage($id: String!) {
+    storage(id: $id) {
+      id
+      path {
+        ...StoragePathAll
+      }
+      liveness {
+        ...StorageLivenessAll
+      }
+    }
+  }
+  ${storagePathFragment}
+  ${storageLivenessFragment}
+`

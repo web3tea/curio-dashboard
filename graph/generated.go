@@ -53,7 +53,9 @@ type ResolverRoot interface {
 	Porep() PorepResolver
 	Query() QueryResolver
 	Sector() SectorResolver
+	SectorLocation() SectorLocationResolver
 	SectorMeta() SectorMetaResolver
+	Storage() StorageResolver
 	StoragePath() StoragePathResolver
 	Subscription() SubscriptionResolver
 	Task() TaskResolver
@@ -358,6 +360,7 @@ type ComplexityRoot struct {
 		Sector                 func(childComplexity int, actor types.ActorID, sectorNumber int) int
 		Sectors                func(childComplexity int, actor *types.ActorID, sectorNumber *int, offset int, limit int) int
 		SectorsCount           func(childComplexity int, actor *types.ActorID) int
+		Storage                func(childComplexity int, id string) int
 		StoragePaths           func(childComplexity int) int
 		StorageStats           func(childComplexity int) int
 		Task                   func(childComplexity int, id int) int
@@ -386,12 +389,13 @@ type ComplexityRoot struct {
 		IsPrimary      func(childComplexity int) int
 		MinerID        func(childComplexity int) int
 		ReadRefs       func(childComplexity int) int
-		ReadTs         func(childComplexity int) int
+		ReadTS         func(childComplexity int) int
 		SectorFiletype func(childComplexity int) int
 		SectorNum      func(childComplexity int) int
+		Storage        func(childComplexity int) int
 		StorageID      func(childComplexity int) int
 		WriteLockOwner func(childComplexity int) int
-		WriteTs        func(childComplexity int) int
+		WriteTS        func(childComplexity int) int
 	}
 
 	SectorMeta struct {
@@ -427,6 +431,21 @@ type ComplexityRoot struct {
 		SectorNum         func(childComplexity int) int
 		SpID              func(childComplexity int) int
 		StartEpoch        func(childComplexity int) int
+	}
+
+	Storage struct {
+		ID       func(childComplexity int) int
+		Liveness func(childComplexity int) int
+		Path     func(childComplexity int) int
+	}
+
+	StorageLiveness struct {
+		LastChecked    func(childComplexity int) int
+		LastDead       func(childComplexity int) int
+		LastDeadReason func(childComplexity int) int
+		LastLive       func(childComplexity int) int
+		StorageID      func(childComplexity int) int
+		URL            func(childComplexity int) int
 	}
 
 	StoragePath struct {
@@ -621,6 +640,7 @@ type QueryResolver interface {
 	TaskHistoriesCount(ctx context.Context, start time.Time, end time.Time, machine *string, name *string, success *bool) (int, error)
 	TaskHistoriesAggregate(ctx context.Context, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error)
 	TasksStats(ctx context.Context, start time.Time, end time.Time, machine *string) ([]*model.TaskStats, error)
+	Storage(ctx context.Context, id string) (*model.Storage, error)
 	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
 	Sectors(ctx context.Context, actor *types.ActorID, sectorNumber *int, offset int, limit int) ([]*model.Sector, error)
@@ -651,8 +671,15 @@ type SectorResolver interface {
 	Tasks(ctx context.Context, obj *model.Sector) ([]*model.Task, error)
 	Events(ctx context.Context, obj *model.Sector) ([]*model.TaskHistory, error)
 }
+type SectorLocationResolver interface {
+	Storage(ctx context.Context, obj *model.SectorLocation) (*model.Storage, error)
+}
 type SectorMetaResolver interface {
 	ID(ctx context.Context, obj *model.SectorMeta) (string, error)
+}
+type StorageResolver interface {
+	Path(ctx context.Context, obj *model.Storage) (*model.StoragePath, error)
+	Liveness(ctx context.Context, obj *model.Storage) (*model.StorageLiveness, error)
 }
 type StoragePathResolver interface {
 	ID(ctx context.Context, obj *model.StoragePath) (string, error)
@@ -2331,6 +2358,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.SectorsCount(childComplexity, args["actor"].(*types.ActorID)), true
 
+	case "Query.storage":
+		if e.complexity.Query.Storage == nil {
+			break
+		}
+
+		args, err := ec.field_Query_storage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Storage(childComplexity, args["id"].(string)), true
+
 	case "Query.storagePaths":
 		if e.complexity.Query.StoragePaths == nil {
 			break
@@ -2511,11 +2550,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.SectorLocation.ReadRefs(childComplexity), true
 
 	case "SectorLocation.readTs":
-		if e.complexity.SectorLocation.ReadTs == nil {
+		if e.complexity.SectorLocation.ReadTS == nil {
 			break
 		}
 
-		return e.complexity.SectorLocation.ReadTs(childComplexity), true
+		return e.complexity.SectorLocation.ReadTS(childComplexity), true
 
 	case "SectorLocation.sectorFiletype":
 		if e.complexity.SectorLocation.SectorFiletype == nil {
@@ -2530,6 +2569,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.SectorLocation.SectorNum(childComplexity), true
+
+	case "SectorLocation.storage":
+		if e.complexity.SectorLocation.Storage == nil {
+			break
+		}
+
+		return e.complexity.SectorLocation.Storage(childComplexity), true
 
 	case "SectorLocation.storageId":
 		if e.complexity.SectorLocation.StorageID == nil {
@@ -2546,11 +2592,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.SectorLocation.WriteLockOwner(childComplexity), true
 
 	case "SectorLocation.writeTs":
-		if e.complexity.SectorLocation.WriteTs == nil {
+		if e.complexity.SectorLocation.WriteTS == nil {
 			break
 		}
 
-		return e.complexity.SectorLocation.WriteTs(childComplexity), true
+		return e.complexity.SectorLocation.WriteTS(childComplexity), true
 
 	case "SectorMeta.curSealedCid":
 		if e.complexity.SectorMeta.CurSealedCid == nil {
@@ -2754,6 +2800,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.SectorMetaPiece.StartEpoch(childComplexity), true
+
+	case "Storage.id":
+		if e.complexity.Storage.ID == nil {
+			break
+		}
+
+		return e.complexity.Storage.ID(childComplexity), true
+
+	case "Storage.liveness":
+		if e.complexity.Storage.Liveness == nil {
+			break
+		}
+
+		return e.complexity.Storage.Liveness(childComplexity), true
+
+	case "Storage.path":
+		if e.complexity.Storage.Path == nil {
+			break
+		}
+
+		return e.complexity.Storage.Path(childComplexity), true
+
+	case "StorageLiveness.lastChecked":
+		if e.complexity.StorageLiveness.LastChecked == nil {
+			break
+		}
+
+		return e.complexity.StorageLiveness.LastChecked(childComplexity), true
+
+	case "StorageLiveness.lastDead":
+		if e.complexity.StorageLiveness.LastDead == nil {
+			break
+		}
+
+		return e.complexity.StorageLiveness.LastDead(childComplexity), true
+
+	case "StorageLiveness.lastDeadReason":
+		if e.complexity.StorageLiveness.LastDeadReason == nil {
+			break
+		}
+
+		return e.complexity.StorageLiveness.LastDeadReason(childComplexity), true
+
+	case "StorageLiveness.lastLive":
+		if e.complexity.StorageLiveness.LastLive == nil {
+			break
+		}
+
+		return e.complexity.StorageLiveness.LastLive(childComplexity), true
+
+	case "StorageLiveness.storageId":
+		if e.complexity.StorageLiveness.StorageID == nil {
+			break
+		}
+
+		return e.complexity.StorageLiveness.StorageID(childComplexity), true
+
+	case "StorageLiveness.url":
+		if e.complexity.StorageLiveness.URL == nil {
+			break
+		}
+
+		return e.complexity.StorageLiveness.URL(childComplexity), true
 
 	case "StoragePath.allowMiners":
 		if e.complexity.StoragePath.AllowMiners == nil {
@@ -3443,7 +3552,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage_path.graphql" "schema/storage_stats.graphql" "schema/storage_type.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
+//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -3473,9 +3582,7 @@ var sources = []*ast.Source{
 	{Name: "schema/sector.graphql", Input: sourceData("schema/sector.graphql"), BuiltIn: false},
 	{Name: "schema/sector_meta.graphql", Input: sourceData("schema/sector_meta.graphql"), BuiltIn: false},
 	{Name: "schema/sector_open.graphql", Input: sourceData("schema/sector_open.graphql"), BuiltIn: false},
-	{Name: "schema/storage_path.graphql", Input: sourceData("schema/storage_path.graphql"), BuiltIn: false},
-	{Name: "schema/storage_stats.graphql", Input: sourceData("schema/storage_stats.graphql"), BuiltIn: false},
-	{Name: "schema/storage_type.graphql", Input: sourceData("schema/storage_type.graphql"), BuiltIn: false},
+	{Name: "schema/storage.graphql", Input: sourceData("schema/storage.graphql"), BuiltIn: false},
 	{Name: "schema/subscription.graphql", Input: sourceData("schema/subscription.graphql"), BuiltIn: false},
 	{Name: "schema/task.graphql", Input: sourceData("schema/task.graphql"), BuiltIn: false},
 	{Name: "schema/task_aggregate.graphql", Input: sourceData("schema/task_aggregate.graphql"), BuiltIn: false},
@@ -4444,6 +4551,38 @@ func (ec *executionContext) field_Query_sectors_argsLimit(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_storage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_storage_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_storage_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
 	return zeroVal, nil
 }
 
@@ -14846,6 +14985,66 @@ func (ec *executionContext) fieldContext_Query_tasksStats(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_storage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_storage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Storage(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Storage)
+	fc.Result = res
+	return ec.marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_storage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Storage_id(ctx, field)
+			case "path":
+				return ec.fieldContext_Storage_path(ctx, field)
+			case "liveness":
+				return ec.fieldContext_Storage_liveness(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Storage", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_storage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_storagePaths(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_storagePaths(ctx, field)
 	if err != nil {
@@ -16720,6 +16919,8 @@ func (ec *executionContext) fieldContext_Sector_locations(_ context.Context, fie
 				return ec.fieldContext_SectorLocation_writeTs(ctx, field)
 			case "writeLockOwner":
 				return ec.fieldContext_SectorLocation_writeLockOwner(ctx, field)
+			case "storage":
+				return ec.fieldContext_SectorLocation_storage(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SectorLocation", field.Name)
 		},
@@ -17166,7 +17367,7 @@ func (ec *executionContext) _SectorLocation_readTs(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ReadTs, nil
+		return obj.ReadTS, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17251,7 +17452,7 @@ func (ec *executionContext) _SectorLocation_writeTs(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.WriteTs, nil
+		return obj.WriteTS, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17314,6 +17515,55 @@ func (ec *executionContext) fieldContext_SectorLocation_writeLockOwner(_ context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorLocation_storage(ctx context.Context, field graphql.CollectedField, obj *model.SectorLocation) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorLocation_storage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SectorLocation().Storage(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Storage)
+	fc.Result = res
+	return ec.marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorLocation_storage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorLocation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Storage_id(ctx, field)
+			case "path":
+				return ec.fieldContext_Storage_path(ctx, field)
+			case "liveness":
+				return ec.fieldContext_Storage_liveness(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Storage", field.Name)
 		},
 	}
 	return fc, nil
@@ -18557,6 +18807,445 @@ func (ec *executionContext) fieldContext_SectorMetaPiece_f05DealProposal(_ conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type JSONB does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Storage_id(ctx context.Context, field graphql.CollectedField, obj *model.Storage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Storage_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Storage_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Storage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Storage_path(ctx context.Context, field graphql.CollectedField, obj *model.Storage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Storage_path(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Storage().Path(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.StoragePath)
+	fc.Result = res
+	return ec.marshalOStoragePath2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Storage_path(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Storage",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_StoragePath_id(ctx, field)
+			case "storageId":
+				return ec.fieldContext_StoragePath_storageId(ctx, field)
+			case "type":
+				return ec.fieldContext_StoragePath_type(ctx, field)
+			case "urls":
+				return ec.fieldContext_StoragePath_urls(ctx, field)
+			case "weight":
+				return ec.fieldContext_StoragePath_weight(ctx, field)
+			case "maxStorage":
+				return ec.fieldContext_StoragePath_maxStorage(ctx, field)
+			case "canSeal":
+				return ec.fieldContext_StoragePath_canSeal(ctx, field)
+			case "canStore":
+				return ec.fieldContext_StoragePath_canStore(ctx, field)
+			case "groups":
+				return ec.fieldContext_StoragePath_groups(ctx, field)
+			case "allowTo":
+				return ec.fieldContext_StoragePath_allowTo(ctx, field)
+			case "allowTypes":
+				return ec.fieldContext_StoragePath_allowTypes(ctx, field)
+			case "denyTypes":
+				return ec.fieldContext_StoragePath_denyTypes(ctx, field)
+			case "capacity":
+				return ec.fieldContext_StoragePath_capacity(ctx, field)
+			case "available":
+				return ec.fieldContext_StoragePath_available(ctx, field)
+			case "fsAvailable":
+				return ec.fieldContext_StoragePath_fsAvailable(ctx, field)
+			case "reserved":
+				return ec.fieldContext_StoragePath_reserved(ctx, field)
+			case "used":
+				return ec.fieldContext_StoragePath_used(ctx, field)
+			case "lastHeartbeat":
+				return ec.fieldContext_StoragePath_lastHeartbeat(ctx, field)
+			case "heartbeatErr":
+				return ec.fieldContext_StoragePath_heartbeatErr(ctx, field)
+			case "allowMiners":
+				return ec.fieldContext_StoragePath_allowMiners(ctx, field)
+			case "denyMiners":
+				return ec.fieldContext_StoragePath_denyMiners(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type StoragePath", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Storage_liveness(ctx context.Context, field graphql.CollectedField, obj *model.Storage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Storage_liveness(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Storage().Liveness(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.StorageLiveness)
+	fc.Result = res
+	return ec.marshalOStorageLiveness2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageLiveness(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Storage_liveness(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Storage",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "storageId":
+				return ec.fieldContext_StorageLiveness_storageId(ctx, field)
+			case "url":
+				return ec.fieldContext_StorageLiveness_url(ctx, field)
+			case "lastChecked":
+				return ec.fieldContext_StorageLiveness_lastChecked(ctx, field)
+			case "lastLive":
+				return ec.fieldContext_StorageLiveness_lastLive(ctx, field)
+			case "lastDead":
+				return ec.fieldContext_StorageLiveness_lastDead(ctx, field)
+			case "lastDeadReason":
+				return ec.fieldContext_StorageLiveness_lastDeadReason(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type StorageLiveness", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _StorageLiveness_storageId(ctx context.Context, field graphql.CollectedField, obj *model.StorageLiveness) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_StorageLiveness_storageId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StorageID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_StorageLiveness_storageId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "StorageLiveness",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _StorageLiveness_url(ctx context.Context, field graphql.CollectedField, obj *model.StorageLiveness) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_StorageLiveness_url(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_StorageLiveness_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "StorageLiveness",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _StorageLiveness_lastChecked(ctx context.Context, field graphql.CollectedField, obj *model.StorageLiveness) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_StorageLiveness_lastChecked(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastChecked, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_StorageLiveness_lastChecked(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "StorageLiveness",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _StorageLiveness_lastLive(ctx context.Context, field graphql.CollectedField, obj *model.StorageLiveness) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_StorageLiveness_lastLive(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastLive, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_StorageLiveness_lastLive(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "StorageLiveness",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _StorageLiveness_lastDead(ctx context.Context, field graphql.CollectedField, obj *model.StorageLiveness) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_StorageLiveness_lastDead(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastDead, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_StorageLiveness_lastDead(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "StorageLiveness",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _StorageLiveness_lastDeadReason(ctx context.Context, field graphql.CollectedField, obj *model.StorageLiveness) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_StorageLiveness_lastDeadReason(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.LastDeadReason, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_StorageLiveness_lastDeadReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "StorageLiveness",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -27248,6 +27937,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "storage":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_storage(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "storagePaths":
 			field := field
 
@@ -27967,22 +28675,22 @@ func (ec *executionContext) _SectorLocation(ctx context.Context, sel ast.Selecti
 		case "minerId":
 			out.Values[i] = ec._SectorLocation_minerId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "sectorNum":
 			out.Values[i] = ec._SectorLocation_sectorNum(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "sectorFiletype":
 			out.Values[i] = ec._SectorLocation_sectorFiletype(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "storageId":
 			out.Values[i] = ec._SectorLocation_storageId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "isPrimary":
 			out.Values[i] = ec._SectorLocation_isPrimary(ctx, field, obj)
@@ -27991,12 +28699,45 @@ func (ec *executionContext) _SectorLocation(ctx context.Context, sel ast.Selecti
 		case "readRefs":
 			out.Values[i] = ec._SectorLocation_readRefs(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "writeTs":
 			out.Values[i] = ec._SectorLocation_writeTs(ctx, field, obj)
 		case "writeLockOwner":
 			out.Values[i] = ec._SectorLocation_writeLockOwner(ctx, field, obj)
+		case "storage":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorLocation_storage(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -28208,6 +28949,166 @@ func (ec *executionContext) _SectorMetaPiece(ctx context.Context, sel ast.Select
 			out.Values[i] = ec._SectorMetaPiece_ddoPam(ctx, field, obj)
 		case "f05DealProposal":
 			out.Values[i] = ec._SectorMetaPiece_f05DealProposal(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var storageImplementors = []string{"Storage"}
+
+func (ec *executionContext) _Storage(ctx context.Context, sel ast.SelectionSet, obj *model.Storage) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, storageImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Storage")
+		case "id":
+			out.Values[i] = ec._Storage_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "path":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Storage_path(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "liveness":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Storage_liveness(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var storageLivenessImplementors = []string{"StorageLiveness"}
+
+func (ec *executionContext) _StorageLiveness(ctx context.Context, sel ast.SelectionSet, obj *model.StorageLiveness) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, storageLivenessImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("StorageLiveness")
+		case "storageId":
+			out.Values[i] = ec._StorageLiveness_storageId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "url":
+			out.Values[i] = ec._StorageLiveness_url(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "lastChecked":
+			out.Values[i] = ec._StorageLiveness_lastChecked(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "lastLive":
+			out.Values[i] = ec._StorageLiveness_lastLive(ctx, field, obj)
+		case "lastDead":
+			out.Values[i] = ec._StorageLiveness_lastDead(ctx, field, obj)
+		case "lastDeadReason":
+			out.Values[i] = ec._StorageLiveness_lastDeadReason(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -31292,6 +32193,20 @@ func (ec *executionContext) marshalOSectorMetaPiece2ᚖgithubᚗcomᚋstraheᚋc
 		return graphql.Null
 	}
 	return ec._SectorMetaPiece(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx context.Context, sel ast.SelectionSet, v *model.Storage) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Storage(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOStorageLiveness2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageLiveness(ctx context.Context, sel ast.SelectionSet, v *model.StorageLiveness) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._StorageLiveness(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx context.Context, sel ast.SelectionSet, v []*model.StoragePath) graphql.Marshaler {

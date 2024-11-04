@@ -7,8 +7,43 @@ import (
 )
 
 type StorageLoader interface {
+	StoragePath(ctx context.Context, id string) (*model.StoragePath, error)
 	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
+	StorageLiveness(ctx context.Context, id string) (*model.StorageLiveness, error)
+}
+
+func (l *Loader) StoragePath(ctx context.Context, id string) (*model.StoragePath, error) {
+	var m []*model.StoragePath
+	if err := l.db.Select(ctx, &m, `SELECT
+    storage_id,
+    urls,
+    weight,
+    max_storage,
+    can_seal,
+    can_store,
+    groups,
+    allow_to,
+    allow_types,
+    deny_types,
+    capacity,
+    available,
+    fs_available,
+    reserved,
+    used,
+    last_heartbeat,
+    heartbeat_err,
+    allow_miners,
+    deny_miners
+FROM
+    storage_path
+WHERE storage_id = $1`, id); err != nil {
+		return nil, err
+	}
+	if len(m) != 1 {
+		return nil, ErrorNotFound
+	}
+	return m[0], nil
 }
 
 func (l *Loader) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
@@ -83,4 +118,24 @@ func (l *Loader) StorageStats(ctx context.Context) ([]*model.StorageStats, error
 	}
 
 	return res, nil
+}
+
+func (l *Loader) StorageLiveness(ctx context.Context, id string) (*model.StorageLiveness, error) {
+	var m []*model.StorageLiveness
+	if err := l.db.Select(ctx, &m, `SELECT
+    storage_id,
+    url,
+    last_checked,
+    last_live,
+    last_dead,
+    last_dead_reason
+FROM
+    sector_path_url_liveness
+WHERE storage_id = $1`, id); err != nil {
+		return nil, err
+	}
+	if len(m) != 1 {
+		return nil, ErrorNotFound
+	}
+	return m[0], nil
 }

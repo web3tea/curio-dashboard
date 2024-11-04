@@ -19,6 +19,7 @@ type Query {
     taskHistoriesAggregate(start: Time!, end: Time!, interval: TaskHistoriesAggregateInterval!): [TaskAggregate]
     tasksStats(start: Time!, end: Time!, machine: String): [TaskStats]
     # storage
+    storage(id: String!): Storage
     storagePaths: [StoragePath]
     storageStats: [StorageStats]
 

@@ -1,6 +1,0 @@
-enum StorageType {
-    Hybrid
-    Seal
-    Store
-    Readonly
-}

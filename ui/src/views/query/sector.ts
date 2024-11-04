@@ -24,8 +24,8 @@ const metaFragment = gql`
   }
 `
 
-const locationFragment = gql`
-  fragment LocationAll on SectorLocation {
+const locationPrimaryFragment = gql`
+  fragment LocationPrimary on SectorLocation {
     minerId
     sectorNum
     sectorFiletype
@@ -42,11 +42,13 @@ export const GetSectors = gql`
   query GetSectors($miner: ActorID, $sectorNumber: Int, $offset: Int!, $limit: Int!) {
     sectors(actor: $miner, sectorNumber: $sectorNumber, offset: $offset, limit: $limit) {
       id
+      sectorNum
+      spID
       meta {
         ...MetaAll
       }
       locations {
-        ...LocationAll
+        ...LocationPrimary
       }
     }
     sectorsCount(actor: $miner)
@@ -55,7 +57,7 @@ export const GetSectors = gql`
     }
   }
   ${metaFragment}
-  ${locationFragment}
+  ${locationPrimaryFragment}
 `
 
 export const GetSectorMeta = gql`
@@ -110,11 +112,19 @@ export const GetSectorLocations = gql`
     sector(actor: $miner, sectorNumber: $sectorNumber) {
       id
       locations {
-        ...LocationAll
+        ...LocationPrimary
+        storage {
+          path {
+            storageId
+            urls
+            lastHeartbeat
+            heartbeatErr
+          }
+        }
       }
     }
   }
-  ${locationFragment}
+  ${locationPrimaryFragment}
 `
 
 export const GetSectorEvents = gql`

@@ -394,6 +394,7 @@ export type Query = {
   sector?: Maybe<Sector>;
   sectors?: Maybe<Array<Maybe<Sector>>>;
   sectorsCount: Scalars['Int']['output'];
+  storage?: Maybe<Storage>;
   storagePaths?: Maybe<Array<Maybe<StoragePath>>>;
   storageStats?: Maybe<Array<Maybe<StorageStats>>>;
   task?: Maybe<Task>;
@@ -475,6 +476,11 @@ export type QuerySectorsCountArgs = {
 };
 
 
+export type QueryStorageArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type QueryTaskArgs = {
   id: Scalars['Int']['input'];
 };
@@ -530,6 +536,7 @@ export type SectorLocation = {
   readTs?: Maybe<Scalars['String']['output']>;
   sectorFiletype: Scalars['Int']['output'];
   sectorNum: Scalars['Int']['output'];
+  storage?: Maybe<Storage>;
   storageId: Scalars['String']['output'];
   writeLockOwner?: Maybe<Scalars['String']['output']>;
   writeTs?: Maybe<Scalars['String']['output']>;
@@ -570,6 +577,23 @@ export type SectorMetaPiece = {
   sectorNum: Scalars['Int']['output'];
   spID: Scalars['ActorID']['output'];
   startEpoch?: Maybe<Scalars['Int']['output']>;
+};
+
+export type Storage = {
+  __typename?: 'Storage';
+  id: Scalars['String']['output'];
+  liveness?: Maybe<StorageLiveness>;
+  path?: Maybe<StoragePath>;
+};
+
+export type StorageLiveness = {
+  __typename?: 'StorageLiveness';
+  lastChecked: Scalars['Time']['output'];
+  lastDead?: Maybe<Scalars['Time']['output']>;
+  lastDeadReason?: Maybe<Scalars['String']['output']>;
+  lastLive?: Maybe<Scalars['Time']['output']>;
+  storageId: Scalars['String']['output'];
+  url: Scalars['String']['output'];
 };
 
 export type StoragePath = {

@@ -16,7 +16,7 @@ const props = defineProps({
     required: true,
   },
   sectorNumber: {
-    type: String,
+    type: Number,
     required: true,
   },
 })

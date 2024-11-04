@@ -2,6 +2,10 @@ package model
 
 import "time"
 
+type Storage struct {
+	ID string `json:"id"`
+}
+
 type StoragePath struct {
 	StorageID     string    `json:"storageId"`
 	Urls          string    `json:"urls"`

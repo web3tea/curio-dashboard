@@ -77,7 +77,16 @@ func (r *sectorResolver) Events(ctx context.Context, obj *model.Sector) ([]*mode
 	return r.loader.SectorEvents(ctx, obj.SpID, obj.SectorNum)
 }
 
+// Storage is the resolver for the storage field.
+func (r *sectorLocationResolver) Storage(ctx context.Context, obj *model.SectorLocation) (*model.Storage, error) {
+	return &model.Storage{ID: obj.StorageID}, nil
+}
+
 // Sector returns graph.SectorResolver implementation.
 func (r *Resolver) Sector() graph.SectorResolver { return &sectorResolver{r} }
 
+// SectorLocation returns graph.SectorLocationResolver implementation.
+func (r *Resolver) SectorLocation() graph.SectorLocationResolver { return &sectorLocationResolver{r} }
+
 type sectorResolver struct{ *Resolver }
+type sectorLocationResolver struct{ *Resolver }

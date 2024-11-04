@@ -1,0 +1,63 @@
+type Storage {
+    id: String!
+    path: StoragePath
+    liveness:StorageLiveness
+}
+
+type StorageLiveness {
+    storageId: String!
+    url: String!
+    lastChecked: Time!
+    lastLive: Time
+    lastDead: Time
+    lastDeadReason: String
+}
+
+type StoragePath {
+    id: ID!
+    storageId: String!
+    type: StorageType!
+    urls: String!
+    weight: Int!
+    maxStorage: Int!
+    canSeal: Boolean!
+    canStore: Boolean!
+    groups: String
+    allowTo: String
+    allowTypes: String
+    denyTypes: String
+    capacity: Int!
+    available: Int!
+    fsAvailable: Int!
+    reserved: Int!
+    used: Int!
+    lastHeartbeat: Time!
+    heartbeatErr: String
+    allowMiners: String!
+    denyMiners: String!
+}
+
+type StorageStats {
+    type: StorageType!
+    totalCapacity: Int!
+    totalAvailable: Int!
+    totalUsed: Int!
+    totalReserved: Int!
+    totalFsAvailable: Int!
+}
+
+
+type StorageUsage {
+    time: Time!
+    available: Int!
+    used: Int!
+    reserved: Int!
+    fsAvailable: Int!
+}
+
+enum StorageType {
+    Hybrid
+    Seal
+    Store
+    Readonly
+}

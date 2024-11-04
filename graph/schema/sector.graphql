@@ -23,6 +23,7 @@ type SectorLocation {
     readRefs: Int!
     writeTs: String
     writeLockOwner: String
+    storage: Storage
 }
 
 type SectorMetaPiece {

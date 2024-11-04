@@ -30,3 +30,15 @@ type SectorMeta struct {
 	Deadline        *int            `json:"deadline"`
 	Partition       *int            `json:"partition"`
 }
+
+type SectorLocation struct {
+	MinerID        types.ActorID `json:"minerId"`
+	SectorNum      int           `json:"sectorNum"`
+	SectorFiletype int           `json:"sectorFiletype"`
+	StorageID      string        `json:"storageId"`
+	IsPrimary      *bool         `json:"isPrimary"`
+	ReadTS         *string       `json:"readTs"`
+	ReadRefs       int           `json:"readRefs"`
+	WriteTS        *string       `json:"writeTs"`
+	WriteLockOwner *string       `json:"writeLockOwner"`
+}

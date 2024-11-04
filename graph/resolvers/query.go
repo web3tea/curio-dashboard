@@ -95,6 +95,11 @@ func (r *queryResolver) TasksStats(ctx context.Context, start time.Time, end tim
 	return stats, nil
 }
 
+// Storage is the resolver for the storage field.
+func (r *queryResolver) Storage(ctx context.Context, id string) (*model.Storage, error) {
+	return &model.Storage{ID: id}, nil
+}
+
 // StoragePaths is the resolver for the storagePaths field.
 func (r *queryResolver) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)

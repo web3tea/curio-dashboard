@@ -6,10 +6,24 @@ package resolvers
 
 import (
 	"context"
+	"time"
 
 	"github.com/strahe/curio-dashboard/graph"
+	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
+
+// Path is the resolver for the path field.
+func (r *storageResolver) Path(ctx context.Context, obj *model.Storage) (*model.StoragePath, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.StoragePath(ctx, obj.ID)
+}
+
+// Liveness is the resolver for the liveness field.
+func (r *storageResolver) Liveness(ctx context.Context, obj *model.Storage) (*model.StorageLiveness, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.StorageLiveness(ctx, obj.ID)
+}
 
 // ID is the resolver for the id field.
 func (r *storagePathResolver) ID(ctx context.Context, obj *model.StoragePath) (string, error) {
@@ -30,7 +44,11 @@ func (r *storagePathResolver) Type(ctx context.Context, obj *model.StoragePath) 
 	}
 }
 
+// Storage returns graph.StorageResolver implementation.
+func (r *Resolver) Storage() graph.StorageResolver { return &storageResolver{r} }
+
 // StoragePath returns graph.StoragePathResolver implementation.
 func (r *Resolver) StoragePath() graph.StoragePathResolver { return &storagePathResolver{r} }
 
+type storageResolver struct{ *Resolver }
 type storagePathResolver struct{ *Resolver }

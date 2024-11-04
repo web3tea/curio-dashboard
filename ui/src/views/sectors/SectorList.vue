@@ -6,7 +6,7 @@ import { Actor, Sector } from '@/typed-graph'
 import { GetSectors } from '@/views/query/sector'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
-import StorageSimpleCard from '@/views/widgets/data/StorageSimpleCard.vue'
+import SectorLocations from '@/views/sectors/SectorLocations.vue'
 
 const page = ref(1)
 const rowsPerPage = ref(50)
@@ -117,39 +117,34 @@ function handleRefetch (): void {
           {{ item.meta?.isCC ? 'Yes' : 'No' }}
         </template>
         <template #item.hasUnsealed="{ item }">
-          <v-tooltip aria-label="tooltip" location="bottom" open-on-focus>
+          <v-dialog>
             <template #activator="{ props }">
               {{ item.locations?.some(location => location?.sectorFiletype === 1) ? 'Yes' : 'No' }}
-              <v-icon v-if="item.locations?.find(location => location?.sectorFiletype === 1)" color="primary" v-bind="props">
+              <v-icon v-if="item.locations?.some(location => location?.sectorFiletype === 1)" color="primary" v-bind="props">
                 <IconInfoCircle />
               </v-icon>
             </template>
-            StorageID: {{ item.locations?.find(location => location?.sectorFiletype === 1)?.storageId }}
-          </v-tooltip>
+            <template #default="{ }">
+              <SectorLocations :miner="item.spID" :sector-number="item.sectorNum" />
+            </template>
+          </v-dialog>
         </template>
         <template #item.hasSealed="{ item }">
           <v-dialog>
             <template #activator="{ props }">
               {{ item.locations?.some(location => location?.sectorFiletype === 2) ? 'Yes' : 'No' }}
-              <v-icon color="primary" v-bind="props">
+              <v-icon v-if="item.locations?.some(location => location?.sectorFiletype === 2)" color="primary" v-bind="props">
                 <IconInfoCircle />
               </v-icon>
             </template>
 
-            <template #default="{ isActive }">
-              <StorageSimpleCard v-if="isActive" :id="item.locations?.find(location => location?.sectorFiletype === 2)!.storageId" />
+            <template #default="{ }">
+              <SectorLocations :miner="item.spID" :sector-number="item.sectorNum" />
             </template>
           </v-dialog>
         </template>
         <template #item.meta.regSealProof="{ item }">
-          <v-tooltip aria-label="tooltip" close-delay="5000" location="bottom">
-            <template #activator="{ props }">
-              {{ sealProofToSize(item.meta?.regSealProof || 0) }}
-              <v-icon color="primary" v-bind="props">
-                <IconInfoCircle />
-              </v-icon>
-            </template>
-          </v-tooltip>
+          {{ sealProofToSize(item.meta?.regSealProof || 0) }}
         </template>
       </v-data-table-virtual>
     </v-card-text>

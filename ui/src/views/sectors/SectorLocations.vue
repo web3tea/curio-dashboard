@@ -17,7 +17,7 @@ const props = defineProps({
     required: true,
   },
   sectorNumber: {
-    type: String,
+    type: Number,
     required: true,
   },
 })
@@ -35,10 +35,7 @@ const headers = [
   { title: 'File type', key: 'sectorFiletype' },
   { title: 'Storage Id', key: 'storageId' },
   { title: 'Is Primary', key: 'isPrimary' },
-  { title: 'ReadTs', key: 'readTs' },
-  { title: 'ReadRefs', key: 'readRefs' },
-  { title: 'WriteTs', key: 'writeTs' },
-  { title: 'WriteLockOwner', key: 'writeLockOwner' },
+  { title: 'URL', key: 'storage.path.urls' },
 ]
 </script>
 
@@ -62,6 +59,12 @@ const headers = [
     >
       <template #item.sectorFiletype="{ item }">
         <v-chip>{{ sectorFileTypeToName(item.sectorFiletype) }}</v-chip>
+      </template>
+      <template #item.storage.path.urls="{ item }">
+        {{ item.storage?.path?.urls }}
+        <v-badge color="success">
+          <v-icon end size="x-small">mdi-home-outline</v-icon>
+        </v-badge>
       </template>
     </v-data-table-virtual>
   </UiChildCard>

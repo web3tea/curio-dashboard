@@ -207,18 +207,6 @@ type PowerClaim struct {
 type Query struct {
 }
 
-type SectorLocation struct {
-	MinerID        types.ActorID `json:"minerId"`
-	SectorNum      int           `json:"sectorNum"`
-	SectorFiletype int           `json:"sectorFiletype"`
-	StorageID      string        `json:"storageId"`
-	IsPrimary      *bool         `json:"isPrimary"`
-	ReadTs         *string       `json:"readTs"`
-	ReadRefs       int           `json:"readRefs"`
-	WriteTs        *string       `json:"writeTs"`
-	WriteLockOwner *string       `json:"writeLockOwner"`
-}
-
 type SectorMetaPiece struct {
 	SpID              types.ActorID `json:"spID"`
 	SectorNum         int           `json:"sectorNum"`
@@ -232,6 +220,15 @@ type SectorMetaPiece struct {
 	F05DealID         *int          `json:"f05DealID"`
 	DdoPam            types.JSONB   `json:"ddoPam"`
 	F05DealProposal   types.JSONB   `json:"f05DealProposal"`
+}
+
+type StorageLiveness struct {
+	StorageID      string     `json:"storageId"`
+	URL            string     `json:"url"`
+	LastChecked    time.Time  `json:"lastChecked"`
+	LastLive       *time.Time `json:"lastLive"`
+	LastDead       *time.Time `json:"lastDead"`
+	LastDeadReason *string    `json:"lastDeadReason"`
 }
 
 type StorageStats struct {
