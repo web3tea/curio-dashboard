@@ -389,13 +389,13 @@ type ComplexityRoot struct {
 		IsPrimary      func(childComplexity int) int
 		MinerID        func(childComplexity int) int
 		ReadRefs       func(childComplexity int) int
-		ReadTS         func(childComplexity int) int
+		ReadTs         func(childComplexity int) int
 		SectorFiletype func(childComplexity int) int
 		SectorNum      func(childComplexity int) int
 		Storage        func(childComplexity int) int
 		StorageID      func(childComplexity int) int
 		WriteLockOwner func(childComplexity int) int
-		WriteTS        func(childComplexity int) int
+		WriteTs        func(childComplexity int) int
 	}
 
 	SectorMeta struct {
@@ -672,10 +672,21 @@ type SectorResolver interface {
 	Events(ctx context.Context, obj *model.Sector) ([]*model.TaskHistory, error)
 }
 type SectorLocationResolver interface {
+	IsPrimary(ctx context.Context, obj *model.SectorLocation) (*bool, error)
+	ReadTs(ctx context.Context, obj *model.SectorLocation) (*string, error)
+
+	WriteTs(ctx context.Context, obj *model.SectorLocation) (*string, error)
+	WriteLockOwner(ctx context.Context, obj *model.SectorLocation) (*string, error)
 	Storage(ctx context.Context, obj *model.SectorLocation) (*model.Storage, error)
 }
 type SectorMetaResolver interface {
 	ID(ctx context.Context, obj *model.SectorMeta) (string, error)
+
+	MsgCidPrecommit(ctx context.Context, obj *model.SectorMeta) (*string, error)
+	MsgCidCommit(ctx context.Context, obj *model.SectorMeta) (*string, error)
+	MsgCidUpdate(ctx context.Context, obj *model.SectorMeta) (*string, error)
+
+	ExpirationEpoch(ctx context.Context, obj *model.SectorMeta) (*int, error)
 }
 type StorageResolver interface {
 	Path(ctx context.Context, obj *model.Storage) (*model.StoragePath, error)
@@ -2550,11 +2561,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.SectorLocation.ReadRefs(childComplexity), true
 
 	case "SectorLocation.readTs":
-		if e.complexity.SectorLocation.ReadTS == nil {
+		if e.complexity.SectorLocation.ReadTs == nil {
 			break
 		}
 
-		return e.complexity.SectorLocation.ReadTS(childComplexity), true
+		return e.complexity.SectorLocation.ReadTs(childComplexity), true
 
 	case "SectorLocation.sectorFiletype":
 		if e.complexity.SectorLocation.SectorFiletype == nil {
@@ -2592,11 +2603,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.SectorLocation.WriteLockOwner(childComplexity), true
 
 	case "SectorLocation.writeTs":
-		if e.complexity.SectorLocation.WriteTS == nil {
+		if e.complexity.SectorLocation.WriteTs == nil {
 			break
 		}
 
-		return e.complexity.SectorLocation.WriteTS(childComplexity), true
+		return e.complexity.SectorLocation.WriteTs(childComplexity), true
 
 	case "SectorMeta.curSealedCid":
 		if e.complexity.SectorMeta.CurSealedCid == nil {
@@ -17326,7 +17337,7 @@ func (ec *executionContext) _SectorLocation_isPrimary(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.IsPrimary, nil
+		return ec.resolvers.SectorLocation().IsPrimary(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17344,8 +17355,8 @@ func (ec *executionContext) fieldContext_SectorLocation_isPrimary(_ context.Cont
 	fc = &graphql.FieldContext{
 		Object:     "SectorLocation",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Boolean does not have child fields")
 		},
@@ -17367,7 +17378,7 @@ func (ec *executionContext) _SectorLocation_readTs(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ReadTS, nil
+		return ec.resolvers.SectorLocation().ReadTs(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17385,8 +17396,8 @@ func (ec *executionContext) fieldContext_SectorLocation_readTs(_ context.Context
 	fc = &graphql.FieldContext{
 		Object:     "SectorLocation",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -17452,7 +17463,7 @@ func (ec *executionContext) _SectorLocation_writeTs(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.WriteTS, nil
+		return ec.resolvers.SectorLocation().WriteTs(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17470,8 +17481,8 @@ func (ec *executionContext) fieldContext_SectorLocation_writeTs(_ context.Contex
 	fc = &graphql.FieldContext{
 		Object:     "SectorLocation",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -17493,7 +17504,7 @@ func (ec *executionContext) _SectorLocation_writeLockOwner(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.WriteLockOwner, nil
+		return ec.resolvers.SectorLocation().WriteLockOwner(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17511,8 +17522,8 @@ func (ec *executionContext) fieldContext_SectorLocation_writeLockOwner(_ context
 	fc = &graphql.FieldContext{
 		Object:     "SectorLocation",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -18020,7 +18031,7 @@ func (ec *executionContext) _SectorMeta_msgCidPrecommit(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.MsgCidPrecommit, nil
+		return ec.resolvers.SectorMeta().MsgCidPrecommit(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -18038,8 +18049,8 @@ func (ec *executionContext) fieldContext_SectorMeta_msgCidPrecommit(_ context.Co
 	fc = &graphql.FieldContext{
 		Object:     "SectorMeta",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -18061,7 +18072,7 @@ func (ec *executionContext) _SectorMeta_msgCidCommit(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.MsgCidCommit, nil
+		return ec.resolvers.SectorMeta().MsgCidCommit(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -18079,8 +18090,8 @@ func (ec *executionContext) fieldContext_SectorMeta_msgCidCommit(_ context.Conte
 	fc = &graphql.FieldContext{
 		Object:     "SectorMeta",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -18102,7 +18113,7 @@ func (ec *executionContext) _SectorMeta_msgCidUpdate(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.MsgCidUpdate, nil
+		return ec.resolvers.SectorMeta().MsgCidUpdate(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -18120,8 +18131,8 @@ func (ec *executionContext) fieldContext_SectorMeta_msgCidUpdate(_ context.Conte
 	fc = &graphql.FieldContext{
 		Object:     "SectorMeta",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -18228,29 +18239,26 @@ func (ec *executionContext) _SectorMeta_expirationEpoch(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ExpirationEpoch, nil
+		return ec.resolvers.SectorMeta().ExpirationEpoch(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMeta_expirationEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "SectorMeta",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
 		},
@@ -28693,18 +28701,142 @@ func (ec *executionContext) _SectorLocation(ctx context.Context, sel ast.Selecti
 				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "isPrimary":
-			out.Values[i] = ec._SectorLocation_isPrimary(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorLocation_isPrimary(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "readTs":
-			out.Values[i] = ec._SectorLocation_readTs(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorLocation_readTs(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "readRefs":
 			out.Values[i] = ec._SectorLocation_readRefs(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "writeTs":
-			out.Values[i] = ec._SectorLocation_writeTs(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorLocation_writeTs(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "writeLockOwner":
-			out.Values[i] = ec._SectorLocation_writeLockOwner(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorLocation_writeLockOwner(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "storage":
 			field := field
 
@@ -28851,11 +28983,104 @@ func (ec *executionContext) _SectorMeta(ctx context.Context, sel ast.SelectionSe
 				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "msgCidPrecommit":
-			out.Values[i] = ec._SectorMeta_msgCidPrecommit(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorMeta_msgCidPrecommit(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "msgCidCommit":
-			out.Values[i] = ec._SectorMeta_msgCidCommit(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorMeta_msgCidCommit(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "msgCidUpdate":
-			out.Values[i] = ec._SectorMeta_msgCidUpdate(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorMeta_msgCidUpdate(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "seedEpoch":
 			out.Values[i] = ec._SectorMeta_seedEpoch(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -28864,10 +29089,38 @@ func (ec *executionContext) _SectorMeta(ctx context.Context, sel ast.SelectionSe
 		case "seedValue":
 			out.Values[i] = ec._SectorMeta_seedValue(ctx, field, obj)
 		case "expirationEpoch":
-			out.Values[i] = ec._SectorMeta_expirationEpoch(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorMeta_expirationEpoch(ctx, field, obj)
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "isCC":
 			out.Values[i] = ec._SectorMeta_isCC(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

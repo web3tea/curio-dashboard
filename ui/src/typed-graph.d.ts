@@ -546,7 +546,7 @@ export type SectorMeta = {
   __typename?: 'SectorMeta';
   curSealedCid: Scalars['String']['output'];
   curUnsealedCid: Scalars['String']['output'];
-  expirationEpoch: Scalars['Int']['output'];
+  expirationEpoch?: Maybe<Scalars['Int']['output']>;
   id: Scalars['String']['output'];
   isCC: Scalars['Boolean']['output'];
   msgCidCommit?: Maybe<Scalars['String']['output']>;

@@ -16,6 +16,6 @@ type SectorMeta {
     msgCidUpdate: String
     seedEpoch: Int!
     seedValue: ByteArray
-    expirationEpoch: Int!
+    expirationEpoch: Int
     isCC: Boolean!
 }

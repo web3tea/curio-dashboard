@@ -1,6 +1,8 @@
 package model
 
 import (
+	"database/sql"
+
 	"github.com/strahe/curio-dashboard/types"
 )
 
@@ -20,25 +22,25 @@ type SectorMeta struct {
 	OrigUnsealedCid string          `json:"origUnsealedCid"`
 	CurSealedCid    string          `json:"curSealedCid"`
 	CurUnsealedCid  string          `json:"curUnsealedCid"`
-	MsgCidPrecommit *string         `json:"msgCidPrecommit,omitempty"`
-	MsgCidCommit    *string         `json:"msgCidCommit,omitempty"`
-	MsgCidUpdate    *string         `json:"msgCidUpdate,omitempty"`
+	MsgCidPrecommit sql.NullString  `json:"msgCidPrecommit,omitempty"`
+	MsgCidCommit    sql.NullString  `json:"msgCidCommit,omitempty"`
+	MsgCidUpdate    sql.NullString  `json:"msgCidUpdate,omitempty"`
 	SeedEpoch       int             `json:"seedEpoch"`
 	SeedValue       types.ByteArray `json:"seedValue,omitempty"`
-	ExpirationEpoch int             `json:"expirationEpoch"`
+	ExpirationEpoch sql.NullInt64   `json:"expirationEpoch"`
 	IsCC            bool            `json:"isCC"`
-	Deadline        *int            `json:"deadline"`
-	Partition       *int            `json:"partition"`
+	Deadline        sql.NullInt64   `json:"deadline"`
+	Partition       sql.NullInt64   `json:"partition"`
 }
 
 type SectorLocation struct {
-	MinerID        types.ActorID `json:"minerId"`
-	SectorNum      int           `json:"sectorNum"`
-	SectorFiletype int           `json:"sectorFiletype"`
-	StorageID      string        `json:"storageId"`
-	IsPrimary      *bool         `json:"isPrimary"`
-	ReadTS         *string       `json:"readTs"`
-	ReadRefs       int           `json:"readRefs"`
-	WriteTS        *string       `json:"writeTs"`
-	WriteLockOwner *string       `json:"writeLockOwner"`
+	MinerID        types.ActorID  `json:"minerId"`
+	SectorNum      int            `json:"sectorNum"`
+	SectorFiletype int            `json:"sectorFiletype"`
+	StorageID      string         `json:"storageId"`
+	IsPrimary      sql.NullBool   `json:"isPrimary"`
+	ReadTS         sql.NullString `json:"readTs"`
+	ReadRefs       int            `json:"readRefs"`
+	WriteTS        sql.NullString `json:"writeTs"`
+	WriteLockOwner sql.NullString `json:"writeLockOwner"`
 }
