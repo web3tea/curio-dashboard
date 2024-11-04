@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/loaders"
@@ -80,34 +79,22 @@ func (r *sectorResolver) Events(ctx context.Context, obj *model.Sector) ([]*mode
 
 // IsPrimary is the resolver for the isPrimary field.
 func (r *sectorLocationResolver) IsPrimary(ctx context.Context, obj *model.SectorLocation) (*bool, error) {
-	if obj.IsPrimary.Valid {
-		return lo.ToPtr(obj.IsPrimary.Bool), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.IsPrimary), nil
 }
 
 // ReadTs is the resolver for the readTs field.
 func (r *sectorLocationResolver) ReadTs(ctx context.Context, obj *model.SectorLocation) (*string, error) {
-	if obj.ReadTS.Valid {
-		return lo.ToPtr(obj.ReadTS.String), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.ReadTS), nil
 }
 
 // WriteTs is the resolver for the writeTs field.
 func (r *sectorLocationResolver) WriteTs(ctx context.Context, obj *model.SectorLocation) (*string, error) {
-	if obj.WriteTS.Valid {
-		return lo.ToPtr(obj.WriteTS.String), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.WriteTS), nil
 }
 
 // WriteLockOwner is the resolver for the writeLockOwner field.
 func (r *sectorLocationResolver) WriteLockOwner(ctx context.Context, obj *model.SectorLocation) (*string, error) {
-	if obj.WriteLockOwner.Valid {
-		return lo.ToPtr(obj.WriteLockOwner.String), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.WriteLockOwner), nil
 }
 
 // Storage is the resolver for the storage field.

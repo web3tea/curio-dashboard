@@ -43,6 +43,19 @@ export const taskFragment = gql`
   }
 `
 
+export const taskSimpleFragment = gql`
+  fragment TaskSimple on Task {
+    id
+    initiatedByID
+    updateTime
+    postedTime
+    ownerId
+    addedByID
+    previousTaskID
+    name
+  }
+`
+
 export const SubscribeCompletedTask = gql`
   subscription SubscribeCompletedTask($host: String, $last: Int!) {
     completedTask(machine: $host, last: $last) {
@@ -106,4 +119,13 @@ export const GetTasksStats = gql`
             failure
         }
     }
+`
+
+export const GetRunningTasks = gql`
+    query GetRunningTasks {
+      tasks {
+        ...TaskAll
+      }
+    }
+    ${taskFragment}
 `

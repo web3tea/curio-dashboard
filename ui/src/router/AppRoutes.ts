@@ -38,6 +38,11 @@ const AppRoutes = {
       component: () => import('@/views/porep/index.vue'),
     },
     {
+      name: 'Tasks',
+      path: '/app/tasks',
+      component: () => import('@/views/task/index.vue'),
+    },
+    {
       name: 'Sectors',
       path: '/app/sectors',
       component: () => import('@/views/sectors/index.vue'),

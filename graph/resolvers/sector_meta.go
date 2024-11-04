@@ -8,7 +8,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
@@ -20,34 +19,22 @@ func (r *sectorMetaResolver) ID(ctx context.Context, obj *model.SectorMeta) (str
 
 // MsgCidPrecommit is the resolver for the msgCidPrecommit field.
 func (r *sectorMetaResolver) MsgCidPrecommit(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	if obj.MsgCidPrecommit.Valid {
-		return lo.ToPtr(obj.MsgCidPrecommit.String), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.MsgCidPrecommit), nil
 }
 
 // MsgCidCommit is the resolver for the msgCidCommit field.
 func (r *sectorMetaResolver) MsgCidCommit(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	if obj.MsgCidCommit.Valid {
-		return lo.ToPtr(obj.MsgCidCommit.String), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.MsgCidCommit), nil
 }
 
 // MsgCidUpdate is the resolver for the msgCidUpdate field.
 func (r *sectorMetaResolver) MsgCidUpdate(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	if obj.MsgCidUpdate.Valid {
-		return lo.ToPtr(obj.MsgCidUpdate.String), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.MsgCidUpdate), nil
 }
 
 // ExpirationEpoch is the resolver for the expirationEpoch field.
 func (r *sectorMetaResolver) ExpirationEpoch(ctx context.Context, obj *model.SectorMeta) (*int, error) {
-	if obj.ExpirationEpoch.Valid {
-		return lo.ToPtr(int(obj.ExpirationEpoch.Int64)), nil
-	}
-	return nil, nil
+	return NullToPtr(obj.ExpirationEpoch), nil
 }
 
 // SectorMeta returns graph.SectorMetaResolver implementation.

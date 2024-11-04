@@ -1,7 +1,10 @@
 package resolvers
 
 import (
+	"database/sql"
 	"time"
+
+	"github.com/samber/lo"
 
 	"github.com/filecoin-project/lotus/api/v1api"
 	logging "github.com/ipfs/go-log/v2"
@@ -43,4 +46,11 @@ func NewResolver(cfg *config.Config, db *db.HarmonyDB, fullNode v1api.FullNode, 
 		prometheusClient: prometheus.NewClient(papi),
 		curioAPI:         curioAPI,
 	}
+}
+
+func NullToPtr[T any](v sql.Null[T]) *T {
+	if v.Valid {
+		return lo.ToPtr(v.V)
+	}
+	return nil
 }

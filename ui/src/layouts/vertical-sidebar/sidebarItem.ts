@@ -1,5 +1,5 @@
 import {
-  IconBox,
+  IconBox, IconBrandAsana,
   IconChartHistogram,
   IconDatabase,
   IconHome, IconParking,
@@ -43,6 +43,11 @@ const sidebarItem: menu[] = [
     title: 'Miners',
     icon: IconUsers,
     to: '/app/miners',
+  },
+  {
+    title: 'Tasks',
+    icon: IconBrandAsana,
+    to: '/app/tasks',
   },
   {
     title: 'PoRep',

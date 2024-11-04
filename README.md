@@ -5,7 +5,7 @@
 
 ## Overview
 
-`Curio Dashboard` is a web-based interface designed for monitoring and analyzing the performance of your [Curio](https://github.com/filecoin-project/curio) cluster. It offers an intuitive interface with real-time metrics and rich visualizations, helping you efficiently track cluster performance and data insights.
+`Curio Dashboard` is a web-based interface designed for monitoring and managing your [Curio](https://github.com/filecoin-project/curio) cluster. It provides an intuitive layout with real-time metrics and rich visualizations, allowing you to efficiently oversee cluster activity and data insights.
 
 ### Key Features
 
