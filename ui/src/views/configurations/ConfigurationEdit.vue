@@ -25,7 +25,7 @@ const props = defineProps({
 
 const enableEdit = ref(false)
 
-const { result, error } = useQuery(GetConfig, {
+const { result, loading, error } = useQuery(GetConfig, {
   layer: props.layer,
 }, () => ({
   fetchPolicy: 'cache-first',
@@ -41,7 +41,7 @@ watch(result, () => {
   editTitle.value = config.value?.title
 })
 
-const { mutate: updateConfig, loading, onDone } = useMutation(UpdateConfig)
+const { mutate: updateConfig, loading: updateLoading, onDone } = useMutation(UpdateConfig)
 
 function saveEdit () {
   updateConfig({
@@ -83,12 +83,12 @@ const extensions = computed(() => {
 
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
-  <UiParentCard :title="t('fields.Edit Configuration')">
+  <UiParentCard :loading="loading" :title="t('fields.Edit Configuration')">
     <template #action>
       <v-btn
         v-if="enableEdit"
         color="primary"
-        :loading="loading"
+        :loading="updateLoading"
         @click="saveEdit"
       >
         <template #prepend>

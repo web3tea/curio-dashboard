@@ -7,8 +7,12 @@ export const GetConfigs = gql`
       title
       config
       usedBy {
+        id
         machineId
         machineName
+        minersArray
+        miners
+        startupTime
       }
     }
   }
@@ -21,8 +25,12 @@ export const GetConfig = gql`
         title
         config
         usedBy {
+          id
           machineId
           machineName
+          minersArray
+          miners
+          startupTime
         }
       }
     }`

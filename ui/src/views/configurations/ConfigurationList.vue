@@ -2,11 +2,12 @@
 
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
-import { Config } from '@/typed-graph'
+import { Config, MachineDetail, Maybe } from '@/typed-graph'
 import { GetConfigs } from '@/views/query/config'
 import { IconPlus, IconReload, IconSearch } from '@tabler/icons-vue'
 import ConfigRemoveDialog from '@/views/configurations/ConfigRemoveDialog.vue'
 import { useI18n } from 'vue-i18n'
+import UsedByListDialog from '@/views/configurations/UsedByListDialog.vue'
 
 const { t } = useI18n()
 
@@ -19,7 +20,7 @@ const headers = [
   { title: 'ID', key: 'id' },
   { title: 'Layer', key: 'title' },
   { title: 'Used By', key: 'usedBy' },
-  { title: '    ', key: 'action' },
+  { title: 'Actions', key: 'actions', sortable: false },
 ]
 
 const searchValue = ref('')
@@ -81,12 +82,10 @@ const searchValue = ref('')
               <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: value } }">{{ value }}</RouterLink>
             </template>
             <template #item.usedBy="{ item }">
-              <v-chip-group column>
-                <v-chip v-for="(by, index) in item.usedBy" :key="index" :to="{name: 'MachineInfo', params: {id: by?.machineId}}">{{ by?.machineName || by?.machineId }}</v-chip>
-              </v-chip-group>
+              <UsedByListDialog :title="item.title" :used-by="item.usedBy.filter((usedByItem: Maybe<MachineDetail>) => usedByItem !== null)" />
             </template>
-            <template #item.action="{ item }">
-              <ConfigRemoveDialog v-if="item.usedBy.length === 0 && item.id > 100" :title="item.title" />
+            <template #item.actions="{ item }">
+              <ConfigRemoveDialog v-if="item.usedBy.length === 0 && item.id > 100" :title="item.title" use-icon />
             </template>
           </v-data-table-virtual>
         </v-card-text>

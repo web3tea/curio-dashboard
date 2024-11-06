@@ -63,7 +63,8 @@
     "Sector Events": "扇区事件",
     "Edit Configuration": "编辑配置",
     "Running Tasks": "运行的任务",
-    "Storages": "存储"
+    "Storages": "存储",
+    "Node": "节点|节点"
   },
   "actions": {
     "Create": "创建",
@@ -76,6 +77,7 @@
     "weekBlock": "本周出块数",
     "sectorNotFailed": "这个 SECTOR 没有失败!|一些 SECTOR 没有失败!",
     "sureRemoveSector": "确定要删除这个 Sector 吗?|确定要删除这些 Sector 吗?",
+    "sureRemoveConfig": "确定要删除这个配置吗?|确定要删除这些配置吗?",
     "actionCantUndo": "此操作无法撤销!",
     "understand": "我明白"
   },

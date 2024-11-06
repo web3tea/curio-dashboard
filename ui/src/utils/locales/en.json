@@ -63,12 +63,14 @@
     "Sector Events": "Sector Events",
     "Edit Configuration": "Edit Configuration",
     "Running Tasks": "Running Tasks",
-    "Storages": "Storages"
+    "Storages": "Storages",
+    "Node": "Node|Nodes"
   },
   "msgs": {
     "weekBlock": "This Week Total Mined",
     "sectorNotFailed": "THIS SECTOR IS NOT FAILED!|SOME SECTORS HAVE NOT FAILED!",
     "sureRemoveSector": "Are you sure you want to remove this sector?|Are you sure you want to remove this sectors?",
+    "sureRemoveConfig": "Are you sure you want to remove this configuration?|Are you sure you want to remove this configurations?",
     "actionCantUndo": "This action can't be undone!",
     "understand": "I understand"
   },
