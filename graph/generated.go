@@ -235,11 +235,13 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateConfig func(childComplexity int, title string, config string) int
-		DealSealNow  func(childComplexity int, miner types.ActorID, sectorNumber uint64) int
-		RemoveConfig func(childComplexity int, title string) int
-		RemoveSector func(childComplexity int, miner types.ActorID, sectorNumber int) int
-		UpdateConfig func(childComplexity int, title string, config string) int
+		CreateConfig            func(childComplexity int, title string, config string) int
+		DealSealNow             func(childComplexity int, miner types.ActorID, sectorNumber uint64) int
+		RemoveConfig            func(childComplexity int, title string) int
+		RemoveSector            func(childComplexity int, miner types.ActorID, sectorNumber int) int
+		RestartAllFailedSectors func(childComplexity int) int
+		RestartSector           func(childComplexity int, miner types.ActorID, sectorNumber int) int
+		UpdateConfig            func(childComplexity int, title string, config string) int
 	}
 
 	NodeInfo struct {
@@ -609,6 +611,8 @@ type MutationResolver interface {
 	UpdateConfig(ctx context.Context, title string, config string) (*model.Config, error)
 	RemoveConfig(ctx context.Context, title string) (*model.Config, error)
 	RemoveSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error)
+	RestartSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error)
+	RestartAllFailedSectors(ctx context.Context) (bool, error)
 	DealSealNow(ctx context.Context, miner types.ActorID, sectorNumber uint64) (bool, error)
 }
 type PipelineSummaryResolver interface {
@@ -1582,6 +1586,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveSector(childComplexity, args["miner"].(types.ActorID), args["sectorNumber"].(int)), true
+
+	case "Mutation.restartAllFailedSectors":
+		if e.complexity.Mutation.RestartAllFailedSectors == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RestartAllFailedSectors(childComplexity), true
+
+	case "Mutation.restartSector":
+		if e.complexity.Mutation.RestartSector == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_restartSector_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RestartSector(childComplexity, args["miner"].(types.ActorID), args["sectorNumber"].(int)), true
 
 	case "Mutation.updateConfig":
 		if e.complexity.Mutation.UpdateConfig == nil {
@@ -3826,6 +3849,65 @@ func (ec *executionContext) field_Mutation_removeSector_argsMiner(
 }
 
 func (ec *executionContext) field_Mutation_removeSector_argsSectorNumber(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sectorNumber"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sectorNumber"))
+	if tmp, ok := rawArgs["sectorNumber"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_restartSector_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_restartSector_argsMiner(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["miner"] = arg0
+	arg1, err := ec.field_Mutation_restartSector_argsSectorNumber(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["sectorNumber"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_restartSector_argsMiner(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (types.ActorID, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["miner"]
+	if !ok {
+		var zeroVal types.ActorID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
+	if tmp, ok := rawArgs["miner"]; ok {
+		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+	}
+
+	var zeroVal types.ActorID
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_restartSector_argsSectorNumber(
 	ctx context.Context,
 	rawArgs map[string]interface{},
 ) (int, error) {
@@ -10684,6 +10766,105 @@ func (ec *executionContext) fieldContext_Mutation_removeSector(ctx context.Conte
 	if fc.Args, err = ec.field_Mutation_removeSector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_restartSector(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_restartSector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RestartSector(rctx, fc.Args["miner"].(types.ActorID), fc.Args["sectorNumber"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_restartSector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_restartSector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_restartAllFailedSectors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_restartAllFailedSectors(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RestartAllFailedSectors(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_restartAllFailedSectors(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
 	}
 	return fc, nil
 }
@@ -26844,6 +27025,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "removeSector":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_removeSector(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "restartSector":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_restartSector(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "restartAllFailedSectors":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_restartAllFailedSectors(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

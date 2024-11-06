@@ -41,6 +41,8 @@ type WebRPCMethods struct {
 
 	HarmonyTaskStats func(p0 context.Context) ([]webrpc.HarmonyTaskStats, error) ``
 
+	PipelinePorepRestartAll func(p0 context.Context) error ``
+
 	PipelinePorepSectors func(p0 context.Context) ([]sectorListEntry, error) ``
 
 	PorepPipelineSummary func(p0 context.Context) ([]webrpc.PorepPipelineSummary, error) ``
@@ -48,6 +50,8 @@ type WebRPCMethods struct {
 	SectorInfo func(p0 context.Context, p1 string, p2 int64) (*webrpc.SectorInfo, error) ``
 
 	SectorRemove func(p0 context.Context, p1 int, p2 int) error ``
+
+	SectorResume func(p0 context.Context, p1 int64, p2 int64) error ``
 
 	StorageGCApprove func(p0 context.Context, p1 int64, p2 int64, p3 int64, p4 string) error ``
 
@@ -205,6 +209,17 @@ func (s *WebRPCStub) HarmonyTaskStats(p0 context.Context) ([]webrpc.HarmonyTaskS
 	return *new([]webrpc.HarmonyTaskStats), ErrNotSupported
 }
 
+func (s *WebRPCStruct) PipelinePorepRestartAll(p0 context.Context) error {
+	if s.Internal.PipelinePorepRestartAll == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.PipelinePorepRestartAll(p0)
+}
+
+func (s *WebRPCStub) PipelinePorepRestartAll(p0 context.Context) error {
+	return ErrNotSupported
+}
+
 func (s *WebRPCStruct) PipelinePorepSectors(p0 context.Context) ([]sectorListEntry, error) {
 	if s.Internal.PipelinePorepSectors == nil {
 		return *new([]sectorListEntry), ErrNotSupported
@@ -246,6 +261,17 @@ func (s *WebRPCStruct) SectorRemove(p0 context.Context, p1 int, p2 int) error {
 }
 
 func (s *WebRPCStub) SectorRemove(p0 context.Context, p1 int, p2 int) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SectorResume(p0 context.Context, p1 int64, p2 int64) error {
+	if s.Internal.SectorResume == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SectorResume(p0, p1, p2)
+}
+
+func (s *WebRPCStub) SectorResume(p0 context.Context, p1 int64, p2 int64) error {
 	return ErrNotSupported
 }
 

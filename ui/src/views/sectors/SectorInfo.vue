@@ -8,6 +8,7 @@ import { computed, ComputedRef } from 'vue'
 import { PorepStatus, SectorMeta } from '@/typed-graph'
 import { IconBox, IconBrandRedux, IconReload, IconTrash, IconUser } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import SectorRestart from '@/views/sectors/SectorRestart.vue'
 
 const { t } = useI18n()
 
@@ -131,7 +132,8 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
     </v-row>
     <v-divider class="my-4" />
     <v-btn-group>
-      <SectorRemoveDialog v-if="status === 'Failed'" :miner="props.miner" :sector-number="props.sectorNumber" />
+      <SectorRemoveDialog :sectors="[{spId: props.miner, sectorNumber: props.sectorNumber, failed: status === 'Failed'}]" />
+      <SectorRestart v-if="status === 'Failed'" color="primary" :sectors="[{spId: props.miner, sectorNumber: props.sectorNumber}]" />
     </v-btn-group>
   </UiChildCard>
 </template>

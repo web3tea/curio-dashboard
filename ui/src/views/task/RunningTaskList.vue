@@ -6,7 +6,7 @@ import { GetRunningTasks } from '@/views/query/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
-  fetchPolicy: 'cache-first',
+  fetchPolicy: 'network-only',
   pollInterval: 3000,
 }))
 const items: ComputedRef<[Task]> = computed(() => result.value?.tasks || [])
@@ -15,10 +15,10 @@ const headers = [
   { title: 'Name', key: 'name' },
   { title: 'Posted Time', key: 'postedTime' },
   { title: 'Update Time', key: 'updateTime' },
-  { title: 'Previous Task', key: 'previousTaskID' },
+  { title: 'Added By', key: 'addedByID' },
   { title: 'Owner', key: 'ownerId' },
   { title: 'Initiated By', key: 'initiatedByID' },
-  { title: 'Added By', key: 'addedByID' },
+  { title: 'Previous Task', key: 'previousTaskID' },
 ]
 const searchValue = ref('')
 
@@ -67,6 +67,9 @@ const searchValue = ref('')
             :loading="loading"
             :search="searchValue"
           >
+            <template #item.name="{ value }">
+              <v-chip>{{ value }}</v-chip>
+            </template>
             <template #item.postedTime="{ value }">
               {{ $d(value, 'short') }}
             </template>

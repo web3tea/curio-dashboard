@@ -94,7 +94,7 @@ const extensions = computed(() => {
         <template #prepend>
           <IconDeviceFloppy />
         </template>
-        {{ t('fields.Save') }}
+        {{ t('actions.Save') }}
       </v-btn>
       <v-btn
         v-else
@@ -104,7 +104,7 @@ const extensions = computed(() => {
         <template #prepend>
           <IconPencil />
         </template>
-        {{ t('fields.Edit') }}
+        {{ t('actions.Edit') }}
       </v-btn>
     </template>
     <v-label class="mb-1">Layer</v-label>

@@ -218,6 +218,8 @@ export type Mutation = {
   dealSealNow: Scalars['Boolean']['output'];
   removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
+  restartAllFailedSectors: Scalars['Boolean']['output'];
+  restartSector: Scalars['Boolean']['output'];
   updateConfig?: Maybe<Config>;
 };
 
@@ -240,6 +242,12 @@ export type MutationRemoveConfigArgs = {
 
 
 export type MutationRemoveSectorArgs = {
+  miner: Scalars['ActorID']['input'];
+  sectorNumber: Scalars['Int']['input'];
+};
+
+
+export type MutationRestartSectorArgs = {
   miner: Scalars['ActorID']['input'];
   sectorNumber: Scalars['Int']['input'];
 };

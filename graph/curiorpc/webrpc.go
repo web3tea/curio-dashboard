@@ -20,6 +20,7 @@ type WebRPC interface {
 	HarmonyTaskMachines(ctx context.Context, taskName string) ([]webrpc.HarmonyMachineDesc, error)
 	HarmonyTaskHistory(ctx context.Context, taskName string) ([]webrpc.HarmonyTaskHistory, error)
 	PipelinePorepSectors(ctx context.Context) ([]sectorListEntry, error)
+	PipelinePorepRestartAll(ctx context.Context) error
 	PorepPipelineSummary(ctx context.Context) ([]webrpc.PorepPipelineSummary, error)
 	SectorInfo(ctx context.Context, sp string, intid int64) (*webrpc.SectorInfo, error)
 	SectorRemove(ctx context.Context, spid, id int) error
@@ -28,6 +29,7 @@ type WebRPC interface {
 	StorageGCApprove(ctx context.Context, actor int64, sectorNum int64, fileType int64, storageID string) error
 	StorageGCApproveAll(ctx context.Context) error
 	StorageGCUnapproveAll(ctx context.Context) error
+	SectorResume(ctx context.Context, spid, id int64) error
 	SyncerState(ctx context.Context) ([]webrpc.RpcInfo, error)
 	ClusterTaskSummary(ctx context.Context) ([]webrpc.TaskSummary, error)
 	UpgradeSectors(ctx context.Context) ([]webrpc.UpgradeSector, error)

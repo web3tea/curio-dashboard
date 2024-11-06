@@ -158,3 +158,15 @@ export const RemoveSector = gql`
       removeSector(miner: $miner, sectorNumber: $sectorNumber)
     }
 `
+
+export const RestartSector = gql`
+  mutation RestartSector($miner: ActorID!, $sectorNumber: Int!) {
+    restartSector(miner: $miner, sectorNumber: $sectorNumber)
+  }
+`
+
+export const RestartAllFailedSector = gql`
+  mutation RestartAllFailedSector {
+    restartAllFailedSectors
+  }
+`

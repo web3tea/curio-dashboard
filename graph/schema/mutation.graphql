@@ -5,5 +5,7 @@ type Mutation {
     updateConfig(title: String!, config: String!): Config
     removeConfig(title: String!): Config
     removeSector(miner: ActorID!, sectorNumber: Int!): Boolean!
+    restartSector(miner: ActorID!, sectorNumber: Int!): Boolean!
+    restartAllFailedSectors: Boolean!
     dealSealNow(miner: ActorID!, sectorNumber: Uint64!): Boolean!
 }

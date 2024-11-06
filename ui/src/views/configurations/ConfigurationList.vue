@@ -52,7 +52,7 @@ const searchValue = ref('')
                   <template #prepend>
                     <IconPlus />
                   </template>
-                  {{ t('fields.Create') }}
+                  {{ t('actions.Create') }}
                 </v-btn>
                 <v-btn
                   :icon="IconReload"

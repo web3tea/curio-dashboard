@@ -1,21 +1,33 @@
 <script setup lang="ts">
-import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref } from 'vue'
+import { useMutation, useQuery } from '@vue/apollo-composable'
+import { computed, ComputedRef, ref, watch } from 'vue'
 import { GetSectorsPoreps } from '@/views/query/porep'
 import { Porep } from '@/typed-graph'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useLocaleTimeAgo } from '@/utils/helpers/timeAgo'
+import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
+import { RestartAllFailedSector } from '@/views/query/sector'
+import { useUIStore } from '@/stores/ui'
+import SectorRestart from '@/views/sectors/SectorRestart.vue'
+
+const uiStore = useUIStore()
 
 const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
-  fetchPolicy: 'cache-first',
+  fetchPolicy: 'network-only',
+  pollInterval: 5000,
 }))
 const items: ComputedRef<[Porep]> = computed(() => result.value?.poreps || [])
+watch(items, () => {
+  selected.value = []
+})
+
 const headers = [
   { title: 'Miner', key: 'spId' },
   { title: 'Sector', key: 'sectorNumber' },
-  { title: 'Created', key: 'createTime' },
   { title: 'State', key: 'status' },
+  { title: 'Created', key: 'createTime' },
   { title: 'Task', key: 'task' },
+  { title: 'Actions', key: 'actions' },
 ]
 
 const searchValue = ref('')
@@ -23,6 +35,34 @@ const selectStatus = ref(null)
 const filterItems = computed(() => {
   return items.value.filter(item => {
     return !(selectStatus.value && item.status !== selectStatus.value)
+  })
+})
+
+const selected = ref([])
+
+function stateColor (state: string) {
+  if (state === 'Failed') {
+    return 'error'
+  } else if (state === 'Unknown') {
+    return 'warning'
+  } else {
+    return 'success'
+  }
+}
+
+const { mutate: restartAll, loading: restartLoading, onError, onDone } = useMutation(RestartAllFailedSector)
+
+onError(e => {
+  uiStore.appendMsg({
+    type: 'error',
+    msg: e.message,
+  })
+})
+
+onDone(() => {
+  uiStore.appendMsg({
+    type: 'success',
+    msg: `Restarting all failed sectors`,
   })
 })
 
@@ -49,6 +89,9 @@ const filterItems = computed(() => {
               </v-text-field>
             </v-col>
             <v-col cols="12" md="3">
+              <v-btn color="primary" :loading="restartLoading" @click="restartAll">Restart All</v-btn>
+            </v-col>
+            <v-col cols="12" md="3">
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
@@ -64,14 +107,23 @@ const filterItems = computed(() => {
         <v-divider />
         <v-card-text class="pa-0">
           <v-data-table-virtual
+            v-model="selected"
             fixed-header
             :headers="headers"
             hover
             item-value="id"
             :items="filterItems"
             :loading="loading"
+            return-object
             :search="searchValue"
+            show-select
           >
+            <template #top>
+              <v-card-actions v-if="selected.length > 0">
+                <SectorRemoveDialog :sectors="selected" />
+                <SectorRestart :sectors="selected" />
+              </v-card-actions>
+            </template>
             <template #item.spId="{ value }">
               <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">{{ value }}</RouterLink>
             </template>
@@ -80,7 +132,7 @@ const filterItems = computed(() => {
             </template>
             <template #item.status="{ item }">
               <v-chip
-                :color="item.status === 'Failed' ? 'error' : 'success'"
+                :color="stateColor(item.status)"
                 label
                 size="small"
                 variant="flat"
@@ -98,6 +150,10 @@ const filterItems = computed(() => {
             </template>
             <template #item.createTime="{value}">
               {{ $d(value, 'short') }}
+            </template>
+            <template #item.actions="{ item }">
+              <SectorRemoveDialog :sectors="[item]" use-icon />
+              <SectorRestart v-if="item.failed" :sectors="[item]" use-icon />
             </template>
           </v-data-table-virtual>
         </v-card-text>

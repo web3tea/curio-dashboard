@@ -61,15 +61,23 @@
     "Sector Tasks": "Sector Tasks",
     "Sector Locations": "Sector Locations",
     "Sector Events": "Sector Events",
-    "Create": "Create",
-    "Save": "Save",
-    "Edit": "Edit",
     "Edit Configuration": "Edit Configuration",
     "Running Tasks": "Running Tasks",
     "Storages": "Storages"
   },
   "msgs": {
-    "weekBlock": "This Week Total Mined"
+    "weekBlock": "This Week Total Mined",
+    "sectorNotFailed": "THIS SECTOR IS NOT FAILED!|SOME SECTORS HAVE NOT FAILED!",
+    "sureRemoveSector": "Are you sure you want to remove this sector?|Are you sure you want to remove this sectors?",
+    "actionCantUndo": "This action can't be undone!",
+    "understand": "I understand"
+  },
+  "actions": {
+    "Create": "Create",
+    "Save": "Save",
+    "Edit": "Edit",
+    "Remove": "Remove",
+    "Cancel": "Cancel"
   },
   "common": {
     "timeAgo": {

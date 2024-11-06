@@ -78,6 +78,23 @@ func (r *mutationResolver) RemoveSector(ctx context.Context, miner types.ActorID
 	return true, nil
 }
 
+// RestartSector is the resolver for the restartSector field.
+func (r *mutationResolver) RestartSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error) {
+	if err := r.curioAPI.SectorResume(ctx, int64(miner), int64(sectorNumber)); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// RestartAllFailedSectors is the resolver for the restartAllFailedSectors field.
+func (r *mutationResolver) RestartAllFailedSectors(ctx context.Context) (bool, error) {
+	err := r.curioAPI.PipelinePorepRestartAll(ctx)
+	if err != nil {
+		return false, err
+	}
+	return true, err
+}
+
 // DealSealNow is the resolver for the dealSealNow field.
 func (r *mutationResolver) DealSealNow(ctx context.Context, miner types.ActorID, sectorNumber uint64) (bool, error) {
 	err := r.curioAPI.DealsSealNow(ctx, uint64(miner), sectorNumber)

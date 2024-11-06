@@ -61,15 +61,23 @@
     "Sector Tasks": "扇区任务",
     "Sector Locations": "扇区位置",
     "Sector Events": "扇区事件",
-    "Create": "创建",
-    "Save": "保存",
-    "Edit": "编辑",
     "Edit Configuration": "编辑配置",
     "Running Tasks": "运行的任务",
     "Storages": "存储"
   },
+  "actions": {
+    "Create": "创建",
+    "Save": "保存",
+    "Edit": "编辑",
+    "Remove": "删除",
+    "Cancel": "取消"
+  },
   "msgs": {
-    "weekBlock": "本周出块数"
+    "weekBlock": "本周出块数",
+    "sectorNotFailed": "这个 SECTOR 没有失败!|一些 SECTOR 没有失败!",
+    "sureRemoveSector": "确定要删除这个 Sector 吗?|确定要删除这些 Sector 吗?",
+    "actionCantUndo": "此操作无法撤销!",
+    "understand": "我明白"
   },
   "common": {
     "timeAgo": {
