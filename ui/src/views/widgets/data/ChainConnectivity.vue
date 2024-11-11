@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useQuery } from '@vue/apollo-composable'
-import { GetNodeInfos } from '@/views/query/chain'
+import { GetNodeInfos } from '@/gql/chain'
 import { computed, ComputedRef } from 'vue'
 import { NodeInfo } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'

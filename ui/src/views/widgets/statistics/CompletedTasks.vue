@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { GetTaskHistoriesCount } from '@/views/query/task'
+import { GetTaskHistoriesCount } from '@/gql/task'
 import { IconSubtask } from '@tabler/icons-vue'
 import { computed } from 'vue'
 

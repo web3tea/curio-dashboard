@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { GetMinerPower } from '@/views/query/miner'
+import { GetMinerPower } from '@/gql/miner'
 import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { MinerPower } from '@/typed-graph'

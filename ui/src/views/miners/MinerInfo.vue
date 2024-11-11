@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useQuery } from '@vue/apollo-composable'
-import { GetMinerFull } from '@/views/query/miner'
+import { GetMinerFull } from '@/gql/miner'
 import { computed } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'

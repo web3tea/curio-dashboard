@@ -2,7 +2,7 @@
 
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetSectorLocations } from '@/views/query/sector'
+import { GetSectorLocations } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import { SectorLocation } from '@/typed-graph'
 import { sectorFileTypeToName } from '@/utils/helpers/sectorFileType'

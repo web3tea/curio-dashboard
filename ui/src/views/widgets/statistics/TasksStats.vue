@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useQuery } from '@vue/apollo-composable'
-import { GetTasksStats } from '@/views/query/task'
+import { GetTasksStats } from '@/gql/task'
 import { computed, ComputedRef } from 'vue'
 import { TaskStats } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'

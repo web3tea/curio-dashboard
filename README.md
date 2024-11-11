@@ -1,7 +1,7 @@
 
 # Curio Dashboard
 
-**Status: Under Heavy Development**
+Status: **Beta**
 
 ## Overview
 

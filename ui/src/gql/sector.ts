@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
-import { taskFragment, taskHistoryFragment } from '@/views/query/task'
-import { porepAllFragment } from '@/views/query/porep'
+import { taskFragment, taskHistoryFragment } from '@/gql/task'
+import { porepAllFragment } from '@/gql/porep'
 
 const metaFragment = gql`
   fragment MetaAll on SectorMeta {

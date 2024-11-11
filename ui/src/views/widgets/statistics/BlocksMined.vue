@@ -2,7 +2,7 @@
 
 import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetMiningBlockCount } from '@/views/query/mining'
+import { GetMiningBlockCount } from '@/gql/mining'
 import { MiningCount } from '@/typed-graph'
 import { IconBox } from '@tabler/icons-vue'
 

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag'
-import { taskFragment } from '@/views/query/task'
-import { storagePathFragment } from '@/views/query/storage'
+import { taskFragment } from '@/gql/task'
+import { storagePathFragment } from '@/gql/storage'
 
 export const machineDetailFragment = gql`
   fragment MachineDetailAll on MachineDetail {

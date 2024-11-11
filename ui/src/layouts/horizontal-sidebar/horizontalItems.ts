@@ -1,6 +1,6 @@
 import {
   IconBox, IconBrandAsana,
-  IconChartHistogram,
+  IconChartHistogram, IconCurrency,
   IconDatabase,
   IconHome, IconParking,
   IconServer, IconSettings, IconUsers,
@@ -72,6 +72,18 @@ const horizontalItems: menu[] = [
         title: 'Deals',
         icon: IconParking,
         to: '/app/deals/pending',
+      },
+    ],
+  },
+  {
+    title: 'Mining',
+    icon: IconVector,
+    to: '#',
+    children: [
+      {
+        title: 'Win Blocks',
+        icon: IconCurrency,
+        to: '/app/mining/wins',
       },
     ],
   },

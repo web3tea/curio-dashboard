@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetMachinesSummary } from '@/views/query/machine'
+import { GetMachinesSummary } from '@/gql/machine'
 import { MachineSummary } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconBrandSpeedtest, IconCpu, IconServer } from '@tabler/icons-vue'

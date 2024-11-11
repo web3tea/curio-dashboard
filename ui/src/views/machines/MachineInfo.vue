@@ -6,7 +6,7 @@ import MachineStorages from '@/views/machines/MachineStorages.vue'
 import RecentTasksTable from '@/views/widgets/data/RecentTasksTable.vue'
 import NewTasks from '@/views/widgets/data/NewTasks.vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetMachine } from '@/views/query/machine'
+import { GetMachine } from '@/gql/machine'
 import { Machine } from '@/typed-graph'
 import MachineMetrics from '@/views/machines/MachineMetrics.vue'
 

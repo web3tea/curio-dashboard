@@ -54,6 +54,11 @@ const AppRoutes = {
       props: true,
     },
     {
+      name: 'MiningTaskList',
+      path: '/app/mining/wins',
+      component: () => import('@/views/mining/wins/index.vue'),
+    },
+    {
       name: 'Configurations',
       path: '/app/configurations',
       component: () => import('@/views/configurations/index.vue'),

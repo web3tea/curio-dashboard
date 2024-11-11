@@ -15,7 +15,10 @@
     "Machines": "Machines",
     "Storages": "Storages",
     "Configurations": "Configurations",
-    "List": "List"
+    "List": "List",
+    "Wins": "Wins",
+    "Mining": "Mining",
+    "Win Blocks": "Win Blocks"
   },
   "fields": {
     "Total Power": "Total Power",

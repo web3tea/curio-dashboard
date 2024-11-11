@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GetStoragePaths } from '@/views/query/storage'
+import { GetStoragePaths } from '@/gql/storage'
 import { useQuery } from '@vue/apollo-composable'
 import { StoragePath } from '@/typed-graph'
 import { computed, ComputedRef, ref } from 'vue'

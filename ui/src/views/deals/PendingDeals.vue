@@ -3,7 +3,7 @@
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { OpenSectorPiece } from '@/typed-graph'
-import { DealSealNow, GetPendingDeals } from '@/views/query/deal'
+import { DealSealNow, GetPendingDeals } from '@/gql/deal'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
 import { formatBytes } from '@/utils/helpers/formatBytes'

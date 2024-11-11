@@ -117,6 +117,19 @@ type MiningSummaryDay struct {
 	WonBlock int           `json:"wonBlock"`
 }
 
+type MiningTask struct {
+	TaskID          string        `json:"taskId"`
+	SpID            types.ActorID `json:"spId"`
+	Epoch           int           `json:"epoch"`
+	BaseComputeTime time.Time     `json:"baseComputeTime"`
+	Won             bool          `json:"won"`
+	MinedCid        *string       `json:"minedCid"`
+	MinedHeader     types.JSONB   `json:"minedHeader"`
+	MinedAt         *time.Time    `json:"minedAt"`
+	SubmittedAt     *time.Time    `json:"submittedAt"`
+	Included        *bool         `json:"included"`
+}
+
 type Mutation struct {
 }
 

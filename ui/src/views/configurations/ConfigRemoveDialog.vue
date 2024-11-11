@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
-import { GetConfigs, RemoveConfig } from '@/views/query/config'
+import { GetConfigs, RemoveConfig } from '@/gql/config'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
 const uiStore = useUIStore()

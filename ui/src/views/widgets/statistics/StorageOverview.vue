@@ -4,7 +4,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { StorageStats } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
-import { GetStorageStats } from '@/views/query/storage'
+import { GetStorageStats } from '@/gql/storage'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
 

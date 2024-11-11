@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, PropType, ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
-import { RemoveSector } from '@/views/query/sector'
+import { RemoveSector } from '@/gql/sector'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
 

@@ -3,7 +3,7 @@
 import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetSectorMeta } from '@/views/query/sector'
+import { GetSectorMeta } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import { PorepStatus, SectorMeta } from '@/typed-graph'
 import { IconBox, IconBrandRedux, IconReload, IconTrash, IconUser } from '@tabler/icons-vue'

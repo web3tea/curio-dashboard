@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { useSubscription } from '@vue/apollo-composable'
-import { SubscribeCompletedTask } from '@/views/query/task'
+import { SubscribeCompletedTask } from '@/gql/task'
 import { TaskHistory } from '@/typed-graph'
 import moment from 'moment'
 import { formatDuration } from '@/utils/helpers/formatDuration'
@@ -68,6 +68,7 @@ const headers = [
       :headers="headers"
       height="500"
       hover
+      item-value="taskId"
       :items="tasks"
       :loading="loading"
     >

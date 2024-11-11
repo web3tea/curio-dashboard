@@ -2,7 +2,7 @@
 import moment from 'moment'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetSectorTasks } from '@/views/query/sector'
+import { GetSectorTasks } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import { Task } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'

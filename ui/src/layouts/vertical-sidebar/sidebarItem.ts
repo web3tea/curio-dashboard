@@ -1,6 +1,6 @@
 import {
   IconBox, IconBrandAsana,
-  IconChartHistogram,
+  IconChartHistogram, IconCurrency,
   IconDatabase,
   IconHome, IconParking,
   IconServer,
@@ -63,6 +63,12 @@ const sidebarItem: menu[] = [
     title: 'Deals',
     icon: IconParking,
     to: '/app/deals/pending',
+  },
+  { header: 'Mining' },
+  {
+    title: 'Win Blocks',
+    icon: IconCurrency,
+    to: '/app/mining/wins',
   },
   { header: 'Cluster' },
   {

@@ -4,7 +4,7 @@ import { getLightBorder } from '@/theme/ChartColors'
 import { useQuery } from '@vue/apollo-composable'
 import { TaskAggregate } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
-import { GetTaskHistoriesAggregation } from '@/views/query/task'
+import { GetTaskHistoriesAggregation } from '@/gql/task'
 import { useTheme } from 'vuetify'
 
 const theme = useTheme()

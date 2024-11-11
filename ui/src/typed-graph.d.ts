@@ -212,6 +212,20 @@ export type MiningSummaryDay = {
   wonBlock: Scalars['Int']['output'];
 };
 
+export type MiningTask = {
+  __typename?: 'MiningTask';
+  baseComputeTime: Scalars['Time']['output'];
+  epoch: Scalars['Int']['output'];
+  included?: Maybe<Scalars['Boolean']['output']>;
+  minedAt?: Maybe<Scalars['Time']['output']>;
+  minedCid?: Maybe<Scalars['String']['output']>;
+  minedHeader?: Maybe<Scalars['JSONB']['output']>;
+  spId: Scalars['ActorID']['output'];
+  submittedAt?: Maybe<Scalars['Time']['output']>;
+  taskId: Scalars['ID']['output'];
+  won: Scalars['Boolean']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createConfig?: Maybe<Config>;
@@ -395,6 +409,7 @@ export type Query = {
   minerPower?: Maybe<MinerPower>;
   miningCount: MiningCount;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
+  miningWins?: Maybe<Array<Maybe<MiningTask>>>;
   nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
   pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
   porep?: Maybe<Porep>;
@@ -456,6 +471,14 @@ export type QueryMiningCountArgs = {
 export type QueryMiningSummaryByDayArgs = {
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
+};
+
+
+export type QueryMiningWinsArgs = {
+  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  include?: InputMaybe<Scalars['Boolean']['input']>;
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
 };
 
 

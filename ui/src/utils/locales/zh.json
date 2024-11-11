@@ -15,7 +15,9 @@
     "Machines": "主机",
     "Storages": "存储",
     "Configurations": "配置",
-    "List": "列表"
+    "List": "列表",
+    "Mining": "挖矿",
+    "Win Blocks": "出块"
   },
   "fields": {
     "Total Power": "总算力",

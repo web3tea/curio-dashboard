@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref, watch } from 'vue'
-import { GetSectorsPoreps } from '@/views/query/porep'
+import { GetSectorsPoreps } from '@/gql/porep'
 import { Porep } from '@/typed-graph'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useLocaleTimeAgo } from '@/utils/helpers/timeAgo'
 import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
-import { RestartAllFailedSector } from '@/views/query/sector'
+import { RestartAllFailedSector } from '@/gql/sector'
 import { useUIStore } from '@/stores/ui'
 import SectorRestart from '@/views/sectors/SectorRestart.vue'
 

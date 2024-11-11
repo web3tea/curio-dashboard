@@ -2,7 +2,7 @@
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Task } from '@/typed-graph'
-import { GetRunningTasks } from '@/views/query/task'
+import { GetRunningTasks } from '@/gql/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({

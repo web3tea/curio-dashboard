@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { GetMachineInfo } from '@/views/query/machine'
+import { GetMachineInfo } from '@/gql/machine'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { computed } from 'vue'
 import moment from 'moment'

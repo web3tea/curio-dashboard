@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SectorMetaPiece } from '@/typed-graph'
 import { useQuery } from '@vue/apollo-composable'
-import { GetSectorPieces } from '@/views/query/sector'
+import { GetSectorPieces } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'

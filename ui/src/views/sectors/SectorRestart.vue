@@ -2,7 +2,7 @@
 import { PropType, ref } from 'vue'
 import { useUIStore } from '@/stores/ui'
 import { useMutation } from '@vue/apollo-composable'
-import { RestartSector } from '@/views/query/sector'
+import { RestartSector } from '@/gql/sector'
 import { IconRotateDot } from '@tabler/icons-vue'
 
 interface Sector {

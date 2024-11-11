@@ -4,7 +4,7 @@ import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Actor } from '@/typed-graph'
-import { GetActors } from '@/views/query/miner'
+import { GetActors } from '@/gql/miner'
 import { formatFIL } from '@/utils/helpers/formatFIL'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 

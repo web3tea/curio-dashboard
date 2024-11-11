@@ -13,6 +13,7 @@ import (
 type MiningLoader interface {
 	MiningSummaryByDay(ctx context.Context, start, end time.Time) ([]*model.MiningSummaryDay, error)
 	MiningCount(ctx context.Context, start, end time.Time, actor *types.ActorID) (*model.MiningCount, error)
+	MiningTasks(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID, won *bool) ([]*model.MiningTask, error)
 }
 
 func (l *Loader) MiningSummaryByDay(ctx context.Context, start, end time.Time) ([]*model.MiningSummaryDay, error) {
@@ -81,5 +82,36 @@ GROUP BY
 			result.Exclude = r.Count
 		}
 	}
+	return result, nil
+}
+
+func (l *Loader) MiningTasks(ctx context.Context, actor *types.ActorID, won *bool, offset int, limit int) ([]*model.MiningTask, error) {
+	var result []*model.MiningTask
+
+	err := l.db.Select(ctx, &result, `
+SELECT
+    task_id,
+    sp_id,
+    epoch,
+    base_compute_time,
+    won,
+    mined_cid,
+    mined_header,
+    mined_at,
+    submitted_at,
+    included
+FROM
+    mining_tasks
+WHERE
+    ($1::bool IS NULL OR won = $1) AND
+    ($2::int IS NULL OR sp_id = $2)
+ORDER BY
+    base_compute_time DESC 
+LIMIT $3 OFFSET $4;`, won, actor, limit, offset)
+
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(result)
 	return result, nil
 }

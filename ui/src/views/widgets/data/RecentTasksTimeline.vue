@@ -5,7 +5,7 @@ import { useSubscription } from '@vue/apollo-composable'
 import { TaskHistory } from '@/typed-graph'
 import moment from 'moment'
 import { IconCircleX, IconSquareCheck } from '@tabler/icons-vue'
-import { SubscribeCompletedTask } from '@/views/query/task'
+import { SubscribeCompletedTask } from '@/gql/task'
 import { formatDuration } from '@/utils/helpers/formatDuration'
 
 const maxMessages = 7

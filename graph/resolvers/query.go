@@ -11,6 +11,7 @@ import (
 
 	"github.com/filecoin-project/lotus/api"
 	types2 "github.com/filecoin-project/lotus/chain/types"
+	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
@@ -205,6 +206,12 @@ func (r *queryResolver) MiningSummaryByDay(ctx context.Context, start time.Time,
 func (r *queryResolver) MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCount, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
 	return r.loader.MiningCount(ctx, start, end, actor)
+}
+
+// MiningWins is the resolver for the miningWins field.
+func (r *queryResolver) MiningWins(ctx context.Context, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MiningTasks(ctx, actor, lo.ToPtr(true), offset, limit)
 }
 
 // DealsPending is the resolver for the dealsPending field.

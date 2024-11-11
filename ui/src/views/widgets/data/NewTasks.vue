@@ -3,7 +3,7 @@ import { ref, watch } from 'vue'
 
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { useSubscription } from '@vue/apollo-composable'
-import { SubscribeNewTask } from '@/views/query/task'
+import { SubscribeNewTask } from '@/gql/task'
 import { Task } from '@/typed-graph'
 import moment from 'moment'
 import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'

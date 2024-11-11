@@ -8,3 +8,16 @@ type MiningCount {
     include: Int!
     exclude: Int!
 }
+
+type MiningTask {
+    taskId: ID!
+    spId: ActorID!
+    epoch: Int!
+    baseComputeTime: Time!
+    won: Boolean!
+    minedCid: String
+    minedHeader: JSONB
+    minedAt: Time
+    submittedAt: Time
+    included: Boolean
+}

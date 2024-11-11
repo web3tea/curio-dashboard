@@ -4,7 +4,7 @@ import moment from 'moment'
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons-vue'
 import { IconReload } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetMachines } from '@/views/query/machine'
+import { GetMachines } from '@/gql/machine'
 import { Machine } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
