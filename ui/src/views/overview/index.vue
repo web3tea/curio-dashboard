@@ -8,6 +8,7 @@ import ChainConnectivity from '@/views/widgets/data/ChainConnectivity.vue'
 import StorageOverview from '@/views/widgets/statistics/StorageOverview.vue'
 import CompletedTaskOverviewChart from '@/views/widgets/chart/CompletedTaskOverviewChart.vue'
 import BlocksMined from '@/views/widgets/statistics/BlocksMined.vue'
+import RunningTasksCount from '@/views/widgets/statistics/RunningTasksCount.vue'
 </script>
 
 <template>
@@ -38,7 +39,7 @@ import BlocksMined from '@/views/widgets/statistics/BlocksMined.vue'
       md="3"
       sm="6"
     >
-      <MinerPower />
+      <RunningTasksCount />
     </v-col>
   </v-row>
   <v-row class="mb-0">

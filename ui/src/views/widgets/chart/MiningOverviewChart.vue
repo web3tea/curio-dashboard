@@ -49,6 +49,9 @@ const chartOptions = computed(() => {
         dataLabels: {
           total: {
             enabled: true,
+            style: {
+              color: '#eff0f1',
+            },
           },
         },
       },

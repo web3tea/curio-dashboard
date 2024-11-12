@@ -129,3 +129,9 @@ export const GetRunningTasks = gql`
     }
     ${taskFragment}
 `
+
+export const GetTasksCount = gql`
+    query GetTasksCount {
+      tasksCount
+    }
+`
