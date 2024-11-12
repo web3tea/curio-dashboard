@@ -209,9 +209,9 @@ func (r *queryResolver) MiningCount(ctx context.Context, start time.Time, end ti
 }
 
 // MiningWins is the resolver for the miningWins field.
-func (r *queryResolver) MiningWins(ctx context.Context, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
+func (r *queryResolver) MiningWins(ctx context.Context, actor *types.ActorID, include bool, offset int, limit int) ([]*model.MiningTask, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
-	return r.loader.MiningTasks(ctx, actor, lo.ToPtr(true), offset, limit)
+	return r.loader.MiningTasks(ctx, actor, lo.ToPtr(true), include, offset, limit)
 }
 
 // DealsPending is the resolver for the dealsPending field.

@@ -11,7 +11,6 @@ const authStore = useAuthStore()
 
 function submit () {
   authStore.login(username.value, password.value).then(() => {
-    console.log('Logged in')
     authError.value = ''
   }).catch(error => {
     authError.value = error

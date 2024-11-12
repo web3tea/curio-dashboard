@@ -476,7 +476,7 @@ export type QueryMiningSummaryByDayArgs = {
 
 export type QueryMiningWinsArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
-  include?: InputMaybe<Scalars['Boolean']['input']>;
+  include: Scalars['Boolean']['input'];
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
 };

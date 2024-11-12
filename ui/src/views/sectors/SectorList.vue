@@ -2,7 +2,7 @@
 import { VNumberInput } from 'vuetify/labs/VNumberInput'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
-import { Actor, Sector } from '@/typed-graph'
+import { Sector } from '@/typed-graph'
 import { GetSectors } from '@/gql/sector'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
@@ -11,7 +11,7 @@ import SectorLocations from '@/views/sectors/SectorLocations.vue'
 const page = ref(1)
 const rowsPerPage = ref(50)
 
-const selectedMiner = ref<string | null>(null)
+const selectedMiner = ref<string | undefined>(undefined)
 const searchSectorNumber = ref<string | null>(null)
 
 const { result, loading, refetch } = useQuery(GetSectors, {
@@ -24,7 +24,6 @@ const { result, loading, refetch } = useQuery(GetSectors, {
 }))
 
 const items: ComputedRef<[Sector]> = computed(() => result.value?.sectors || [])
-const miners: ComputedRef<[Actor]> = computed(() => result.value?.actors || [])
 
 const headers = [
   { title: 'Miner', key: 'meta.spId' },
@@ -53,18 +52,7 @@ function handleRefetch (): void {
         <v-col cols="12" md="6">
           <v-row>
             <v-col cols="12" md="6">
-              <v-select
-                v-model="selectedMiner"
-                clearable
-                color="primary"
-                density="compact"
-                item-title="address"
-                :items="miners"
-                label="Miner"
-                role="link"
-                single-line
-                variant="outlined"
-              />
+              <MinerSelectInput v-model="selectedMiner" />
             </v-col>
             <v-col cols="6" md="4">
               <VNumberInput

@@ -11,6 +11,7 @@ declare module 'vue' {
     BaseBreadcrumb: typeof import('./components/shared/BaseBreadcrumb.vue')['default']
     CardHeader: typeof import('./components/shared/CardHeader.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StoragePathTable: typeof import('./components/app/StoragePathTable.vue')['default']

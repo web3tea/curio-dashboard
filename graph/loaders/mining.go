@@ -85,7 +85,7 @@ GROUP BY
 	return result, nil
 }
 
-func (l *Loader) MiningTasks(ctx context.Context, actor *types.ActorID, won *bool, offset int, limit int) ([]*model.MiningTask, error) {
+func (l *Loader) MiningTasks(ctx context.Context, actor *types.ActorID, won *bool, include bool, offset int, limit int) ([]*model.MiningTask, error) {
 	var result []*model.MiningTask
 
 	err := l.db.Select(ctx, &result, `
@@ -104,14 +104,14 @@ FROM
     mining_tasks
 WHERE
     ($1::bool IS NULL OR won = $1) AND
-    ($2::int IS NULL OR sp_id = $2)
+    ($2::int IS NULL OR sp_id = $2) AND
+    included = $3
 ORDER BY
     base_compute_time DESC 
-LIMIT $3 OFFSET $4;`, won, actor, limit, offset)
+LIMIT $4 OFFSET $5;`, won, actor, include, limit, offset)
 
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(result)
 	return result, nil
 }

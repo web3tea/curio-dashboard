@@ -35,7 +35,7 @@ export const GetMiningBlockCount = gql`
 `
 
 export const GetMiningWins = gql`
-    query GetMiningWins($miner: ActorID, $include: Boolean, $offset: Int!, $limit: Int!) {
+    query GetMiningWins($miner: ActorID, $include: Boolean!, $offset: Int!, $limit: Int!) {
         miningWins(actor: $miner, include: $include, offset: $offset, limit: $limit) {
             ...MiningTaskAll
         }

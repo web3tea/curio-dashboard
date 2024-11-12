@@ -368,7 +368,7 @@ type ComplexityRoot struct {
 		MinerPower             func(childComplexity int, address *types.Address) int
 		MiningCount            func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
 		MiningSummaryByDay     func(childComplexity int, start time.Time, end time.Time) int
-		MiningWins             func(childComplexity int, actor *types.ActorID, include *bool, offset int, limit int) int
+		MiningWins             func(childComplexity int, actor *types.ActorID, include bool, offset int, limit int) int
 		NodesInfo              func(childComplexity int) int
 		PipelinesSummary       func(childComplexity int) int
 		Porep                  func(childComplexity int, sp types.ActorID, sectorNumber int) int
@@ -672,7 +672,7 @@ type QueryResolver interface {
 	NodesInfo(ctx context.Context) ([]*model.NodeInfo, error)
 	MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error)
 	MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCount, error)
-	MiningWins(ctx context.Context, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error)
+	MiningWins(ctx context.Context, actor *types.ActorID, include bool, offset int, limit int) ([]*model.MiningTask, error)
 	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	Alerts(ctx context.Context) ([]*model.Alert, error)
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
@@ -2418,7 +2418,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningWins(childComplexity, args["actor"].(*types.ActorID), args["include"].(*bool), args["offset"].(int), args["limit"].(int)), true
+		return e.complexity.Query.MiningWins(childComplexity, args["actor"].(*types.ActorID), args["include"].(bool), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.nodesInfo":
 		if e.complexity.Query.NodesInfo == nil {
@@ -4531,22 +4531,22 @@ func (ec *executionContext) field_Query_miningWins_argsActor(
 func (ec *executionContext) field_Query_miningWins_argsInclude(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*bool, error) {
+) (bool, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["include"]
 	if !ok {
-		var zeroVal *bool
+		var zeroVal bool
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("include"))
 	if tmp, ok := rawArgs["include"]; ok {
-		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+		return ec.unmarshalNBoolean2bool(ctx, tmp)
 	}
 
-	var zeroVal *bool
+	var zeroVal bool
 	return zeroVal, nil
 }
 
@@ -16876,7 +16876,7 @@ func (ec *executionContext) _Query_miningWins(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWins(rctx, fc.Args["actor"].(*types.ActorID), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		return ec.resolvers.Query().MiningWins(rctx, fc.Args["actor"].(*types.ActorID), fc.Args["include"].(bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

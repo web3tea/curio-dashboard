@@ -52,9 +52,6 @@ export const GetSectors = gql`
       }
     }
     sectorsCount(actor: $miner)
-    actors {
-      address
-    }
   }
   ${metaFragment}
   ${locationPrimaryFragment}
