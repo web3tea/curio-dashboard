@@ -1,9 +1,12 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/filecoin-project/curio/build"
 	lcli "github.com/filecoin-project/lotus/cli"
 	logging "github.com/ipfs/go-log/v2"
+	"github.com/strahe/curio-dashboard/version"
 	"github.com/urfave/cli/v2"
 )
 
@@ -12,8 +15,8 @@ var log = logging.Logger("cmd")
 func main() {
 	app := &cli.App{
 		Name:                 "curio-dashboard",
-		Usage:                "A dashboard for the Curio",
-		Version:              "0.0.6+v" + build.BuildVersion,
+		Usage:                "A dashboard for Curio",
+		Version:              fmt.Sprintf("%s+curio-%s", version.CurrentCommit, build.BuildVersion),
 		EnableBashCompletion: true,
 		Flags: []cli.Flag{
 			&cli.BoolFlag{

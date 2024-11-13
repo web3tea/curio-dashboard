@@ -2,11 +2,14 @@ all: ui-deps ui go
 all-in-one: ui-deps ui go-dist
 aio: all-in-one
 
+ldflags=-s -w -X github.com/strahe/curio-dashboard/version.CurrentCommit=$(shell git describe --tags --always --dirty 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
+GOFLAGS+=-ldflags="$(ldflags)"
+
 go:
-	go build -ldflags="-s -w" -o curio-dashboard ./cmd
+	go build $(GOFLAGS) -o curio-dashboard ./cmd
 
 go-dist:
-	go build -ldflags="-s -w" -o curio-dashboard -tags dist ./cmd
+	go build $(GOFLAGS) -o curio-dashboard -tags dist ./cmd
 
 ui-deps:
 	cd ui && yarn install
