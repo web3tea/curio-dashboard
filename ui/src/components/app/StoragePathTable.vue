@@ -1,10 +1,9 @@
 <script setup lang="ts">
 
-import moment from 'moment'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { EyeOutlined } from '@ant-design/icons-vue'
 import { StoragePath } from '@/typed-graph'
 import { ApolloError } from '@apollo/client'
+import { getColorByType } from '@/utils/helpers/storageTypeColor'
 
 const props = defineProps({
   items: {
@@ -19,13 +18,17 @@ const props = defineProps({
     type: Object as () => ApolloError | null,
     required: false,
   },
+  search: {
+    type: String,
+    required: false,
+  },
 })
 
 const headers = [
   { title: 'Type', key: 'type' },
-  { title: 'Storage ID', key: 'storageId' },
-  { title: 'URLs', key: 'urls' },
-  { title: 'Weight', key: 'weight', sortable: true },
+  { title: 'Storage ID', key: 'storageId', sortable: false },
+  { title: 'URLs', key: 'urls', sortable: false },
+  { title: 'Weight', key: 'weight' },
   { title: 'Capacity', key: 'capacity' },
   { title: 'Available', key: 'available' },
   { title: 'FS Available', key: 'fsAvailable' },
@@ -33,6 +36,7 @@ const headers = [
   { title: 'Used', key: 'used' },
   { title: 'Last Heartbeat', key: 'lastHeartbeat' },
 ]
+
 </script>
 
 <template>
@@ -41,20 +45,13 @@ const headers = [
     :headers="headers"
     :items="props.items"
     :loading="props.loading"
+    :search="props.search"
   >
-    <template #item.id="{ value }">
-      <div class="player-wrapper">
-        <h5 class="text-h5">#{{ value }}</h5>
-      </div>
-    </template>
     <template #item.type="{ value }">
-      <v-chip v-if="value === 'Hybrid'" color="success" label size="small"> Hybrid </v-chip>
-      <v-chip v-if="value === 'Seal'" color="accent" label size="small"> Seal </v-chip>
-      <v-chip v-if="value === 'Store'" color="warning" label size="small"> Store </v-chip>
-      <v-chip v-if="value === 'Readonly'" color="info" label size="small"> Readonly </v-chip>
+      <v-chip :color="getColorByType(value)" label size="small"> {{ value }} </v-chip>
     </template>
     <template #item.lastHeartbeat="{ value }">
-      <div :title="value">{{ moment(value).calendar() }}</div>
+      {{ $d(value, 'short') }}
     </template>
     <template #item.storageId="{ value }">
       <v-text-field
@@ -94,19 +91,6 @@ const headers = [
     </template>
     <template #item.used="{ value }">
       <div>{{ formatBytes(value).combined }}</div>
-    </template>
-    <template #item.operation="{}">
-      <div class="operation-wrapper">
-        <v-btn
-          color="secondary"
-          round
-          rounded
-          title="More"
-          variant="text"
-        >
-          <EyeOutlined />
-        </v-btn>
-      </div>
     </template>
   </v-data-table-virtual>
 </template>

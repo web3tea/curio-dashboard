@@ -1,15 +1,54 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ComputedRef } from 'vue'
 import { CaretUpFilled } from '@ant-design/icons-vue'
+import { useQuery } from '@vue/apollo-composable'
+import { GetStorageStats } from '@/gql/storage'
+import { useUIStore } from '@/stores/ui'
+import { StorageStats } from '@/typed-graph'
+import { formatBytes } from '@/utils/helpers/formatBytes'
+import { getColorByType } from '@/utils/helpers/storageTypeColor'
 
-const chartsData = [
-  { title: 'Seal', color: '#52c41a', used: '10.23 TiB', available: '2.32 TiB', percentage: '70.5%', data: [200, 600, 100, 400, 300, 400, 50] },
-  { title: 'Store', color: '#faad14', used: '1021.23 TiB', available: '22.32 TiB', percentage: '17.4%', data: [100, 550, 300, 350, 245, 100, 300] },
-  { title: 'Hybrid', color: '#ff4d4f', used: '102.23 TiB', available: '33.32 TiB', percentage: '37.4%', data: [100, 550, 200, 300, 100, 200, 300] },
-  { title: 'Readonly', color: '#0848e8', used: '20.23 PiB', available: '201.32 TiB', percentage: '47.4%', data: [100, 550, 200, 300, 100, 300, 200] },
-]
+const uiStore = useUIStore()
 
-const optionGetter = (title: string, color: string) => computed(() => {
+const { result, onError } = useQuery(GetStorageStats, null, () => ({
+  fetchPolicy: 'cache-first',
+}))
+
+onError(error => {
+  uiStore.appendMsg({
+    type: 'error',
+    msg: error.message,
+  })
+})
+
+const items: ComputedRef<[StorageStats]> = computed(() => result.value?.storageStats || [])
+
+const chartsData = computed(() => {
+  if (!result.value) return []
+
+  return items.value.map(stat => ({
+    title: stat.type,
+    color: getColorByType(stat.type),
+    used: formatBytes(stat.totalCapacity - stat.totalAvailable).combined,
+    available: formatBytes(stat.totalAvailable).combined,
+    percentage: ((1 - stat.totalAvailable / stat.totalCapacity) * 100).toFixed(2) + '%',
+    data: generateChartData(),
+  }))
+})
+
+// todo: remove this function and use real data
+function generateChartData (): number[] {
+  return Array.from({ length: 7 }, () => Math.floor(Math.random() * 500))
+}
+
+// const chartsData = [
+//   { title: 'Seal', color: '#52c41a', used: '10.23 TiB', available: '2.32 TiB', percentage: '70.5%', data: [200, 600, 100, 400, 300, 400, 50] },
+//   { title: 'Store', color: '#faad14', used: '1021.23 TiB', available: '22.32 TiB', percentage: '17.4%', data: [100, 550, 300, 350, 245, 100, 300] },
+//   { title: 'Hybrid', color: '#ff4d4f', used: '102.23 TiB', available: '33.32 TiB', percentage: '37.4%', data: [100, 550, 200, 300, 100, 200, 300] },
+//   { title: 'Readonly', color: '#0848e8', used: '20.23 PiB', available: '201.32 TiB', percentage: '47.4%', data: [100, 550, 200, 300, 100, 300, 200] },
+// ]
+
+function getOption (title: string, color: string) {
   return {
     chart: {
       type: 'area',
@@ -94,8 +133,7 @@ const optionGetter = (title: string, color: string) => computed(() => {
       },
     ],
   }
-})
-
+}
 </script>
 <template>
   <v-row>
@@ -119,7 +157,7 @@ const optionGetter = (title: string, color: string) => computed(() => {
                 </div>
                 <apexchart
                   height="80"
-                  :options="optionGetter(chart.title, chart.color).value"
+                  :options="getOption(chart.title, chart.color)"
                   :series="[{
                     name: chart.title,
                     data: chart.data

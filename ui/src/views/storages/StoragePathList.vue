@@ -4,6 +4,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { StoragePath } from '@/typed-graph'
 import { computed, ComputedRef, ref } from 'vue'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { getColorByType } from '@/utils/helpers/storageTypeColor'
 
 const { result, loading, refetch, error } = useQuery(GetStoragePaths, null, () => ({
   fetchPolicy: 'cache-first',
@@ -26,13 +27,7 @@ const searchValue = ref('')
 
 const tab = ref('All')
 
-const tabs = [
-  { text: 'All', color: 'accent' },
-  { text: 'Seal', color: 'success' },
-  { text: 'Store', color: 'warning' },
-  { text: 'Hybrid', color: 'info' },
-  { text: 'Readonly', color: 'error' },
-]
+const tabs = ['All', 'Seal', 'Store', 'Hybrid', 'Readonly']
 </script>
 
 <template>
@@ -43,16 +38,16 @@ const tabs = [
           <v-row class="align-center" justify="space-between">
             <v-col cols="12" md="6">
               <v-tabs v-model="tab" color="primary">
-                <template v-for="t in tabs" :key="t.text">
-                  <v-tab class="font-weight-medium" :value="t.text">
-                    {{ t.text }}
+                <template v-for="t in tabs" :key="t">
+                  <v-tab class="font-weight-medium" :value="t">
+                    {{ t }}
                     <v-chip
                       class="ml-2 font-weight-medium"
-                      :color="t.color"
+                      :color="getColorByType(t)"
                       label
                       size="small"
                     >
-                      {{ filteredItemsByType(t.text).value.length }}
+                      {{ filteredItemsByType(t).value.length }}
                     </v-chip>
                   </v-tab>
                 </template>
@@ -87,7 +82,7 @@ const tabs = [
         </v-card-item>
         <v-divider />
         <v-card-text class="pa-0">
-          <StoragePathTable :error="error" :items="filteredItems" :loading="loading" />
+          <StoragePathTable :error="error" :items="filteredItems" :loading="loading" :search="searchValue" />
         </v-card-text>
       </v-card>
     </v-col>

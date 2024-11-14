@@ -13,11 +13,43 @@ const getPrimary = computed(() => {
   }
 })
 
+const getInfo = computed(() => {
+  if (cus.dark) {
+    return DarkTheme.colors.info
+  } else {
+    return LightTheme.colors.info
+  }
+})
+
+const getWarning = computed(() => {
+  if (cus.dark) {
+    return DarkTheme.colors.warning
+  } else {
+    return LightTheme.colors.warning
+  }
+})
+
 const getBorder = computed(() => {
   if (cus.dark) {
     return DarkTheme.colors.borderLight
   } else {
     return LightTheme.colors.borderLight
+  }
+})
+
+const getError = computed(() => {
+  if (cus.dark) {
+    return DarkTheme.colors.error
+  } else {
+    return LightTheme.colors.error
+  }
+})
+
+const getSuccess = computed(() => {
+  if (cus.dark) {
+    return DarkTheme.colors.success
+  } else {
+    return LightTheme.colors.success
   }
 })
 
@@ -29,4 +61,4 @@ const getSecondary = computed(() => {
   }
 })
 
-export { getPrimary, getSecondary, getBorder }
+export { getPrimary, getSecondary, getBorder, getInfo, getWarning, getSuccess, getError }

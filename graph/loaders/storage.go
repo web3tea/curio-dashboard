@@ -111,6 +111,12 @@ func (l *Loader) StorageStats(ctx context.Context) ([]*model.StorageStats, error
 		countFor(group, path)
 	}
 
+	for _, st := range model.AllStorageType {
+		if _, exists := statsMap[st]; !exists {
+			statsMap[st] = &model.StorageStats{Type: st}
+		}
+	}
+
 	// Convert the map to a slice
 	var res []*model.StorageStats
 	for _, group := range statsMap {
