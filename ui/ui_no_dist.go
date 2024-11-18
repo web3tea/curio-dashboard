@@ -3,10 +3,10 @@
 package ui
 
 import (
-	"errors"
+	"fmt"
 	"io/fs"
 )
 
 func Assets() (fs.FS, error) {
-	return nil, errors.New("dist directory does not exist")
+	return nil, fmt.Errorf("dist directory does not exist")
 }

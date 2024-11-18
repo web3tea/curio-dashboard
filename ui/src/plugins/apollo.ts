@@ -23,7 +23,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:9091/graphql',
+    url: import.meta.env.VITE_SERVER_URL || (import.meta.env.DEV ? 'ws://localhost:9091/graphql' : '/graphql'),
     connectionParams: () => ({
       authToken: localStorage.getItem('token'),
     }),
