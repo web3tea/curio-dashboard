@@ -33,6 +33,19 @@ router.beforeEach(async (to, from, next) => {
   const authRequired = !publicPages.includes(to.path)
   const auth: AuthStore = useAuthStore()
 
+  const uiStore = useUIStore()
+  uiStore.isLoading = true
+
+  const { title, description } = to.meta
+  const defaultTitle = 'Curio Dashboard'
+  const defaultDescription = 'A dashboard for Curio '
+  document.title = (title as string + ' - Curio') || defaultTitle
+
+  const descriptionElement = document.querySelector('head meta[name="description"]')
+  if (descriptionElement) {
+    descriptionElement.setAttribute('content', (description as string) || defaultDescription)
+  }
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
     if (authRequired && !auth.token) {
       auth.returnUrl = to.fullPath
@@ -41,11 +54,6 @@ router.beforeEach(async (to, from, next) => {
   } else {
     next()
   }
-})
-
-router.beforeEach(() => {
-  const uiStore = useUIStore()
-  uiStore.isLoading = true
 })
 
 router.afterEach(() => {

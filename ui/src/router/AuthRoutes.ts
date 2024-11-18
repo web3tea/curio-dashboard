@@ -9,6 +9,10 @@ const AuthRoutes = {
       name: 'Login',
       path: '/auth/login',
       component: () => import('@/views/auth/Login.vue'),
+      meta: {
+        title: 'Login',
+        description: 'Login to the Curio Dashboard',
+      },
     },
   ],
 }
