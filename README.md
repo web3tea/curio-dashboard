@@ -8,7 +8,7 @@ Status: **Alpha**
 > 
 > This project began in late May 2024 and was first shared on Slack in July. In August, following a major refactor, 
 > I used a git force push, which unfortunately removed the prior commit history. 
-> The content of my [initial commit](https://github.com/strahe/curio-dashboard-private/commit/55e73828b42356eb1a26686ec2022e8e3d928c1f) can verify this. 
+> The content of my [initial commit](https://github.com/strahe/curio-dashboard/commit/55e73828b42356eb1a26686ec2022e8e3d928c1f) can verify this. 
 > Given that the RetroPGF2 impact window is from April to September 2024，I would be grateful if you could consider this context when reviewing my project.
 
 ## Overview
