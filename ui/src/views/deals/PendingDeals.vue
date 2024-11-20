@@ -7,6 +7,7 @@ import { DealSealNow, GetPendingDeals } from '@/gql/deal'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+
 const uiStore = useUIStore()
 
 const { result, loading, refetch } = useQuery(GetPendingDeals, null, () => ({
@@ -50,6 +51,14 @@ const headers = [
 const search = ref('')
 const sortBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'desc' }, { key: 'pieceIndex', order: 'asc' }] as const
 const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'desc' }] as const
+
+const fillProgress = computed(() => (spID: number, sectorNumber: number): number => {
+  const totalSize = 32 * 1024 * 1024 * 1024 // 32GB in bytes
+  const filledSize = items.value
+    .filter(item => item.spID === spID && item.sectorNumber === sectorNumber)
+    .reduce((acc, item) => acc + item.pieceSize, 0)
+  return (filledSize / totalSize) * 100
+})
 
 </script>
 
@@ -102,9 +111,15 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
         <template #item.createdAt="{ item }">
           {{ $d(item.createdAt, 'short') }}
         </template>
-        <template #group-header="{ item, index,columns, toggleGroup, isGroupOpen }">
+        <template #group-header="{ item, index, columns, toggleGroup, isGroupOpen }">
+          <div
+            :ref="(el)=>{
+              if (index ===0 && !loading && !isGroupOpen(item))
+                toggleGroup(item);
+            }"
+          />
           <tr>
-            <td :class="'pl-'+index+1" :colspan="columns.length > 3? 3: columns.length -1 ">
+            <td :class="'pl-'+index+1" :colspan="3">
               <v-btn
                 :icon="isGroupOpen(item) ? '$expand' : '$next'"
                 size="small"
@@ -113,9 +128,8 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
               />
               {{ index ===1 ? 'Sector : ' + item.value: item.value }} ({{ item.items.reduce((acc, curr) => acc + (curr.items ? curr.items.length : 1), 0) }})
             </td>
-            <td>
+            <td v-if="index === 1" :colspan="1">
               <v-btn
-                v-if="index === 1"
                 color="primary"
                 :loading="dealSealNowLoading"
                 @click="dealSealNow(
@@ -124,6 +138,15 @@ const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'd
               >
                 Seal Now
               </v-btn>
+            </td>
+            <td v-if="index===1" :colspan="columns.length-4">
+              <v-progress-linear
+                color="success"
+                height="25"
+                :model-value="fillProgress(item.items[0].columns.spID, item.items[0].columns.sectorNumber)"
+              >
+                <strong>{{ fillProgress(item.items[0].columns.spID, item.items[0].columns.sectorNumber).toFixed(2) }}%</strong>
+              </v-progress-linear>
             </td>
           </tr>
         </template>
