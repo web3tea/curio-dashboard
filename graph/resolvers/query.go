@@ -18,6 +18,11 @@ import (
 	"github.com/strahe/curio-dashboard/types"
 )
 
+// Global is the resolver for the global field.
+func (r *queryResolver) Global(ctx context.Context) (*model.Global, error) {
+	return &model.Global{}, nil
+}
+
 // Config is the resolver for the config field.
 func (r *queryResolver) Config(ctx context.Context, layer string) (*model.Config, error) {
 	return r.loader.Config(ctx, layer)

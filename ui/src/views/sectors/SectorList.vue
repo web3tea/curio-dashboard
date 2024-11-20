@@ -4,9 +4,10 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Sector } from '@/typed-graph'
 import { GetSectors } from '@/gql/sector'
-import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
 import SectorLocations from '@/views/sectors/SectorLocations.vue'
+import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
+import EpochField from '@/components/app/EpochField.vue'
 
 const page = ref(1)
 const rowsPerPage = ref(50)
@@ -99,7 +100,7 @@ function handleRefetch (): void {
           <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.meta?.spId, sectorNumber: item.meta?.sectorNum } }">{{ item.meta?.sectorNum }}</RouterLink>
         </template>
         <template #item.meta.expirationEpoch="{ item }">
-          {{ item.meta?.expirationEpoch }}
+          <EpochField :epoch="item.meta?.expirationEpoch" />
         </template>
         <template #item.meta.isCC="{ item }">
           {{ item.meta?.isCC ? 'Yes' : 'No' }}

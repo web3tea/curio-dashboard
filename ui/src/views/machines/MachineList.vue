@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ComputedRef, ref } from 'vue'
-import moment from 'moment'
 import { EyeOutlined, SearchOutlined } from '@ant-design/icons-vue'
 import { IconReload } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
@@ -137,10 +136,10 @@ const headers = [
               <RouterLink :to="{ name: 'MachineInfo', params: { id: item.id } }">{{ item.hostAndPort }}</RouterLink>
             </template>
             <template #item.lastContact="{ value }">
-              <div :title="value">{{ moment(value).calendar() }}</div>
+              <div :title="value">{{ $d(value, 'short') }}</div>
             </template>
             <template #item.detail.startupTime="{ value }">
-              <div :title="value">{{ moment(value).calendar() }}</div>
+              <div :title="value">{{ $d(value, 'short') }}</div>
             </template>
             <template #item.ram="{ value }">
               <div>{{ formatBytes(value).combined }}</div>

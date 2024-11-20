@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import moment from 'moment'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
@@ -61,10 +60,10 @@ const headers = [
         <v-chip color="primary" small>{{ value }}</v-chip>
       </template>
       <template #item.updateTime="{ value }">
-        {{ moment(value).calendar() }}
+        {{ $d(value, 'short') }}
       </template>
       <template #item.postedTime="{ value }">
-        {{ moment(value).calendar() }}
+        {{ $d(value, 'short') }}
       </template>
       <template #item.previousTask="{ value }">
         <!--        todo: add router link to previous task details-->

@@ -5,7 +5,6 @@ import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeCompletedTask } from '@/gql/task'
 import { TaskHistory } from '@/typed-graph'
-import moment from 'moment'
 import { formatDuration } from '@/utils/helpers/formatDuration'
 import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
 
@@ -72,11 +71,11 @@ const headers = [
       :items="tasks"
       :loading="loading"
     >
-      <template #item.posted="{ item }">
-        {{ moment(item.posted).calendar() }}
+      <template #item.posted="{ value }">
+        {{ $d(value, 'short') }}
       </template>
-      <template #item.workStart="{ item }">
-        {{ moment(item.workStart).calendar() }}
+      <template #item.workStart="{ value }">
+        {{ $d(value, 'short') }}
       </template>
       <template #item.completedByHostAndPort="{ item }">
         <RouterLink v-if="item.completedBy" :to="{ name: 'MachineInfo', params: { id: item.completedBy.id } }">{{ item.completedBy.hostAndPort }}</RouterLink>

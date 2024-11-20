@@ -27,6 +27,11 @@ const options: I18nOptions = {
         minute: 'numeric',
         second: 'numeric',
       },
+      toDay: {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      },
     },
     zh: {
       short: {
@@ -45,6 +50,11 @@ const options: I18nOptions = {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true,
+      },
+      toDay: {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
       },
     },
   },

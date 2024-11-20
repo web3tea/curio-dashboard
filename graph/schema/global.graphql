@@ -1,0 +1,4 @@
+type Global {
+    networkName: String!
+    genesisTimestamp: Int!
+}

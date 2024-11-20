@@ -8,7 +8,7 @@ import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, d } = useI18n()
 
 const props = defineProps({
   id: {
@@ -32,7 +32,7 @@ const details = computed(() => {
     { title: 'Name', subtext: details?.name || 'N/A', cols: 6, sm: 3 },
     { title: 'Host', subtext: machine?.hostAndPort, cols: 6, sm: 3 },
     { title: 'Last Contact', subtext: moment(machine?.lastContact).fromNow(), cols: 6, sm: 3 },
-    { title: 'Startup', subtext: moment(details?.startupTime).calendar(), cols: 6, sm: 3 },
+    { title: 'Startup', subtext: d(details?.startupTime, 'short'), cols: 6, sm: 3 },
     { title: 'CPU Usage', subtext: `${metrics?.cpuUsage}/${machine?.cpu}`, cols: 6, sm: 3 },
     { title: 'GPU Usage', subtext: `${metrics?.gpuUsage}/${machine?.gpu}`, cols: 6, sm: 3 },
     { title: 'RAM Usage', subtext: `${formatBytes(metrics?.ramUsage).combined}/${formatBytes(machine?.ram).combined}`, cols: 6, sm: 3 },
@@ -43,7 +43,7 @@ const details = computed(() => {
       { title: 'Go Version', subtext: metrics.goVersion, cols: 6, sm: 3 },
       { title: 'Go Threads', subtext: metrics.goThreads, cols: 6, sm: 3 },
       { title: 'Process CPU Seconds Total', subtext: metrics.processCpuSecondsTotal, cols: 6, sm: 3 },
-      { title: 'Process Start Time', subtext: moment.unix(metrics.processStartTimeSeconds).calendar(), cols: 6, sm: 3 },
+      { title: 'Process Start Time', subtext: d(metrics.processStartTimeSeconds * 1000, 'short'), cols: 6, sm: 3 },
       { title: 'Process Virtual Memory', subtext: formatBytes(metrics.processVirtualMemoryBytes).combined, cols: 6, sm: 3 },
       { title: 'Process Resident Memory Bytes', subtext: formatBytes(metrics.processResidentMemoryBytes).combined, cols: 6, sm: 3 },
       { title: 'Process Open FDs', subtext: metrics.processOpenFds, cols: 6, sm: 3 },

@@ -105,7 +105,7 @@ async function onLoad ({ side, done }: { side: InfiniteScrollSide, done: (status
             >
               <td>{{ item.taskId }}</td>
               <td>{{ item.spId }}</td>
-              <td>{{ item.epoch }}</td>
+              <td><EpochField :epoch="item.epoch" /></td>
               <td>{{ item.minedCid }}</td>
               <td>{{ $d(item.minedAt, 'short') }}</td>
               <td>{{ $d(item.submittedAt, 'short') }}</td>

@@ -4,6 +4,7 @@ import { formatBytes } from '@/utils/helpers/formatBytes'
 import { StoragePath } from '@/typed-graph'
 import { ApolloError } from '@apollo/client'
 import { getColorByType } from '@/utils/helpers/storageTypeColor'
+import moment from 'moment'
 
 const props = defineProps({
   items: {
@@ -51,7 +52,7 @@ const headers = [
       <v-chip :color="getColorByType(value)" label size="small"> {{ value }} </v-chip>
     </template>
     <template #item.lastHeartbeat="{ value }">
-      {{ $d(value, 'short') }}
+      {{ moment(value).fromNow() }}
     </template>
     <template #item.storageId="{ value }">
       <v-text-field

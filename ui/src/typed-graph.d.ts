@@ -65,6 +65,12 @@ export type GaugeCountValue = {
   value: Scalars['Int']['output'];
 };
 
+export type Global = {
+  __typename?: 'Global';
+  genesisTimestamp: Scalars['Int']['output'];
+  networkName: Scalars['String']['output'];
+};
+
 export type Machine = {
   __typename?: 'Machine';
   cpu: Scalars['Int']['output'];
@@ -401,6 +407,7 @@ export type Query = {
   config?: Maybe<Config>;
   configs?: Maybe<Array<Maybe<Config>>>;
   dealsPending?: Maybe<Array<Maybe<OpenSectorPiece>>>;
+  global: Global;
   machine?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;

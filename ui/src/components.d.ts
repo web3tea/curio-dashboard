@@ -10,6 +10,8 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     BaseBreadcrumb: typeof import('./components/shared/BaseBreadcrumb.vue')['default']
     CardHeader: typeof import('./components/shared/CardHeader.vue')['default']
+    EpochChip: typeof import('./components/app/EpochChip.vue')['default']
+    EpochField: typeof import('./components/app/EpochField.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
