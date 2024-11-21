@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import { useGlobalStore } from '@/stores/apps/global'
-import { Maybe } from '@/typed-graph'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -9,7 +8,7 @@ const { d } = useI18n()
 
 const props = defineProps({
   epoch: {
-    type: Object as () => Maybe<number>,
+    type: [Number, null],
   },
   chipColor: {
     type: String,
