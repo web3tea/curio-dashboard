@@ -134,3 +134,12 @@ export const GetMachineInfo = gql`
     ${machineBaseFragment}
     ${machineDetailFragment}
 `
+
+export const GetMachinesBase = gql`
+    query GetMachinesBase {
+      machines {
+        ...MachineBaseAll
+      }
+    }
+    ${machineBaseFragment}
+`

@@ -11,6 +11,7 @@ type TaskLoader interface {
 	Task(ctx context.Context, id int) (*model.Task, error)
 	Tasks(ctx context.Context) ([]*model.Task, error)
 	TasksCount(ctx context.Context) (int, error)
+	TaskNames(ctx context.Context) ([]string, error)
 }
 
 func (l *Loader) Task(ctx context.Context, id int) (*model.Task, error) {
@@ -126,4 +127,12 @@ ORDER BY posted_time`, hostID, offset); err != nil {
 		}
 	}()
 	return taskChan, nil
+}
+
+func (l *Loader) TaskNames(ctx context.Context) ([]string, error) {
+	var out []string
+	if err := l.db.Select(ctx, &out, `SELECT DISTINCT name FROM harmony_task_history;`); err != nil {
+		return nil, err
+	}
+	return out, nil
 }

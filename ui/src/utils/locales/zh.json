@@ -17,7 +17,9 @@
     "Configurations": "配置",
     "List": "列表",
     "Mining": "挖矿",
-    "Win Blocks": "出块"
+    "Win Blocks": "出块",
+    "Running Tasks": "当前任务",
+    "Task History": "任务历史"
   },
   "fields": {
     "Total Power": "总算力",

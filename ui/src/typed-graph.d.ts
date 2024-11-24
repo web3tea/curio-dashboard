@@ -431,6 +431,7 @@ export type Query = {
   taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
   taskHistoriesAggregate?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistoriesCount: Scalars['Int']['output'];
+  taskNames?: Maybe<Array<Scalars['String']['output']>>;
   tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
   tasksStats?: Maybe<Array<Maybe<TaskStats>>>;
@@ -525,8 +526,13 @@ export type QueryTaskArgs = {
 
 
 export type QueryTaskHistoriesArgs = {
+  end?: InputMaybe<Scalars['Time']['input']>;
+  hostPort?: InputMaybe<Scalars['String']['input']>;
   limit: Scalars['Int']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
   offset: Scalars['Int']['input'];
+  result?: InputMaybe<Scalars['Boolean']['input']>;
+  start?: InputMaybe<Scalars['Time']['input']>;
 };
 
 
@@ -538,11 +544,11 @@ export type QueryTaskHistoriesAggregateArgs = {
 
 
 export type QueryTaskHistoriesCountArgs = {
-  end: Scalars['Time']['input'];
-  machine?: InputMaybe<Scalars['String']['input']>;
+  end?: InputMaybe<Scalars['Time']['input']>;
+  hostPort?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  start: Scalars['Time']['input'];
-  success?: InputMaybe<Scalars['Boolean']['input']>;
+  result?: InputMaybe<Scalars['Boolean']['input']>;
+  start?: InputMaybe<Scalars['Time']['input']>;
 };
 
 

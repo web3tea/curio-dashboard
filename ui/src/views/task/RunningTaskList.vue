@@ -6,9 +6,10 @@ import { GetRunningTasks } from '@/gql/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
-  fetchPolicy: 'network-only',
+  fetchPolicy: 'cache-and-network',
   pollInterval: 3000,
 }))
+
 const items: ComputedRef<[Task]> = computed(() => result.value?.tasks || [])
 const headers = [
   { title: 'ID', key: 'id' },

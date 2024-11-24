@@ -78,7 +78,7 @@ export const SubscribeCompletedTask = gql`
 
 export const GetTaskHistoriesCount = gql`
     query GetTaskHistoriesCount($machine: String, $name: String, $success: Boolean, $start: Time!, $end: Time!) {
-        taskHistoriesCount(machine: $machine, name: $name, start: $start, end: $end, success: $success)
+        taskHistoriesCount(hostPort: $machine, name: $name, start: $start, end: $end, result: $success)
     }
 `
 
@@ -133,5 +133,21 @@ export const GetRunningTasks = gql`
 export const GetTasksCount = gql`
     query GetTasksCount {
       tasksCount
+    }
+`
+
+export const GetTaskHistories = gql`
+    query GetTaskHistories($start: Time, $end: Time, $machine: String, $name: String, $result: Boolean, $offset: Int!, $limit: Int!) {
+        taskHistories(start: $start, end: $end, hostPort: $machine, name: $name, result: $result, offset: $offset, limit: $limit) {
+            ...TaskHistoryAll
+        }
+        taskHistoriesCount(start: $start, end: $end, hostPort: $machine, name: $name, result: $result)
+    }
+    ${taskHistoryFragment}
+`
+
+export const GetTaskNames = gql`
+    query GetTaskNames {
+        taskNames
     }
 `

@@ -1,9 +1,16 @@
 import {
-  IconBox, IconBrandAsana,
-  IconChartHistogram, IconCurrency,
+  IconActivity,
+  IconBox,
+  IconBrandAsana,
+  IconChartHistogram,
+  IconCurrency,
   IconDatabase,
-  IconHome, IconParking,
-  IconServer, IconSettings, IconUsers,
+  IconHistory,
+  IconHome,
+  IconParking,
+  IconServer,
+  IconSettings,
+  IconUsers,
   IconVector,
 } from '@tabler/icons-vue'
 
@@ -56,7 +63,18 @@ const horizontalItems: menu[] = [
       {
         title: 'Tasks',
         icon: IconBrandAsana,
-        to: '/app/tasks',
+        children: [
+          {
+            title: 'Running Tasks',
+            icon: IconActivity,
+            to: '/app/running-tasks',
+          },
+          {
+            title: 'Task History',
+            icon: IconHistory,
+            to: '/app/task-history',
+          },
+        ],
       },
       {
         title: 'PoRep',

@@ -2,10 +2,8 @@ package loaders
 
 import (
 	"context"
-	"strconv"
 	"time"
 
-	"github.com/jackc/pgx/v5"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
@@ -16,9 +14,9 @@ type TaskHistoryLoader interface {
 }
 
 // TaskHistories is the resolver for the taskHistories field.
-func (l *Loader) TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error) {
+func (l *Loader) TaskHistories(ctx context.Context, timeStart *time.Time, timeEnd *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) ([]*model.TaskHistory, error) {
 	var out []*model.TaskHistory
-	if err := l.db.Select(ctx, &out, `SELECT
+	query := `SELECT
     id,
     task_id,
     name,
@@ -30,38 +28,34 @@ func (l *Loader) TaskHistories(ctx context.Context, offset int, limit int) ([]*m
     completed_by_host_and_port
 FROM
     harmony_task_history
-ORDER BY work_end desc LIMIT $1 OFFSET $2`, limit, offset); err != nil {
+WHERE
+    ($1::timestamp IS NULL OR work_end >= $1) AND
+    ($2::timestamp IS NULL OR work_end <= $2) AND
+    ($3::text IS NULL OR completed_by_host_and_port = $3) AND
+    ($4::text IS NULL OR name = $4) AND
+    ($5::boolean IS NULL OR result = $5)
+ORDER BY work_end desc LIMIT $6 OFFSET $7`
+	if err := l.db.Select(ctx, &out, query, timeStart, timeEnd, hostPort, name, result, limit, offset); err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
 // TaskHistoriesCount Count the number of task histories between start and end time
-func (l *Loader) TaskHistoriesCount(ctx context.Context, start, end time.Time, machine, name *string, success *bool) (int, error) {
+func (l *Loader) TaskHistoriesCount(ctx context.Context, start, end *time.Time, hostPort, name *string, result *bool) (int, error) {
 	var count int
-	var row pgx.Row
-
-	query := "SELECT COUNT(*) FROM harmony_task_history WHERE work_end BETWEEN $1 AND $2"
-	args := []interface{}{start, end}
-	index := 3
-
-	if machine != nil {
-		query += " AND completed_by_host_and_port = $" + strconv.Itoa(index)
-		args = append(args, *machine)
-		index++
+	query := `SELECT COUNT(*)
+	FROM harmony_task_history
+	WHERE ($1::timestamp IS NULL OR work_end >= $1)
+	AND ($2::timestamp IS NULL OR work_end <= $2)
+	AND ($3::text IS NULL OR completed_by_host_and_port = $3)
+	AND ($4::text IS NULL OR name = $4)
+	AND ($5::boolean IS NULL OR result = $5)`
+	err := l.db.QueryRow(ctx, query, start, end, hostPort, name, result).Scan(&count)
+	if err != nil {
+		return 0, err
 	}
-	if name != nil {
-		query += " AND name = $" + strconv.Itoa(index)
-		args = append(args, *name)
-		index++
-	}
-	if success != nil {
-		query += " AND result = $" + strconv.Itoa(index)
-		args = append(args, *success)
-	}
-
-	row = l.db.QueryRow(ctx, query, args...)
-	return count, row.Scan(&count)
+	return count, nil
 }
 
 func (l *Loader) SubCompletedTask(ctx context.Context, hostPort *string, last int) (<-chan *model.TaskHistory, error) {

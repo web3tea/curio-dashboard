@@ -13,11 +13,11 @@ const page = ref(1)
 const rowsPerPage = ref(50)
 
 const selectedMiner = ref<string | undefined>(undefined)
-const searchSectorNumber = ref<string | null>(null)
+const searchSectorNumber = ref<number | undefined>()
 
 const { result, loading, refetch } = useQuery(GetSectors, {
   miner: selectedMiner.value,
-  sectorNumber: searchSectorNumber.value !== null ? parseInt(searchSectorNumber.value) : null,
+  sectorNumber: searchSectorNumber.value,
   offset: (page.value - 1) * rowsPerPage.value,
   limit: rowsPerPage.value,
 }, () => ({
@@ -39,7 +39,7 @@ const headers = [
 function handleRefetch (): void {
   refetch({
     miner: selectedMiner.value,
-    sectorNumber: searchSectorNumber.value !== null ? parseInt(searchSectorNumber.value) : null,
+    sectorNumber: searchSectorNumber.value,
     offset: (page.value - 1) * rowsPerPage.value,
     limit: rowsPerPage.value,
   })

@@ -62,12 +62,21 @@ const AppRoutes = {
       },
     },
     {
-      name: 'Tasks',
-      path: '/app/tasks',
+      name: 'RunningTasks',
+      path: '/app/running-tasks',
       component: () => import('@/views/task/index.vue'),
       meta: {
-        title: 'Task List',
-        description: 'List of all tasks in the cluster',
+        title: 'Running Tasks',
+        description: 'List of all running tasks in the cluster',
+      },
+    },
+    {
+      name: 'TaskHistory',
+      path: '/app/task-history',
+      component: () => import('@/views/task/history/index.vue'),
+      meta: {
+        title: 'Task History',
+        description: 'List of all task history in the cluster',
       },
     },
     {

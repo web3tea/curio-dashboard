@@ -387,9 +387,10 @@ type ComplexityRoot struct {
 		StoragePaths           func(childComplexity int) int
 		StorageStats           func(childComplexity int) int
 		Task                   func(childComplexity int, id int) int
-		TaskHistories          func(childComplexity int, offset int, limit int) int
+		TaskHistories          func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) int
 		TaskHistoriesAggregate func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
-		TaskHistoriesCount     func(childComplexity int, start time.Time, end time.Time, machine *string, name *string, success *bool) int
+		TaskHistoriesCount     func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) int
+		TaskNames              func(childComplexity int) int
 		Tasks                  func(childComplexity int) int
 		TasksCount             func(childComplexity int) int
 		TasksStats             func(childComplexity int, start time.Time, end time.Time, machine *string) int
@@ -666,10 +667,11 @@ type QueryResolver interface {
 	Task(ctx context.Context, id int) (*model.Task, error)
 	Tasks(ctx context.Context) ([]*model.Task, error)
 	TasksCount(ctx context.Context) (int, error)
-	TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error)
-	TaskHistoriesCount(ctx context.Context, start time.Time, end time.Time, machine *string, name *string, success *bool) (int, error)
+	TaskHistories(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) ([]*model.TaskHistory, error)
+	TaskHistoriesCount(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) (int, error)
 	TaskHistoriesAggregate(ctx context.Context, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error)
 	TasksStats(ctx context.Context, start time.Time, end time.Time, machine *string) ([]*model.TaskStats, error)
+	TaskNames(ctx context.Context) ([]string, error)
 	Storage(ctx context.Context, id string) (*model.Storage, error)
 	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
@@ -2570,7 +2572,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.TaskHistories(childComplexity, args["offset"].(int), args["limit"].(int)), true
+		return e.complexity.Query.TaskHistories(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["hostPort"].(*string), args["name"].(*string), args["result"].(*bool), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.taskHistoriesAggregate":
 		if e.complexity.Query.TaskHistoriesAggregate == nil {
@@ -2594,7 +2596,14 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.TaskHistoriesCount(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["machine"].(*string), args["name"].(*string), args["success"].(*bool)), true
+		return e.complexity.Query.TaskHistoriesCount(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["hostPort"].(*string), args["name"].(*string), args["result"].(*bool)), true
+
+	case "Query.taskNames":
+		if e.complexity.Query.TaskNames == nil {
+			break
+		}
+
+		return e.complexity.Query.TaskNames(childComplexity), true
 
 	case "Query.tasks":
 		if e.complexity.Query.Tasks == nil {
@@ -5022,82 +5031,82 @@ func (ec *executionContext) field_Query_taskHistoriesCount_args(ctx context.Cont
 		return nil, err
 	}
 	args["end"] = arg1
-	arg2, err := ec.field_Query_taskHistoriesCount_argsMachine(ctx, rawArgs)
+	arg2, err := ec.field_Query_taskHistoriesCount_argsHostPort(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["machine"] = arg2
+	args["hostPort"] = arg2
 	arg3, err := ec.field_Query_taskHistoriesCount_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
 	args["name"] = arg3
-	arg4, err := ec.field_Query_taskHistoriesCount_argsSuccess(ctx, rawArgs)
+	arg4, err := ec.field_Query_taskHistoriesCount_argsResult(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["success"] = arg4
+	args["result"] = arg4
 	return args, nil
 }
 func (ec *executionContext) field_Query_taskHistoriesCount_argsStart(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (time.Time, error) {
+) (*time.Time, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["start"]
 	if !ok {
-		var zeroVal time.Time
+		var zeroVal *time.Time
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
 	if tmp, ok := rawArgs["start"]; ok {
-		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
 	}
 
-	var zeroVal time.Time
+	var zeroVal *time.Time
 	return zeroVal, nil
 }
 
 func (ec *executionContext) field_Query_taskHistoriesCount_argsEnd(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (time.Time, error) {
+) (*time.Time, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["end"]
 	if !ok {
-		var zeroVal time.Time
+		var zeroVal *time.Time
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
 	if tmp, ok := rawArgs["end"]; ok {
-		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
 	}
 
-	var zeroVal time.Time
+	var zeroVal *time.Time
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_taskHistoriesCount_argsMachine(
+func (ec *executionContext) field_Query_taskHistoriesCount_argsHostPort(
 	ctx context.Context,
 	rawArgs map[string]interface{},
 ) (*string, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
-	_, ok := rawArgs["machine"]
+	_, ok := rawArgs["hostPort"]
 	if !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
 
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("machine"))
-	if tmp, ok := rawArgs["machine"]; ok {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("hostPort"))
+	if tmp, ok := rawArgs["hostPort"]; ok {
 		return ec.unmarshalOString2ᚖstring(ctx, tmp)
 	}
 
@@ -5127,21 +5136,21 @@ func (ec *executionContext) field_Query_taskHistoriesCount_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_taskHistoriesCount_argsSuccess(
+func (ec *executionContext) field_Query_taskHistoriesCount_argsResult(
 	ctx context.Context,
 	rawArgs map[string]interface{},
 ) (*bool, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
-	_, ok := rawArgs["success"]
+	_, ok := rawArgs["result"]
 	if !ok {
 		var zeroVal *bool
 		return zeroVal, nil
 	}
 
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("success"))
-	if tmp, ok := rawArgs["success"]; ok {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("result"))
+	if tmp, ok := rawArgs["result"]; ok {
 		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
 	}
 
@@ -5152,18 +5161,153 @@ func (ec *executionContext) field_Query_taskHistoriesCount_argsSuccess(
 func (ec *executionContext) field_Query_taskHistories_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_taskHistories_argsOffset(ctx, rawArgs)
+	arg0, err := ec.field_Query_taskHistories_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["offset"] = arg0
-	arg1, err := ec.field_Query_taskHistories_argsLimit(ctx, rawArgs)
+	args["start"] = arg0
+	arg1, err := ec.field_Query_taskHistories_argsEnd(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["limit"] = arg1
+	args["end"] = arg1
+	arg2, err := ec.field_Query_taskHistories_argsHostPort(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["hostPort"] = arg2
+	arg3, err := ec.field_Query_taskHistories_argsName(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["name"] = arg3
+	arg4, err := ec.field_Query_taskHistories_argsResult(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["result"] = arg4
+	arg5, err := ec.field_Query_taskHistories_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg5
+	arg6, err := ec.field_Query_taskHistories_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg6
 	return args, nil
 }
+func (ec *executionContext) field_Query_taskHistories_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal *time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal *time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskHistories_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal *time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal *time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskHistories_argsHostPort(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["hostPort"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("hostPort"))
+	if tmp, ok := rawArgs["hostPort"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskHistories_argsName(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["name"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+	if tmp, ok := rawArgs["name"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskHistories_argsResult(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*bool, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["result"]
+	if !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("result"))
+	if tmp, ok := rawArgs["result"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_taskHistories_argsOffset(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -15743,7 +15887,7 @@ func (ec *executionContext) _Query_taskHistories(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistories(rctx, fc.Args["offset"].(int), fc.Args["limit"].(int))
+		return ec.resolvers.Query().TaskHistories(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15817,7 +15961,7 @@ func (ec *executionContext) _Query_taskHistoriesCount(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistoriesCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["machine"].(*string), fc.Args["name"].(*string), fc.Args["success"].(*bool))
+		return ec.resolvers.Query().TaskHistoriesCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15980,6 +16124,47 @@ func (ec *executionContext) fieldContext_Query_tasksStats(ctx context.Context, f
 	if fc.Args, err = ec.field_Query_tasksStats_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_taskNames(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskNames(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TaskNames(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_taskNames(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
 	}
 	return fc, nil
 }
@@ -29209,6 +29394,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_tasksStats(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "taskNames":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_taskNames(ctx, field)
 				return res
 			}
 

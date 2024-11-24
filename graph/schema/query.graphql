@@ -16,10 +16,11 @@ type Query {
     task(id: Int!): Task
     tasks: [Task]
     tasksCount: Int!
-    taskHistories(offset: Int!, limit: Int!): [TaskHistory]
-    taskHistoriesCount(start: Time!, end: Time!, machine: String, name: String, success: Boolean): Int!
+    taskHistories(start: Time, end: Time, hostPort: String, name: String, result: Boolean, offset: Int!, limit: Int!): [TaskHistory]
+    taskHistoriesCount(start: Time, end: Time, hostPort: String, name: String, result: Boolean): Int!
     taskHistoriesAggregate(start: Time!, end: Time!, interval: TaskHistoriesAggregateInterval!): [TaskAggregate]
     tasksStats(start: Time!, end: Time!, machine: String): [TaskStats]
+    taskNames: [String!]
     # storage
     storage(id: String!): Storage
     storagePaths: [StoragePath]

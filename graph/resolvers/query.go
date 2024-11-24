@@ -68,15 +68,15 @@ func (r *queryResolver) TasksCount(ctx context.Context) (int, error) {
 }
 
 // TaskHistories is the resolver for the taskHistories field.
-func (r *queryResolver) TaskHistories(ctx context.Context, offset int, limit int) ([]*model.TaskHistory, error) {
+func (r *queryResolver) TaskHistories(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) ([]*model.TaskHistory, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
-	return r.loader.TaskHistories(ctx, offset, limit)
+	return r.loader.TaskHistories(ctx, start, end, hostPort, name, result, offset, limit)
 }
 
 // TaskHistoriesCount is the resolver for the taskHistoriesCount field.
-func (r *queryResolver) TaskHistoriesCount(ctx context.Context, start time.Time, end time.Time, machine *string, name *string, success *bool) (int, error) {
+func (r *queryResolver) TaskHistoriesCount(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) (int, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
-	return r.loader.TaskHistoriesCount(ctx, start, end, machine, name, success)
+	return r.loader.TaskHistoriesCount(ctx, start, end, hostPort, name, result)
 }
 
 // TaskHistoriesAggregate is the resolver for the taskHistoriesAggregate field.
@@ -99,6 +99,12 @@ func (r *queryResolver) TasksStats(ctx context.Context, start time.Time, end tim
 	}
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
 	return stats, nil
+}
+
+// TaskNames is the resolver for the taskNames field.
+func (r *queryResolver) TaskNames(ctx context.Context) ([]string, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Hour)
+	return r.loader.TaskNames(ctx)
 }
 
 // Storage is the resolver for the storage field.

@@ -16,7 +16,6 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/ipfs/go-ipld-cbor v0.2.0
 	github.com/ipfs/go-log/v2 v2.5.1
-	github.com/jackc/pgx/v5 v5.6.0
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/multiformats/go-multiaddr v0.13.0
 	github.com/pelletier/go-toml v1.2.0
