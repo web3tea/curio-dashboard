@@ -4,7 +4,6 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetNodeInfos } from '@/gql/chain'
 import { computed, ComputedRef } from 'vue'
 import { NodeInfo } from '@/typed-graph'
-import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { IconReload } from '@tabler/icons-vue'
 
 const headers = [
@@ -23,8 +22,8 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Chain Connectivity')">
-    <template #action>
+  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Chain Connectivity')">
+    <template #append>
       <v-btn
         :disabled="loading"
         :icon="IconReload"
@@ -42,7 +41,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
       :items="items"
       :loading="loading"
     />
-  </UiTitleCard>
+  </UiWidgetCard>
 </template>
 
 <style scoped lang="scss">

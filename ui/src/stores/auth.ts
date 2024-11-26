@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import router from '@/router'
 
-const url = `${import.meta.env.VITE_API_BASE_URL}/auth/token`
+const baseUrl = (import.meta.env.VITE_SERVER_URL || (import.meta.env.DEV ? 'http://localhost:9091/' : '')).replace(/\/$/, '')
+const url = baseUrl + '/auth/token'
 
 export const useAuthStore = defineStore({
   id: 'auth',

@@ -57,6 +57,7 @@ const card = computed(() => ({
               :icon="IconSubtask"
               rounded="md"
               size="small"
+              :to="{ name: 'TaskHistory', query: { machine: props.machine, name: props.name, start: currentStart.getTime(), end: currentEnd.getTime() } }"
               variant="flat"
             />
           </span>

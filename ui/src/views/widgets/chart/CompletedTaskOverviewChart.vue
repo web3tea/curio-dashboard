@@ -6,6 +6,7 @@ import { TaskAggregate } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
 import { GetTaskHistoriesAggregation } from '@/gql/task'
 import { useTheme } from 'vuetify'
+import UiWidgetCard from '@/components/shared/UiWidgetCard.vue'
 
 const theme = useTheme()
 const InfoColor = theme.current.value.colors.info
@@ -24,7 +25,7 @@ watch(() => tab.value, () => {
   })
 })
 
-const { result, refetch, error } = useQuery(GetTaskHistoriesAggregation, {
+const { result, loading, refetch, error } = useQuery(GetTaskHistoriesAggregation, {
   start: new Date(new Date().getTime() - Number(tab.value) * 24 * 60 * 60 * 1000),
   end: new Date(),
   interval: 'hour',
@@ -119,32 +120,30 @@ const areaChart = computed(() => {
 </script>
 
 <template>
-  <v-card class="title-card" variant="text">
-    <v-card-item class="pb-2 px-0 pt-0">
-      <div class="d-flex justify-space-between">
-        <v-card-title class="text-h5">{{ $t('fields.Tasks Completed') }}</v-card-title>
-        <div class="d-flex flex-wrap">
-          <v-tabs
-            v-model="tab"
-            class="tabBtn"
-            color="primary"
-            density="compact"
-            hide-slider
-          >
-            <v-tab
-              class="mr-1"
-              rounded="md"
-              size="small"
-              value="7"
-              variant="outlined"
-            > {{ $t('fields.Week') }} </v-tab>
-            <v-tab rounded="md" value="30" variant="outlined"> {{ $t('fields.Month') }} </v-tab>
-          </v-tabs>
-        </div>
+  <UiWidgetCard :loading="loading" :title="$t('fields.Tasks Completed')">
+    <template #subtitle>
+      <router-link :to="{name: 'TaskHistory'}">{{ $t('fields.View All') }}</router-link>
+    </template>
+    <template #append>
+      <div class="d-flex flex-wrap">
+        <v-tabs
+          v-model="tab"
+          class="tabBtn"
+          color="primary"
+          density="compact"
+          hide-slider
+        >
+          <v-tab
+            class="mr-1"
+            rounded="md"
+            size="small"
+            value="7"
+            variant="outlined"
+          > {{ $t('fields.Week') }} </v-tab>
+          <v-tab rounded="md" value="30" variant="outlined"> {{ $t('fields.Month') }} </v-tab>
+        </v-tabs>
       </div>
-    </v-card-item>
-    <v-card-text class="rounded-md overflow-hidden">
-      <apexchart height="450" :options="chartOptions" :series="areaChart.series" type="area" />
-    </v-card-text>
-  </v-card>
+    </template>
+    <apexchart height="450" :options="chartOptions" :series="areaChart.series" type="area" />
+  </UiWidgetCard>
 </template>

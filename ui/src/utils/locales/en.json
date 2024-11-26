@@ -69,7 +69,8 @@
     "Edit Configuration": "Edit Configuration",
     "Running Tasks": "Running Tasks",
     "Storages": "Storages",
-    "Node": "Node|Nodes"
+    "Node": "Node|Nodes",
+    "View All": "View All"
   },
   "msgs": {
     "weekBlock": "This Week Total Mined",

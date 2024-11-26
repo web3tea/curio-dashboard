@@ -68,7 +68,8 @@
     "Edit Configuration": "编辑配置",
     "Running Tasks": "运行的任务",
     "Storages": "存储",
-    "Node": "节点|节点"
+    "Node": "节点|节点",
+    "View All": "查看全部"
   },
   "actions": {
     "Create": "创建",

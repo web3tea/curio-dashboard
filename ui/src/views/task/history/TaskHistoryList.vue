@@ -67,12 +67,15 @@ const headers = [
   { title: 'Error', key: 'err' },
 ]
 
-const selectDateRange = ref<[Date]>()
+const selectDateRange = ref([props.start, props.end])
+
 watch(selectDateRange, value => {
   if (value) {
     if (value.length === 1) {
-      start.value = value[0]
-      end.value = new Date(start.value.getTime() + 24 * 60 * 60 * 1000) // +1 day
+      if (value[0]) {
+        start.value = value[0]
+        end.value = new Date(start.value.getTime() + 24 * 60 * 60 * 1000) // +1 day
+      }
     } else {
       start.value = value[0]
       end.value = value[value.length - 1]

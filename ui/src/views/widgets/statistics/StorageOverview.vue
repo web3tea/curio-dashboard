@@ -3,7 +3,6 @@
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { StorageStats } from '@/typed-graph'
-import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { GetStorageStats } from '@/gql/storage'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
@@ -18,19 +17,23 @@ const headers = [
 
 const { result, loading, refetch } = useQuery(GetStorageStats, null, () => ({
   fetchPolicy: 'cache-first',
+  onCompleted: (data: { storageStats: StorageStats[] }) => {
+    data.storageStats.sort((a: StorageStats, b: StorageStats) => b.totalAvailable - a.totalAvailable)
+  },
 }))
 
 const items: ComputedRef<[StorageStats]> = computed(() => result.value?.storageStats || [])
 
 function usePercentage (available: number, total: number) {
+  if (total === 0) return 0
   return ((1 - (available / total)) * 100)
 }
 
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Storage Usages')">
-    <template #action>
+  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Storage Usages')">
+    <template #append>
       <v-btn
         :disabled="loading"
         :icon="IconReload"
@@ -70,7 +73,7 @@ function usePercentage (available: number, total: number) {
         </div>
       </template>
     </v-data-table-virtual>
-  </UiTitleCard>
+  </UiWidgetCard>
 </template>
 
 <style scoped lang="scss">

@@ -4,7 +4,7 @@ import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMiningBlockCount } from '@/gql/mining'
 import { MiningCount } from '@/typed-graph'
-import { IconBox } from '@tabler/icons-vue'
+import { IconCurrency } from '@tabler/icons-vue'
 
 const props = defineProps({
   sp: String,
@@ -44,9 +44,10 @@ const count: ComputedRef<MiningCount> = computed(() => result.value?.miningCount
           </div>
           <span class="d-flex align-center">
             <v-btn
-              :icon="IconBox"
+              :icon="IconCurrency"
               rounded="md"
               size="small"
+              :to="{ name: 'MiningTaskList' }"
               variant="flat"
             />
           </span>

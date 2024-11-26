@@ -4,6 +4,25 @@ import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import TaskHistoryList from '@/views/task/history/TaskHistoryList.vue'
 
+defineProps({
+  start: {
+    type: Number,
+  },
+  end: {
+    type: Number,
+  },
+  name: {
+    type: String,
+  },
+  machine: {
+    type: String,
+  },
+  success: {
+    type: Boolean,
+    default: undefined,
+  },
+})
+
 const breadcrumbs = ref([
   {
     title: 'Task History',
@@ -22,7 +41,13 @@ const breadcrumbs = ref([
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12" lg="12">
-      <TaskHistoryList />
+      <TaskHistoryList
+        :end="end ? new Date(end) : undefined"
+        :machine="machine"
+        :name="name"
+        :start="start ? new Date(start) : undefined"
+        :success="success"
+      />
     </v-col>
   </v-row>
 </template>

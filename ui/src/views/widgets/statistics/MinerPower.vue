@@ -5,7 +5,7 @@ import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { MinerPower } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { IconBolt } from '@tabler/icons-vue'
+import { IconUsers } from '@tabler/icons-vue'
 
 const props = defineProps({
   miner: {
@@ -36,9 +36,10 @@ const minerPower: ComputedRef<MinerPower> = computed(() => result.value?.minerPo
           </div>
           <span class="d-flex align-center">
             <v-btn
-              :icon="IconBolt"
+              :icon="IconUsers"
               rounded="md"
               size="small"
+              :to="{ name: 'Miners' }"
               variant="flat"
             />
           </span>

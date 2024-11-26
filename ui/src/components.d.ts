@@ -25,5 +25,6 @@ declare module 'vue' {
     UiChildCard: typeof import('./components/shared/UiChildCard.vue')['default']
     UiParentCard: typeof import('./components/shared/UiParentCard.vue')['default']
     UiTitleCard: typeof import('./components/shared/UiTitleCard.vue')['default']
+    UiWidgetCard: typeof import('./components/shared/UiWidgetCard.vue')['default']
   }
 }

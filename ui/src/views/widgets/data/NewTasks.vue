@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-
-import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeNewTask } from '@/gql/task'
 import { Task } from '@/typed-graph'
@@ -45,8 +43,8 @@ const headers = [
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.New Added Tasks')">
-    <template #action>
+  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.New Added Tasks')">
+    <template #append>
       <v-btn
         :icon="isStop ? IconPlayerPlay : IconPlayerPause"
         round
@@ -54,6 +52,9 @@ const headers = [
         variant="text"
         @click="isStop = !isStop; isStop ? stop() : start()"
       />
+    </template>
+    <template #subtitle>
+      <router-link :to="{name: 'RunningTasks'}">{{ $t('fields.View All') }}</router-link>
     </template>
     <v-data-table-virtual
       fixed-header
@@ -69,5 +70,5 @@ const headers = [
         <RouterLink :to="{ name: 'MachineInfo', params: { id: item.addedBy.id } }">{{ item.addedBy.hostAndPort }}</RouterLink>
       </template>
     </v-data-table-virtual>
-  </UiTitleCard>
+  </UiWidgetCard>
 </template>

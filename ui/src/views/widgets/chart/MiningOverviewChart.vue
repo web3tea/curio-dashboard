@@ -1,12 +1,18 @@
 <script setup lang="ts">
 import { computed, ComputedRef } from 'vue'
 import { useTheme } from 'vuetify'
-import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMiningSummary } from '@/gql/mining'
 import { MiningSummaryDay } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
 import { IconReload } from '@tabler/icons-vue'
+
+const props = defineProps({
+  height: {
+    type: Number,
+    default: 360,
+  },
+})
 
 const theme = useTheme()
 const InfoColor = theme.current.value.colors.info
@@ -28,7 +34,7 @@ const chartOptions = computed(() => {
   return {
     chart: {
       type: 'bar',
-      height: 370,
+      height: props.height,
       stacked: true,
       fontFamily: `inherit`,
       foreColor: '#a1aab2',
@@ -117,8 +123,11 @@ const totalWonBlocks = computed(() => {
 </script>
 
 <template>
-  <UiTitleCard class-name="pt-5 px-0 rounded-md overflow-hidden" :title="$t('fields.Mining Overview')">
-    <template #action>
+  <UiWidgetCard class-name="pt-5 px-0 rounded-md overflow-hidden" :loading="loading" :title="$t('fields.Mining Overview')">
+    <template #subtitle>
+      <router-link :to="{name: 'MiningTaskList'}">{{ $t('fields.View All') }}</router-link>
+    </template>
+    <template #append>
       <v-btn
         :disabled="loading"
         :icon="IconReload"
@@ -133,11 +142,11 @@ const totalWonBlocks = computed(() => {
       <h3 class="text-h3 mb-0">{{ totalWonBlocks }}</h3>
     </div>
     <apexchart
-      height="370"
+      :height="props.height"
       :loading="loading"
       :options="chartOptions"
       :series="chartSeries"
       type="bar"
     />
-  </UiTitleCard>
+  </UiWidgetCard>
 </template>

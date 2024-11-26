@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-
-import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeCompletedTask } from '@/gql/task'
 import { TaskHistory } from '@/typed-graph'
@@ -52,8 +50,8 @@ const headers = [
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Recently Finished Tasks')">
-    <template #action>
+  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Recently Finished Tasks')">
+    <template #append>
       <v-btn
         :icon="isStop ? IconPlayerPlay : IconPlayerPause"
         round
@@ -61,6 +59,9 @@ const headers = [
         variant="text"
         @click="isStop = !isStop; isStop ? stop() : start()"
       />
+    </template>
+    <template #subtitle>
+      <router-link :to="{name: 'TaskHistory'}">{{ $t('fields.View All') }}</router-link>
     </template>
     <v-data-table-virtual
       fixed-header
@@ -71,6 +72,9 @@ const headers = [
       :items="tasks"
       :loading="loading"
     >
+      <template #item.name="{ value }">
+        <router-link :to="{ name: 'TaskHistory', query: { name: value } }">{{ value }}</router-link>
+      </template>
       <template #item.posted="{ value }">
         {{ $d(value, 'short') }}
       </template>
@@ -94,5 +98,5 @@ const headers = [
         </v-chip>
       </template>
     </v-data-table-virtual>
-  </UiTitleCard>
+  </UiWidgetCard>
 </template>

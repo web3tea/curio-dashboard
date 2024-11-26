@@ -1,3 +1,5 @@
+import { RouteLocationNormalizedLoaded } from 'vue-router'
+
 const AppRoutes = {
   path: '/app',
   meta: {
@@ -74,6 +76,13 @@ const AppRoutes = {
       name: 'TaskHistory',
       path: '/app/task-history',
       component: () => import('@/views/task/history/index.vue'),
+      props: (route: RouteLocationNormalizedLoaded) => ({
+        start: Number(route.query.start),
+        end: Number(route.query.end),
+        name: route.query.name,
+        machine: route.query.machine,
+        success: route.query.success,
+      }),
       meta: {
         title: 'Task History',
         description: 'List of all task history in the cluster',
