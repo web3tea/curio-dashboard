@@ -17,9 +17,6 @@ const headers = [
 
 const { result, loading, refetch } = useQuery(GetStorageStats, null, () => ({
   fetchPolicy: 'cache-first',
-  onCompleted: (data: { storageStats: StorageStats[] }) => {
-    data.storageStats.sort((a: StorageStats, b: StorageStats) => b.totalAvailable - a.totalAvailable)
-  },
 }))
 
 const items: ComputedRef<[StorageStats]> = computed(() => result.value?.storageStats || [])
@@ -50,6 +47,7 @@ function usePercentage (available: number, total: number) {
       hover
       :items="items"
       :loading="loading"
+      :sort-by="[{ key: 'totalCapacity', order: 'desc' }]"
     >
       <template #item.totalCapacity="{item}">
         {{ formatBytes(item.totalCapacity).combined }}
