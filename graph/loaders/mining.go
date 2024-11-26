@@ -2,6 +2,7 @@ package loaders
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"time"
 
@@ -53,8 +54,8 @@ func (l *Loader) MiningCount(ctx context.Context, start, end time.Time, actor *t
 		return nil, fmt.Errorf("end time is before start time")
 	}
 	type mm struct {
-		Included bool `db:"included"`
-		Count    int  `db:"count"`
+		Included sql.NullBool `db:"included"`
+		Count    int          `db:"count"`
 	}
 	var res []mm
 
@@ -76,7 +77,7 @@ GROUP BY
 	result := &model.MiningCount{}
 
 	for _, r := range res {
-		if r.Included {
+		if r.Included.Bool {
 			result.Include = r.Count
 		} else {
 			result.Exclude = r.Count
