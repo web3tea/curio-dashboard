@@ -375,7 +375,8 @@ type ComplexityRoot struct {
 		MinerPower             func(childComplexity int, address *types.Address) int
 		MiningCount            func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
 		MiningSummaryByDay     func(childComplexity int, start time.Time, end time.Time) int
-		MiningWins             func(childComplexity int, actor *types.ActorID, include bool, offset int, limit int) int
+		MiningWins             func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) int
+		MiningWinsCount        func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) int
 		NodesInfo              func(childComplexity int) int
 		PipelinesSummary       func(childComplexity int) int
 		Porep                  func(childComplexity int, sp types.ActorID, sectorNumber int) int
@@ -686,7 +687,8 @@ type QueryResolver interface {
 	NodesInfo(ctx context.Context) ([]*model.NodeInfo, error)
 	MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error)
 	MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCount, error)
-	MiningWins(ctx context.Context, actor *types.ActorID, include bool, offset int, limit int) ([]*model.MiningTask, error)
+	MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error)
+	MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) (int, error)
 	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	Alerts(ctx context.Context) ([]*model.Alert, error)
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
@@ -2453,7 +2455,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningWins(childComplexity, args["actor"].(*types.ActorID), args["include"].(bool), args["offset"].(int), args["limit"].(int)), true
+		return e.complexity.Query.MiningWins(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["actor"].(*types.ActorID), args["include"].(*bool), args["offset"].(int), args["limit"].(int)), true
+
+	case "Query.miningWinsCount":
+		if e.complexity.Query.MiningWinsCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_miningWinsCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MiningWinsCount(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["actor"].(*types.ActorID), args["include"].(*bool)), true
 
 	case "Query.nodesInfo":
 		if e.complexity.Query.NodesInfo == nil {
@@ -4524,31 +4538,198 @@ func (ec *executionContext) field_Query_miningSummaryByDay_argsEnd(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_miningWinsCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_miningWinsCount_argsStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["start"] = arg0
+	arg1, err := ec.field_Query_miningWinsCount_argsEnd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["end"] = arg1
+	arg2, err := ec.field_Query_miningWinsCount_argsActor(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["actor"] = arg2
+	arg3, err := ec.field_Query_miningWinsCount_argsInclude(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["include"] = arg3
+	return args, nil
+}
+func (ec *executionContext) field_Query_miningWinsCount_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal *time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal *time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningWinsCount_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal *time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal *time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningWinsCount_argsActor(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*types.ActorID, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["actor"]
+	if !ok {
+		var zeroVal *types.ActorID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
+	if tmp, ok := rawArgs["actor"]; ok {
+		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+	}
+
+	var zeroVal *types.ActorID
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningWinsCount_argsInclude(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*bool, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["include"]
+	if !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("include"))
+	if tmp, ok := rawArgs["include"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_miningWins_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Query_miningWins_argsActor(ctx, rawArgs)
+	arg0, err := ec.field_Query_miningWins_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["actor"] = arg0
-	arg1, err := ec.field_Query_miningWins_argsInclude(ctx, rawArgs)
+	args["start"] = arg0
+	arg1, err := ec.field_Query_miningWins_argsEnd(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["include"] = arg1
-	arg2, err := ec.field_Query_miningWins_argsOffset(ctx, rawArgs)
+	args["end"] = arg1
+	arg2, err := ec.field_Query_miningWins_argsActor(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["offset"] = arg2
-	arg3, err := ec.field_Query_miningWins_argsLimit(ctx, rawArgs)
+	args["actor"] = arg2
+	arg3, err := ec.field_Query_miningWins_argsInclude(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["limit"] = arg3
+	args["include"] = arg3
+	arg4, err := ec.field_Query_miningWins_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg4
+	arg5, err := ec.field_Query_miningWins_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg5
 	return args, nil
 }
+func (ec *executionContext) field_Query_miningWins_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal *time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal *time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningWins_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal *time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal *time.Time
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_miningWins_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
@@ -4574,22 +4755,22 @@ func (ec *executionContext) field_Query_miningWins_argsActor(
 func (ec *executionContext) field_Query_miningWins_argsInclude(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (bool, error) {
+) (*bool, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["include"]
 	if !ok {
-		var zeroVal bool
+		var zeroVal *bool
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("include"))
 	if tmp, ok := rawArgs["include"]; ok {
-		return ec.unmarshalNBoolean2bool(ctx, tmp)
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
 	}
 
-	var zeroVal bool
+	var zeroVal *bool
 	return zeroVal, nil
 }
 
@@ -17233,7 +17414,7 @@ func (ec *executionContext) _Query_miningWins(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWins(rctx, fc.Args["actor"].(*types.ActorID), fc.Args["include"].(bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		return ec.resolvers.Query().MiningWins(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.ActorID), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -17287,6 +17468,61 @@ func (ec *executionContext) fieldContext_Query_miningWins(ctx context.Context, f
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_miningWins_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miningWinsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningWinsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MiningWinsCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.ActorID), fc.Args["include"].(*bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miningWinsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_miningWinsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -29704,6 +29940,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_miningWins(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "miningWinsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_miningWinsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 

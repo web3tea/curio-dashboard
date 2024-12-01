@@ -25,20 +25,18 @@ export const GetMiningSummary = gql`
   }
 `
 
-export const GetMiningBlockCount = gql`
-    query GetMiningBlockCount($start: Time!, $end: Time!, $miner: ActorID) {
-        miningCount(start: $start, end: $end, actor: $miner) {
-          include
-          exclude
-        }
+export const GetMiningWinsCount = gql`
+    query GetMiningWinsCount($start: Time!, $end: Time!, $miner: ActorID) {
+      miningWinsCount(start: $start, end: $end, actor: $miner, include: true)
     }
 `
 
 export const GetMiningWins = gql`
-    query GetMiningWins($miner: ActorID, $include: Boolean!, $offset: Int!, $limit: Int!) {
-        miningWins(actor: $miner, include: $include, offset: $offset, limit: $limit) {
+    query GetMiningWins($start: Time, $end: Time, $miner: ActorID, $include: Boolean, $offset: Int!, $limit: Int!) {
+        miningWins(start: $start, end: $end, actor: $miner, include: $include, offset: $offset, limit: $limit) {
             ...MiningTaskAll
         }
+        miningWinsCount(start: $start, end: $end, actor: $miner, include: $include)
     }
     ${miningFragment}
 `

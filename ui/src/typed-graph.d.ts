@@ -417,6 +417,7 @@ export type Query = {
   miningCount: MiningCount;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   miningWins?: Maybe<Array<Maybe<MiningTask>>>;
+  miningWinsCount: Scalars['Int']['output'];
   nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
   pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
   porep?: Maybe<Porep>;
@@ -484,9 +485,19 @@ export type QueryMiningSummaryByDayArgs = {
 
 export type QueryMiningWinsArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
-  include: Scalars['Boolean']['input'];
+  end?: InputMaybe<Scalars['Time']['input']>;
+  include?: InputMaybe<Scalars['Boolean']['input']>;
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
+  start?: InputMaybe<Scalars['Time']['input']>;
+};
+
+
+export type QueryMiningWinsCountArgs = {
+  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  end?: InputMaybe<Scalars['Time']['input']>;
+  include?: InputMaybe<Scalars['Boolean']['input']>;
+  start?: InputMaybe<Scalars['Time']['input']>;
 };
 
 

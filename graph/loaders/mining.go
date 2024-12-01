@@ -86,7 +86,25 @@ GROUP BY
 	return result, nil
 }
 
-func (l *Loader) MiningTasks(ctx context.Context, actor *types.ActorID, won *bool, include bool, offset int, limit int) ([]*model.MiningTask, error) {
+func (l *Loader) MiningTasksCount(ctx context.Context, start, end *time.Time, actor *types.ActorID, won *bool, include *bool) (int, error) {
+	var count int
+	err := l.db.QueryRow(ctx, `
+SELECT COUNT(*)
+FROM
+    mining_tasks
+WHERE
+    ($1::bool IS NULL OR won = $1) AND
+    ($2::int IS NULL OR sp_id = $2) AND
+    ($3::bool IS NULL OR included = $3) AND
+    ($4::timestamp IS NULL OR base_compute_time >= $4) AND
+    ($5::timestamp IS NULL OR base_compute_time <= $5);`, won, actor, include, start, end).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+func (l *Loader) MiningTasks(ctx context.Context, start, end *time.Time, actor *types.ActorID, won *bool, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
 	var result []*model.MiningTask
 
 	err := l.db.Select(ctx, &result, `
@@ -106,10 +124,12 @@ FROM
 WHERE
     ($1::bool IS NULL OR won = $1) AND
     ($2::int IS NULL OR sp_id = $2) AND
-    included = $3
+    ($3::bool IS NULL OR included = $3) AND
+    ($4::timestamp IS NULL OR base_compute_time >= $4) AND
+    ($5::timestamp IS NULL OR base_compute_time <= $5)
 ORDER BY
     base_compute_time DESC 
-LIMIT $4 OFFSET $5;`, won, actor, include, limit, offset)
+LIMIT $6 OFFSET $7;`, won, actor, include, start, end, limit, offset)
 
 	if err != nil {
 		return nil, err

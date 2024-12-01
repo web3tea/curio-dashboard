@@ -2,8 +2,7 @@
 
 import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetMiningBlockCount } from '@/gql/mining'
-import { MiningCount } from '@/typed-graph'
+import { GetMiningWinsCount } from '@/gql/mining'
 import { IconCurrency } from '@tabler/icons-vue'
 
 const props = defineProps({
@@ -17,16 +16,15 @@ const props = defineProps({
 const currentEnd = new Date()
 const currentStart = new Date(currentEnd.getTime() - props.lastHours * 60 * 60 * 1000)
 
-const { result } = useQuery(GetMiningBlockCount, {
-  sp: props.sp,
+const { result } = useQuery(GetMiningWinsCount, {
+  miner: props.sp,
   end: currentEnd,
   start: currentStart,
+}, {
+  pollInterval: 1000,
 })
 
-const count: ComputedRef<MiningCount> = computed(() => result.value?.miningCount || {
-  include: 0,
-  exclude: 0,
-})
+const count: ComputedRef<number> = computed(() => result.value?.miningWinsCount || count.value || 0)
 
 </script>
 
@@ -37,7 +35,7 @@ const count: ComputedRef<MiningCount> = computed(() => result.value?.miningCount
         <div class="d-flex align-items-center justify-space-between">
           <div>
             <h5 class="text-h5">{{ $t('fields.Blocks Mined') }}</h5>
-            <h3 class="text-h3 my-2">{{ count.include }}</h3>
+            <h3 class="text-h3 my-2">{{ count }}</h3>
             <h6 class="text-caption font-weight-medium mb-0">
               {{ $d(currentStart, 'short') }} - {{ $d(currentEnd, 'short') }}
             </h6>

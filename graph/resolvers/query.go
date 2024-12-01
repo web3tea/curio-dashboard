@@ -220,9 +220,15 @@ func (r *queryResolver) MiningCount(ctx context.Context, start time.Time, end ti
 }
 
 // MiningWins is the resolver for the miningWins field.
-func (r *queryResolver) MiningWins(ctx context.Context, actor *types.ActorID, include bool, offset int, limit int) ([]*model.MiningTask, error) {
+func (r *queryResolver) MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
-	return r.loader.MiningTasks(ctx, actor, lo.ToPtr(true), include, offset, limit)
+	return r.loader.MiningTasks(ctx, start, end, actor, lo.ToPtr(true), include, offset, limit)
+}
+
+// MiningWinsCount is the resolver for the miningWinsCount field.
+func (r *queryResolver) MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MiningTasksCount(ctx, start, end, actor, lo.ToPtr(true), include)
 }
 
 // DealsPending is the resolver for the dealsPending field.
@@ -319,3 +325,15 @@ func (r *queryResolver) MinerPower(ctx context.Context, address *types.Address) 
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *queryResolver) MingWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) (int, error) {
+	panic(fmt.Errorf("not implemented: MingWinsCount - mingWinsCount"))
+}
+*/

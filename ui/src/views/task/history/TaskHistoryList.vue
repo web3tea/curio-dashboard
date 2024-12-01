@@ -2,7 +2,7 @@
 
 import { useQuery } from '@vue/apollo-composable'
 import { GetTaskHistories } from '@/gql/task'
-import { computed, ComputedRef, ref, watch } from 'vue'
+import { computed, ComputedRef, ref } from 'vue'
 import { TaskHistory } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
 
@@ -47,12 +47,11 @@ const { result, loading, refetch } = useQuery(GetTaskHistories, {
 }))
 
 const items: ComputedRef<[TaskHistory]> = computed(() => result.value?.taskHistories || [])
-const itemsCount = ref<number>(limit.value) // default value, will be updated by watch
-
-watch(result, () => {
-  if (result.value?.taskHistoriesCount && result.value?.taskHistoriesCount !== itemsCount.value) {
-    itemsCount.value = result.value?.taskHistoriesCount
-  }
+const itemsCount = computed<number>({
+  get: (): number => {
+    return result.value?.taskHistoriesCount || itemsCount.value || 0
+  },
+  set: () => {},
 })
 
 const headers = [
@@ -67,20 +66,21 @@ const headers = [
   { title: 'Error', key: 'err' },
 ]
 
-const selectDateRange = ref([props.start, props.end])
-
-watch(selectDateRange, value => {
-  if (value) {
-    if (value.length === 1) {
-      if (value[0]) {
+const selectDateRange = computed({
+  get: () => [start.value, end.value].filter(Boolean),
+  set: value => {
+    if (value) {
+      if (value.length === 1) {
+        if (value[0]) {
+          start.value = value[0]
+          end.value = new Date(start.value.getTime() + 24 * 60 * 60 * 1000) // +1 day
+        }
+      } else {
         start.value = value[0]
-        end.value = new Date(start.value.getTime() + 24 * 60 * 60 * 1000) // +1 day
+        end.value = value[value.length - 1]
       }
-    } else {
-      start.value = value[0]
-      end.value = value[value.length - 1]
     }
-  }
+  },
 })
 
 </script>
