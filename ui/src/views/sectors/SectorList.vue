@@ -1,30 +1,42 @@
 <script setup lang="ts">
-import { VNumberInput } from 'vuetify/labs/VNumberInput'
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, reactive, ref } from 'vue'
 import { Sector } from '@/typed-graph'
 import { GetSectors } from '@/gql/sector'
 import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
 import SectorLocations from '@/views/sectors/SectorLocations.vue'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import EpochField from '@/components/app/EpochField.vue'
+import type { MaskInputOptions } from 'maska'
 
+const limit = ref(100)
 const page = ref(1)
-const rowsPerPage = ref(50)
+const offset = computed(() => (page.value - 1) * limit.value)
 
-const selectedMiner = ref<string | undefined>(undefined)
-const searchSectorNumber = ref<number | undefined>()
+const selectedMiner = ref<string>()
+const searchSectorNumber = ref<number>()
+const searchSectorNumberCache = ref<number>()
+
+function enterSearch (): void {
+  searchSectorNumber.value = searchSectorNumberCache.value
+}
 
 const { result, loading, refetch } = useQuery(GetSectors, {
-  miner: selectedMiner.value,
-  sectorNumber: searchSectorNumber.value,
-  offset: (page.value - 1) * rowsPerPage.value,
-  limit: rowsPerPage.value,
+  miner: selectedMiner,
+  sectorNumber: searchSectorNumber,
+  offset: offset.value,
+  limit: limit.value,
 }, () => ({
   fetchPolicy: 'cache-first',
 }))
 
 const items: ComputedRef<[Sector]> = computed(() => result.value?.sectors || [])
+const itemsCount: ComputedRef<number> = computed(() => {
+  if (searchSectorNumber.value) {
+    return items.value.length
+  }
+  return result.value?.sectorsCount || itemsCount.value || 0
+})
 
 const headers = [
   { title: 'Miner', key: 'meta.spId' },
@@ -35,15 +47,12 @@ const headers = [
   { title: 'Has Sealed', key: 'hasSealed' },
   { title: 'Size', key: 'meta.regSealProof' },
 ]
-
-function handleRefetch (): void {
-  refetch({
-    miner: selectedMiner.value,
-    sectorNumber: searchSectorNumber.value,
-    offset: (page.value - 1) * rowsPerPage.value,
-    limit: rowsPerPage.value,
-  })
-}
+const options = reactive<MaskInputOptions>({
+  number: { unsigned: true, fraction: 0 },
+  postProcess: value => {
+    return value.replace(/,/g, '')
+  },
+})
 </script>
 
 <template>
@@ -52,20 +61,22 @@ function handleRefetch (): void {
       <v-row class="align-center" justify="space-between">
         <v-col cols="12" md="6">
           <v-row>
-            <v-col cols="12" md="6">
+            <v-col cols="12" md="3">
               <MinerSelectInput v-model="selectedMiner" />
             </v-col>
-            <v-col cols="6" md="4">
-              <VNumberInput
-                v-model="searchSectorNumber"
+            <v-col cols="6" md="3">
+              <v-text-field
+                v-model="searchSectorNumberCache"
+                v-maska="options"
                 clearable
                 color="primary"
+                data-maska-number
                 :disabled="!selectedMiner"
                 hide-details
-                hide-spin-buttons
-                :min="0"
-                placeholder="Sector Number"
-                @keydown.enter="handleRefetch"
+                label="Sector Number"
+                single-line
+                variant="outlined"
+                @keydown.enter="enterSearch"
               />
             </v-col>
           </v-row>
@@ -86,11 +97,15 @@ function handleRefetch (): void {
     </v-card-item>
     <v-divider />
     <v-card-text class="pa-0">
-      <v-data-table-virtual
+      <v-data-table-server
+        v-model:items-per-page="limit"
+        v-model:page="page"
         fixed-header
         :headers="headers"
+        height="calc(100vh - 300px)"
         hover
         :items="items"
+        :items-length="itemsCount"
         :loading="loading"
       >
         <template #item.meta.spId="{ value }">
@@ -135,7 +150,7 @@ function handleRefetch (): void {
         <template #item.meta.regSealProof="{ item }">
           {{ sealProofToSize(item.meta?.regSealProof || 0) }}
         </template>
-      </v-data-table-virtual>
+      </v-data-table-server>
     </v-card-text>
   </v-card>
 </template>

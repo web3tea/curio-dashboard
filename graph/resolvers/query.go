@@ -128,7 +128,11 @@ func (r *queryResolver) StorageStats(ctx context.Context) ([]*model.StorageStats
 func (r *queryResolver) Sectors(ctx context.Context, actor *types.ActorID, sectorNumber *int, offset int, limit int) ([]*model.Sector, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
 	if actor != nil && sectorNumber != nil {
-		return []*model.Sector{{SpID: *actor, SectorNum: *sectorNumber}}, nil
+		meta, err := r.loader.SectorMeta(ctx, *actor, *sectorNumber)
+		if err != nil {
+			return nil, err
+		}
+		return []*model.Sector{{SpID: *actor, SectorNum: *sectorNumber, Meta: meta}}, nil
 	}
 	metas, err := r.loader.SectorMetas(ctx, actor, offset, limit)
 	if err != nil {

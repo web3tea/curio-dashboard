@@ -127,7 +127,7 @@ const selectDateRange = computed({
             v-model:page="page"
             fixed-header
             :headers="headers"
-            height="calc(100vh - 280px)"
+            height="calc(100vh - 300px)"
             hover
             :items="items"
             :items-length="itemsCount"
