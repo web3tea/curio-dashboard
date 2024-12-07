@@ -1,11 +1,9 @@
 import {
-  IconActivity,
   IconBox,
   IconBrandAsana,
   IconChartHistogram,
   IconCurrency,
   IconDatabase,
-  IconHistory,
   IconHome,
   IconParking,
   IconServer,
@@ -54,13 +52,11 @@ const sidebarItem: menu[] = [
     icon: IconBrandAsana,
     children: [
       {
-        title: 'Running Tasks',
-        icon: IconActivity,
+        title: 'Running',
         to: '/app/running-tasks',
       },
       {
-        title: 'Task History',
-        icon: IconHistory,
+        title: 'History',
         to: '/app/task-history',
       },
     ],

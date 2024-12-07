@@ -68,7 +68,7 @@ const AppRoutes = {
       path: '/app/running-tasks',
       component: () => import('@/views/task/index.vue'),
       meta: {
-        title: 'Running Tasks',
+        title: 'Running',
         description: 'List of all running tasks in the cluster',
       },
     },
@@ -84,7 +84,7 @@ const AppRoutes = {
         success: route.query.success,
       }),
       meta: {
-        title: 'Task History',
+        title: 'History',
         description: 'List of all task history in the cluster',
       },
     },

@@ -19,8 +19,8 @@
     "Wins": "Wins",
     "Mining": "Mining",
     "Win Blocks": "Win Blocks",
-    "Running Tasks": "Running Tasks",
-    "Task History": "Task History"
+    "Running": "Running",
+    "History": "History"
   },
   "fields": {
     "Total Power": "Total Power",
