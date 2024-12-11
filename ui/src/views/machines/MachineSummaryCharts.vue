@@ -28,7 +28,6 @@ const cards = computed(() => [
       :key="i"
       cols="12"
       md="3"
-      :value="card"
     >
       <v-card elevation="0">
         <v-card variant="outlined">

@@ -1,4 +1,4 @@
-export function formatBytes (bytes: number|string, decimals = 2): {value: number, unit: string, combined: string} {
+export function formatBytes (bytes: number|string, decimals = 2): { value: number, unit: string, combined: string } {
   if (typeof bytes === 'string') {
     const num = Number(bytes)
     if (isNaN(num)) return { value: 0, unit: 'Bytes', combined: '0 Bytes' }

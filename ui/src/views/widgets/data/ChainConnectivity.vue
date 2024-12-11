@@ -27,8 +27,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
       <v-btn
         :disabled="loading"
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />

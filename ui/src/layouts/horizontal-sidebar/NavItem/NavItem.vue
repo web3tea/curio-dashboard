@@ -10,6 +10,7 @@ const props = defineProps({
   level: {
     type: Number,
     required: false,
+    default: 0,
   },
 })
 </script>

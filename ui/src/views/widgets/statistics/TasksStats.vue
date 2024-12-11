@@ -8,7 +8,10 @@ import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { IconReload } from '@tabler/icons-vue'
 
 const props = defineProps({
-  machine: String,
+  machine: {
+    type: String,
+    default: undefined
+  },
   lastHours: {
     type: Number,
     default: 24,
@@ -43,8 +46,7 @@ const failedPercentage = (item: TaskStats) => {
       <v-btn
         :disabled="loading"
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />

@@ -17,10 +17,12 @@ const props = defineProps({
   },
   error: {
     type: Object as () => ApolloError | null,
+    default: null,
     required: false,
   },
   search: {
     type: String,
+    default: null,
     required: false,
   },
 })

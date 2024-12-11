@@ -41,8 +41,7 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
     <template #action>
       <v-btn
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />

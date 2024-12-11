@@ -5,8 +5,14 @@ import { IconSubtask } from '@tabler/icons-vue'
 import { computed } from 'vue'
 
 const props = defineProps({
-  machine: String,
-  name: String,
+  machine: {
+    type: String,
+    default: undefined
+  },
+  name: {
+    type: String,
+    default: undefined
+  },
   lastHours: {
     type: Number,
     default: 24,
