@@ -54,8 +54,7 @@ const headers = [
     <template #append>
       <v-btn
         :icon="isStop ? IconPlayerPlay : IconPlayerPause"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="isStop = !isStop; isStop ? stop() : start()"
       />

@@ -1,4 +1,4 @@
-type SectorFileType = number;
+type SectorFileType = number
 
 const FTUnsealed: SectorFileType = 1 << 0
 const FTSealed: SectorFileType = 1 << 1

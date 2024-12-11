@@ -6,6 +6,7 @@ const emit = defineEmits(['update:dateRange'])
 const props = defineProps({
   dateRange: {
     type: [Date],
+    default: undefined,
   },
   label: {
     type: String,

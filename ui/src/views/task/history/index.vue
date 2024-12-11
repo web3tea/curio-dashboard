@@ -7,15 +7,19 @@ import TaskHistoryList from '@/views/task/history/TaskHistoryList.vue'
 defineProps({
   start: {
     type: Number,
+    default: undefined
   },
   end: {
     type: Number,
+    default: undefined
   },
   name: {
     type: String,
+    default: undefined
   },
   machine: {
     type: String,
+    default: undefined
   },
   success: {
     type: Boolean,

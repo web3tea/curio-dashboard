@@ -39,8 +39,7 @@ const headers = [
     <template #action>
       <v-btn
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />
@@ -57,7 +56,7 @@ const headers = [
         <p class="text-high-emphasis">{{ value ? value.hostAndPort : '' }} </p>
       </template>
       <template #item.name="{ value }">
-        <v-chip color="primary" small>{{ value }}</v-chip>
+        <v-chip color="primary" size="small">{{ value }}</v-chip>
       </template>
       <template #item.updateTime="{ value }">
         {{ $d(value, 'short') }}

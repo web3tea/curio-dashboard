@@ -16,7 +16,7 @@ defineProps({
 </script>
 
 <template>
-  <v-list-group no-action>
+  <v-list-group>
     <template #activator="{ props }">
       <v-list-item
         v-bind="props"

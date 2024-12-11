@@ -6,7 +6,10 @@ import { GetMiningWinsCount } from '@/gql/mining'
 import { IconCurrency } from '@tabler/icons-vue'
 
 const props = defineProps({
-  sp: String,
+  sp: {
+    type: String,
+    default: undefined
+  },
   lastHours: {
     type: Number,
     default: 24,

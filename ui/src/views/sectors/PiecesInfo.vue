@@ -50,8 +50,7 @@ const headers = [
     <template #action>
       <v-btn
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />

@@ -4,7 +4,7 @@ export type ConfigProps = {
   miniSidebar: boolean;
   horizontalLayout: boolean;
   dark: boolean;
-};
+}
 
 const config: ConfigProps = {
   sidebarDrawer: true,

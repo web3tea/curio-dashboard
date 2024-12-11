@@ -10,6 +10,7 @@ import { IconUsers } from '@tabler/icons-vue'
 const props = defineProps({
   miner: {
     type: String,
+    default: undefined
   },
 })
 

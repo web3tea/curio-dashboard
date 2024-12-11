@@ -9,15 +9,19 @@ import { IconReload } from '@tabler/icons-vue'
 const props = defineProps({
   start: {
     type: Date,
+    default: undefined
   },
   end: {
     type: Date,
+    default: undefined
   },
   name: {
     type: String,
+    default: undefined
   },
   machine: {
     type: String,
+    default: undefined
   },
   success: {
     type: Boolean,
@@ -111,7 +115,6 @@ const selectDateRange = computed({
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
-                  round
                   rounded
                   variant="text"
                   @click="refetch"

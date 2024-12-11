@@ -9,6 +9,7 @@ import { formatFIL } from '@/utils/helpers/formatFIL'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
+
 const { t } = useI18n()
 
 const props = defineProps({
@@ -71,8 +72,7 @@ const cols2 = computed(() => {
     <template #action>
       <v-btn
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />

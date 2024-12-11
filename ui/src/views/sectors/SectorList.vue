@@ -85,8 +85,7 @@ const options = reactive<MaskInputOptions>({
           <div class="d-flex ga-2 justify-end">
             <v-btn
               :icon="IconReload"
-              round
-              :rounded="true"
+              rounded
               variant="text"
               @click="refetch"
             />

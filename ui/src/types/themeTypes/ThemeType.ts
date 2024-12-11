@@ -33,4 +33,4 @@ export type ThemeTypes = {
     primary200?: string;
     secondary200?: string;
   };
-};
+}

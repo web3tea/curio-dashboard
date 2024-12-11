@@ -9,6 +9,7 @@ const { d } = useI18n()
 const props = defineProps({
   epoch: {
     type: [Number, null],
+    default: null
   },
   chipColor: {
     type: String,

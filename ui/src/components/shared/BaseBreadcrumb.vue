@@ -8,15 +8,21 @@ type Breadcrumb = {
   title: string;
   disabled: boolean;
   href: string;
-};
+}
 
 const props = defineProps({
-  title: String,
+  title: {
+    type: String,
+    default: undefined,
+  },
   breadcrumbs: {
     type: Array as PropType<Breadcrumb[]>,
     required: true,
   },
-  icon: String,
+  icon: {
+    type: String,
+    default: undefined,
+  },
 })
 
 const getTitle = (breadcrumb: Breadcrumb, index: number) => {

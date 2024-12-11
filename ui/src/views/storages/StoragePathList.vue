@@ -71,8 +71,7 @@ const tabs = ['All', 'Seal', 'Store', 'Hybrid', 'Readonly']
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
-                  round
-                  :rounded="true"
+                  rounded
                   variant="text"
                   @click="refetch"
                 />

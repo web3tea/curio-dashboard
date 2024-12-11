@@ -34,8 +34,7 @@ function usePercentage (available: number, total: number) {
       <v-btn
         :disabled="loading"
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />

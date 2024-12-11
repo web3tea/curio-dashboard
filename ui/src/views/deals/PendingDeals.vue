@@ -84,7 +84,6 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
           <div class="d-flex ga-2 justify-end">
             <v-btn
               :icon="IconReload"
-              round
               rounded
               variant="text"
               @click="refetch"

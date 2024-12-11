@@ -7,7 +7,11 @@ const props = defineProps({
     type: Object as PropType<menu>,
     required: true,
   },
-  level: Number,
+  level: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
 })
 
 const relativeURL = ref('')

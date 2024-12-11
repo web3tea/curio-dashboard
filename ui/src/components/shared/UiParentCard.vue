@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const props = defineProps({
-  title: String,
+  title: {
+    type: String,
+    required: false,
+    default: undefined
+  },
   loading: {
     type: Boolean,
     default: false,

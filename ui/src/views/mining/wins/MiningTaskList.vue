@@ -8,12 +8,15 @@ import { IconInfoCircle } from '@tabler/icons-vue'
 const props = defineProps({
   start: {
     type: Date,
+    default: undefined
   },
   end: {
     type: Date,
+    default: undefined
   },
   miner: {
     type: String,
+    default: undefined
   },
   include: {
     type: Boolean,

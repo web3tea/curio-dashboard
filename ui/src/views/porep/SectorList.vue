@@ -95,7 +95,6 @@ onDone(() => {
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
-                  round
                   rounded
                   variant="text"
                   @click="refetch"

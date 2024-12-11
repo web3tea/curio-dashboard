@@ -4,6 +4,8 @@ import { useMutation } from '@vue/apollo-composable'
 import { GetConfigs, RemoveConfig } from '@/gql/config'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
+
+
 const uiStore = useUIStore()
 
 const props = defineProps({

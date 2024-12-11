@@ -37,8 +37,7 @@ const events: ComputedRef<[TaskHistory]> = computed(() => result.value?.sector.e
     <template #action>
       <v-btn
         :icon="IconReload"
-        round
-        :rounded="true"
+        rounded
         variant="text"
         @click="refetch"
       />

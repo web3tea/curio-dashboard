@@ -82,8 +82,7 @@ const headers = [
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
-                  round
-                  rounded="true"
+                  rounded
                   variant="text"
                   @click="refetch"
                 />
@@ -158,7 +157,6 @@ const headers = [
               <div class="operation-wrapper">
                 <v-btn
                   color="secondary"
-                  round
                   rounded
                   title="More"
                   variant="text"
