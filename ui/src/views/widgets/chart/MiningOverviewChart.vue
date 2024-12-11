@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ComputedRef } from 'vue'
-import { useTheme } from 'vuetify'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMiningSummary } from '@/gql/mining'
 import { MiningSummaryDay } from '@/typed-graph'
@@ -14,8 +13,6 @@ const props = defineProps({
   },
 })
 
-const theme = useTheme()
-const InfoColor = theme.current.value.colors.info
 const customizer = useCustomizerStore()
 
 const end = new Date()
@@ -62,7 +59,6 @@ const chartOptions = computed(() => {
         },
       },
     },
-    colors: InfoColor,
     stroke: {
       curve: 'smooth',
     },

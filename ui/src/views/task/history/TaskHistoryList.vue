@@ -104,7 +104,7 @@ const selectDateRange = computed({
                   <HostPortSelectInput v-model="machine" label="Completed By" />
                 </v-col>
                 <v-col cols="6" md="2">
-                  <BoolSelectInput v-model="success" label="Success" />
+                  <BoolSelectInput v-model="success" true-title="Success" false-title="Failure" />
                 </v-col>
                 <v-col cols="6" md="3">
                   <DateRangeSelectInput v-model="selectDateRange" label="Date Range" />

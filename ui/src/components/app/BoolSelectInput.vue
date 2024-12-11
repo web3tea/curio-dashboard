@@ -12,6 +12,14 @@ const props = defineProps({
     type: String,
     default: 'Result',
   },
+  trueTitle: {
+    type: String,
+    default: 'True',
+  },
+  falseTitle: {
+    type: String,
+    default: 'False',
+  },
 })
 
 const localValue = computed({
@@ -23,7 +31,7 @@ const localValue = computed({
   },
 })
 
-const items = [{ title: 'true', value: true }, { title: 'false', value: false }]
+const items = [{ title: props.trueTitle, value: true }, { title: props.falseTitle, value: false }]
 
 </script>
 
@@ -35,8 +43,6 @@ const items = [{ title: 'true', value: true }, { title: 'false', value: false }]
     density="compact"
     :items="items"
     :label="props.label"
-    role="link"
-    single-line
     variant="outlined"
   />
 </template>

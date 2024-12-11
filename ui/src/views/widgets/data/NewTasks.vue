@@ -62,6 +62,9 @@ const headers = [
       :items="tasks"
       :loading="loading"
     >
+      <template #item.name="{ value }">
+        <router-link :to="{ name: 'TaskHistory', query: { name: value } }">{{ value }}</router-link>
+      </template>
       <template #item.postedTime="{ value }">
         {{ $d(value, 'short') }}
       </template>

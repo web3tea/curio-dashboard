@@ -43,8 +43,6 @@ const localValue = computed({
     item-title="address"
     :items="miners"
     :label="props.label"
-    role="link"
-    single-line
     variant="outlined"
   />
 </template>

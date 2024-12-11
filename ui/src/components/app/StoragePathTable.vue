@@ -57,28 +57,12 @@ const headers = [
       {{ moment(value).fromNow() }}
     </template>
     <template #item.storageId="{ value }">
-      <v-text-field
-        class="pr-0"
-        color="primary"
-        hide-details
-        min-width="200"
-        :model-value="value"
-        readonly
-        single-line
-        variant="outlined"
-      />
+      <v-chip label size="small"> {{ value }} </v-chip>
     </template>
     <template #item.urls="{ value }">
-      <v-select
-        color="primary"
-        hide-details
-        hide-no-data
-        :items="value.split(',')"
-        :label="value.split(',')[0]"
-        min-width="200"
-        single-line
-        variant="outlined"
-      />
+      <v-chip-group column>
+        <v-chip v-for="url in value.split(',')" :key="url" label> {{ url }} </v-chip>
+      </v-chip-group>
     </template>
     <template #item.capacity="{ value }">
       <div>{{ formatBytes(value).combined }}</div>

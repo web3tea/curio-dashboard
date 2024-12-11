@@ -92,7 +92,7 @@ const headers = [
           <DateRangeSelectInput v-model="selectDateRange" label="Date Range" />
         </v-col>
         <v-col cols="6" md="2">
-          <v-switch v-model="include" color="primary" :disabled="loading" label="Include" />
+          <v-switch v-model="include" color="primary" :disabled="loading" label="Valid" />
         </v-col>
         <v-spacer />
       </v-row>

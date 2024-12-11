@@ -33,7 +33,6 @@ const localValue = computed({
     max-width="368"
     multiple="range"
     prepend-icon=""
-    single-line
     variant="outlined"
   />
 </template>

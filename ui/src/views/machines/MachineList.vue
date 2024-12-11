@@ -110,7 +110,6 @@ const headers = [
                 color="primary"
                 :items="allLayers"
                 :label="column?.title?.toUpperCase()"
-                single-line
                 variant="outlined"
               />
             </template>
@@ -124,7 +123,6 @@ const headers = [
                 color="primary"
                 :items="allSupportTasks"
                 :label="column?.title?.toUpperCase()"
-                single-line
                 variant="outlined"
               />
             </template>

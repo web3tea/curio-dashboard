@@ -41,8 +41,6 @@ const localValue = computed({
     :disabled="loading"
     :items="tasks"
     :label="props.label"
-    role="link"
-    single-line
     variant="outlined"
   />
 </template>
