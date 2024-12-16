@@ -39,7 +39,7 @@ router.beforeEach(async (to, from, next) => {
   const { title, description } = to.meta
   const defaultTitle = 'Curio Dashboard'
   const defaultDescription = 'A dashboard for Curio '
-  document.title = (title as string + ' - Curio') || defaultTitle
+  document.title = (title as string + ' - Curio Dashboard') || defaultTitle
 
   const descriptionElement = document.querySelector('head meta[name="description"]')
   if (descriptionElement) {
