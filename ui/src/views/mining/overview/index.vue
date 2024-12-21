@@ -2,7 +2,6 @@
 
 import { ref } from 'vue'
 import TabCard from "@/views/mining/overview/TabCard.vue"
-import InvoiceStatus from "@/views/mining/overview/InvoiceStatus.vue"
 
 const breadcrumbs = ref([
   {
@@ -25,7 +24,6 @@ const breadcrumbs = ref([
       <TabCard />
     </v-col>
     <v-col cols="12" xl="3" lg="5">
-      <InvoiceStatus />
     </v-col>
   </v-row>
 </template>

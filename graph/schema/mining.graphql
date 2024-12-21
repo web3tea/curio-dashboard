@@ -9,6 +9,15 @@ type MiningCount {
     exclude: Int!
 }
 
+type MiningCountSummary {
+    start: Time!
+    end: Time!
+    total: Int!
+    won: Int!
+    included: Int!
+    previous: MiningCountSummary
+}
+
 type MiningTask {
     taskId: ID!
     spId: ActorID!
@@ -20,4 +29,11 @@ type MiningTask {
     minedAt: Time
     submittedAt: Time
     included: Boolean
+}
+
+type MiningCountAggregated {
+    time: Time!
+    total: Int!
+    won: Int!
+    included: Int!
 }

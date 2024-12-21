@@ -49,6 +49,7 @@ type ResolverRoot interface {
 	MachineSummary() MachineSummaryResolver
 	Miner() MinerResolver
 	MinerBalance() MinerBalanceResolver
+	MiningCountSummary() MiningCountSummaryResolver
 	Mutation() MutationResolver
 	PipelineSummary() PipelineSummaryResolver
 	Porep() PorepResolver
@@ -234,6 +235,22 @@ type ComplexityRoot struct {
 		Include func(childComplexity int) int
 	}
 
+	MiningCountAggregated struct {
+		Included func(childComplexity int) int
+		Time     func(childComplexity int) int
+		Total    func(childComplexity int) int
+		Won      func(childComplexity int) int
+	}
+
+	MiningCountSummary struct {
+		End      func(childComplexity int) int
+		Included func(childComplexity int) int
+		Previous func(childComplexity int) int
+		Start    func(childComplexity int) int
+		Total    func(childComplexity int) int
+		Won      func(childComplexity int) int
+	}
+
 	MiningSummaryDay struct {
 		Day      func(childComplexity int) int
 		Miner    func(childComplexity int) int
@@ -374,6 +391,8 @@ type ComplexityRoot struct {
 		Miner                  func(childComplexity int, address types.Address) int
 		MinerPower             func(childComplexity int, address *types.Address) int
 		MiningCount            func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
+		MiningCountAggregate   func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) int
+		MiningCountSummary     func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
 		MiningSummaryByDay     func(childComplexity int, start time.Time, end time.Time) int
 		MiningWins             func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) int
 		MiningWinsCount        func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) int
@@ -633,6 +652,9 @@ type MinerBalanceResolver interface {
 	Vesting(ctx context.Context, obj *model.MinerBalance) (*types.BigInt, error)
 	PreCommitDeposits(ctx context.Context, obj *model.MinerBalance) (*types.BigInt, error)
 }
+type MiningCountSummaryResolver interface {
+	Previous(ctx context.Context, obj *model.MiningCountSummary) (*model.MiningCountSummary, error)
+}
 type MutationResolver interface {
 	CreateConfig(ctx context.Context, title string, config string) (*model.Config, error)
 	UpdateConfig(ctx context.Context, title string, config string) (*model.Config, error)
@@ -689,6 +711,8 @@ type QueryResolver interface {
 	MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCount, error)
 	MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error)
 	MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) (int, error)
+	MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCountSummary, error)
+	MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error)
 	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	Alerts(ctx context.Context) ([]*model.Alert, error)
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
@@ -1563,6 +1587,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MiningCount.Include(childComplexity), true
 
+	case "MiningCountAggregated.included":
+		if e.complexity.MiningCountAggregated.Included == nil {
+			break
+		}
+
+		return e.complexity.MiningCountAggregated.Included(childComplexity), true
+
+	case "MiningCountAggregated.time":
+		if e.complexity.MiningCountAggregated.Time == nil {
+			break
+		}
+
+		return e.complexity.MiningCountAggregated.Time(childComplexity), true
+
+	case "MiningCountAggregated.total":
+		if e.complexity.MiningCountAggregated.Total == nil {
+			break
+		}
+
+		return e.complexity.MiningCountAggregated.Total(childComplexity), true
+
+	case "MiningCountAggregated.won":
+		if e.complexity.MiningCountAggregated.Won == nil {
+			break
+		}
+
+		return e.complexity.MiningCountAggregated.Won(childComplexity), true
+
+	case "MiningCountSummary.end":
+		if e.complexity.MiningCountSummary.End == nil {
+			break
+		}
+
+		return e.complexity.MiningCountSummary.End(childComplexity), true
+
+	case "MiningCountSummary.included":
+		if e.complexity.MiningCountSummary.Included == nil {
+			break
+		}
+
+		return e.complexity.MiningCountSummary.Included(childComplexity), true
+
+	case "MiningCountSummary.previous":
+		if e.complexity.MiningCountSummary.Previous == nil {
+			break
+		}
+
+		return e.complexity.MiningCountSummary.Previous(childComplexity), true
+
+	case "MiningCountSummary.start":
+		if e.complexity.MiningCountSummary.Start == nil {
+			break
+		}
+
+		return e.complexity.MiningCountSummary.Start(childComplexity), true
+
+	case "MiningCountSummary.total":
+		if e.complexity.MiningCountSummary.Total == nil {
+			break
+		}
+
+		return e.complexity.MiningCountSummary.Total(childComplexity), true
+
+	case "MiningCountSummary.won":
+		if e.complexity.MiningCountSummary.Won == nil {
+			break
+		}
+
+		return e.complexity.MiningCountSummary.Won(childComplexity), true
+
 	case "MiningSummaryDay.day":
 		if e.complexity.MiningSummaryDay.Day == nil {
 			break
@@ -2432,6 +2526,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.MiningCount(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.ActorID)), true
+
+	case "Query.miningCountAggregate":
+		if e.complexity.Query.MiningCountAggregate == nil {
+			break
+		}
+
+		args, err := ec.field_Query_miningCountAggregate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MiningCountAggregate(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.ActorID), args["interval"].(model.MiningTaskAggregateInterval)), true
+
+	case "Query.miningCountSummary":
+		if e.complexity.Query.MiningCountSummary == nil {
+			break
+		}
+
+		args, err := ec.field_Query_miningCountSummary_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MiningCountSummary(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.ActorID)), true
 
 	case "Query.miningSummaryByDay":
 		if e.complexity.Query.MiningSummaryByDay == nil {
@@ -4390,6 +4508,205 @@ func (ec *executionContext) field_Query_miner_argsAddress(
 	}
 
 	var zeroVal types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningCountAggregate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_miningCountAggregate_argsStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["start"] = arg0
+	arg1, err := ec.field_Query_miningCountAggregate_argsEnd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["end"] = arg1
+	arg2, err := ec.field_Query_miningCountAggregate_argsActor(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["actor"] = arg2
+	arg3, err := ec.field_Query_miningCountAggregate_argsInterval(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["interval"] = arg3
+	return args, nil
+}
+func (ec *executionContext) field_Query_miningCountAggregate_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningCountAggregate_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningCountAggregate_argsActor(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*types.ActorID, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["actor"]
+	if !ok {
+		var zeroVal *types.ActorID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
+	if tmp, ok := rawArgs["actor"]; ok {
+		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+	}
+
+	var zeroVal *types.ActorID
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningCountAggregate_argsInterval(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.MiningTaskAggregateInterval, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["interval"]
+	if !ok {
+		var zeroVal model.MiningTaskAggregateInterval
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("interval"))
+	if tmp, ok := rawArgs["interval"]; ok {
+		return ec.unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx, tmp)
+	}
+
+	var zeroVal model.MiningTaskAggregateInterval
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningCountSummary_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_miningCountSummary_argsStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["start"] = arg0
+	arg1, err := ec.field_Query_miningCountSummary_argsEnd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["end"] = arg1
+	arg2, err := ec.field_Query_miningCountSummary_argsActor(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["actor"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_miningCountSummary_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningCountSummary_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_miningCountSummary_argsActor(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*types.ActorID, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["actor"]
+	if !ok {
+		var zeroVal *types.ActorID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
+	if tmp, ok := rawArgs["actor"]; ok {
+		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+	}
+
+	var zeroVal *types.ActorID
 	return zeroVal, nil
 }
 
@@ -11054,6 +11371,457 @@ func (ec *executionContext) fieldContext_MiningCount_exclude(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _MiningCountAggregated_time(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountAggregated) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountAggregated_time(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Time, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountAggregated_time(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountAggregated",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountAggregated_total(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountAggregated) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountAggregated_total(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountAggregated_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountAggregated",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountAggregated_won(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountAggregated) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountAggregated_won(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Won, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountAggregated_won(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountAggregated",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountAggregated_included(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountAggregated) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountAggregated_included(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Included, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountAggregated_included(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountAggregated",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountSummary_start(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountSummary_start(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Start, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountSummary_start(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountSummary_end(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountSummary_end(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.End, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountSummary_end(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountSummary_total(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountSummary_total(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountSummary_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountSummary_won(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountSummary_won(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Won, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountSummary_won(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountSummary_included(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountSummary_included(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Included, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountSummary_included(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MiningCountSummary_previous(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountSummary_previous(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MiningCountSummary().Previous(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MiningCountSummary)
+	fc.Result = res
+	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountSummary_previous(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountSummary",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "start":
+				return ec.fieldContext_MiningCountSummary_start(ctx, field)
+			case "end":
+				return ec.fieldContext_MiningCountSummary_end(ctx, field)
+			case "total":
+				return ec.fieldContext_MiningCountSummary_total(ctx, field)
+			case "won":
+				return ec.fieldContext_MiningCountSummary_won(ctx, field)
+			case "included":
+				return ec.fieldContext_MiningCountSummary_included(ctx, field)
+			case "previous":
+				return ec.fieldContext_MiningCountSummary_previous(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MiningCountSummary", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _MiningSummaryDay_day(ctx context.Context, field graphql.CollectedField, obj *model.MiningSummaryDay) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MiningSummaryDay_day(ctx, field)
 	if err != nil {
@@ -17523,6 +18291,134 @@ func (ec *executionContext) fieldContext_Query_miningWinsCount(ctx context.Conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_miningWinsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miningCountSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningCountSummary(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MiningCountSummary(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.ActorID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MiningCountSummary)
+	fc.Result = res
+	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miningCountSummary(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "start":
+				return ec.fieldContext_MiningCountSummary_start(ctx, field)
+			case "end":
+				return ec.fieldContext_MiningCountSummary_end(ctx, field)
+			case "total":
+				return ec.fieldContext_MiningCountSummary_total(ctx, field)
+			case "won":
+				return ec.fieldContext_MiningCountSummary_won(ctx, field)
+			case "included":
+				return ec.fieldContext_MiningCountSummary_included(ctx, field)
+			case "previous":
+				return ec.fieldContext_MiningCountSummary_previous(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MiningCountSummary", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_miningCountSummary_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miningCountAggregate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningCountAggregate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MiningCountAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.ActorID), fc.Args["interval"].(model.MiningTaskAggregateInterval))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MiningCountAggregated)
+	fc.Result = res
+	return ec.marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miningCountAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "time":
+				return ec.fieldContext_MiningCountAggregated_time(ctx, field)
+			case "total":
+				return ec.fieldContext_MiningCountAggregated_total(ctx, field)
+			case "won":
+				return ec.fieldContext_MiningCountAggregated_won(ctx, field)
+			case "included":
+				return ec.fieldContext_MiningCountAggregated_included(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MiningCountAggregated", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_miningCountAggregate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -28350,6 +29246,152 @@ func (ec *executionContext) _MiningCount(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var miningCountAggregatedImplementors = []string{"MiningCountAggregated"}
+
+func (ec *executionContext) _MiningCountAggregated(ctx context.Context, sel ast.SelectionSet, obj *model.MiningCountAggregated) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, miningCountAggregatedImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MiningCountAggregated")
+		case "time":
+			out.Values[i] = ec._MiningCountAggregated_time(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "total":
+			out.Values[i] = ec._MiningCountAggregated_total(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "won":
+			out.Values[i] = ec._MiningCountAggregated_won(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "included":
+			out.Values[i] = ec._MiningCountAggregated_included(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var miningCountSummaryImplementors = []string{"MiningCountSummary"}
+
+func (ec *executionContext) _MiningCountSummary(ctx context.Context, sel ast.SelectionSet, obj *model.MiningCountSummary) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, miningCountSummaryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MiningCountSummary")
+		case "start":
+			out.Values[i] = ec._MiningCountSummary_start(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "end":
+			out.Values[i] = ec._MiningCountSummary_end(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "total":
+			out.Values[i] = ec._MiningCountSummary_total(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "won":
+			out.Values[i] = ec._MiningCountSummary_won(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "included":
+			out.Values[i] = ec._MiningCountSummary_included(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "previous":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MiningCountSummary_previous(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var miningSummaryDayImplementors = []string{"MiningSummaryDay"}
 
 func (ec *executionContext) _MiningSummaryDay(ctx context.Context, sel ast.SelectionSet, obj *model.MiningSummaryDay) graphql.Marshaler {
@@ -29962,6 +31004,44 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "miningCountSummary":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_miningCountSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "miningCountAggregate":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_miningCountAggregate(ctx, field)
 				return res
 			}
 
@@ -32747,6 +33827,16 @@ func (ec *executionContext) marshalNMiningCount2ᚖgithubᚗcomᚋstraheᚋcurio
 	return ec._MiningCount(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, v interface{}) (model.MiningTaskAggregateInterval, error) {
+	var res model.MiningTaskAggregateInterval
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, sel ast.SelectionSet, v model.MiningTaskAggregateInterval) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNPorepStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStatus(ctx context.Context, v interface{}) (model.PorepStatus, error) {
 	var res model.PorepStatus
 	err := res.UnmarshalGQL(v)
@@ -33905,6 +34995,61 @@ func (ec *executionContext) marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurio�
 		return graphql.Null
 	}
 	return ec._MinerPower(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx context.Context, sel ast.SelectionSet, v []*model.MiningCountAggregated) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOMiningCountAggregated2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMiningCountAggregated2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx context.Context, sel ast.SelectionSet, v *model.MiningCountAggregated) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MiningCountAggregated(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx context.Context, sel ast.SelectionSet, v *model.MiningCountSummary) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MiningCountSummary(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx context.Context, sel ast.SelectionSet, v []*model.MiningSummaryDay) graphql.Marshaler {

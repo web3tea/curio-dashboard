@@ -235,6 +235,18 @@ func (r *queryResolver) MiningWinsCount(ctx context.Context, start *time.Time, e
 	return r.loader.MiningTasksCount(ctx, start, end, actor, lo.ToPtr(true), include)
 }
 
+// MiningCountSummary is the resolver for the miningCountSummary field.
+func (r *queryResolver) MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCountSummary, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
+	return r.loader.MiningCountSummary(ctx, start, end, actor)
+}
+
+// MiningCountAggregate is the resolver for the miningCountAggregate field.
+func (r *queryResolver) MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
+	return r.loader.MiningCountAggregate(ctx, start, end, actor, interval)
+}
+
 // DealsPending is the resolver for the dealsPending field.
 func (r *queryResolver) DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
@@ -329,15 +341,3 @@ func (r *queryResolver) MinerPower(ctx context.Context, address *types.Address) 
 func (r *Resolver) Query() graph.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *queryResolver) MingWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) (int, error) {
-	panic(fmt.Errorf("not implemented: MingWinsCount - mingWinsCount"))
-}
-*/

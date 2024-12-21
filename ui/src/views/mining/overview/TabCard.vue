@@ -1,129 +1,80 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons-vue'
+import { computed } from 'vue'
+import { IconCaretDown, IconCaretUp, IconCaretUpDown } from "@tabler/icons-vue"
+import { useQuery } from "@vue/apollo-composable"
+import { GetMiningCountSummaryWithPrevious } from "@/gql/mining"
+import TabCardChart from "@/views/mining/overview/TabCardChart.vue"
 
+const props = defineProps({
+  start: {
+    type: Date,
+    default: new Date(new Date().setDate(new Date().getDate() - 1))
+  },
+  end: {
+    type: Date,
+    default: new Date()
+  },
+  miner: {
+    type: String,
+    default: undefined
+  },
+})
 
-import TotalChart from './TotalChart.vue'
-import PaidChart from './PaidChart.vue'
-import PendingChart from './PendingChart.vue'
-import OverdueChart from './OverdueChart.vue'
+const { result } = useQuery(GetMiningCountSummaryWithPrevious, {
+  start: props.start,
+  end: props.end,
+  miner: props.miner
+}, () => ({
+  fetchPolicy: 'cache-first'
+})
+)
 
-// tabs data
-const tab = ref(0)
+const cards = computed(() => {
+  const summary = result.value?.miningCountSummary || {}
+  const previous = summary.previous || {}
+
+  const createCard = (title: string, value: number, prevValue: number) => ({
+    title,
+    value: value || 0,
+    percentage: prevValue ? (value / prevValue) : 0
+  })
+
+  return [
+    createCard('Total Tasks', summary.total, previous.total),
+    createCard('Won Blocks', summary.won, previous.won),
+    createCard('Valid Blocks', summary.included, previous.included),
+    createCard('Orphan Blocks', summary.won - summary.included, previous.won - previous.included)
+  ]
+})
 </script>
 
 <template>
   <v-card variant="outlined" class="bg-surface">
     <v-card-text>
-      <v-tabs v-model="tab" color="primary" class="invoiceTab">
         <v-row>
-          <v-col cols="12" md="3" sm="6">
-            <v-tab value="1" tag="div" color="dark" hide-slider>
+          <v-col v-for="(card, index) in cards" :key="index" cols="12" md="3" sm="6">
               <v-card variant="outlined">
                 <v-card-text>
                   <div class="d-flex align-start justify-space-between">
                     <div>
-                      <h6 class="text-subtitle-1">Total</h6>
-                      <h5 class="text-h5 mb-0">£5678.09</h5>
-                      <div class="d-flex align-center">
-                        <h5 class="text-h5 mb-0 mr-1">3</h5>
-                        <p class="text-h6 text-lightText mb-0">invoices</p>
-                      </div>
+                      <h6 class="text-subtitle-1">{{ card.title }}</h6>
+                      <h5 class="text-h5 mb-0">{{ card.value }}</h5>
+                      <span class="text-lightText text-caption pt-2">
+                        {{ $d(props.start, 'toShortDay') }} - {{ $d(props.end, 'toShortDay') }}
+                      </span>
                     </div>
                     <div class="d-flex align-center">
-                      <CaretDownOutlined class="text-warning" :style="{ fontSize: '12px' }" />
-                      <h5 class="text-h5 text-lightText mb-0 ml-1">20.3%</h5>
+                      <IconCaretDown v-if="card.percentage < 0" color="red" size="16"/>
+                      <IconCaretUpDown v-else-if="card.percentage === 0" color="gray" size="16"/>
+                      <IconCaretUp v-else color="green" size="16"/>
+                      <h5 class="text-h5 text-lightText mb-0 ml-1">{{ card.percentage.toFixed(2) }}%</h5>
                     </div>
                   </div>
                 </v-card-text>
               </v-card>
-            </v-tab>
-          </v-col>
-          <v-col cols="12" md="3" sm="6">
-            <v-tab value="2" tag="div" color="dark" hide-slider>
-              <v-card variant="outlined">
-                <v-card-text>
-                  <div class="d-flex align-start justify-space-between">
-                    <div>
-                      <h6 class="text-subtitle-1 text-left">Paid</h6>
-                      <h5 class="text-h5 mb-0">£5678.09</h5>
-                      <div class="d-flex align-center">
-                        <h5 class="text-h5 mb-0 mr-1">5</h5>
-                        <p class="text-h6 text-lightText mb-0">invoices</p>
-                      </div>
-                    </div>
-                    <div class="d-flex align-center">
-                      <CaretDownOutlined class="text-error" :style="{ fontSize: '12px' }" />
-                      <h5 class="text-h5 text-lightText mb-0 ml-1">-8.73%</h5>
-                    </div>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-tab>
-          </v-col>
-          <v-col cols="12" md="3" sm="6">
-            <v-tab value="3" tag="div" color="dark" hide-slider>
-              <v-card variant="outlined">
-                <v-card-text>
-                  <div class="d-flex align-start justify-space-between">
-                    <div>
-                      <h6 class="text-subtitle-1 text-left">Pending</h6>
-                      <h5 class="text-h5 mb-0">£5678.09</h5>
-                      <div class="d-flex align-center">
-                        <h5 class="text-h5 mb-0 mr-1">20</h5>
-                        <p class="text-h6 text-lightText mb-0">invoices</p>
-                      </div>
-                    </div>
-                    <div class="d-flex align-center">
-                      <CaretUpOutlined class="text-success" :style="{ fontSize: '12px' }" />
-                      <h5 class="text-h5 text-lightText mb-0 ml-1">1.73%</h5>
-                    </div>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-tab>
-          </v-col>
-          <v-col cols="12" md="3" sm="6">
-            <v-tab value="4" tag="div" color="dark" hide-slider>
-              <v-card variant="outlined">
-                <v-card-text>
-                  <div class="d-flex align-start justify-space-between">
-                    <div>
-                      <h6 class="text-subtitle-1 text-left">Overdue</h6>
-                      <h5 class="text-h5 mb-0">£5678.09</h5>
-                      <div class="d-flex align-center">
-                        <h5 class="text-h5 mb-0 mr-1">5</h5>
-                        <p class="text-h6 text-lightText mb-0">invoices</p>
-                      </div>
-                    </div>
-                    <div class="d-flex align-center">
-                      <CaretDownOutlined class="text-primary" :style="{ fontSize: '12px' }" />
-                      <h5 class="text-h5 text-lightText mb-0 ml-1">-4.7%</h5>
-                    </div>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-tab>
           </v-col>
         </v-row>
-      </v-tabs>
-      <v-window v-model="tab" class="mt-5">
-        <v-window-item value="1">
-          <TotalChart />
-        </v-window-item>
-
-        <v-window-item value="2">
-          <PaidChart />
-        </v-window-item>
-
-        <v-window-item value="3">
-          <PendingChart />
-        </v-window-item>
-
-        <v-window-item value="4">
-          <OverdueChart />
-        </v-window-item>
-      </v-window>
+      <TabCardChart :start="start" :end="end" :miner="miner" />
     </v-card-text>
   </v-card>
 </template>
