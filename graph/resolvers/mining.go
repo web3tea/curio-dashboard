@@ -14,7 +14,7 @@ import (
 
 // Previous is the resolver for the previous field.
 func (r *miningCountSummaryResolver) Previous(ctx context.Context, obj *model.MiningCountSummary) (*model.MiningCountSummary, error) {
-	previousStart := obj.Start.AddDate(0, 0, -int(obj.End.Sub(obj.Start).Hours()/24))
+	previousStart := obj.Start.Add(-obj.End.Sub(obj.Start))
 	previousEnd := obj.Start
 
 	previousSummary, err := r.loader.MiningCountSummary(ctx, previousStart, previousEnd, obj.Actor)
