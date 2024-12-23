@@ -20,10 +20,8 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb  :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
   <v-row>
-    <v-col cols="12" xl="9" lg="7">
+    <v-col cols="12">
       <TabCard />
-    </v-col>
-    <v-col cols="12" xl="3" lg="5">
     </v-col>
   </v-row>
 </template>

@@ -79,25 +79,5 @@ const cards = computed(() => {
   </v-card>
 </template>
 <style lang="scss">
-.invoiceTab {
-  --v-tabs-height: unset;
-  .v-slide-group__content {
-    @media (max-width: 960px) {
-      flex: unset;
-    }
-  }
-  .v-tab {
-    width: auto;
-    height: 100%;
-    min-width: unset;
-    --v-btn-height: unset;
-    padding: 0;
-    display: block;
-    &.v-slide-group-item--active {
-      > .v-btn__overlay {
-        opacity: calc(var(--v-hover-opacity) * var(--v-theme-overlay-multiplier));
-      }
-    }
-  }
-}
+
 </style>

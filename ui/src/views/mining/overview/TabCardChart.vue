@@ -4,7 +4,7 @@ import { useQuery } from "@vue/apollo-composable"
 
 import { GetMiningCountAggregation } from "@/gql/mining"
 import { useCustomizerStore } from "@/stores/customizer"
-import { getInfo, getPrimary, getSecondary } from "@/theme/UpdateColors"
+import { getError, getInfo, getSuccess } from "@/theme/UpdateColors"
 
 const customizer = useCustomizerStore()
 
@@ -45,32 +45,22 @@ const chartOptions = computed(() => {
       type: 'line',
       height: props.height,
       stacked: false,
-      fontFamily: `inherit`,
-      foreColor: '#a1aab2',
       toolbar: false,
       zoom: {
         autoScaleYaxis: true,
       },
     },
-    colors: [getPrimary.value, getInfo.value, getSecondary.value],
+    colors: [getSuccess.value,getError.value],
     dataLabels: {
       enabled: false,
     },
     stroke: {
       curve: 'smooth',
       width: 2,
+
     },
     noData: {
       text: error.value?.message || 'Loading...',
-    },
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.7,
-        opacityTo: 0.4,
-        stops: [0, 100],
-      },
     },
     xaxis: {
       type: 'datetime',
@@ -96,10 +86,6 @@ const chartOptions = computed(() => {
 
 const chartData = computed(() => ({
   series: [
-    {
-      name: 'Won',
-      data: items.value.map((item: { time: string, won: number }) => [new Date(item.time).getTime(), item.won])
-    },
     {
       name: 'Valid Block',
       data: items.value.map((item: { time: string, included: number }) => [new Date(item.time).getTime(), item.included])
