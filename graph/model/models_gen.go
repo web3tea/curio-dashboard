@@ -111,6 +111,13 @@ type MiningCount struct {
 	Exclude int `json:"exclude"`
 }
 
+type MiningCountAggregated struct {
+	Time     time.Time `json:"time"`
+	Total    int       `json:"total"`
+	Won      int       `json:"won"`
+	Included int       `json:"included"`
+}
+
 type MiningSummaryDay struct {
 	Day      time.Time     `json:"day"`
 	Miner    types.ActorID `json:"miner"`
@@ -290,6 +297,47 @@ type TaskSummaryDay struct {
 	TrueCount  int       `json:"trueCount"`
 	FalseCount int       `json:"falseCount"`
 	TotalCount int       `json:"totalCount"`
+}
+
+type MiningTaskAggregateInterval string
+
+const (
+	MiningTaskAggregateIntervalDay  MiningTaskAggregateInterval = "day"
+	MiningTaskAggregateIntervalHour MiningTaskAggregateInterval = "hour"
+)
+
+var AllMiningTaskAggregateInterval = []MiningTaskAggregateInterval{
+	MiningTaskAggregateIntervalDay,
+	MiningTaskAggregateIntervalHour,
+}
+
+func (e MiningTaskAggregateInterval) IsValid() bool {
+	switch e {
+	case MiningTaskAggregateIntervalDay, MiningTaskAggregateIntervalHour:
+		return true
+	}
+	return false
+}
+
+func (e MiningTaskAggregateInterval) String() string {
+	return string(e)
+}
+
+func (e *MiningTaskAggregateInterval) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = MiningTaskAggregateInterval(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid MiningTaskAggregateInterval", str)
+	}
+	return nil
+}
+
+func (e MiningTaskAggregateInterval) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 type PorepStatus string

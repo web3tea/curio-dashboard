@@ -172,6 +172,15 @@ const AppRoutes = {
         description: 'List of all pending deals in the cluster',
       },
     },
+    {
+      name: 'MiningOverview',
+      path: '/app/mining/overview',
+      component: () => import('@/views/mining/overview/index.vue'),
+      meta: {
+        title: 'Mining Overview',
+        description: 'Overview of the mining in the cluster',
+      },
+    },
   ],
 }
 

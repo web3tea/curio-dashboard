@@ -32,6 +32,10 @@ const options: I18nOptions = {
         month: 'numeric',
         day: 'numeric',
       },
+      toShortDay: {
+        month: 'numeric',
+        day: 'numeric',
+      },
     },
     zh: {
       short: {
@@ -53,6 +57,10 @@ const options: I18nOptions = {
       },
       toDay: {
         year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      },
+      toShortDay: {
         month: 'numeric',
         day: 'numeric',
       },

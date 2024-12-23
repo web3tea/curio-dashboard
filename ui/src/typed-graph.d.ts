@@ -211,6 +211,24 @@ export type MiningCount = {
   include: Scalars['Int']['output'];
 };
 
+export type MiningCountAggregated = {
+  __typename?: 'MiningCountAggregated';
+  included: Scalars['Int']['output'];
+  time: Scalars['Time']['output'];
+  total: Scalars['Int']['output'];
+  won: Scalars['Int']['output'];
+};
+
+export type MiningCountSummary = {
+  __typename?: 'MiningCountSummary';
+  end: Scalars['Time']['output'];
+  included: Scalars['Int']['output'];
+  previous?: Maybe<MiningCountSummary>;
+  start: Scalars['Time']['output'];
+  total: Scalars['Int']['output'];
+  won: Scalars['Int']['output'];
+};
+
 export type MiningSummaryDay = {
   __typename?: 'MiningSummaryDay';
   day: Scalars['Time']['output'];
@@ -231,6 +249,11 @@ export type MiningTask = {
   taskId: Scalars['ID']['output'];
   won: Scalars['Boolean']['output'];
 };
+
+export enum MiningTaskAggregateInterval {
+  Day = 'day',
+  Hour = 'hour'
+}
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -415,6 +438,8 @@ export type Query = {
   miner?: Maybe<Miner>;
   minerPower?: Maybe<MinerPower>;
   miningCount: MiningCount;
+  miningCountAggregate?: Maybe<Array<Maybe<MiningCountAggregated>>>;
+  miningCountSummary?: Maybe<MiningCountSummary>;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   miningWins?: Maybe<Array<Maybe<MiningTask>>>;
   miningWinsCount: Scalars['Int']['output'];
@@ -471,6 +496,21 @@ export type QueryMinerPowerArgs = {
 
 
 export type QueryMiningCountArgs = {
+  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  end: Scalars['Time']['input'];
+  start: Scalars['Time']['input'];
+};
+
+
+export type QueryMiningCountAggregateArgs = {
+  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  end: Scalars['Time']['input'];
+  interval: MiningTaskAggregateInterval;
+  start: Scalars['Time']['input'];
+};
+
+
+export type QueryMiningCountSummaryArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];

@@ -43,11 +43,6 @@ const sidebarItem: menu[] = [
   },
   { header: 'Sealing' },
   {
-    title: 'Miners',
-    icon: IconUsers,
-    to: '/app/miners',
-  },
-  {
     title: 'Tasks',
     icon: IconBrandAsana,
     children: [
@@ -78,9 +73,23 @@ const sidebarItem: menu[] = [
   },
   { header: 'Mining' },
   {
-    title: 'Win Blocks',
+    title: 'Miners',
+    icon: IconUsers,
+    to: '/app/miners',
+  },
+  {
+    title: "Wins",
     icon: IconCurrency,
-    to: '/app/mining/wins',
+    children: [
+      {
+        title: 'Overview',
+        to: '/app/mining/overview',
+      },
+      {
+        title: 'Blocks',
+        to: '/app/mining/wins',
+      },
+    ],
   },
   { header: 'Cluster' },
   {

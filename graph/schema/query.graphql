@@ -49,6 +49,8 @@ type Query {
     miningCount(start: Time!, end: Time!, actor: ActorID): MiningCount!
     miningWins(start: Time, end: Time, actor: ActorID, include: Boolean, offset: Int!, limit: Int!): [MiningTask]
     miningWinsCount(start: Time, end: Time, actor: ActorID, include: Boolean): Int!
+    miningCountSummary(start: Time!, end: Time!, actor: ActorID): MiningCountSummary
+    miningCountAggregate(start: Time!, end: Time!, actor: ActorID, interval: MiningTaskAggregateInterval!): [MiningCountAggregated]
 
     dealsPending: [OpenSectorPiece]
 
@@ -63,6 +65,11 @@ type Query {
 }
 
 enum TaskHistoriesAggregateInterval {
+    day
+    hour
+}
+
+enum MiningTaskAggregateInterval {
     day
     hour
 }

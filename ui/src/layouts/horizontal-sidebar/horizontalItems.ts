@@ -56,11 +56,6 @@ const horizontalItems: menu[] = [
     to: '#',
     children: [
       {
-        title: 'Miners',
-        icon: IconUsers,
-        to: '/app/miners',
-      },
-      {
         title: 'Tasks',
         icon: IconBrandAsana,
         children: [
@@ -98,6 +93,11 @@ const horizontalItems: menu[] = [
     icon: IconVector,
     to: '#',
     children: [
+      {
+        title: 'Miners',
+        icon: IconUsers,
+        to: '/app/miners',
+      },
       {
         title: 'Win Blocks',
         icon: IconCurrency,
