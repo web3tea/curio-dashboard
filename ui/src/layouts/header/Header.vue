@@ -40,7 +40,7 @@ const { isOnline } = storeToRefs(uiStore)
     <v-menu class="hidden-lg-and-up" :close-on-content-click="false" offset="10, 0">
       <template #activator="{ props }">
         <v-btn
-          class="hidden-lg-and-up text-secondary ml-1"
+          class="hidden-lg-and-up text-secondary ml-10"
           color="lightsecondary"
           :icon="IconSearch"
           rounded="sm"
