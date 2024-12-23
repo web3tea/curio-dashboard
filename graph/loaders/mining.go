@@ -145,7 +145,7 @@ func (l *Loader) MiningCountSummary(ctx context.Context, start, end time.Time, a
 		end = time.Now()
 	}
 	if end.Before(start) {
-		return nil, fmt.Errorf("end time is before start time")
+		return nil, fmt.Errorf("end time (%v) is before start time (%v)", end, start)
 	}
 	stats := model.MiningCountSummary{
 		Start: start,
