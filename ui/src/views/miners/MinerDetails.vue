@@ -1,7 +1,9 @@
 <script setup lang="ts">
 
 import { ref } from 'vue'
-import MinerInfo from '@/views/miners/MinerInfo.vue'
+import MinerInfo from "@/views/miners/MinerInfo.vue"
+import TabCard from "@/views/mining/overview/TabCard.vue"
+import { IconCurrency, IconInfoCircle } from "@tabler/icons-vue"
 
 const props = defineProps({
   id: {
@@ -23,13 +25,35 @@ const breadcrumbs = ref([
   },
 ])
 
+const tab = ref('tab-profile')
+
 </script>
 
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12">
-      <MinerInfo :id="props.id" />
+      <v-card variant="flat">
+        <v-card variant="outlined">
+          <v-card-text>
+            <v-tabs v-model="tab" color="primary">
+              <v-tab value="tab-profile"><IconInfoCircle class="v-icon--start" size="18" />Profile</v-tab>
+              <v-tab value="tab-mining"><IconCurrency class="v-icon--start" size="18" />Mining</v-tab>
+            </v-tabs>
+            <v-divider></v-divider>
+            <div class="pt-6">
+              <v-window v-model="tab">
+                <v-window-item value="tab-profile">
+                  <MinerInfo :id="props.id" />
+                </v-window-item>
+                <v-window-item value="tab-mining">
+                  <TabCard :miner="props.id" />
+                </v-window-item>
+              </v-window>
+            </div>
+          </v-card-text>
+        </v-card>
+      </v-card>
     </v-col>
   </v-row>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useQuery } from "@vue/apollo-composable"
 
 import { GetMiningCountAggregation } from "@/gql/mining"
@@ -27,7 +27,8 @@ const props = defineProps({
   }
 })
 
-const { result, error } = useQuery(GetMiningCountAggregation, {
+
+const { result, refetch, error } = useQuery(GetMiningCountAggregation, {
   start: props.start,
   end: props.end,
   miner: props.miner,
@@ -36,6 +37,10 @@ const { result, error } = useQuery(GetMiningCountAggregation, {
   fetchPolicy: 'cache-first'
 })
 )
+
+watch([() => props.start, () => props.end, () => props.miner], () => {
+  refetch()
+})
 
 const items = computed(() => result.value?.miningCountAggregate || [])
 
