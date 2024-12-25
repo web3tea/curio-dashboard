@@ -27,19 +27,25 @@ const props = defineProps({
   }
 })
 
+const interval = computed(() => (props.end.getTime() - props.start.getTime()) >= 86400000 * 3 ? 'day' : 'hour')
 
 const { result, refetch, error } = useQuery(GetMiningCountAggregation, {
   start: props.start,
   end: props.end,
   miner: props.miner,
-  interval: 'hour',
+  interval: interval.value,
 }, () => ({
   fetchPolicy: 'cache-first'
 })
 )
 
 watch([() => props.start, () => props.end, () => props.miner], () => {
-  refetch()
+  refetch({
+    start: props.start,
+    end: props.end,
+    miner: props.miner,
+    interval: interval.value,
+  })
 })
 
 const items = computed(() => result.value?.miningCountAggregate || [])

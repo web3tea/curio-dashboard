@@ -3,7 +3,7 @@
 import { ref } from 'vue'
 import MinerInfo from "@/views/miners/MinerInfo.vue"
 import TabCard from "@/views/mining/overview/TabCard.vue"
-import { IconCurrency, IconInfoCircle } from "@tabler/icons-vue"
+import { IconInfoCircle, IconMoneybag } from "@tabler/icons-vue"
 
 const props = defineProps({
   id: {
@@ -38,7 +38,7 @@ const tab = ref('tab-profile')
           <v-card-text>
             <v-tabs v-model="tab" color="primary">
               <v-tab value="tab-profile"><IconInfoCircle class="v-icon--start" size="18" />Profile</v-tab>
-              <v-tab value="tab-mining"><IconCurrency class="v-icon--start" size="18" />Mining</v-tab>
+              <v-tab value="tab-mining"><IconMoneybag class="v-icon--start" size="18" />Mining</v-tab>
             </v-tabs>
             <v-divider></v-divider>
             <div class="pt-6">
