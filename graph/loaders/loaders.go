@@ -8,7 +8,6 @@ import (
 
 	"github.com/hashicorp/golang-lru/v2/expirable"
 	"github.com/strahe/curio-dashboard/db"
-	"gorm.io/gorm"
 )
 
 var (
@@ -18,13 +17,14 @@ var (
 
 type Loader struct {
 	db    *db.HarmonyDB
-	appDB *gorm.DB
 	cache *expirable.LRU[string, any] // low level cache
+	MessageLoader
 }
 
 func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
 	return &Loader{
-		db:    db,
-		cache: expirable.NewLRU[string, any](cacheSize, nil, time.Minute),
+		db:            db,
+		cache:         expirable.NewLRU[string, any](cacheSize, nil, time.Minute),
+		MessageLoader: NewMessageLoader(db),
 	}
 }

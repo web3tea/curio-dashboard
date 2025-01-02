@@ -62,6 +62,22 @@ type MachineMetrics struct {
 	ProcessMaxFds              int                `json:"processMaxFds"`
 }
 
+type MessageSend struct {
+	FromKey      string          `json:"fromKey"`
+	ToAddr       string          `json:"toAddr"`
+	SendReason   string          `json:"sendReason"`
+	SendTaskID   int             `json:"sendTaskId"`
+	UnsignedData types.ByteArray `json:"unsignedData"`
+	UnsignedCid  string          `json:"unsignedCid"`
+	Nonce        *int            `json:"nonce"`
+	SignedData   types.ByteArray `json:"signedData"`
+	SignedJSON   types.JSONB     `json:"signedJson"`
+	SignedCid    *string         `json:"signedCid"`
+	SendTime     *time.Time      `json:"sendTime"`
+	SendSuccess  *bool           `json:"sendSuccess"`
+	SendError    *string         `json:"sendError"`
+}
+
 type MetricsActiveTask struct {
 	Name   string      `json:"name"`
 	Series [][]float64 `json:"series"`

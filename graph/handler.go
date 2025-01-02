@@ -95,6 +95,7 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 		if err != nil {
 			log.Errorw("request", "path", err.Path.String(), "error", err.Error())
 		}
+		fmt.Printf("error: %+v\n", err)
 		return err
 	})
 

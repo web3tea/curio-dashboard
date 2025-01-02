@@ -27,7 +27,6 @@ require (
 	github.com/vektah/gqlparser/v2 v2.5.17
 	github.com/yugabyte/pgx/v5 v5.5.3-yb-2
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da
-	gorm.io/gorm v1.25.11
 )
 
 require (
@@ -150,8 +149,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/jbenet/goprocess v0.1.4 // indirect
 	github.com/jessevdk/go-flags v1.4.0 // indirect
-	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/joeshaw/multierror v0.0.0-20140124173710-69b34d4ec901 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect

@@ -181,6 +181,15 @@ const AppRoutes = {
         description: 'Overview of the mining in the cluster',
       },
     },
+    {
+      name: "MessageSends",
+      path: "/app/messages/sends",
+      component: () => import('@/views/messages/index.vue'),
+      meta: {
+        title: 'Message Sends',
+        description: 'List of all message sends in the cluster',
+      },
+    }
   ],
 }
 

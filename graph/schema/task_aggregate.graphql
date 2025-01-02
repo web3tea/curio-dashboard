@@ -10,7 +10,6 @@ type TaskAggregate {
     total: Int!
     success: Int!
     failure: Int!
-    tasks: [TaskNameAggregate]!
 }
 
 type TaskStats {

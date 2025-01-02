@@ -138,6 +138,23 @@ export type MachineSummary = {
   uniqueHostsUp: Scalars['Int']['output'];
 };
 
+export type MessageSend = {
+  __typename?: 'MessageSend';
+  fromKey: Scalars['String']['output'];
+  nonce?: Maybe<Scalars['Int']['output']>;
+  sendError?: Maybe<Scalars['String']['output']>;
+  sendReason: Scalars['String']['output'];
+  sendSuccess?: Maybe<Scalars['Boolean']['output']>;
+  sendTaskId: Scalars['Int']['output'];
+  sendTime?: Maybe<Scalars['Time']['output']>;
+  signedCid?: Maybe<Scalars['String']['output']>;
+  signedData?: Maybe<Scalars['ByteArray']['output']>;
+  signedJson?: Maybe<Scalars['JSONB']['output']>;
+  toAddr: Scalars['String']['output'];
+  unsignedCid: Scalars['String']['output'];
+  unsignedData: Scalars['ByteArray']['output'];
+};
+
 export type MetricsActiveTask = {
   __typename?: 'MetricsActiveTask';
   name: Scalars['String']['output'];
@@ -434,6 +451,9 @@ export type Query = {
   machine?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
+  messageSend?: Maybe<MessageSend>;
+  messageSends?: Maybe<Array<Maybe<MessageSend>>>;
+  messageSendsCount: Scalars['Int']['output'];
   metricsActiveTasks?: Maybe<Array<Maybe<MetricsActiveTask>>>;
   miner?: Maybe<Miner>;
   minerPower?: Maybe<MinerPower>;
@@ -476,6 +496,26 @@ export type QueryConfigArgs = {
 
 export type QueryMachineArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryMessageSendArgs = {
+  fromKey?: InputMaybe<Scalars['String']['input']>;
+  nonce?: InputMaybe<Scalars['Int']['input']>;
+  sendTaskId?: InputMaybe<Scalars['Int']['input']>;
+  signedCID?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryMessageSendsArgs = {
+  account?: InputMaybe<Scalars['Address']['input']>;
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+};
+
+
+export type QueryMessageSendsCountArgs = {
+  account?: InputMaybe<Scalars['Address']['input']>;
 };
 
 
@@ -787,7 +827,6 @@ export type TaskAggregate = {
   __typename?: 'TaskAggregate';
   failure: Scalars['Int']['output'];
   success: Scalars['Int']['output'];
-  tasks: Array<Maybe<TaskNameAggregate>>;
   time: Scalars['Time']['output'];
   total: Scalars['Int']['output'];
 };

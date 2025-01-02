@@ -57,7 +57,7 @@ const wsLink = new GraphQLWsLink(
           } else {
             uiStore.appendMsg({
               type: 'error',
-              msg: 'Connection closed',
+              msg: 'Connection closed: ' + event.reason,
             })
           }
         }

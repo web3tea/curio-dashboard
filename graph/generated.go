@@ -61,7 +61,6 @@ type ResolverRoot interface {
 	StoragePath() StoragePathResolver
 	Subscription() SubscriptionResolver
 	Task() TaskResolver
-	TaskAggregate() TaskAggregateResolver
 	TaskHistory() TaskHistoryResolver
 }
 
@@ -168,6 +167,22 @@ type ComplexityRoot struct {
 		UniqueHostsDown  func(childComplexity int) int
 		UniqueHostsTotal func(childComplexity int) int
 		UniqueHostsUp    func(childComplexity int) int
+	}
+
+	MessageSend struct {
+		FromKey      func(childComplexity int) int
+		Nonce        func(childComplexity int) int
+		SendError    func(childComplexity int) int
+		SendReason   func(childComplexity int) int
+		SendSuccess  func(childComplexity int) int
+		SendTaskID   func(childComplexity int) int
+		SendTime     func(childComplexity int) int
+		SignedCid    func(childComplexity int) int
+		SignedData   func(childComplexity int) int
+		SignedJSON   func(childComplexity int) int
+		ToAddr       func(childComplexity int) int
+		UnsignedCid  func(childComplexity int) int
+		UnsignedData func(childComplexity int) int
 	}
 
 	MetricsActiveTask struct {
@@ -387,6 +402,9 @@ type ComplexityRoot struct {
 		Machine                func(childComplexity int, id int) int
 		MachineSummary         func(childComplexity int) int
 		Machines               func(childComplexity int) int
+		MessageSend            func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
+		MessageSends           func(childComplexity int, account *types.Address, offset int, limit int) int
+		MessageSendsCount      func(childComplexity int, account *types.Address) int
 		MetricsActiveTasks     func(childComplexity int, lastDays int, machine *string) int
 		Miner                  func(childComplexity int, address types.Address) int
 		MinerPower             func(childComplexity int, address *types.Address) int
@@ -558,7 +576,6 @@ type ComplexityRoot struct {
 	TaskAggregate struct {
 		Failure func(childComplexity int) int
 		Success func(childComplexity int) int
-		Tasks   func(childComplexity int) int
 		Time    func(childComplexity int) int
 		Total   func(childComplexity int) int
 	}
@@ -718,6 +735,9 @@ type QueryResolver interface {
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
+	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
+	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
+	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
 }
 type SectorResolver interface {
 	ID(ctx context.Context, obj *model.Sector) (string, error)
@@ -771,9 +791,6 @@ type TaskResolver interface {
 	PreviousTask(ctx context.Context, obj *model.Task) (*model.TaskHistory, error)
 
 	Histories(ctx context.Context, obj *model.Task) ([]*model.TaskHistory, error)
-}
-type TaskAggregateResolver interface {
-	Tasks(ctx context.Context, obj *model.TaskAggregate) ([]*model.TaskNameAggregate, error)
 }
 type TaskHistoryResolver interface {
 	CompletedBy(ctx context.Context, obj *model.TaskHistory) (*model.Machine, error)
@@ -1299,6 +1316,97 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MachineSummary.UniqueHostsUp(childComplexity), true
+
+	case "MessageSend.fromKey":
+		if e.complexity.MessageSend.FromKey == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.FromKey(childComplexity), true
+
+	case "MessageSend.nonce":
+		if e.complexity.MessageSend.Nonce == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.Nonce(childComplexity), true
+
+	case "MessageSend.sendError":
+		if e.complexity.MessageSend.SendError == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SendError(childComplexity), true
+
+	case "MessageSend.sendReason":
+		if e.complexity.MessageSend.SendReason == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SendReason(childComplexity), true
+
+	case "MessageSend.sendSuccess":
+		if e.complexity.MessageSend.SendSuccess == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SendSuccess(childComplexity), true
+
+	case "MessageSend.sendTaskId":
+		if e.complexity.MessageSend.SendTaskID == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SendTaskID(childComplexity), true
+
+	case "MessageSend.sendTime":
+		if e.complexity.MessageSend.SendTime == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SendTime(childComplexity), true
+
+	case "MessageSend.signedCid":
+		if e.complexity.MessageSend.SignedCid == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SignedCid(childComplexity), true
+
+	case "MessageSend.signedData":
+		if e.complexity.MessageSend.SignedData == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SignedData(childComplexity), true
+
+	case "MessageSend.signedJson":
+		if e.complexity.MessageSend.SignedJSON == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.SignedJSON(childComplexity), true
+
+	case "MessageSend.toAddr":
+		if e.complexity.MessageSend.ToAddr == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.ToAddr(childComplexity), true
+
+	case "MessageSend.unsignedCid":
+		if e.complexity.MessageSend.UnsignedCid == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.UnsignedCid(childComplexity), true
+
+	case "MessageSend.unsignedData":
+		if e.complexity.MessageSend.UnsignedData == nil {
+			break
+		}
+
+		return e.complexity.MessageSend.UnsignedData(childComplexity), true
 
 	case "MetricsActiveTask.name":
 		if e.complexity.MetricsActiveTask.Name == nil {
@@ -2479,6 +2587,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Machines(childComplexity), true
 
+	case "Query.messageSend":
+		if e.complexity.Query.MessageSend == nil {
+			break
+		}
+
+		args, err := ec.field_Query_messageSend_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MessageSend(childComplexity, args["sendTaskId"].(*int), args["fromKey"].(*string), args["nonce"].(*int), args["signedCID"].(*string)), true
+
+	case "Query.messageSends":
+		if e.complexity.Query.MessageSends == nil {
+			break
+		}
+
+		args, err := ec.field_Query_messageSends_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MessageSends(childComplexity, args["account"].(*types.Address), args["offset"].(int), args["limit"].(int)), true
+
+	case "Query.messageSendsCount":
+		if e.complexity.Query.MessageSendsCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_messageSendsCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MessageSendsCount(childComplexity, args["account"].(*types.Address)), true
+
 	case "Query.metricsActiveTasks":
 		if e.complexity.Query.MetricsActiveTasks == nil {
 			break
@@ -3534,13 +3678,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TaskAggregate.Success(childComplexity), true
 
-	case "TaskAggregate.tasks":
-		if e.complexity.TaskAggregate.Tasks == nil {
-			break
-		}
-
-		return e.complexity.TaskAggregate.Tasks(childComplexity), true
-
 	case "TaskAggregate.time":
 		if e.complexity.TaskAggregate.Time == nil {
 			break
@@ -3857,7 +3994,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
+//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -3877,6 +4014,7 @@ var sources = []*ast.Source{
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
 	{Name: "schema/machine_detail.graphql", Input: sourceData("schema/machine_detail.graphql"), BuiltIn: false},
 	{Name: "schema/machine_summary.graphql", Input: sourceData("schema/machine_summary.graphql"), BuiltIn: false},
+	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
 	{Name: "schema/metrics.graphql", Input: sourceData("schema/metrics.graphql"), BuiltIn: false},
 	{Name: "schema/miner.graphql", Input: sourceData("schema/miner.graphql"), BuiltIn: false},
 	{Name: "schema/mining.graphql", Input: sourceData("schema/mining.graphql"), BuiltIn: false},
@@ -4381,6 +4519,237 @@ func (ec *executionContext) field_Query_machine_argsID(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 	if tmp, ok := rawArgs["id"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_messageSend_argsSendTaskID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["sendTaskId"] = arg0
+	arg1, err := ec.field_Query_messageSend_argsFromKey(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["fromKey"] = arg1
+	arg2, err := ec.field_Query_messageSend_argsNonce(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["nonce"] = arg2
+	arg3, err := ec.field_Query_messageSend_argsSignedCid(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["signedCID"] = arg3
+	return args, nil
+}
+func (ec *executionContext) field_Query_messageSend_argsSendTaskID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["sendTaskId"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sendTaskId"))
+	if tmp, ok := rawArgs["sendTaskId"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSend_argsFromKey(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["fromKey"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("fromKey"))
+	if tmp, ok := rawArgs["fromKey"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSend_argsNonce(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["nonce"]
+	if !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("nonce"))
+	if tmp, ok := rawArgs["nonce"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSend_argsSignedCid(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["signedCID"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("signedCID"))
+	if tmp, ok := rawArgs["signedCID"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSendsCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_messageSendsCount_argsAccount(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["account"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_messageSendsCount_argsAccount(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*types.Address, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["account"]
+	if !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
+	if tmp, ok := rawArgs["account"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSends_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_messageSends_argsAccount(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["account"] = arg0
+	arg1, err := ec.field_Query_messageSends_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	arg2, err := ec.field_Query_messageSends_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_messageSends_argsAccount(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*types.Address, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["account"]
+	if !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
+	if tmp, ok := rawArgs["account"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSends_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["offset"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageSends_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["limit"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
 		return ec.unmarshalNInt2int(ctx, tmp)
 	}
 
@@ -9498,6 +9867,557 @@ func (ec *executionContext) fieldContext_MachineSummary_totalGpu(_ context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_fromKey(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_fromKey(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FromKey, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_fromKey(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_toAddr(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_toAddr(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ToAddr, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_toAddr(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_sendReason(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_sendReason(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SendReason, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_sendReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_sendTaskId(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_sendTaskId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SendTaskID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_sendTaskId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_unsignedData(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_unsignedData(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UnsignedData, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.ByteArray)
+	fc.Result = res
+	return ec.marshalNByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_unsignedData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ByteArray does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_unsignedCid(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_unsignedCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UnsignedCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_unsignedCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_nonce(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_nonce(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Nonce, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_nonce(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_signedData(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_signedData(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SignedData, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.ByteArray)
+	fc.Result = res
+	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_signedData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ByteArray does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_signedJson(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_signedJson(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SignedJSON, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.JSONB)
+	fc.Result = res
+	return ec.marshalOJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_signedJson(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSONB does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_signedCid(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_signedCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SignedCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_signedCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_sendTime(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_sendTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SendTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_sendTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_sendSuccess(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_sendSuccess(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SendSuccess, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_sendSuccess(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageSend_sendError(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageSend_sendError(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SendError, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageSend_sendError(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageSend",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -16995,8 +17915,6 @@ func (ec *executionContext) fieldContext_Query_taskHistoriesAggregate(ctx contex
 				return ec.fieldContext_TaskAggregate_success(ctx, field)
 			case "failure":
 				return ec.fieldContext_TaskAggregate_failure(ctx, field)
-			case "tasks":
-				return ec.fieldContext_TaskAggregate_tasks(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type TaskAggregate", field.Name)
 		},
@@ -18731,6 +19649,221 @@ func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, f
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_minerPower_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageSends(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageSends(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MessageSends(rctx, fc.Args["account"].(*types.Address), fc.Args["offset"].(int), fc.Args["limit"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MessageSend)
+	fc.Result = res
+	return ec.marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageSends(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "fromKey":
+				return ec.fieldContext_MessageSend_fromKey(ctx, field)
+			case "toAddr":
+				return ec.fieldContext_MessageSend_toAddr(ctx, field)
+			case "sendReason":
+				return ec.fieldContext_MessageSend_sendReason(ctx, field)
+			case "sendTaskId":
+				return ec.fieldContext_MessageSend_sendTaskId(ctx, field)
+			case "unsignedData":
+				return ec.fieldContext_MessageSend_unsignedData(ctx, field)
+			case "unsignedCid":
+				return ec.fieldContext_MessageSend_unsignedCid(ctx, field)
+			case "nonce":
+				return ec.fieldContext_MessageSend_nonce(ctx, field)
+			case "signedData":
+				return ec.fieldContext_MessageSend_signedData(ctx, field)
+			case "signedJson":
+				return ec.fieldContext_MessageSend_signedJson(ctx, field)
+			case "signedCid":
+				return ec.fieldContext_MessageSend_signedCid(ctx, field)
+			case "sendTime":
+				return ec.fieldContext_MessageSend_sendTime(ctx, field)
+			case "sendSuccess":
+				return ec.fieldContext_MessageSend_sendSuccess(ctx, field)
+			case "sendError":
+				return ec.fieldContext_MessageSend_sendError(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MessageSend", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageSends_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageSendsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageSendsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MessageSendsCount(rctx, fc.Args["account"].(*types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageSendsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageSendsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageSend(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageSend(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MessageSend(rctx, fc.Args["sendTaskId"].(*int), fc.Args["fromKey"].(*string), fc.Args["nonce"].(*int), fc.Args["signedCID"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MessageSend)
+	fc.Result = res
+	return ec.marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "fromKey":
+				return ec.fieldContext_MessageSend_fromKey(ctx, field)
+			case "toAddr":
+				return ec.fieldContext_MessageSend_toAddr(ctx, field)
+			case "sendReason":
+				return ec.fieldContext_MessageSend_sendReason(ctx, field)
+			case "sendTaskId":
+				return ec.fieldContext_MessageSend_sendTaskId(ctx, field)
+			case "unsignedData":
+				return ec.fieldContext_MessageSend_unsignedData(ctx, field)
+			case "unsignedCid":
+				return ec.fieldContext_MessageSend_unsignedCid(ctx, field)
+			case "nonce":
+				return ec.fieldContext_MessageSend_nonce(ctx, field)
+			case "signedData":
+				return ec.fieldContext_MessageSend_signedData(ctx, field)
+			case "signedJson":
+				return ec.fieldContext_MessageSend_signedJson(ctx, field)
+			case "signedCid":
+				return ec.fieldContext_MessageSend_signedCid(ctx, field)
+			case "sendTime":
+				return ec.fieldContext_MessageSend_sendTime(ctx, field)
+			case "sendSuccess":
+				return ec.fieldContext_MessageSend_sendSuccess(ctx, field)
+			case "sendError":
+				return ec.fieldContext_MessageSend_sendError(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MessageSend", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageSend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -24139,60 +25272,6 @@ func (ec *executionContext) fieldContext_TaskAggregate_failure(_ context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _TaskAggregate_tasks(ctx context.Context, field graphql.CollectedField, obj *model.TaskAggregate) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_TaskAggregate_tasks(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.TaskAggregate().Tasks(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*model.TaskNameAggregate)
-	fc.Result = res
-	return ec.marshalNTaskNameAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskNameAggregate(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_TaskAggregate_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "TaskAggregate",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "name":
-				return ec.fieldContext_TaskNameAggregate_name(ctx, field)
-			case "total":
-				return ec.fieldContext_TaskNameAggregate_total(ctx, field)
-			case "success":
-				return ec.fieldContext_TaskNameAggregate_success(ctx, field)
-			case "failure":
-				return ec.fieldContext_TaskNameAggregate_failure(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type TaskNameAggregate", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _TaskHistory_id(ctx context.Context, field graphql.CollectedField, obj *model.TaskHistory) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TaskHistory_id(ctx, field)
 	if err != nil {
@@ -28545,6 +29624,84 @@ func (ec *executionContext) _MachineSummary(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var messageSendImplementors = []string{"MessageSend"}
+
+func (ec *executionContext) _MessageSend(ctx context.Context, sel ast.SelectionSet, obj *model.MessageSend) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, messageSendImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MessageSend")
+		case "fromKey":
+			out.Values[i] = ec._MessageSend_fromKey(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "toAddr":
+			out.Values[i] = ec._MessageSend_toAddr(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "sendReason":
+			out.Values[i] = ec._MessageSend_sendReason(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "sendTaskId":
+			out.Values[i] = ec._MessageSend_sendTaskId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "unsignedData":
+			out.Values[i] = ec._MessageSend_unsignedData(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "unsignedCid":
+			out.Values[i] = ec._MessageSend_unsignedCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "nonce":
+			out.Values[i] = ec._MessageSend_nonce(ctx, field, obj)
+		case "signedData":
+			out.Values[i] = ec._MessageSend_signedData(ctx, field, obj)
+		case "signedJson":
+			out.Values[i] = ec._MessageSend_signedJson(ctx, field, obj)
+		case "signedCid":
+			out.Values[i] = ec._MessageSend_signedCid(ctx, field, obj)
+		case "sendTime":
+			out.Values[i] = ec._MessageSend_sendTime(ctx, field, obj)
+		case "sendSuccess":
+			out.Values[i] = ec._MessageSend_sendSuccess(ctx, field, obj)
+		case "sendError":
+			out.Values[i] = ec._MessageSend_sendError(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var metricsActiveTaskImplementors = []string{"MetricsActiveTask"}
 
 func (ec *executionContext) _MetricsActiveTask(ctx context.Context, sel ast.SelectionSet, obj *model.MetricsActiveTask) graphql.Marshaler {
@@ -31146,6 +32303,66 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "messageSends":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_messageSends(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "messageSendsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_messageSendsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "messageSend":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_messageSend(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -32799,59 +34016,23 @@ func (ec *executionContext) _TaskAggregate(ctx context.Context, sel ast.Selectio
 		case "time":
 			out.Values[i] = ec._TaskAggregate_time(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "total":
 			out.Values[i] = ec._TaskAggregate_total(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "success":
 			out.Values[i] = ec._TaskAggregate_success(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
 		case "failure":
 			out.Values[i] = ec._TaskAggregate_failure(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&out.Invalids, 1)
+				out.Invalids++
 			}
-		case "tasks":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._TaskAggregate_tasks(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -33617,6 +34798,22 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) unmarshalNByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx context.Context, v interface{}) (types.ByteArray, error) {
+	var res types.ByteArray
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx context.Context, sel ast.SelectionSet, v types.ByteArray) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
 	res, err := graphql.UnmarshalFloatContext(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -34102,44 +35299,6 @@ func (ec *executionContext) marshalNTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurio
 		return graphql.Null
 	}
 	return ec._TaskHistory(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNTaskNameAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskNameAggregate(ctx context.Context, sel ast.SelectionSet, v []*model.TaskNameAggregate) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOTaskNameAggregate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskNameAggregate(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
@@ -34905,6 +36064,54 @@ func (ec *executionContext) marshalOMachineSummary2ᚖgithubᚗcomᚋstraheᚋcu
 		return graphql.Null
 	}
 	return ec._MachineSummary(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx context.Context, sel ast.SelectionSet, v []*model.MessageSend) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx context.Context, sel ast.SelectionSet, v *model.MessageSend) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MessageSend(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMetricsActiveTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetricsActiveTask(ctx context.Context, sel ast.SelectionSet, v []*model.MetricsActiveTask) graphql.Marshaler {
@@ -35715,13 +36922,6 @@ func (ec *executionContext) marshalOTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurio
 		return graphql.Null
 	}
 	return ec._TaskHistory(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOTaskNameAggregate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskNameAggregate(ctx context.Context, sel ast.SelectionSet, v *model.TaskNameAggregate) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._TaskNameAggregate(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOTaskStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx context.Context, sel ast.SelectionSet, v []*model.TaskStats) graphql.Marshaler {

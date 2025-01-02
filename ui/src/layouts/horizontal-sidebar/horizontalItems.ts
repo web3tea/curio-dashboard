@@ -86,6 +86,11 @@ const horizontalItems: menu[] = [
         icon: IconParking,
         to: '/app/deals/pending',
       },
+      {
+        title: 'Messages',
+        icon: IconVector,
+        to: '/app/messages/sends',
+      },
     ],
   },
   {
@@ -99,7 +104,7 @@ const horizontalItems: menu[] = [
         to: '/app/miners',
       },
       {
-        title: 'Win Blocks',
+        title: 'Wins',
         icon: IconCurrency,
         to: '/app/mining/wins',
       },

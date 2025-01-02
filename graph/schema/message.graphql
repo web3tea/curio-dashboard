@@ -1,0 +1,21 @@
+type MessageSend {
+    fromKey: String!
+    toAddr: String!
+    sendReason: String!
+    sendTaskId: Int!
+    unsignedData: ByteArray!
+    unsignedCid: String!
+    nonce: Int
+    signedData: ByteArray
+    signedJson: JSONB
+    signedCid: String
+    sendTime: Time
+    sendSuccess: Boolean
+    sendError: String
+}
+
+extend type Query {
+    messageSends(account: Address, offset: Int!, limit: Int!): [MessageSend]
+    messageSendsCount(account: Address): Int!
+    messageSend(sendTaskId: Int, fromKey: String, nonce: Int, signedCID: String): MessageSend
+}

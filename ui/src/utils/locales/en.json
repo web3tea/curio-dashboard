@@ -21,7 +21,9 @@
     "Blocks": "Blocks",
     "Running": "Running",
     "Task History": "Task History",
-    "History": "History"
+    "History": "History",
+    "Messages": "Messages",
+    "Sends": "Sends"
   },
   "fields": {
     "Total Power": "Total Power",

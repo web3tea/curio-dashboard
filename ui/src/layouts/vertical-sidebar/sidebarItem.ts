@@ -71,6 +71,11 @@ const sidebarItem: menu[] = [
     icon: IconParking,
     to: '/app/deals/pending',
   },
+  {
+    title: 'Messages',
+    icon: IconVector,
+    to: '/app/messages/sends',
+  },
   { header: 'Mining' },
   {
     title: 'Miners',

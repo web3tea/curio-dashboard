@@ -31,16 +31,10 @@ func (l *Loader) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert
 
 	log.Infof("SubAlerts: offset=%d", offset)
 	go func() {
-		var err error
 		ticker := time.NewTicker(time.Second * 3)
 		defer func() {
 			ticker.Stop()
 			close(alertsChan)
-			if err != nil {
-				log.Infof("SubAlerts done, err: %v", err)
-			} else {
-				log.Infof("SubAlerts done")
-			}
 		}()
 
 		for {
@@ -49,7 +43,7 @@ func (l *Loader) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert
 				return
 			case <-ticker.C:
 				var alerts []*model.Alert
-				if err = l.db.Select(ctx, &alerts, `SELECT
+				if err := l.db.Select(ctx, &alerts, `SELECT
     id,
     machine_name,
     message
