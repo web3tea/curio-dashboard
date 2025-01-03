@@ -137,23 +137,45 @@ function getOption (title: string, color: string) {
 </script>
 <template>
   <v-row>
-    <template v-for="chart in chartsData" :key="chart.title">
-      <v-col cols="12" md="3">
-        <v-card class="bg-surface" variant="outlined">
+    <template
+      v-for="chart in chartsData"
+      :key="chart.title"
+    >
+      <v-col
+        cols="12"
+        md="3"
+      >
+        <v-card
+          class="bg-surface"
+          variant="outlined"
+        >
           <v-card-item>
             <div class="d-flex justify-space-between">
               <div>
-                <h6 class="text-subtitle-1 mb-4">{{ chart.title }}</h6>
-                <h4 class="text-h4">{{ chart.used }}</h4>
+                <h6 class="text-subtitle-1 mb-4">
+                  {{ chart.title }}
+                </h6>
+                <h4 class="text-h4">
+                  {{ chart.used }}
+                </h4>
                 <div class="d-flex">
-                  <h6 class="mr-2 text-subtitle-1 mb-0">{{ chart.available }}</h6>
-                  <p class="text-h6 text-lightText mb-0">available</p>
+                  <h6 class="mr-2 text-subtitle-1 mb-0">
+                    {{ chart.available }}
+                  </h6>
+                  <p class="text-h6 text-lightText mb-0">
+                    available
+                  </p>
                 </div>
               </div>
               <div>
                 <div class="d-flex align-center justify-end">
-                  <CaretUpFilled class="text-success" :style="{ fontSize: '12px' }" />
-                  <p class="text-h6 text-lightText mb-0 ml-2">{{ chart.percentage }}</p>
+                  <CaretUpFilled
+                    class="text-success"
+                    :style="{ fontSize: '12px' }"
+                  />
+                  <p class="text-h6 text-lightText mb-0 ml-2">
+                    {{ chart.percentage }}
+                  </p>
                 </div>
                 <apexchart
                   height="80"

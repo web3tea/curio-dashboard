@@ -11,7 +11,7 @@ const AppRoutes = {
     {
       name: 'Overview',
       path: '/app/overview',
-      component: () => import('@/views/overview/index.vue'),
+      component: () => import('@/views/overview/OverviewIndex.vue'),
       meta: {
         title: 'Overview',
         description: "Overview of the cluster's health and performance",
@@ -20,7 +20,7 @@ const AppRoutes = {
     {
       name: 'Analytics',
       path: '/app/analytics',
-      component: () => import('@/views/analytics/index.vue'),
+      component: () => import('@/views/analytics/AnalyticsIndex.vue'),
       meta: {
         title: 'Analytics',
         description: 'Analytics of the cluster',
@@ -29,7 +29,7 @@ const AppRoutes = {
     {
       name: 'Machines',
       path: '/app/machines',
-      component: () => import('@/views/machines/index.vue'),
+      component: () => import('@/views/machines/MachineIndex.vue'),
       meta: {
         title: 'Machine List',
         description: 'List of all machines in the cluster',
@@ -48,7 +48,7 @@ const AppRoutes = {
     {
       name: 'Storages',
       path: '/app/storages',
-      component: () => import('@/views/storages/index.vue'),
+      component: () => import('@/views/storages/StorageIndex.vue'),
       meta: {
         title: 'Storage List',
         description: 'List of all storages in the cluster',
@@ -57,7 +57,7 @@ const AppRoutes = {
     {
       name: 'PoRep',
       path: '/app/porep',
-      component: () => import('@/views/porep/index.vue'),
+      component: () => import('@/views/porep/PorepIndex.vue'),
       meta: {
         title: 'PoRep Pipeline',
         description: "PoRep pipeline's status",
@@ -66,7 +66,7 @@ const AppRoutes = {
     {
       name: 'RunningTasks',
       path: '/app/running-tasks',
-      component: () => import('@/views/task/index.vue'),
+      component: () => import('@/views/task/TaskIndex.vue'),
       meta: {
         title: 'Running',
         description: 'List of all running tasks in the cluster',
@@ -75,7 +75,7 @@ const AppRoutes = {
     {
       name: 'TaskHistory',
       path: '/app/task-history',
-      component: () => import('@/views/task/history/index.vue'),
+      component: () => import('@/views/task/history/TaskHistoryIndex.vue'),
       props: (route: RouteLocationNormalizedLoaded) => ({
         start: Number(route.query.start),
         end: Number(route.query.end),
@@ -91,7 +91,7 @@ const AppRoutes = {
     {
       name: 'Sectors',
       path: '/app/sectors',
-      component: () => import('@/views/sectors/index.vue'),
+      component: () => import('@/views/sectors/SectorIndex.vue'),
       meta: {
         title: 'Sector List',
         description: 'List of all sectors in the cluster',
@@ -110,7 +110,7 @@ const AppRoutes = {
     {
       name: 'MiningTaskList',
       path: '/app/mining/wins',
-      component: () => import('@/views/mining/wins/index.vue'),
+      component: () => import('@/views/mining/wins/MiningWinsIndex.vue'),
       meta: {
         title: 'Mining Wins',
         description: 'List of all mining wins in the cluster',
@@ -119,7 +119,7 @@ const AppRoutes = {
     {
       name: 'Configurations',
       path: '/app/configurations',
-      component: () => import('@/views/configurations/index.vue'),
+      component: () => import('@/views/configurations/ConfigurationIndex.vue'),
       meta: {
         title: 'Configuration List',
         description: 'List of all configurations in the cluster',
@@ -147,7 +147,7 @@ const AppRoutes = {
     {
       name: 'Miners',
       path: '/app/miners',
-      component: () => import('@/views/miners/index.vue'),
+      component: () => import('@/views/miners/MinerIndex.vue'),
       meta: {
         title: 'Miner List',
         description: 'List of all miners in the cluster',
@@ -166,7 +166,7 @@ const AppRoutes = {
     {
       name: 'PendingDeals',
       path: '/app/deals/pending',
-      component: () => import('@/views/deals/index.vue'),
+      component: () => import('@/views/deals/DealIndex.vue'),
       meta: {
         title: 'Pending Deals',
         description: 'List of all pending deals in the cluster',
@@ -175,7 +175,7 @@ const AppRoutes = {
     {
       name: 'MiningOverview',
       path: '/app/mining/overview',
-      component: () => import('@/views/mining/overview/index.vue'),
+      component: () => import('@/views/mining/overview/MiningOverviewIndex.vue'),
       meta: {
         title: 'Mining Overview',
         description: 'Overview of the mining in the cluster',
@@ -184,7 +184,7 @@ const AppRoutes = {
     {
       name: "MessageSends",
       path: "/app/messages/sends",
-      component: () => import('@/views/messages/index.vue'),
+      component: () => import('@/views/messages/MessageIndex.vue'),
       meta: {
         title: 'Message Sends',
         description: 'List of all message sends in the cluster',

@@ -1,4 +1,4 @@
-export type ConfigProps = {
+export interface ConfigProps {
   sidebarDrawer: boolean;
   customizerDrawer: boolean;
   miniSidebar: boolean;

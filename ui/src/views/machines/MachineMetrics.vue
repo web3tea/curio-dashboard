@@ -60,7 +60,10 @@ const details = computed(() => {
 </script>
 
 <template>
-  <UiChildCard :loading="loading" :title="t('fields.Basic Info')">
+  <UiChildCard
+    :loading="loading"
+    :title="t('fields.Basic Info')"
+  >
     <template #action>
       <v-btn
         :icon="IconReload"
@@ -77,10 +80,18 @@ const details = computed(() => {
         :cols="detail.cols"
         :sm="detail.sm"
       >
-        <p class="text-h6 text-lightText mb-1">{{ detail.title }}</p>
+        <p class="text-h6 text-lightText mb-1">
+          {{ detail.title }}
+        </p>
         <p class="text-h6 mb-2">
           <template v-if="Array.isArray(detail.subtext)">
-            <v-chip v-for="(item, index) in detail.subtext" :key="index" class="mr-1">{{ item }}</v-chip>
+            <v-chip
+              v-for="(item, index) in detail.subtext"
+              :key="index"
+              class="mr-1"
+            >
+              {{ item }}
+            </v-chip>
           </template>
           <template v-else>
             {{ detail.subtext }}
@@ -89,7 +100,9 @@ const details = computed(() => {
         <v-divider />
       </v-col>
       <v-col v-if="error">
-        <p class="text-h6 text-lightText mb-1">{{ error }}</p>
+        <p class="text-h6 text-lightText mb-1">
+          {{ error }}
+        </p>
       </v-col>
     </v-row>
   </uichildcard>

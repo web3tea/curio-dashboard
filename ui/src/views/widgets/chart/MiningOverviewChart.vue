@@ -90,7 +90,7 @@ const chartOptions = computed(() => {
 })
 
 const chartSeries = computed(() => {
-  const seriesMap: { [key: string]: number[][] } = {}
+  const seriesMap: Record<string, number[][]> = {}
 
   items.value.forEach(item => {
     if (!seriesMap[item.miner]) {
@@ -119,9 +119,15 @@ const totalWonBlocks = computed(() => {
 </script>
 
 <template>
-  <UiWidgetCard class-name="pt-5 px-0 rounded-md overflow-hidden" :loading="loading" :title="$t('fields.Mining Overview')">
+  <UiWidgetCard
+    class-name="pt-5 px-0 rounded-md overflow-hidden"
+    :loading="loading"
+    :title="$t('fields.Mining Overview')"
+  >
     <template #subtitle>
-      <router-link :to="{name: 'MiningTaskList'}">{{ $t('fields.View All') }}</router-link>
+      <router-link :to="{name: 'MiningTaskList'}">
+        {{ $t('fields.View All') }}
+      </router-link>
     </template>
     <template #append>
       <v-btn
@@ -133,8 +139,12 @@ const totalWonBlocks = computed(() => {
       />
     </template>
     <div class="px-5">
-      <h6 class="text-h6 text-lightText mb-4">{{ $t('msgs.weekBlock') }}</h6>
-      <h3 class="text-h3 mb-0">{{ totalWonBlocks }}</h3>
+      <h6 class="text-h6 text-lightText mb-4">
+        {{ $t('msgs.weekBlock') }}
+      </h6>
+      <h3 class="text-h3 mb-0">
+        {{ totalWonBlocks }}
+      </h3>
     </div>
     <apexchart
       :height="props.height"

@@ -37,7 +37,11 @@ const paths: ComputedRef<[StoragePath]> = computed(() => result.value?.machine.s
         @click="refetch"
       />
     </template>
-    <StoragePathTable :error="error" :items="paths" :loading="loading" />
+    <StoragePathTable
+      :error="error"
+      :items="paths"
+      :loading="loading"
+    />
   </UiChildCard>
 </template>
 

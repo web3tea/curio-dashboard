@@ -25,7 +25,11 @@ const headers = [
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-height="800" max-width="800">
+  <v-dialog
+    v-model="dialog"
+    max-height="800"
+    max-width="800"
+  >
     <template #activator="{ props: p }">
       <v-btn
         v-bind="p"
@@ -33,7 +37,9 @@ const headers = [
         :readonly="usedBy.length === 0"
         variant="text"
         @click="dialog = true"
-      >{{ props.usedBy.length }}</v-btn> {{ $t('fields.Node', props.usedBy.length) }}
+      >
+        {{ props.usedBy.length }}
+      </v-btn> {{ $t('fields.Node', props.usedBy.length) }}
     </template>
     <template #default="{ }">
       <v-data-table-virtual

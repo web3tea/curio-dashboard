@@ -16,7 +16,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <v-card class="title-card" :loading="loading" variant="text">
+  <v-card
+    class="title-card"
+    :loading="loading"
+    variant="text"
+  >
     <v-card-item class="pb-2 px-0 pt-0">
       <template #title>
         {{ props.title }}

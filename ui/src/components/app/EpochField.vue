@@ -31,7 +31,9 @@ const text = computed(() => {
 <template>
   <v-tooltip :text="text">
     <template #activator="{ props: props1 }">
-      <v-btn v-bind="props1">{{ epoch }}</v-btn>
+      <v-btn v-bind="props1">
+        {{ epoch }}
+      </v-btn>
     </template>
   </v-tooltip>
 </template>

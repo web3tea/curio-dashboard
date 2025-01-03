@@ -111,5 +111,10 @@ const chartData = computed(() => ({
 </script>
 
 <template>
-  <apexchart type="line" :height="props.height" :options="chartOptions" :series="chartData.series"> </apexchart>
+  <apexchart
+    type="line"
+    :height="props.height"
+    :options="chartOptions"
+    :series="chartData.series"
+  />
 </template>

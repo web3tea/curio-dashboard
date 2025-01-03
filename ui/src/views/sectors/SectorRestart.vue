@@ -66,7 +66,9 @@ async function doRestart () {
     :size="props.size"
     variant="flat"
     @click="doRestart"
-  >Restart ({{ props.sectors.length }})</v-btn>
+  >
+    Restart ({{ props.sectors.length }})
+  </v-btn>
 </template>
 
 <style scoped lang="scss">

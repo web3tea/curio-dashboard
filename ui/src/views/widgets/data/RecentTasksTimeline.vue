@@ -28,11 +28,24 @@ watch(
 </script>
 
 <template>
-  <v-timeline class="my-1 custom-timeline timeline-icon-circle justify-start px-5" line-color="borderLight" side="end">
-    <template v-for="task in tasks" :key="task.id">
-      <v-timeline-item :dot-color="task.result ? 'success' : 'error'" fill-dot>
+  <v-timeline
+    class="my-1 custom-timeline timeline-icon-circle justify-start px-5"
+    line-color="borderLight"
+    side="end"
+  >
+    <template
+      v-for="task in tasks"
+      :key="task.id"
+    >
+      <v-timeline-item
+        :dot-color="task.result ? 'success' : 'error'"
+        fill-dot
+      >
         <template #icon>
-          <component :is="task.result ? IconSquareCheck : IconCircleX " :style="{ fontSize: '16px' }" />
+          <component
+            :is="task.result ? IconSquareCheck : IconCircleX "
+            :style="{ fontSize: '16px' }"
+          />
         </template>
         <template #opposite>
           <span class="text-subtitle-2 text-medium-emphasis">{{ moment(task.workEnd).fromNow() }}</span>
@@ -42,7 +55,10 @@ watch(
             {{ task.name }}
           </h6>
           <span class="text-caption text-lightText">
-            <router-link class="text-primary link-hover" to="#">{{ task.completedByHostAndPort }}</router-link>
+            <router-link
+              class="text-primary link-hover"
+              to="#"
+            >{{ task.completedByHostAndPort }}</router-link>
             completed in {{ formatDuration(new Date(task.workEnd).getTime() - new Date(task.workStart).getTime()) }}
           </span>
         </v-card>

@@ -29,11 +29,24 @@ const headers = [
 
 <template>
   <v-row>
-    <v-col cols="12" md="12">
-      <v-card class="bg-surface" elevation="0" variant="outlined">
+    <v-col
+      cols="12"
+      md="12"
+    >
+      <v-card
+        class="bg-surface"
+        elevation="0"
+        variant="outlined"
+      >
         <v-card-item>
-          <v-row class="align-center" justify="space-between">
-            <v-col cols="12" md="3">
+          <v-row
+            class="align-center"
+            justify="space-between"
+          >
+            <v-col
+              cols="12"
+              md="3"
+            >
               <v-text-field
                 v-model="searchValue"
                 hide-details
@@ -47,7 +60,10 @@ const headers = [
                 </template>
               </v-text-field>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col
+              cols="12"
+              md="3"
+            >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
@@ -70,15 +86,22 @@ const headers = [
             :search="searchValue"
           >
             <template #item.address="{ item }">
-              <RouterLink :to="{ name: 'MinerDetails', params: { id: item.address } }">{{ item.address }}</RouterLink>
+              <RouterLink :to="{ name: 'MinerDetails', params: { id: item.address } }">
+                {{ item.address }}
+              </RouterLink>
             </template>
             <template #item.actorBalance="{ item }">
               {{ formatFIL(item.actorBalance) }}
             </template>
             <template #item.layers="{ item }">
               <v-chip-group>
-                <v-chip v-for="layer in item.layers" :key="layer">
-                  <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: layer } }">{{ layer }}</RouterLink>
+                <v-chip
+                  v-for="layer in item.layers"
+                  :key="layer"
+                >
+                  <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: layer } }">
+                    {{ layer }}
+                  </RouterLink>
                 </v-chip>
               </v-chip-group>
             </template>
@@ -99,7 +122,6 @@ const headers = [
       </v-card>
     </v-col>
   </v-row>
-
 </template>
 
 <style scoped lang="scss">

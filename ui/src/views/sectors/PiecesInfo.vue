@@ -64,7 +64,11 @@ const headers = [
       :loading="loading"
     >
       <template #item.f05DealProposal="{ item }">
-        <v-btn v-if="item.f05DealProposal" :icon="true" :rounded="true">
+        <v-btn
+          v-if="item.f05DealProposal"
+          :icon="true"
+          :rounded="true"
+        >
           <IconInfoCircle />
           <v-dialog activator="parent">
             <v-card>
@@ -78,7 +82,11 @@ const headers = [
         </v-btn>
       </template>
       <template #item.ddoPam="{ item }">
-        <v-btn v-if="item.ddoPam" :icon="true" :rounded="true">
+        <v-btn
+          v-if="item.ddoPam"
+          :icon="true"
+          :rounded="true"
+        >
           <IconInfoCircle />
           <v-dialog activator="parent">
             <v-card>

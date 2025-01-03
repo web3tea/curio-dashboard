@@ -56,15 +56,31 @@ const options = reactive<MaskInputOptions>({
 </script>
 
 <template>
-  <v-card class="bg-surface" elevation="0" variant="outlined">
+  <v-card
+    class="bg-surface"
+    elevation="0"
+    variant="outlined"
+  >
     <v-card-item>
-      <v-row class="align-center" justify="space-between">
-        <v-col cols="12" md="6">
+      <v-row
+        class="align-center"
+        justify="space-between"
+      >
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-row>
-            <v-col cols="12" md="3">
+            <v-col
+              cols="12"
+              md="3"
+            >
               <MinerSelectInput v-model="selectedMiner" />
             </v-col>
-            <v-col cols="6" md="3">
+            <v-col
+              cols="6"
+              md="3"
+            >
               <v-text-field
                 v-model="searchSectorNumberCache"
                 v-maska="options"
@@ -81,7 +97,10 @@ const options = reactive<MaskInputOptions>({
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col
+          cols="12"
+          md="3"
+        >
           <div class="d-flex ga-2 justify-end">
             <v-btn
               :icon="IconReload"
@@ -91,7 +110,6 @@ const options = reactive<MaskInputOptions>({
             />
           </div>
         </v-col>
-
       </v-row>
     </v-card-item>
     <v-divider />
@@ -108,10 +126,14 @@ const options = reactive<MaskInputOptions>({
         :loading="loading"
       >
         <template #item.meta.spId="{ value }">
-          <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">{{ value }}</RouterLink>
+          <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
+            {{ value }}
+          </RouterLink>
         </template>
         <template #item.meta.sectorNum="{ item }">
-          <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.meta?.spId, sectorNumber: item.meta?.sectorNum } }">{{ item.meta?.sectorNum }}</RouterLink>
+          <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.meta?.spId, sectorNumber: item.meta?.sectorNum } }">
+            {{ item.meta?.sectorNum }}
+          </RouterLink>
         </template>
         <template #item.meta.expirationEpoch="{ item }">
           <EpochField :epoch="item.meta?.expirationEpoch" />
@@ -123,12 +145,19 @@ const options = reactive<MaskInputOptions>({
           <v-dialog>
             <template #activator="{ props }">
               {{ item.locations?.some(location => location?.sectorFiletype === 1) ? 'Yes' : 'No' }}
-              <v-icon v-if="item.locations?.some(location => location?.sectorFiletype === 1)" color="primary" v-bind="props">
+              <v-icon
+                v-if="item.locations?.some(location => location?.sectorFiletype === 1)"
+                color="primary"
+                v-bind="props"
+              >
                 <IconInfoCircle />
               </v-icon>
             </template>
             <template #default="{ }">
-              <SectorLocations :miner="item.spID" :sector-number="item.sectorNum" />
+              <SectorLocations
+                :miner="item.spID"
+                :sector-number="item.sectorNum"
+              />
             </template>
           </v-dialog>
         </template>
@@ -136,13 +165,20 @@ const options = reactive<MaskInputOptions>({
           <v-dialog>
             <template #activator="{ props }">
               {{ item.locations?.some(location => location?.sectorFiletype === 2) ? 'Yes' : 'No' }}
-              <v-icon v-if="item.locations?.some(location => location?.sectorFiletype === 2)" color="primary" v-bind="props">
+              <v-icon
+                v-if="item.locations?.some(location => location?.sectorFiletype === 2)"
+                color="primary"
+                v-bind="props"
+              >
                 <IconInfoCircle />
               </v-icon>
             </template>
 
             <template #default="{ }">
-              <SectorLocations :miner="item.spID" :sector-number="item.sectorNum" />
+              <SectorLocations
+                :miner="item.spID"
+                :sector-number="item.sectorNum"
+              />
             </template>
           </v-dialog>
         </template>

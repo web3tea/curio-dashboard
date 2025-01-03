@@ -75,7 +75,10 @@ function removeSector () {
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="500">
+  <v-dialog
+    v-model="dialog"
+    max-width="500"
+  >
     <template #activator="{ props: p }">
       <v-icon
         v-if="useIcon"
@@ -93,24 +96,43 @@ function removeSector () {
         :size="props.size"
         variant="flat"
         @click="dialog = true"
-      >Remove ({{ props.sectors.length }})</v-btn>
+      >
+        Remove ({{ props.sectors.length }})
+      </v-btn>
     </template>
     <template #default="{ }">
-      <v-card border class="mx-auto" flat max-width="500">
-        <v-list-item class="px-6" height="88">
+      <v-card
+        border
+        class="mx-auto"
+        flat
+        max-width="500"
+      >
+        <v-list-item
+          class="px-6"
+          height="88"
+        >
           <template #append>
-            <v-icon color="warning" :icon="IconAlertOctagon" />
+            <v-icon
+              color="warning"
+              :icon="IconAlertOctagon"
+            />
           </template>
-          <template #title> {{ $t('msgs.sureRemoveSector', sectors.length) }}</template>
+          <template #title>
+            {{ $t('msgs.sureRemoveSector', sectors.length) }}
+          </template>
         </v-list-item>
 
         <v-divider />
 
         <v-card-text class="text-medium-emphasis pa-6">
-          <div class="text-h6 mb-6">{{ $t('msgs.actionCantUndo') }}</div>
+          <div class="text-h6 mb-6">
+            {{ $t('msgs.actionCantUndo') }}
+          </div>
 
           <template v-if="sectors.length > 1">
-            <div class="text-h4 font-weight-black mb-4">{{ (success/sectors.length * 100).toFixed(0) }}%</div>
+            <div class="text-h4 font-weight-black mb-4">
+              {{ (success/sectors.length * 100).toFixed(0) }}%
+            </div>
 
             <v-progress-linear
               bg-color="surface-variant"
@@ -124,12 +146,31 @@ function removeSector () {
             <div>Removed {{ success }} — Total {{ sectors.length }}</div>
           </template>
           <template v-else>
-            <div class="my-4">Miner: <v-chip color="red" variant="outlined">{{ sectors[0].spId }}</v-chip></div>
-            <div class="my-4">Sector: <v-chip color="red" variant="outlined">{{ sectors[0].sectorNumber }}</v-chip></div>
+            <div class="my-4">
+              Miner: <v-chip
+                color="red"
+                variant="outlined"
+              >
+                {{ sectors[0].spId }}
+              </v-chip>
+            </div>
+            <div class="my-4">
+              Sector: <v-chip
+                color="red"
+                variant="outlined"
+              >
+                {{ sectors[0].sectorNumber }}
+              </v-chip>
+            </div>
           </template>
           <v-row v-if="hasHealthSector">
             <v-col cols="auto">
-              <div class="my-4  text-overline" style="color: yellow"> ({{ $t('msgs.sectorNotFailed', props.sectors.length) }}) </div>
+              <div
+                class="my-4  text-overline"
+                style="color: yellow"
+              >
+                ({{ $t('msgs.sectorNotFailed', props.sectors.length) }})
+              </div>
             </v-col>
             <v-col cols="auto">
               <v-checkbox v-model="doubleCheck">
@@ -144,14 +185,18 @@ function removeSector () {
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="dialog = false">{{ $t('actions.Cancel') }}</v-btn>
+          <v-btn @click="dialog = false">
+            {{ $t('actions.Cancel') }}
+          </v-btn>
           <v-btn
             color="error"
             :disabled="!canRemove"
             :loading="loading"
             variant="flat"
             @click="removeSector"
-          >{{ $t('actions.Remove') }}</v-btn>
+          >
+            {{ $t('actions.Remove') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </template>

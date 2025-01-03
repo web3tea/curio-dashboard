@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "vue-tsc --noEmit && eslint . --fix --ignore-pattern .gitignore"
+    "lint": "vue-tsc --noEmit && eslint . --fix"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
@@ -72,6 +72,6 @@
     "vite-plugin-vue-layouts": "^0.11.0",
     "vite-plugin-vuetify": "^2.0.3",
     "vue-router": "^4.4.0",
-    "vue-tsc": "https://pkg.pr.new/vuejs/language-tools/vue-tsc@3fb59af"
+    "vue-tsc": "2.2.0"
   }
 }

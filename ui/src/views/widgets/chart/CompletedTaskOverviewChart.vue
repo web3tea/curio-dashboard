@@ -120,9 +120,14 @@ const areaChart = computed(() => {
 </script>
 
 <template>
-  <UiWidgetCard :loading="loading" :title="$t('fields.Tasks Completed')">
+  <UiWidgetCard
+    :loading="loading"
+    :title="$t('fields.Tasks Completed')"
+  >
     <template #subtitle>
-      <router-link :to="{name: 'TaskHistory'}">{{ $t('fields.View All') }}</router-link>
+      <router-link :to="{name: 'TaskHistory'}">
+        {{ $t('fields.View All') }}
+      </router-link>
     </template>
     <template #append>
       <div class="d-flex flex-wrap">
@@ -139,11 +144,24 @@ const areaChart = computed(() => {
             size="small"
             value="7"
             variant="outlined"
-          > {{ $t('fields.Week') }} </v-tab>
-          <v-tab rounded="md" value="30" variant="outlined"> {{ $t('fields.Month') }} </v-tab>
+          >
+            {{ $t('fields.Week') }}
+          </v-tab>
+          <v-tab
+            rounded="md"
+            value="30"
+            variant="outlined"
+          >
+            {{ $t('fields.Month') }}
+          </v-tab>
         </v-tabs>
       </div>
     </template>
-    <apexchart height="450" :options="chartOptions" :series="areaChart.series" type="area" />
+    <apexchart
+      height="450"
+      :options="chartOptions"
+      :series="areaChart.series"
+      type="area"
+    />
   </UiWidgetCard>
 </template>

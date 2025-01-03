@@ -1,4 +1,4 @@
-const sealProofSizes: { [key: number]: string } = {
+const sealProofSizes: Record<number, string> = {
   0: '2KiB',
   1: '8MiB',
   2: '512MiB',

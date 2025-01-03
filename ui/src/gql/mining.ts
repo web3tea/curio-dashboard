@@ -41,7 +41,6 @@ export const GetMiningWins = gql`
     ${miningFragment}
 `
 
-
 const miningCountFragment = gql`
   fragment MiningCount on MiningCountSummary {
     start
@@ -80,7 +79,6 @@ const miningCountAggregateFragment = gql`
     included
   }
 `
-
 
 export const GetMiningCountAggregation = gql`
     query GetMiningCountAggregation($start: Time!, $end: Time!, $miner: ActorID, $interval: MiningTaskAggregateInterval!) {

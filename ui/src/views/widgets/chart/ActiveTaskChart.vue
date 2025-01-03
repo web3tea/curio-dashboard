@@ -107,10 +107,15 @@ const areaChart = computed(() => {
 </script>
 
 <template>
-  <v-card class="title-card" variant="text">
+  <v-card
+    class="title-card"
+    variant="text"
+  >
     <v-card-item class="pb-2 px-0 pt-0">
       <div class="d-flex justify-space-between">
-        <v-card-title class="text-h5">{{ $t('fields.Active Tasks') }}</v-card-title>
+        <v-card-title class="text-h5">
+          {{ $t('fields.Active Tasks') }}
+        </v-card-title>
         <div class="d-flex flex-wrap">
           <v-tabs
             v-model="tab"
@@ -119,14 +124,32 @@ const areaChart = computed(() => {
             density="compact"
             hide-slider
           >
-            <v-tab class="mr-1" rounded="md" value="7" variant="outlined"> {{ $t('fields.Week') }} </v-tab>
-            <v-tab rounded="md" value="30" variant="outlined"> {{ $t('fields.Month') }} </v-tab>
+            <v-tab
+              class="mr-1"
+              rounded="md"
+              value="7"
+              variant="outlined"
+            >
+              {{ $t('fields.Week') }}
+            </v-tab>
+            <v-tab
+              rounded="md"
+              value="30"
+              variant="outlined"
+            >
+              {{ $t('fields.Month') }}
+            </v-tab>
           </v-tabs>
         </div>
       </div>
     </v-card-item>
     <v-card-text class="rounded-md overflow-hidden">
-      <apexchart height="450" :options="chartOptions" :series="areaChart.series" type="area" />
+      <apexchart
+        height="450"
+        :options="chartOptions"
+        :series="areaChart.series"
+        type="area"
+      />
     </v-card-text>
   </v-card>
 </template>

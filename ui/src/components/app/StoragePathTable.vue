@@ -51,17 +51,34 @@ const headers = [
     :search="props.search"
   >
     <template #item.type="{ value }">
-      <v-chip :color="getColorByType(value)" label size="small"> {{ value }} </v-chip>
+      <v-chip
+        :color="getColorByType(value)"
+        label
+        size="small"
+      >
+        {{ value }}
+      </v-chip>
     </template>
     <template #item.lastHeartbeat="{ value }">
       {{ moment(value).fromNow() }}
     </template>
     <template #item.storageId="{ value }">
-      <v-chip label size="small"> {{ value }} </v-chip>
+      <v-chip
+        label
+        size="small"
+      >
+        {{ value }}
+      </v-chip>
     </template>
     <template #item.urls="{ value }">
       <v-chip-group column>
-        <v-chip v-for="url in value.split(',')" :key="url" label> {{ url }} </v-chip>
+        <v-chip
+          v-for="url in value.split(',')"
+          :key="url"
+          label
+        >
+          {{ url }}
+        </v-chip>
       </v-chip-group>
     </template>
     <template #item.capacity="{ value }">

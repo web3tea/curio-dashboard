@@ -28,7 +28,10 @@ const stateMap = {
 <template>
   <v-stepper alt-labels>
     <v-stepper-header>
-      <template v-for="(item, i) in stateMap" :key="i">
+      <template
+        v-for="(item, i) in stateMap"
+        :key="i"
+      >
         <v-divider v-if="i" />
         <v-stepper-item
           :rules="[() => sector[i]]"

@@ -62,7 +62,12 @@ const headers = [
       <template #item.storage.path.urls="{ item }">
         {{ item.storage?.path?.urls }}
         <v-badge color="success">
-          <v-icon end size="x-small">mdi-home-outline</v-icon>
+          <v-icon
+            end
+            size="x-small"
+          >
+            mdi-home-outline
+          </v-icon>
         </v-badge>
       </template>
     </v-data-table-virtual>

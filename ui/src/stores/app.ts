@@ -8,7 +8,5 @@ export const useAppStore = defineStore('app', {
     },
   }),
   actions: {
-    async fetchMeta () {
-    },
   },
 })

@@ -36,11 +36,24 @@ const tab = ref('tab-profile')
       <v-card variant="flat">
         <v-card variant="outlined">
           <v-card-text>
-            <v-tabs v-model="tab" color="primary">
-              <v-tab value="tab-profile"><IconInfoCircle class="v-icon--start" size="18" />Profile</v-tab>
-              <v-tab value="tab-mining"><IconMoneybag class="v-icon--start" size="18" />Mining</v-tab>
+            <v-tabs
+              v-model="tab"
+              color="primary"
+            >
+              <v-tab value="tab-profile">
+                <IconInfoCircle
+                  class="v-icon--start"
+                  size="18"
+                />Profile
+              </v-tab>
+              <v-tab value="tab-mining">
+                <IconMoneybag
+                  class="v-icon--start"
+                  size="18"
+                />Mining
+              </v-tab>
             </v-tabs>
-            <v-divider></v-divider>
+            <v-divider />
             <div class="pt-6">
               <v-window v-model="tab">
                 <v-window-item value="tab-profile">

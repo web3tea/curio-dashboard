@@ -39,15 +39,25 @@ onMounted(async () => {
   >
     <!---If icon-->
     <template #prepend>
-      <component :is="props.item.icon" class="iconClass" :level="props.level" />
+      <component
+        :is="props.item.icon"
+        class="iconClass"
+        :level="props.level"
+      />
     </template>
     <v-list-item-title>{{ $t("nav."+item.title) }}</v-list-item-title>
     <!---If Caption-->
-    <v-list-item-subtitle v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
+    <v-list-item-subtitle
+      v-if="item.subCaption"
+      class="text-caption mt-n1 hide-menu"
+    >
       {{ item.subCaption }}
     </v-list-item-subtitle>
     <!---If any chip or label-->
-    <template v-if="item.chip" #append>
+    <template
+      v-if="item.chip"
+      #append
+    >
       <v-chip
         class="sidebarchip hide-menu"
         :color="item.chipColor"
@@ -72,15 +82,25 @@ onMounted(async () => {
   >
     <!---If icon-->
     <template #prepend>
-      <component :is="props.item.icon" class="iconClass" :level="props.level" />
+      <component
+        :is="props.item.icon"
+        class="iconClass"
+        :level="props.level"
+      />
     </template>
     <v-list-item-title>{{ $t("nav."+item.title) }}</v-list-item-title>
     <!---If Caption-->
-    <v-list-item-subtitle v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
+    <v-list-item-subtitle
+      v-if="item.subCaption"
+      class="text-caption mt-n1 hide-menu"
+    >
       {{ item.subCaption }}
     </v-list-item-subtitle>
     <!---If any chip or label-->
-    <template v-if="item.chip" #append>
+    <template
+      v-if="item.chip"
+      #append
+    >
       <v-chip
         class="sidebarchip hide-menu"
         :color="item.chipColor"

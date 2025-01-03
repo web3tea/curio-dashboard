@@ -70,11 +70,24 @@ onDone(() => {
 
 <template>
   <v-row>
-    <v-col cols="12" md="12">
-      <v-card class="bg-surface" elevation="0" variant="outlined">
+    <v-col
+      cols="12"
+      md="12"
+    >
+      <v-card
+        class="bg-surface"
+        elevation="0"
+        variant="outlined"
+      >
         <v-card-item>
-          <v-row class="align-center" justify="space-between">
-            <v-col cols="12" md="3">
+          <v-row
+            class="align-center"
+            justify="space-between"
+          >
+            <v-col
+              cols="12"
+              md="3"
+            >
               <v-text-field
                 v-model="searchValue"
                 hide-details
@@ -88,10 +101,22 @@ onDone(() => {
                 </template>
               </v-text-field>
             </v-col>
-            <v-col cols="12" md="3">
-              <v-btn color="primary" :loading="restartLoading" @click="restartAll">Restart All</v-btn>
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-btn
+                color="primary"
+                :loading="restartLoading"
+                @click="restartAll"
+              >
+                Restart All
+              </v-btn>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col
+              cols="12"
+              md="3"
+            >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
@@ -124,10 +149,14 @@ onDone(() => {
               </v-card-actions>
             </template>
             <template #item.spId="{ value }">
-              <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">{{ value }}</RouterLink>
+              <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
+                {{ value }}
+              </RouterLink>
             </template>
             <template #item.sectorNumber="{ item }">
-              <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.spId, sectorNumber: item.sectorNumber } }">{{ item.sectorNumber }}</RouterLink>
+              <RouterLink :to="{ name: 'SectorDetails', params: { miner: item.spId, sectorNumber: item.sectorNumber } }">
+                {{ item.sectorNumber }}
+              </RouterLink>
             </template>
             <template #item.status="{ item }">
               <v-chip
@@ -135,7 +164,9 @@ onDone(() => {
                 label
                 size="small"
                 variant="flat"
-              >{{ item.status }}</v-chip>
+              >
+                {{ item.status }}
+              </v-chip>
             </template>
             <template #item.task="{ item }">
               <div class="text-subtitle-1">
@@ -151,15 +182,21 @@ onDone(() => {
               {{ $d(value, 'short') }}
             </template>
             <template #item.actions="{ item }">
-              <SectorRemoveDialog :sectors="[item]" use-icon />
-              <SectorRestart v-if="item.failed" :sectors="[item]" use-icon />
+              <SectorRemoveDialog
+                :sectors="[item]"
+                use-icon
+              />
+              <SectorRestart
+                v-if="item.failed"
+                :sectors="[item]"
+                use-icon
+              />
             </template>
           </v-data-table-virtual>
         </v-card-text>
       </v-card>
     </v-col>
   </v-row>
-
 </template>
 
 <style scoped lang="scss">

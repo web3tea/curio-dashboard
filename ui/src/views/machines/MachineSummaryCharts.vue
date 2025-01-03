@@ -34,9 +34,15 @@ const cards = computed(() => [
           <v-card-text>
             <div class="d-flex align-items-center justify-space-between">
               <div>
-                <h5 class="text-h5">{{ $t('fields.'+card.text) }}</h5>
-                <h3 class="text-h3 my-2">{{ card.value }}</h3>
-                <h6 class="text-caption font-weight-medium mb-0">{{ $d(new Date(), "short") }}</h6>
+                <h5 class="text-h5">
+                  {{ $t('fields.'+card.text) }}
+                </h5>
+                <h3 class="text-h3 my-2">
+                  {{ card.value }}
+                </h3>
+                <h6 class="text-caption font-weight-medium mb-0">
+                  {{ $d(new Date(), "short") }}
+                </h6>
               </div>
               <span class="d-flex align-center">
                 <v-btn

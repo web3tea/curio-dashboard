@@ -25,14 +25,14 @@ const selected = ref('Today')
 
 const realStart = computed(() => {
   switch (selected.value) {
-    case 'Today':
-      return new Date(new Date().setHours(0, 0, 0, 0))
-    case 'Last 7 days':
-      return new Date(new Date().setDate(new Date().getDate() - 7))
-    case 'Last 30 days':
-      return new Date(new Date().setDate(new Date().getDate() - 30))
-    default:
-      return props.start
+  case 'Today':
+    return new Date(new Date().setHours(0, 0, 0, 0))
+  case 'Last 7 days':
+    return new Date(new Date().setDate(new Date().getDate() - 7))
+  case 'Last 30 days':
+    return new Date(new Date().setDate(new Date().getDate() - 30))
+  default:
+    return props.start
   }
 })
 
@@ -63,11 +63,13 @@ const cards = computed(() => {
   ]
 })
 
-
 </script>
 
 <template>
-  <UiWidgetCard title="Mining" :loading="loading">
+  <UiWidgetCard
+    title="Mining"
+    :loading="loading"
+  >
     <template #append>
       <v-autocomplete
         id="autocomplete-input"
@@ -78,32 +80,60 @@ const cards = computed(() => {
         hide-details
         min-width="160"
         density="compact"
-      ></v-autocomplete>
+      />
     </template>
     <v-row class="justify-sm-space-between justify-center py-5 px-4">
-      <v-col v-for="(card, index) in cards" :key="index" cols="12" md="3" sm="6">
+      <v-col
+        v-for="(card, index) in cards"
+        :key="index"
+        cols="12"
+        md="3"
+        sm="6"
+      >
         <v-card variant="outlined">
           <v-card-text>
             <div class="d-flex align-start justify-space-between">
               <div>
-                <h6 class="text-subtitle-1">{{ card.title }}</h6>
-                <h5 class="text-h5 mb-0">{{ card.value }}</h5>
+                <h6 class="text-subtitle-1">
+                  {{ card.title }}
+                </h6>
+                <h5 class="text-h5 mb-0">
+                  {{ card.value }}
+                </h5>
                 <span class="text-lightText text-caption pt-2">
-                        {{ $d(props.start, 'toShortDay') }} - {{ $d(props.end, 'toShortDay') }}
-                      </span>
+                  {{ $d(props.start, 'toShortDay') }} - {{ $d(props.end, 'toShortDay') }}
+                </span>
               </div>
               <div class="d-flex align-center">
-                <IconCaretDown v-if="card.percentage < 0" color="red" size="16"/>
-                <IconCaretUpDown v-else-if="card.percentage === 0" color="gray" size="16"/>
-                <IconCaretUp v-else color="green" size="16"/>
-                <h5 class="text-h5 text-lightText mb-0 ml-1">{{ card.percentage.toFixed(2) }}%</h5>
+                <IconCaretDown
+                  v-if="card.percentage < 0"
+                  color="red"
+                  size="16"
+                />
+                <IconCaretUpDown
+                  v-else-if="card.percentage === 0"
+                  color="gray"
+                  size="16"
+                />
+                <IconCaretUp
+                  v-else
+                  color="green"
+                  size="16"
+                />
+                <h5 class="text-h5 text-lightText mb-0 ml-1">
+                  {{ card.percentage.toFixed(2) }}%
+                </h5>
               </div>
             </div>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
-    <TabCardChart :start="realStart" :end="props.end" :miner="props.miner" />
+    <TabCardChart
+      :start="realStart"
+      :end="props.end"
+      :miner="props.miner"
+    />
   </UiWidgetCard>
 </template>
 <style lang="scss">

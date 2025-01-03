@@ -18,17 +18,37 @@ const props = defineProps({
 
 <template>
   <a class="navItemLink rounded-md cursor-pointer">
-    <component :is="props.item.icon" class="iconClass" :level="props.level" :style="{ fontSize: '16px' }" />
+    <component
+      :is="props.item.icon"
+      class="iconClass"
+      :level="props.level"
+      :style="{ fontSize: '16px' }"
+    />
     <span class="mr-auto">{{ $t("nav."+item.title) }}</span>
-    <small v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
+    <small
+      v-if="item.subCaption"
+      class="text-caption mt-n1 hide-menu"
+    >
       {{ item.subCaption }}
     </small>
     <i class="ddIcon ml-2"><IconChevronRight size="15" /></i>
   </a>
   <ul :class="`ddMenu px-0 ddLevel-${level + 1}`">
-    <li v-for="(subitem, i) in item.children" :key="i" class="navItem rounded-0">
-      <NavCollapse v-if="subitem.children" :item="subitem" :level="props.level + 1" />
-      <NavItem v-else :item="subitem" :level="props.level + 1" />
+    <li
+      v-for="(subitem, i) in item.children"
+      :key="i"
+      class="navItem rounded-0"
+    >
+      <NavCollapse
+        v-if="subitem.children"
+        :item="subitem"
+        :level="props.level + 1"
+      />
+      <NavItem
+        v-else
+        :item="subitem"
+        :level="props.level + 1"
+      />
     </li>
   </ul>
 </template>

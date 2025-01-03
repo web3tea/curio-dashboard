@@ -83,7 +83,10 @@ const extensions = computed(() => {
 
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
-  <UiParentCard :loading="loading" :title="t('fields.Edit Configuration')">
+  <UiParentCard
+    :loading="loading"
+    :title="t('fields.Edit Configuration')"
+  >
     <template #action>
       <v-btn
         v-if="enableEdit"
@@ -107,7 +110,9 @@ const extensions = computed(() => {
         {{ t('actions.Edit') }}
       </v-btn>
     </template>
-    <v-label class="mb-1">Layer</v-label>
+    <v-label class="mb-1">
+      Layer
+    </v-label>
     <v-text-field
       v-model="editTitle"
       color="primary"
@@ -119,7 +124,9 @@ const extensions = computed(() => {
       required
       variant="outlined"
     />
-    <v-label class="mb-1 mt-5">Config</v-label>
+    <v-label class="mb-1 mt-5">
+      Config
+    </v-label>
     <Codemirror
       v-model="editConfig"
       :autofocus="true"

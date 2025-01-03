@@ -60,11 +60,24 @@ const headers = [
 
 <template>
   <v-row>
-    <v-col cols="12" md="12">
-      <v-card class="bg-surface" elevation="0" variant="outlined">
+    <v-col
+      cols="12"
+      md="12"
+    >
+      <v-card
+        class="bg-surface"
+        elevation="0"
+        variant="outlined"
+      >
         <v-card-item>
-          <v-row class="align-center" justify="space-between">
-            <v-col cols="12" md="3">
+          <v-row
+            class="align-center"
+            justify="space-between"
+          >
+            <v-col
+              cols="12"
+              md="3"
+            >
               <v-text-field
                 v-model="searchValue"
                 hide-details
@@ -78,7 +91,10 @@ const headers = [
                 </template>
               </v-text-field>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col
+              cols="12"
+              md="3"
+            >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
@@ -127,28 +143,47 @@ const headers = [
               />
             </template>
             <template #item.id="{ value }">
-              <RouterLink :to="{ name: 'MachineInfo', params: { id: Number(value) } }">{{ value }}</RouterLink>
+              <RouterLink :to="{ name: 'MachineInfo', params: { id: Number(value) } }">
+                {{ value }}
+              </RouterLink>
             </template>
             <template #item.hostAndPort="{ item }">
-              <RouterLink :to="{ name: 'MachineInfo', params: { id: item.id } }">{{ item.hostAndPort }}</RouterLink>
+              <RouterLink :to="{ name: 'MachineInfo', params: { id: item.id } }">
+                {{ item.hostAndPort }}
+              </RouterLink>
             </template>
             <template #item.lastContact="{ value }">
-              <div :title="value">{{ $d(value, 'short') }}</div>
+              <div :title="value">
+                {{ $d(value, 'short') }}
+              </div>
             </template>
             <template #item.detail.startupTime="{ value }">
-              <div :title="value">{{ $d(value, 'short') }}</div>
+              <div :title="value">
+                {{ $d(value, 'short') }}
+              </div>
             </template>
             <template #item.ram="{ value }">
               <div>{{ formatBytes(value).combined }}</div>
             </template>
             <template #item.detail.layers="{ value }">
               <v-chip-group column>
-                <v-chip v-for="layer in value.split(',')" :key="layer" :to="{name: 'ConfigurationEdit', params: {layer: layer}}">{{ layer }}</v-chip>
+                <v-chip
+                  v-for="layer in value.split(',')"
+                  :key="layer"
+                  :to="{name: 'ConfigurationEdit', params: {layer: layer}}"
+                >
+                  {{ layer }}
+                </v-chip>
               </v-chip-group>
             </template>
             <template #item.detail.tasks="{ value }">
               <v-chip-group column>
-                <v-chip v-for="task in value.split(',')" :key="task">{{ task }}</v-chip>
+                <v-chip
+                  v-for="task in value.split(',')"
+                  :key="task"
+                >
+                  {{ task }}
+                </v-chip>
               </v-chip-group>
             </template>
             <template #item.operation="{}">

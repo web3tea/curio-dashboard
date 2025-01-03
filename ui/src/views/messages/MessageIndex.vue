@@ -20,7 +20,10 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
-    <v-col cols="12" lg="12">
+    <v-col
+      cols="12"
+      lg="12"
+    >
       <MessageSendsTable />
     </v-col>
   </v-row>

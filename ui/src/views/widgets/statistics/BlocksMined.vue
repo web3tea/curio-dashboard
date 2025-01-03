@@ -37,8 +37,12 @@ const count: ComputedRef<number> = computed(() => result.value?.miningWinsCount 
       <v-card-text>
         <div class="d-flex align-items-center justify-space-between">
           <div>
-            <h5 class="text-h5">{{ $t('fields.Blocks Mined') }}</h5>
-            <h3 class="text-h3 my-2">{{ count }}</h3>
+            <h5 class="text-h5">
+              {{ $t('fields.Blocks Mined') }}
+            </h5>
+            <h3 class="text-h3 my-2">
+              {{ count }}
+            </h3>
             <h6 class="text-caption font-weight-medium mb-0">
               {{ $d(currentStart, 'short') }} - {{ $d(currentEnd, 'short') }}
             </h6>

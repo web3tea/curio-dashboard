@@ -75,7 +75,9 @@ const extensions = computed(() => {
         Create
       </v-btn>
     </template>
-    <v-label class="mb-1">Layer</v-label>
+    <v-label class="mb-1">
+      Layer
+    </v-label>
     <v-text-field
       v-model="editTitle"
       color="primary"
@@ -85,7 +87,9 @@ const extensions = computed(() => {
       placeholder="Enter config layer"
       variant="outlined"
     />
-    <v-label class="mb-1 mt-5">Config</v-label>
+    <v-label class="mb-1 mt-5">
+      Config
+    </v-label>
     <Codemirror
       v-model="editConfig"
       :autofocus="true"

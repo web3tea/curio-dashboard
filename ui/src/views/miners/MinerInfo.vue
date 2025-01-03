@@ -9,7 +9,6 @@ import { formatFIL } from '@/utils/helpers/formatFIL'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
-
 const { t } = useI18n()
 
 const props = defineProps({
@@ -68,7 +67,10 @@ const cols2 = computed(() => {
 </script>
 
 <template>
-  <UiChildCard :loading="loading" :title="t('fields.Basic Info')">
+  <UiChildCard
+    :loading="loading"
+    :title="t('fields.Basic Info')"
+  >
     <template #action>
       <v-btn
         :icon="IconReload"
@@ -78,7 +80,10 @@ const cols2 = computed(() => {
       />
     </template>
     <v-row class="py-2 mx-0 details-content">
-      <v-col cols="12" sm="6">
+      <v-col
+        cols="12"
+        sm="6"
+      >
         <v-row>
           <v-col
             v-for="(detail, i) in cols1"
@@ -87,11 +92,24 @@ const cols2 = computed(() => {
             :cols="detail.cols"
             :sm="detail.sm"
           >
-            <p class="text-h6 text-lightText mb-1">{{ detail.title }}</p>
+            <p class="text-h6 text-lightText mb-1">
+              {{ detail.title }}
+            </p>
             <p class="text-h6 mb-2">
               <template v-if="Array.isArray(detail.subtext)">
-                <v-chip v-for="(item, index) in detail.subtext" :key="index" class="mr-1">{{ item }}</v-chip>
-                <v-chip v-if="!detail.subtext.length" class="mr-1">N/A</v-chip>
+                <v-chip
+                  v-for="(item, index) in detail.subtext"
+                  :key="index"
+                  class="mr-1"
+                >
+                  {{ item }}
+                </v-chip>
+                <v-chip
+                  v-if="!detail.subtext.length"
+                  class="mr-1"
+                >
+                  N/A
+                </v-chip>
               </template>
               <template v-else>
                 {{ detail.subtext || 'N/A' }}
@@ -101,7 +119,10 @@ const cols2 = computed(() => {
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="12" sm="6">
+      <v-col
+        cols="12"
+        sm="6"
+      >
         <v-row>
           <v-col
             v-for="(detail, i) in cols2"
@@ -110,11 +131,24 @@ const cols2 = computed(() => {
             :cols="detail.cols"
             :sm="detail.sm"
           >
-            <p class="text-h6 text-lightText mb-1">{{ detail.title }}</p>
+            <p class="text-h6 text-lightText mb-1">
+              {{ detail.title }}
+            </p>
             <p class="text-h6 mb-2">
               <template v-if="Array.isArray(detail.subtext)">
-                <v-chip v-for="(item, index) in detail.subtext" :key="index" class="mr-1">{{ item }}</v-chip>
-                <v-chip v-if="!detail.subtext.length" class="mr-1">N/A</v-chip>
+                <v-chip
+                  v-for="(item, index) in detail.subtext"
+                  :key="index"
+                  class="mr-1"
+                >
+                  {{ item }}
+                </v-chip>
+                <v-chip
+                  v-if="!detail.subtext.length"
+                  class="mr-1"
+                >
+                  N/A
+                </v-chip>
               </template>
               <template v-else>
                 {{ detail.subtext || 'N/A' }}

@@ -2,7 +2,7 @@
 import { RouterView, useRoute } from 'vue-router'
 import LoaderWrapper from '@/layouts/LoaderWrapper.vue'
 import VerticalSidebarVue from '@/layouts/vertical-sidebar/VerticalSidebar.vue'
-import VerticalHeader from '@/layouts/header/Header.vue'
+import VerticalHeader from '@/layouts/header/AppHeader.vue'
 import HorizontalSidebar from '@/layouts/horizontal-sidebar/HorizontalSidebar.vue'
 import FooterPanel from '@/layouts/footer/FooterPanel.vue'
 import { useCustomizerStore } from '@/stores/customizer'
@@ -36,10 +36,18 @@ const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
         location="top"
         rounded="md"
       >
-        <v-icon class="mr-1" icon="$checkboxMarkedCircleOutline" />
+        <v-icon
+          class="mr-1"
+          icon="$checkboxMarkedCircleOutline"
+        />
         {{ snackbarMsg?.msg }}
         <template #actions>
-          <v-btn color="white" :icon="IconX" variant="text" @click="showSnackbar = false" />
+          <v-btn
+            color="white"
+            :icon="IconX"
+            variant="text"
+            @click="showSnackbar = false"
+          />
         </template>
       </v-snackbar>
       <v-main class="page-wrapper">
@@ -48,12 +56,18 @@ const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
             <LoaderWrapper />
             <RouterView v-slot="{ Component }">
               <KeepAlive>
-                <component :is="Component" :key="route.fullPath" />
+                <component
+                  :is="Component"
+                  :key="route.fullPath"
+                />
               </KeepAlive>
             </RouterView>
           </div>
         </v-container>
-        <v-container class="pt-0" fluid>
+        <v-container
+          class="pt-0"
+          fluid
+        >
           <div>
             <FooterPanel />
           </div>

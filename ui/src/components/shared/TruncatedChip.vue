@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue'
 
-
 const props = defineProps({
   text: {
     type: String,
@@ -25,7 +24,6 @@ onMounted(() => {
   })
 })
 </script>
-
 
 <template>
   <v-chip v-bind="$attrs">

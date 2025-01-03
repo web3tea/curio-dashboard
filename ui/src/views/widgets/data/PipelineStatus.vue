@@ -83,7 +83,12 @@ const chartOptions = computed(() => {
 
 </script>
 <template>
-  <apexchart height="100" :options="chartOptions" :series="chartSeries" type="treemap" />
+  <apexchart
+    height="100"
+    :options="chartOptions"
+    :series="chartSeries"
+    type="treemap"
+  />
 </template>
 
 <style scoped lang="scss">

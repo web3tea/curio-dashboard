@@ -7,7 +7,7 @@ const FTUpdate: SectorFileType = 1 << 3
 const FTUpdateCache: SectorFileType = 1 << 4
 const FTPiece: SectorFileType = 1 << 5
 
-const sectorFileTypeMap: { [key: number]: string } = {
+const sectorFileTypeMap: Record<number, string> = {
   [FTUnsealed]: 'Unsealed',
   [FTSealed]: 'Sealed',
   [FTCache]: 'Cache',

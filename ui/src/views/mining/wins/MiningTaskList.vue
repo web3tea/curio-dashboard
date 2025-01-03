@@ -61,11 +61,8 @@ const { result, loading } = useQuery(GetMiningWins, {
 }))
 
 const items: ComputedRef<[MiningTask]> = computed(() => result.value?.miningWins || [])
-const itemsCount = computed<number>({
-  get: (): number => {
-    return result.value?.miningWinsCount || itemsCount.value || 0
-  },
-  set: () => {},
+const itemsCount = computed<number>((): number => {
+  return result.value?.miningWinsCount || itemsCount.value || 0
 })
 
 const headers = [
@@ -82,17 +79,41 @@ const headers = [
 </script>
 
 <template>
-  <v-card class="bg-surface" elevation="0" variant="outlined">
+  <v-card
+    class="bg-surface"
+    elevation="0"
+    variant="outlined"
+  >
     <v-card-item>
-      <v-row class="align-center" justify="space-between">
-        <v-col cols="6" md="2">
+      <v-row
+        class="align-center"
+        justify="space-between"
+      >
+        <v-col
+          cols="6"
+          md="2"
+        >
           <MinerSelectInput v-model="selectMiner" />
         </v-col>
-        <v-col cols="6" md="3">
-          <DateRangeSelectInput v-model="selectDateRange" label="Date Range" />
+        <v-col
+          cols="6"
+          md="3"
+        >
+          <DateRangeSelectInput
+            v-model="selectDateRange"
+            label="Date Range"
+          />
         </v-col>
-        <v-col cols="6" md="2">
-          <v-switch v-model="include" color="primary" :disabled="loading" label="Valid" />
+        <v-col
+          cols="6"
+          md="2"
+        >
+          <v-switch
+            v-model="include"
+            color="primary"
+            :disabled="loading"
+            label="Valid"
+          />
         </v-col>
         <v-spacer />
       </v-row>
@@ -122,7 +143,10 @@ const headers = [
         <template #item.minedHeader="{value}">
           <v-dialog>
             <template #activator="{ props:p1 }">
-              <v-icon color="primary" v-bind="p1">
+              <v-icon
+                color="primary"
+                v-bind="p1"
+              >
                 <IconInfoCircle />
               </v-icon>
             </template>
@@ -140,7 +164,6 @@ const headers = [
       </v-data-table-server>
     </v-card-text>
   </v-card>
-
 </template>
 
 <style scoped lang="scss">

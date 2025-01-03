@@ -5,7 +5,6 @@ import { GetConfigs, RemoveConfig } from '@/gql/config'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
 
-
 const uiStore = useUIStore()
 
 const props = defineProps({
@@ -57,7 +56,10 @@ onError(e => {
 </script>
 
 <template>
-  <v-dialog v-model="dialog" max-width="500">
+  <v-dialog
+    v-model="dialog"
+    max-width="500"
+  >
     <template #activator="{ props: p }">
       <v-icon
         v-if="useIcon"
@@ -75,32 +77,60 @@ onError(e => {
         :size="props.size"
         variant="flat"
         @click="dialog = true"
-      >Remove</v-btn>
+      >
+        Remove
+      </v-btn>
     </template>
     <template #default="{ }">
-      <v-card border class="mx-auto" flat max-width="500">
-        <v-list-item class="px-6" height="88">
+      <v-card
+        border
+        class="mx-auto"
+        flat
+        max-width="500"
+      >
+        <v-list-item
+          class="px-6"
+          height="88"
+        >
           <template #append>
-            <v-icon color="warning" :icon="IconAlertOctagon" />
+            <v-icon
+              color="warning"
+              :icon="IconAlertOctagon"
+            />
           </template>
-          <template #title> {{ $t('msgs.sureRemoveConfig', 1) }}</template>
+          <template #title>
+            {{ $t('msgs.sureRemoveConfig', 1) }}
+          </template>
         </v-list-item>
 
         <v-divider />
 
         <v-card-text class="text-medium-emphasis pa-6">
-          <div class="text-h6 mb-6">{{ $t('msgs.actionCantUndo') }}</div>
-          <div class="my-4">Configuration: <v-chip color="red" variant="outlined">{{ props.title }}</v-chip></div>
+          <div class="text-h6 mb-6">
+            {{ $t('msgs.actionCantUndo') }}
+          </div>
+          <div class="my-4">
+            Configuration: <v-chip
+              color="red"
+              variant="outlined"
+            >
+              {{ props.title }}
+            </v-chip>
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn @click="dialog = false">{{ $t('actions.Cancel') }}</v-btn>
+          <v-btn @click="dialog = false">
+            {{ $t('actions.Cancel') }}
+          </v-btn>
           <v-btn
             color="error"
             :loading="loading"
             variant="flat"
             @click="removeConfig"
-          >{{ $t('actions.Remove') }}</v-btn>
+          >
+            {{ $t('actions.Remove') }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </template>
@@ -138,3 +168,4 @@ onError(e => {
 <!--    </v-dialog>-->
 <!--  </v-btn>-->
 </template>
+

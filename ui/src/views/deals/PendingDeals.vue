@@ -63,10 +63,20 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
 </script>
 
 <template>
-  <v-card class="bg-surface" elevation="0" variant="outlined">
+  <v-card
+    class="bg-surface"
+    elevation="0"
+    variant="outlined"
+  >
     <v-card-item>
-      <v-row class="align-center" justify="space-between">
-        <v-col cols="12" md="3">
+      <v-row
+        class="align-center"
+        justify="space-between"
+      >
+        <v-col
+          cols="12"
+          md="3"
+        >
           <v-text-field
             v-model="search"
             hide-details
@@ -80,7 +90,10 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
             </template>
           </v-text-field>
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col
+          cols="12"
+          md="3"
+        >
           <div class="d-flex ga-2 justify-end">
             <v-btn
               :icon="IconReload"
@@ -118,7 +131,10 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
             }"
           />
           <tr>
-            <td :class="'pl-'+index+1" :colspan="3">
+            <td
+              :class="'pl-'+index+1"
+              :colspan="3"
+            >
               <v-btn
                 :icon="isGroupOpen(item) ? '$expand' : '$next'"
                 size="small"
@@ -127,7 +143,10 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
               />
               {{ index ===1 ? 'Sector : ' + item.value: item.value }} ({{ item.items.reduce((acc, curr) => acc + (curr.items ? curr.items.length : 1), 0) }})
             </td>
-            <td v-if="index === 1" :colspan="1">
+            <td
+              v-if="index === 1"
+              :colspan="1"
+            >
               <v-btn
                 color="primary"
                 :loading="dealSealNowLoading"
@@ -138,7 +157,10 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
                 Seal Now
               </v-btn>
             </td>
-            <td v-if="index===1" :colspan="columns.length-4">
+            <td
+              v-if="index===1"
+              :colspan="columns.length-4"
+            >
               <v-progress-linear
                 color="success"
                 height="25"

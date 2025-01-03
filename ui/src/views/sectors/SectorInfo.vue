@@ -37,7 +37,10 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
 </script>
 
 <template>
-  <UiChildCard :loading="loading" :title="t('fields.Sector Info')">
+  <UiChildCard
+    :loading="loading"
+    :title="t('fields.Sector Info')"
+  >
     <template #action>
       <v-btn
         :icon="IconReload"
@@ -66,8 +69,13 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
     </div>
     <v-divider class="my-4" />
     <v-row>
-      <v-col cols="12" sm="6">
-        <h4 class="mb-2 text-h4">Basic</h4>
+      <v-col
+        cols="12"
+        sm="6"
+      >
+        <h4 class="mb-2 text-h4">
+          Basic
+        </h4>
         <div class="mt-3 mb-2 text-subtitle-1">
           <span class="font-weight-semibold mr-2">expirationEpoch :</span>
           <span class="text-medium-emphasis">{{ meta.expirationEpoch }}</span>
@@ -97,8 +105,13 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
           <span class="text-medium-emphasis">{{ meta.ticketValue }}</span>
         </div>
       </v-col>
-      <v-col cols="12" sm="6">
-        <h4 class="mb-2 text-h4">Data</h4>
+      <v-col
+        cols="12"
+        sm="6"
+      >
+        <h4 class="mb-2 text-h4">
+          Data
+        </h4>
         <div class="mt-3 mb-2 text-subtitle-1">
           <span class="font-weight-semibold mr-2">curSealedCid :</span>
           <span class="text-medium-emphasis">{{ meta.curSealedCid }}</span>
@@ -132,7 +145,11 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
     <v-divider class="my-4" />
     <v-btn-group>
       <SectorRemoveDialog :sectors="[{spId: props.miner, sectorNumber: props.sectorNumber, failed: status === 'Failed'}]" />
-      <SectorRestart v-if="status === 'Failed'" color="primary" :sectors="[{spId: props.miner, sectorNumber: props.sectorNumber}]" />
+      <SectorRestart
+        v-if="status === 'Failed'"
+        color="primary"
+        :sectors="[{spId: props.miner, sectorNumber: props.sectorNumber}]"
+      />
     </v-btn-group>
   </UiChildCard>
 </template>

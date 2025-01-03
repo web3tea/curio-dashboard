@@ -50,7 +50,10 @@ const headers = [
 </script>
 
 <template>
-  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Recently Finished Tasks')">
+  <UiWidgetCard
+    class-name="px-0 pb-0 rounded-md"
+    :title="$t('fields.Recently Finished Tasks')"
+  >
     <template #append>
       <v-btn
         :icon="isStop ? IconPlayerPlay : IconPlayerPause"
@@ -60,7 +63,9 @@ const headers = [
       />
     </template>
     <template #subtitle>
-      <router-link :to="{name: 'TaskHistory'}">{{ $t('fields.View All') }}</router-link>
+      <router-link :to="{name: 'TaskHistory'}">
+        {{ $t('fields.View All') }}
+      </router-link>
     </template>
     <v-data-table-virtual
       fixed-header
@@ -72,7 +77,9 @@ const headers = [
       :loading="loading"
     >
       <template #item.name="{ value }">
-        <router-link :to="{ name: 'TaskHistory', query: { name: value } }">{{ value }}</router-link>
+        <router-link :to="{ name: 'TaskHistory', query: { name: value } }">
+          {{ value }}
+        </router-link>
       </template>
       <template #item.posted="{ value }">
         {{ $d(value, 'short') }}
@@ -81,7 +88,12 @@ const headers = [
         {{ $d(value, 'short') }}
       </template>
       <template #item.completedByHostAndPort="{ item }">
-        <RouterLink v-if="item.completedBy" :to="{ name: 'MachineInfo', params: { id: item.completedBy.id } }">{{ item.completedBy.hostAndPort }}</RouterLink>
+        <RouterLink
+          v-if="item.completedBy"
+          :to="{ name: 'MachineInfo', params: { id: item.completedBy.id } }"
+        >
+          {{ item.completedBy.hostAndPort }}
+        </RouterLink>
         <span v-else>{{ item.completedByHostAndPort }}</span>
       </template>
       <template #item.queued="{ item }">
@@ -91,9 +103,20 @@ const headers = [
         {{ formatDuration(new Date(item.workEnd).getTime() - new Date(item.workStart).getTime()) }}
       </template>
       <template #item.result="{ item }">
-        <v-chip class="px-0" size="small" variant="text">
-          <v-avatar class="mr-2" :color="item.result ? 'success' : 'error'" size="8" variant="flat" />
-          <p class="text-h6 mb-0">{{ item.result ? 'success' : 'failure' }}</p>
+        <v-chip
+          class="px-0"
+          size="small"
+          variant="text"
+        >
+          <v-avatar
+            class="mr-2"
+            :color="item.result ? 'success' : 'error'"
+            size="8"
+            variant="flat"
+          />
+          <p class="text-h6 mb-0">
+            {{ item.result ? 'success' : 'failure' }}
+          </p>
         </v-chip>
       </template>
     </v-data-table-virtual>

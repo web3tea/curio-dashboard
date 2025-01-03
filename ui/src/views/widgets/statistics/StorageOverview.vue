@@ -29,7 +29,10 @@ function usePercentage (available: number, total: number) {
 </script>
 
 <template>
-  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Storage Usages')">
+  <UiWidgetCard
+    class-name="px-0 pb-0 rounded-md"
+    :title="$t('fields.Storage Usages')"
+  >
     <template #append>
       <v-btn
         :disabled="loading"

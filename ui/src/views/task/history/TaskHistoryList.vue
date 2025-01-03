@@ -51,11 +51,8 @@ const { result, loading, refetch } = useQuery(GetTaskHistories, {
 }))
 
 const items: ComputedRef<[TaskHistory]> = computed(() => result.value?.taskHistories || [])
-const itemsCount = computed<number>({
-  get: (): number => {
-    return result.value?.taskHistoriesCount || itemsCount.value || 0
-  },
-  set: () => {},
+const itemsCount = computed<number>(() :number =>  {
+  return result.value?.taskHistoriesCount || itemsCount.value || 0
 })
 
 const headers = [
@@ -91,27 +88,65 @@ const selectDateRange = computed({
 
 <template>
   <v-row>
-    <v-col cols="12" md="12">
-      <v-card class="bg-surface" elevation="0" variant="outlined">
+    <v-col
+      cols="12"
+      md="12"
+    >
+      <v-card
+        class="bg-surface"
+        elevation="0"
+        variant="outlined"
+      >
         <v-card-item>
-          <v-row class="align-center" justify="space-between">
-            <v-col cols="12" md="9">
+          <v-row
+            class="align-center"
+            justify="space-between"
+          >
+            <v-col
+              cols="12"
+              md="9"
+            >
               <v-row>
-                <v-col cols="4" md="2">
+                <v-col
+                  cols="4"
+                  md="2"
+                >
                   <TaskNameSelectInput v-model="name" />
                 </v-col>
-                <v-col cols="4" md="2">
-                  <HostPortSelectInput v-model="machine" label="Completed By" />
+                <v-col
+                  cols="4"
+                  md="2"
+                >
+                  <HostPortSelectInput
+                    v-model="machine"
+                    label="Completed By"
+                  />
                 </v-col>
-                <v-col cols="6" md="2">
-                  <BoolSelectInput v-model="success" true-title="Success" false-title="Failure" />
+                <v-col
+                  cols="6"
+                  md="2"
+                >
+                  <BoolSelectInput
+                    v-model="success"
+                    true-title="Success"
+                    false-title="Failure"
+                  />
                 </v-col>
-                <v-col cols="6" md="3">
-                  <DateRangeSelectInput v-model="selectDateRange" label="Date Range" />
+                <v-col
+                  cols="6"
+                  md="3"
+                >
+                  <DateRangeSelectInput
+                    v-model="selectDateRange"
+                    label="Date Range"
+                  />
                 </v-col>
               </v-row>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col
+              cols="12"
+              md="3"
+            >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
                   :icon="IconReload"
@@ -150,5 +185,4 @@ const selectDateRange = computed({
       </v-card>
     </v-col>
   </v-row>
-
 </template>

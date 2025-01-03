@@ -21,9 +21,14 @@ function submit () {
 
 <template>
   <div class="d-flex justify-space-between align-center">
-    <h3 class="text-h3 text-center mb-0">Login</h3>
+    <h3 class="text-h3 text-center mb-0">
+      Login
+    </h3>
   </div>
-  <v-form class="mt-7 loginForm" @submit.prevent="submit">
+  <v-form
+    class="mt-7 loginForm"
+    @submit.prevent="submit"
+  >
     <div class="mb-6">
       <v-label>Username</v-label>
       <v-text-field
@@ -49,9 +54,22 @@ function submit () {
         variant="outlined"
       >
         <template #append-inner>
-          <v-btn color="secondary" icon rounded variant="text">
-            <EyeInvisibleOutlined v-if="!show1" :style="{ color: 'rgb(var(--v-theme-secondary))' }" @click="show1 = !show1" />
-            <EyeOutlined v-if="show1" :style="{ color: 'rgb(var(--v-theme-secondary))' }" @click="show1 = !show1" />
+          <v-btn
+            color="secondary"
+            icon
+            rounded
+            variant="text"
+          >
+            <EyeInvisibleOutlined
+              v-if="!show1"
+              :style="{ color: 'rgb(var(--v-theme-secondary))' }"
+              @click="show1 = !show1"
+            />
+            <EyeOutlined
+              v-if="show1"
+              :style="{ color: 'rgb(var(--v-theme-secondary))' }"
+              @click="show1 = !show1"
+            />
           </v-btn>
         </template>
       </v-text-field>
@@ -64,9 +82,15 @@ function submit () {
       type="submit"
       variant="flat"
     >
-      Login</v-btn>
-    <div v-if="authError" class="mt-2">
-      <v-alert color="error">{{ authError }}</v-alert>
+      Login
+    </v-btn>
+    <div
+      v-if="authError"
+      class="mt-2"
+    >
+      <v-alert color="error">
+        {{ authError }}
+      </v-alert>
     </div>
   </v-form>
 </template>

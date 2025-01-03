@@ -44,7 +44,10 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
-    <v-col cols="12" lg="12">
+    <v-col
+      cols="12"
+      lg="12"
+    >
       <TaskHistoryList
         :end="end ? new Date(end) : undefined"
         :machine="machine"

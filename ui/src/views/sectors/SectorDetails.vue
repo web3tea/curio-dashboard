@@ -37,19 +37,34 @@ const breadcrumbs = ref([
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
     <v-col cols="12">
-      <SectorInfo :miner="miner" :sector-number="sectorNumber" />
+      <SectorInfo
+        :miner="miner"
+        :sector-number="sectorNumber"
+      />
     </v-col>
     <v-col cols="12">
-      <PiecesInfo :miner="miner" :sector-number="sectorNumber" />
+      <PiecesInfo
+        :miner="miner"
+        :sector-number="sectorNumber"
+      />
     </v-col>
     <v-col cols="12">
-      <SectorTasks :miner="miner" :sector-number="sectorNumber" />
+      <SectorTasks
+        :miner="miner"
+        :sector-number="sectorNumber"
+      />
     </v-col>
     <v-col cols="8">
-      <SectorLocations :miner="miner" :sector-number="sectorNumber" />
+      <SectorLocations
+        :miner="miner"
+        :sector-number="sectorNumber"
+      />
     </v-col>
     <v-col cols="4">
-      <SectorEvents :miner="miner" :sector-number="sectorNumber" />
+      <SectorEvents
+        :miner="miner"
+        :sector-number="sectorNumber"
+      />
     </v-col>
   </v-row>
 </template>

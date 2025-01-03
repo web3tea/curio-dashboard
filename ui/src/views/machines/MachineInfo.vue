@@ -55,10 +55,19 @@ const machine: ComputedRef<Machine> = computed(() => result.value?.machine || {}
     </v-col>
   </v-row>
   <v-row class="mb-0">
-    <v-col cols="12" md="8">
-      <RecentTasksTable v-if="!loading" :host="machine.hostAndPort" />
+    <v-col
+      cols="12"
+      md="8"
+    >
+      <RecentTasksTable
+        v-if="!loading"
+        :host="machine.hostAndPort"
+      />
     </v-col>
-    <v-col cols="12" md="4">
+    <v-col
+      cols="12"
+      md="4"
+    >
       <NewTasks />
     </v-col>
   </v-row>

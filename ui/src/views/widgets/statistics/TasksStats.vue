@@ -41,7 +41,10 @@ const failedPercentage = (item: TaskStats) => {
 </script>
 
 <template>
-  <UiTitleCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.24H Task Counts')">
+  <UiTitleCard
+    class-name="px-0 pb-0 rounded-md"
+    :title="$t('fields.24H Task Counts')"
+  >
     <template #action>
       <v-btn
         :disabled="loading"

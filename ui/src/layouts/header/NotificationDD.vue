@@ -27,7 +27,10 @@ function markAllRead () {
 </script>
 
 <template>
-  <v-menu :close-on-content-click="false" offset="6, 0">
+  <v-menu
+    :close-on-content-click="false"
+    offset="6, 0"
+  >
     <template #activator="{ props }">
       <v-btn
         class="text-secondary ml-sm-2 ml-1"
@@ -47,10 +50,16 @@ function markAllRead () {
         </v-badge>
       </v-btn>
     </template>
-    <v-sheet class="notification-dropdown" rounded="md" width="387">
+    <v-sheet
+      class="notification-dropdown"
+      rounded="md"
+      width="387"
+    >
       <div class="pa-4">
         <div class="d-flex align-center justify-space-between">
-          <h6 class="text-subtitle-1 mb-0">Notifications</h6>
+          <h6 class="text-subtitle-1 mb-0">
+            Notifications
+          </h6>
           <v-btn
             :class="alertStore.unreadAlertsCount ? 'd-block' : 'd-none'"
             color="success"
@@ -61,7 +70,12 @@ function markAllRead () {
             @click="markAllRead"
           >
             <CheckCircleOutlined :style="{ fontSize: '16px' }" />
-            <v-tooltip activator="parent" aria-label="tooltip" :content-class="alertStore.unreadAlertsCount ? 'custom-tooltip' : 'd-none'" location="bottom">
+            <v-tooltip
+              activator="parent"
+              aria-label="tooltip"
+              :content-class="alertStore.unreadAlertsCount ? 'custom-tooltip' : 'd-none'"
+              location="bottom"
+            >
               <span class="text-caption">Mark as all read</span>
             </v-tooltip>
           </v-btn>
@@ -75,7 +89,10 @@ function markAllRead () {
           class="py-0"
           lines="two"
         >
-          <template v-for="alert in alertStore.alerts" :key="alert.id">
+          <template
+            v-for="alert in alertStore.alerts"
+            :key="alert.id"
+          >
             <v-list-item
               :active="alertStore.isAlertRead(alert.id)"
               class="no-spacer py-1"
@@ -84,7 +101,12 @@ function markAllRead () {
               @click="alertStore.markAsRead(alert.id)"
             >
               <template #prepend>
-                <v-avatar class="mr-3 py-2 text-success" color="warning" size="36" variant="flat">
+                <v-avatar
+                  class="mr-3 py-2 text-success"
+                  color="warning"
+                  size="36"
+                  variant="flat"
+                >
                   <IconExclamationCircle />
                 </v-avatar>
               </template>
@@ -94,14 +116,22 @@ function markAllRead () {
                 </h6>
                 <span class="text-caption">{{ moment(alert.timestamp).calendar() }}</span>
               </div>
-              <p class="text-caption text-medium-emphasis my-0">{{ alert.machineName }}</p>
+              <p class="text-caption text-medium-emphasis my-0">
+                {{ alert.machineName }}
+              </p>
             </v-list-item>
             <v-divider />
-          </template></v-list>
+          </template>
+        </v-list>
       </perfect-scrollbar>
       <v-divider />
       <div class="pa-2 text-center">
-        <v-btn color="primary" variant="text">View All</v-btn>
+        <v-btn
+          color="primary"
+          variant="text"
+        >
+          View All
+        </v-btn>
       </div>
     </v-sheet>
   </v-menu>

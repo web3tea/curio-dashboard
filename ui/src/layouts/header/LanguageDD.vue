@@ -8,7 +8,11 @@ const languageDD = shallowRef([
 </script>
 
 <template>
-  <v-list aria-busy="true" aria-label="language list" class="py-0">
+  <v-list
+    aria-busy="true"
+    aria-label="language list"
+    class="py-0"
+  >
     <v-list-item
       v-for="(item, index) in languageDD"
       :key="index"

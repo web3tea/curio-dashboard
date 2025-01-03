@@ -29,8 +29,12 @@ const minerPower: ComputedRef<MinerPower> = computed(() => result.value?.minerPo
       <v-card-text>
         <div class="d-flex align-items-center justify-space-between">
           <div>
-            <h5 class="text-h5">{{ $t('fields.Total Power') }}</h5>
-            <h3 class="text-h3 my-2">{{ formatBytes(minerPower.minerPower?.qualityAdjPower).combined }}</h3>
+            <h5 class="text-h5">
+              {{ $t('fields.Total Power') }}
+            </h5>
+            <h3 class="text-h3 my-2">
+              {{ formatBytes(minerPower.minerPower?.qualityAdjPower).combined }}
+            </h3>
             <h6 class="text-caption font-weight-medium mb-0">
               {{ $t('fields.Raw Byte Power') }}: {{ formatBytes(minerPower.minerPower?.rawBytePower).combined }}
             </h6>

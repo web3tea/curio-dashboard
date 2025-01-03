@@ -43,7 +43,10 @@ const headers = [
 </script>
 
 <template>
-  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.New Added Tasks')">
+  <UiWidgetCard
+    class-name="px-0 pb-0 rounded-md"
+    :title="$t('fields.New Added Tasks')"
+  >
     <template #append>
       <v-btn
         :icon="isStop ? IconPlayerPlay : IconPlayerPause"
@@ -53,7 +56,9 @@ const headers = [
       />
     </template>
     <template #subtitle>
-      <router-link :to="{name: 'RunningTasks'}">{{ $t('fields.View All') }}</router-link>
+      <router-link :to="{name: 'RunningTasks'}">
+        {{ $t('fields.View All') }}
+      </router-link>
     </template>
     <v-data-table-virtual
       fixed-header
@@ -63,13 +68,17 @@ const headers = [
       :loading="loading"
     >
       <template #item.name="{ value }">
-        <router-link :to="{ name: 'TaskHistory', query: { name: value } }">{{ value }}</router-link>
+        <router-link :to="{ name: 'TaskHistory', query: { name: value } }">
+          {{ value }}
+        </router-link>
       </template>
       <template #item.postedTime="{ value }">
         {{ $d(value, 'short') }}
       </template>
       <template #item.addedBy="{ item }">
-        <RouterLink :to="{ name: 'MachineInfo', params: { id: item.addedBy.id } }">{{ item.addedBy.hostAndPort }}</RouterLink>
+        <RouterLink :to="{ name: 'MachineInfo', params: { id: item.addedBy.id } }">
+          {{ item.addedBy.hostAndPort }}
+        </RouterLink>
       </template>
     </v-data-table-virtual>
   </UiWidgetCard>

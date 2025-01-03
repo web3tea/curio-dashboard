@@ -22,7 +22,10 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
 </script>
 
 <template>
-  <UiWidgetCard class-name="px-0 pb-0 rounded-md" :title="$t('fields.Chain Connectivity')">
+  <UiWidgetCard
+    class-name="px-0 pb-0 rounded-md"
+    :title="$t('fields.Chain Connectivity')"
+  >
     <template #append>
       <v-btn
         :disabled="loading"

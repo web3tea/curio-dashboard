@@ -29,11 +29,24 @@ const searchValue = ref('')
 
 <template>
   <v-row>
-    <v-col cols="12" md="12">
-      <v-card class="bg-surface" elevation="0" variant="outlined">
+    <v-col
+      cols="12"
+      md="12"
+    >
+      <v-card
+        class="bg-surface"
+        elevation="0"
+        variant="outlined"
+      >
         <v-card-item>
-          <v-row class="align-center" justify="space-between">
-            <v-col cols="12" md="3">
+          <v-row
+            class="align-center"
+            justify="space-between"
+          >
+            <v-col
+              cols="12"
+              md="3"
+            >
               <v-text-field
                 v-model="searchValue"
                 hide-details
@@ -47,9 +60,16 @@ const searchValue = ref('')
                 </template>
               </v-text-field>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col
+              cols="12"
+              md="3"
+            >
               <div class="d-flex ga-2 justify-end">
-                <v-btn color="primary" :to="{name: 'ConfigurationCreate'}" variant="flat">
+                <v-btn
+                  color="primary"
+                  :to="{name: 'ConfigurationCreate'}"
+                  variant="flat"
+                >
                   <template #prepend>
                     <IconPlus />
                   </template>
@@ -76,16 +96,27 @@ const searchValue = ref('')
             :search="searchValue"
           >
             <template #item.id="{ item }">
-              <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: item.title } }">{{ item.id }}</RouterLink>
+              <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: item.title } }">
+                {{ item.id }}
+              </RouterLink>
             </template>
             <template #item.title="{ value }">
-              <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: value } }">{{ value }}</RouterLink>
+              <RouterLink :to="{ name: 'ConfigurationEdit', params: { layer: value } }">
+                {{ value }}
+              </RouterLink>
             </template>
             <template #item.usedBy="{ item }">
-              <UsedByListDialog :title="item.title" :used-by="item.usedBy.filter((usedByItem: Maybe<MachineDetail>) => usedByItem !== null)" />
+              <UsedByListDialog
+                :title="item.title"
+                :used-by="item.usedBy.filter((usedByItem: Maybe<MachineDetail>) => usedByItem !== null)"
+              />
             </template>
             <template #item.actions="{ item }">
-              <ConfigRemoveDialog v-if="item.usedBy.length === 0 && item.id > 100" :title="item.title" use-icon />
+              <ConfigRemoveDialog
+                v-if="item.usedBy.length === 0 && item.id > 100"
+                :title="item.title"
+                use-icon
+              />
             </template>
           </v-data-table-virtual>
         </v-card-text>

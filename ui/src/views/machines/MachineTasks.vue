@@ -53,10 +53,17 @@ const headers = [
     >
       <template #item.owner="{ value }">
         <!--        todo: add router link to worker details-->
-        <p class="text-high-emphasis">{{ value ? value.hostAndPort : '' }} </p>
+        <p class="text-high-emphasis">
+          {{ value ? value.hostAndPort : '' }}
+        </p>
       </template>
       <template #item.name="{ value }">
-        <v-chip color="primary" size="small">{{ value }}</v-chip>
+        <v-chip
+          color="primary"
+          size="small"
+        >
+          {{ value }}
+        </v-chip>
       </template>
       <template #item.updateTime="{ value }">
         {{ $d(value, 'short') }}

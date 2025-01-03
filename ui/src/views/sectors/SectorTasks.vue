@@ -61,10 +61,17 @@ const headers = [
     >
       <template #item.owner="{ item }">
         <!--        todo: add router link to worker details-->
-        <p class="text-high-emphasis">{{ item.owner ? item.owner.hostAndPort : '' }} </p>
+        <p class="text-high-emphasis">
+          {{ item.owner ? item.owner.hostAndPort : '' }}
+        </p>
       </template>
       <template #item.name="{ item }">
-        <v-chip color="primary" size="small">{{ item.name }}</v-chip>
+        <v-chip
+          color="primary"
+          size="small"
+        >
+          {{ item.name }}
+        </v-chip>
       </template>
       <template #item.updateTime="{ item }">
         {{ moment(item.updateTime).calendar() }}

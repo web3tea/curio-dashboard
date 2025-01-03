@@ -17,12 +17,23 @@ const props = defineProps({
 
 <template>
   <!---Single Item-->
-  <router-link class="navItemLink rounded-0" :disabled="item.disabled" :to="`${item.to}`">
+  <router-link
+    class="navItemLink rounded-0"
+    :disabled="item.disabled"
+    :to="`${item.to}`"
+  >
     <!---If icon-->
-    <component :is="props.item.icon" :level="props.level" :style="{ fontSize: '16px' }" />
+    <component
+      :is="props.item.icon"
+      :level="props.level"
+      :style="{ fontSize: '16px' }"
+    />
     <span>{{ $t("nav."+item.title) }}</span>
     <!---If Caption-->
-    <small v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
+    <small
+      v-if="item.subCaption"
+      class="text-caption mt-n1 hide-menu"
+    >
       {{ item.subCaption }}
     </small>
     <!---If any chip or label-->

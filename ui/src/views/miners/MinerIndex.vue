@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
-import MiningTaskList from '@/views/mining/wins/MiningTaskList.vue'
+import { ref } from 'vue'
+import MinerList from '@/views/miners/MinerList.vue'
 
 const breadcrumbs = ref([
   {
-    title: 'Mining',
+    title: 'Miners',
     disabled: false,
-    href: '#', // todo: add href
+    href: '#',
   },
   {
-    title: 'Wins',
+    title: 'List',
     disabled: true,
     href: '#',
   },
@@ -21,9 +22,13 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
-    <v-col cols="12" lg="12">
-      <MiningTaskList />
+    <v-col
+      cols="12"
+      lg="12"
+    >
+      <MinerList />
     </v-col>
+    <v-col cols="12" />
   </v-row>
 </template>
 

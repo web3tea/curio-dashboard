@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
-import MachineList from '@/views/machines/MachineList.vue'
-import WidgetMachineSummaryCharts from '@/views/machines/MachineSummaryCharts.vue'
+import StoragePathList from '@/views/storages/StoragePathList.vue'
+import StorageUsageChart from '@/views/storages/StorageUsageChart.vue'
 
 const breadcrumbs = ref([
   {
-    title: 'Machines',
+    title: 'Storages',
     disabled: false,
-    href: '/app/machines',
+    href: '#',
   },
   {
     title: 'List',
@@ -22,11 +22,14 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
-    <v-col cols="12" lg="12">
-      <WidgetMachineSummaryCharts />
+    <v-col
+      cols="12"
+      lg="12"
+    >
+      <StorageUsageChart />
     </v-col>
     <v-col cols="12">
-      <MachineList />
+      <StoragePathList />
     </v-col>
   </v-row>
 </template>

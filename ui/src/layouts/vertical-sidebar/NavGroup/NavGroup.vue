@@ -8,5 +8,10 @@ const props = defineProps({
 </script>
 
 <template>
-  <v-list-subheader class="smallCap text-subtitle-2" color="lightText">{{ $t("nav."+props.item.header) }}</v-list-subheader>
+  <v-list-subheader
+    class="smallCap text-subtitle-2"
+    color="lightText"
+  >
+    {{ $t("nav."+props.item.header) }}
+  </v-list-subheader>
 </template>
