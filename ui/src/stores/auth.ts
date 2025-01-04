@@ -4,10 +4,17 @@ import router from '@/router'
 const baseUrl = (import.meta.env.VITE_SERVER_URL || (import.meta.env.DEV ? 'http://localhost:9091/' : '')).replace(/\/$/, '')
 const url = baseUrl + '/auth/token'
 
+interface UserData {
+  token: string
+  username: string
+  description: string
+}
+
 export const useAuthStore = defineStore({
   id: 'auth',
   state: () => ({
     token: localStorage.getItem('token'),
+    user: JSON.parse(localStorage.getItem('user') || '{}') as UserData,
     returnUrl: null,
   }),
   getters: {
@@ -25,7 +32,11 @@ export const useAuthStore = defineStore({
 
       const result = await response.json()
       if ('token' in result) {
-        await this.setToken(result.token)
+        await this.setUserData({
+          token: result.token,
+          username: result.username,
+          description: result.description,
+        })
         await router.push(this.returnUrl || '/app/overview')
         this.returnUrl = null
       } else {
@@ -37,16 +48,20 @@ export const useAuthStore = defineStore({
       }
     },
     async logout () {
-      await this.removeToken()
+      await this.removeUserData()
       await router.push('/auth/login')
     },
-    async setToken (token: string) {
-      this.token = token
-      localStorage.setItem('token', token)
+    async setUserData (user: UserData) {
+      this.token = user.token
+      this.user = user
+      localStorage.setItem('token', user.token)
+      localStorage.setItem('user', JSON.stringify(user))
     },
-    async removeToken () {
+    async removeUserData () {
       this.token = null
+      this.user = {} as UserData
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
     },
   },
 })
