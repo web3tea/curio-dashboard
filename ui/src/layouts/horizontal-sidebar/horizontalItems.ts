@@ -60,12 +60,12 @@ const horizontalItems: menu[] = [
         icon: IconBrandAsana,
         children: [
           {
-            title: 'Running Tasks',
+            title: 'Running',
             icon: IconActivity,
             to: '/app/running-tasks',
           },
           {
-            title: 'Task History',
+            title: 'History',
             icon: IconHistory,
             to: '/app/task-history',
           },

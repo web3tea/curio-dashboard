@@ -33,6 +33,7 @@ const authStore = useAuthStore()
       <v-list-item
         color="primary"
         rounded="0"
+        :to="{ name: 'Settings' }"
       >
         <template #prepend>
           <IconSettings

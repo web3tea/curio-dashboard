@@ -24,7 +24,7 @@ const props = defineProps({
       :level="props.level"
       :style="{ fontSize: '16px' }"
     />
-    <span class="mr-auto">{{ $t("nav."+item.title) }}</span>
+    <span class="mr-auto pa-2">{{ $t("nav."+item.title) }}</span>
     <small
       v-if="item.subCaption"
       class="text-caption mt-n1 hide-menu"

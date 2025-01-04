@@ -4,6 +4,7 @@ import { MiningTask } from '@/typed-graph'
 import { GetMiningWins } from '@/gql/mining'
 import { useQuery } from '@vue/apollo-composable'
 import { IconInfoCircle } from '@tabler/icons-vue'
+import { useTableSettingsStore } from "@/stores/table"
 
 const props = defineProps({
   start: {
@@ -23,6 +24,8 @@ const props = defineProps({
     default: true,
   },
 })
+
+const tableSettings = useTableSettingsStore()
 
 const page = ref(1)
 const limit = ref(100)
@@ -121,15 +124,16 @@ const headers = [
     <v-divider />
     <v-card-text class="pa-0">
       <v-data-table-server
-        v-model:items-per-page="limit"
+        v-model:items-per-page="tableSettings.itemsPerPage"
         v-model:page="page"
-        fixed-header
+        :fixed-header="tableSettings.fixedHeader"
         :headers="headers"
         height="calc(100vh - 300px)"
-        hover
+        :hover="tableSettings.hover"
         :items="items"
         :items-length="itemsCount"
         :loading="loading"
+        :items-per-page-options="tableSettings.itemsPerPageOptions"
       >
         <template #item.epoch="{ value }">
           <EpochField :epoch="value" />

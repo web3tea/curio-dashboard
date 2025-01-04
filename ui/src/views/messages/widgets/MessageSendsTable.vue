@@ -4,6 +4,7 @@ import { GetMessageSends } from "@/gql/message"
 import { computed, ComputedRef, ref } from "vue"
 import { MessageSend } from "@/typed-graph"
 import { IconInfoCircle, IconReload } from "@tabler/icons-vue"
+import { useTableSettingsStore } from "@/stores/table"
 
 const props = defineProps({
   account: {
@@ -19,6 +20,8 @@ const props = defineProps({
     default: 'calc(100vh - 330px)'
   },
 })
+
+const tableSettings = useTableSettingsStore()
 
 const localAccount = ref(props.account)
 
@@ -101,14 +104,15 @@ const headers = [
     <v-card-text class="pa-0">
       <v-data-table-server
         v-model:page="page"
-        v-model:items-per-page="limit"
-        fixed-header
+        v-model:items-per-page="tableSettings.itemsPerPage"
+        :fixed-header="tableSettings.fixedHeader"
         :headers="headers"
         :height="props.height"
-        hover
+        :hover="tableSettings.hover"
         :items="items"
         :items-length="itemsCount"
         :loading="loading"
+        :items-per-page-options="tableSettings.itemsPerPageOptions"
       >
         <template #item.fromKey="{ value }">
           <TruncatedChip :text="value" />

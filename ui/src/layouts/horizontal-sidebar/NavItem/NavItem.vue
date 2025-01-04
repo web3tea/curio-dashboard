@@ -26,9 +26,8 @@ const props = defineProps({
     <component
       :is="props.item.icon"
       :level="props.level"
-      :style="{ fontSize: '16px' }"
     />
-    <span>{{ $t("nav."+item.title) }}</span>
+    <span class="pa-2">{{ $t("nav."+item.title) }}</span>
     <!---If Caption-->
     <small
       v-if="item.subCaption"

@@ -8,10 +8,12 @@ import SectorLocations from '@/views/sectors/SectorLocations.vue'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import EpochField from '@/components/app/EpochField.vue'
 import type { MaskInputOptions } from 'maska'
+import { useTableSettingsStore } from "@/stores/table"
 
-const limit = ref(100)
+const tableSettings = useTableSettingsStore()
+
 const page = ref(1)
-const offset = computed(() => (page.value - 1) * limit.value)
+const offset = computed(() => (page.value - 1) * tableSettings.itemsPerPage)
 
 const selectedMiner = ref<string>()
 const searchSectorNumber = ref<number>()
@@ -25,7 +27,7 @@ const { result, loading, refetch } = useQuery(GetSectors, {
   miner: selectedMiner,
   sectorNumber: searchSectorNumber,
   offset: offset.value,
-  limit: limit.value,
+  limit: tableSettings.itemsPerPage,
 }, () => ({
   fetchPolicy: 'cache-first',
 }))
@@ -115,15 +117,16 @@ const options = reactive<MaskInputOptions>({
     <v-divider />
     <v-card-text class="pa-0">
       <v-data-table-server
-        v-model:items-per-page="limit"
         v-model:page="page"
-        fixed-header
+        v-model:items-per-page="tableSettings.itemsPerPage"
+        :fixed-header="tableSettings.fixedHeader"
         :headers="headers"
         height="calc(100vh - 300px)"
-        hover
+        :hover="tableSettings.hover"
         :items="items"
         :items-length="itemsCount"
         :loading="loading"
+        :items-per-page-options="tableSettings.itemsPerPageOptions"
       >
         <template #item.meta.spId="{ value }">
           <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">

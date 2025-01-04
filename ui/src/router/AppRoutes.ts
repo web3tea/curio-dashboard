@@ -189,6 +189,15 @@ const AppRoutes = {
         title: 'Message Sends',
         description: 'List of all message sends in the cluster',
       },
+    },
+    {
+      name: "Settings",
+      path: "/app/settings",
+      component: () => import('@/views/settings/SettingsIndex.vue'),
+      meta: {
+        title: 'Settings',
+        description: 'My Settings',
+      },
     }
   ],
 }
