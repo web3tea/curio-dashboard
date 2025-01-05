@@ -9,7 +9,7 @@
   },
   {
     "label": "ui",
-    "cwd": "ui",
+    "cwd": "$ZED_WORKTREE_ROOT/ui",
     "command": "yarn dev",
     "allow_concurrent_runs": false,
     "use_new_terminal": true,

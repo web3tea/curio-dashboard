@@ -8,6 +8,12 @@
       "settings": {
         "nodePath": "ui/node_modules"
       }
+    },
+    "gopls": {
+      "gofumpt": true,
+      "initialization_options": {
+        "gofumpt": true
+      }
     }
   },
   "languages": {
@@ -25,11 +31,13 @@
       "code_actions_on_format": {
         "source.fixAll.eslint": true
       }
+    },
+    "Go": {
+      "formatter": "language_server"
     }
   },
   "formatter": {
     "code_actions": {
-      "source.fixAll.eslint": true
     }
   }
 }
