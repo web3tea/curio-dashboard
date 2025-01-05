@@ -5,7 +5,7 @@
 
 [harmonydb]
     # URL to connect to the HarmonyDB database
-    url = "postgres://yugabyte:yugabyte@127.0.0.1:5433/curio?search_path=curio&target_session_attrs=any"
+    url = "postgres://yugabyte:yugabyte@127.0.0.1:5433/curio?search_path=curio"
 
 # Curio configuration
 [curio]

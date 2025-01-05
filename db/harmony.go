@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"github.com/strahe/curio-dashboard/config"
@@ -35,12 +34,6 @@ func NewHarmonyDB(ctx context.Context, hCfg config.HarmonyDBConfig) (*HarmonyDB,
 		log.Debug("database notice: " + n.Message + ": " + n.Detail)
 	}
 
-	// We want to ensure that we are connecting to a read-only replica.
-	// You can manually set this in the connection string to avoid this.
-	// For more information, see https://www.postgresql.org/docs/16/libpq-connect.html#LIBPQ-CONNECT-TARGET-SESSION-ATTRS
-	if !strings.Contains(hCfg.URL, "target_session_attrs") {
-		cfg.ConnConfig.ValidateConnect = pgconn.ValidateConnectTargetSessionAttrsReadOnly
-	}
 	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
 	defer cancel()
 

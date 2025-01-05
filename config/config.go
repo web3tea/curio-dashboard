@@ -6,7 +6,7 @@ import (
 )
 
 type HarmonyDBConfig struct {
-	URL string `toml:"url" comment:"URL to connect to the HarmonyDB database, add 'target_session_attrs=any' to the connection string if you want to connect to a read-write node"`
+	URL string `toml:"url" comment:"URL to connect to the HarmonyDB database, should be a postgres connection string"`
 }
 
 type ChainConfig struct {
