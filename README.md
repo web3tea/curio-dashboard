@@ -31,7 +31,7 @@ Status: **Alpha**
 ```bash
 # Pull the latest Docker image
 docker pull ghcr.io/strahe/curio-dashboard:latest  # The Latest release Or use a specific version tag
-# docker pull ghcr.io/strahe/curio-dashboard:main # Use the main branch for the latest changes 
+# docker pull ghcr.io/strahe/curio-dashboard:main # Use the main branch for the latest changes
 
 # Generate the default configuration file
 docker run --rm ghcr.io/strahe/curio-dashboard:latest config default > config.toml
@@ -55,7 +55,7 @@ After downloading the correct binary for your platform and architecture, follow 
 
 Follow these steps to build the dashboard from source:
 
-1. **Install System Dependencies**  
+1. **Install System Dependencies**
    Follow the [Curio Storage Installation Guide](https://docs.curiostorage.org/installation#linux-build-from-source).
    You’ll also need Node.js and Yarn for the frontend.
 
@@ -67,7 +67,7 @@ Follow these steps to build the dashboard from source:
 3. **Build the Project**
    ```bash
    cd curio-dashboard
-   make aio
+   make
    ```
 
 ## Running the Dashboard
@@ -86,5 +86,5 @@ Follow these steps to build the dashboard from source:
    ```
 
 4. **Access the Dashboard**
-   - Production URL: [http://localhost:9091](http://localhost:9091) (available only with `make aio`)
+   - Production URL: [http://localhost:9091](http://localhost:9091)
    - Development URL: [http://localhost:3000](http://localhost:3000) (`cd ui; yarn dev`)

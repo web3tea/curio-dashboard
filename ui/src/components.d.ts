@@ -13,7 +13,6 @@ declare module 'vue' {
     CardHeader: typeof import('./components/shared/CardHeader.vue')['default']
     DateRangeSelectInput: typeof import('./components/app/DateRangeSelectInput.vue')['default']
     EpochField: typeof import('./components/app/EpochField.vue')['default']
-    HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     HostPortSelectInput: typeof import('./components/app/HostPortSelectInput.vue')['default']
     MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
