@@ -1,12 +1,12 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends Record<string, unknown>> = { [K in keyof T]: T[K] };
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends Record<string, unknown>, K extends keyof T> = Partial<Record<K, never>>;
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
-export interface Scalars {
+export type Scalars = {
   ID: { input: string; output: string; }
   String: { input: string; output: string; }
   Boolean: { input: boolean; output: boolean; }
@@ -20,58 +20,58 @@ export interface Scalars {
   JSONB: { input: any; output: any; }
   Time: { input: any; output: any; }
   Uint64: { input: any; output: any; }
-}
+};
 
-export interface Actor {
+export type Actor = {
   __typename?: 'Actor';
   actorAvailableBalance: Scalars['BigInt']['output'];
   actorBalance: Scalars['BigInt']['output'];
   address: Scalars['Address']['output'];
-  deadlines?: Maybe<Maybe<ActorDeadline>[]>;
+  deadlines?: Maybe<Array<Maybe<ActorDeadline>>>;
   id: Scalars['ID']['output'];
-  layers?: Maybe<Scalars['String']['output'][]>;
+  layers?: Maybe<Array<Scalars['String']['output']>>;
   qualityAdjustedPower: Scalars['BigInt']['output'];
   rawBytePower: Scalars['BigInt']['output'];
   workerBalance: Scalars['BigInt']['output'];
-}
+};
 
-export interface ActorDeadline {
+export type ActorDeadline = {
   __typename?: 'ActorDeadline';
   current: Scalars['Boolean']['output'];
   empty: Scalars['Boolean']['output'];
   faulty: Scalars['Boolean']['output'];
   partFaulty: Scalars['Boolean']['output'];
   proven: Scalars['Boolean']['output'];
-}
+};
 
-export interface Alert {
+export type Alert = {
   __typename?: 'Alert';
   id: Scalars['Int']['output'];
   machineName: Scalars['String']['output'];
   message: Scalars['String']['output'];
-}
+};
 
-export interface Config {
+export type Config = {
   __typename?: 'Config';
   config: Scalars['String']['output'];
   id: Scalars['Int']['output'];
   title: Scalars['String']['output'];
-  usedBy: Maybe<MachineDetail>[];
-}
+  usedBy: Array<Maybe<MachineDetail>>;
+};
 
-export interface GaugeCountValue {
+export type GaugeCountValue = {
   __typename?: 'GaugeCountValue';
   key: Scalars['String']['output'];
   value: Scalars['Int']['output'];
-}
+};
 
-export interface Global {
+export type Global = {
   __typename?: 'Global';
   genesisTimestamp: Scalars['Int']['output'];
   networkName: Scalars['String']['output'];
-}
+};
 
-export interface Machine {
+export type Machine = {
   __typename?: 'Machine';
   cpu: Scalars['Int']['output'];
   detail?: Maybe<MachineDetail>;
@@ -81,34 +81,34 @@ export interface Machine {
   lastContact: Scalars['Time']['output'];
   metrics?: Maybe<MachineMetrics>;
   ram: Scalars['Int']['output'];
-  storages?: Maybe<Maybe<StoragePath>[]>;
-  taskHistories?: Maybe<Maybe<TaskHistory>[]>;
-  tasks?: Maybe<Maybe<Task>[]>;
-}
+  storages?: Maybe<Array<Maybe<StoragePath>>>;
+  taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
+  tasks?: Maybe<Array<Maybe<Task>>>;
+};
 
 
-export interface MachineTaskHistoriesArgs {
+export type MachineTaskHistoriesArgs = {
   last: Scalars['Int']['input'];
-}
+};
 
-export interface MachineDetail {
+export type MachineDetail = {
   __typename?: 'MachineDetail';
   id: Scalars['Int']['output'];
   layers: Scalars['String']['output'];
-  layersArray?: Maybe<Scalars['String']['output'][]>;
+  layersArray?: Maybe<Array<Scalars['String']['output']>>;
   machineId: Scalars['Int']['output'];
   machineName: Scalars['String']['output'];
   miners: Scalars['String']['output'];
-  minersArray?: Maybe<Scalars['String']['output'][]>;
+  minersArray?: Maybe<Array<Scalars['String']['output']>>;
   startupTime: Scalars['Time']['output'];
   tasks: Scalars['String']['output'];
-  tasksArray?: Maybe<Scalars['String']['output'][]>;
-}
+  tasksArray?: Maybe<Array<Scalars['String']['output']>>;
+};
 
-export interface MachineMetrics {
+export type MachineMetrics = {
   __typename?: 'MachineMetrics';
-  activeTasks: Maybe<GaugeCountValue>[];
-  addedTasks: Maybe<GaugeCountValue>[];
+  activeTasks: Array<Maybe<GaugeCountValue>>;
+  addedTasks: Array<Maybe<GaugeCountValue>>;
   cpuUsage: Scalars['Float']['output'];
   goRoutines: Scalars['Int']['output'];
   goThreads: Scalars['Int']['output'];
@@ -121,11 +121,11 @@ export interface MachineMetrics {
   processStartTimeSeconds: Scalars['Int']['output'];
   processVirtualMemoryBytes: Scalars['Int']['output'];
   ramUsage: Scalars['Float']['output'];
-  tasksCompleted: Maybe<GaugeCountValue>[];
-  tasksStarted: Maybe<GaugeCountValue>[];
-}
+  tasksCompleted: Array<Maybe<GaugeCountValue>>;
+  tasksStarted: Array<Maybe<GaugeCountValue>>;
+};
 
-export interface MachineSummary {
+export type MachineSummary = {
   __typename?: 'MachineSummary';
   total: Scalars['Int']['output'];
   totalCpu: Scalars['Int']['output'];
@@ -136,9 +136,9 @@ export interface MachineSummary {
   uniqueHostsDown: Scalars['Int']['output'];
   uniqueHostsTotal: Scalars['Int']['output'];
   uniqueHostsUp: Scalars['Int']['output'];
-}
+};
 
-export interface MessageSend {
+export type MessageSend = {
   __typename?: 'MessageSend';
   fromKey: Scalars['String']['output'];
   nonce?: Maybe<Scalars['Int']['output']>;
@@ -153,23 +153,23 @@ export interface MessageSend {
   toAddr: Scalars['String']['output'];
   unsignedCid: Scalars['String']['output'];
   unsignedData: Scalars['ByteArray']['output'];
-}
+};
 
-export interface MetricsActiveTask {
+export type MetricsActiveTask = {
   __typename?: 'MetricsActiveTask';
   name: Scalars['String']['output'];
-  series?: Maybe<Scalars['Float']['output'][][]>;
-}
+  series?: Maybe<Array<Array<Scalars['Float']['output']>>>;
+};
 
-export interface Miner {
+export type Miner = {
   __typename?: 'Miner';
   balance?: Maybe<MinerBalance>;
   id: Scalars['Address']['output'];
   info?: Maybe<MinerInfo>;
   power?: Maybe<MinerPower>;
-}
+};
 
-export interface MinerBalance {
+export type MinerBalance = {
   __typename?: 'MinerBalance';
   available: Scalars['BigInt']['output'];
   balance: Scalars['BigInt']['output'];
@@ -177,22 +177,22 @@ export interface MinerBalance {
   initialPledge: Scalars['BigInt']['output'];
   preCommitDeposits: Scalars['BigInt']['output'];
   vesting: Scalars['BigInt']['output'];
-}
+};
 
-export interface MinerBeneficiaryTerm {
+export type MinerBeneficiaryTerm = {
   __typename?: 'MinerBeneficiaryTerm';
   expiration: Scalars['Int']['output'];
   quota: Scalars['BigInt']['output'];
   usedQuota: Scalars['BigInt']['output'];
-}
+};
 
-export interface MinerInfo {
+export type MinerInfo = {
   __typename?: 'MinerInfo';
   beneficiary: Scalars['Address']['output'];
   beneficiaryTerm?: Maybe<MinerBeneficiaryTerm>;
   consensusFaultElapsed: Scalars['Int']['output'];
-  controlAddresses?: Maybe<Scalars['Address']['output'][]>;
-  multiAddrs?: Maybe<Scalars['String']['output'][]>;
+  controlAddresses?: Maybe<Array<Scalars['Address']['output']>>;
+  multiAddrs?: Maybe<Array<Scalars['String']['output']>>;
   newWorker: Scalars['Address']['output'];
   owner: Scalars['Address']['output'];
   peerId: Scalars['String']['output'];
@@ -203,40 +203,40 @@ export interface MinerInfo {
   windowPoStProofType: Scalars['Int']['output'];
   worker: Scalars['Address']['output'];
   workerChangeEpoch: Scalars['Int']['output'];
-}
+};
 
-export interface MinerPendingBeneficiaryChange {
+export type MinerPendingBeneficiaryChange = {
   __typename?: 'MinerPendingBeneficiaryChange';
   approvedByBeneficiary: Scalars['Boolean']['output'];
   approvedByNominee: Scalars['Boolean']['output'];
   newBeneficiary: Scalars['Address']['output'];
   newExpiration: Scalars['Int']['output'];
   newQuota: Scalars['BigInt']['output'];
-}
+};
 
-export interface MinerPower {
+export type MinerPower = {
   __typename?: 'MinerPower';
   hasMinPower: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   minerPower: PowerClaim;
   totalPower: PowerClaim;
-}
+};
 
-export interface MiningCount {
+export type MiningCount = {
   __typename?: 'MiningCount';
   exclude: Scalars['Int']['output'];
   include: Scalars['Int']['output'];
-}
+};
 
-export interface MiningCountAggregated {
+export type MiningCountAggregated = {
   __typename?: 'MiningCountAggregated';
   included: Scalars['Int']['output'];
   time: Scalars['Time']['output'];
   total: Scalars['Int']['output'];
   won: Scalars['Int']['output'];
-}
+};
 
-export interface MiningCountSummary {
+export type MiningCountSummary = {
   __typename?: 'MiningCountSummary';
   end: Scalars['Time']['output'];
   included: Scalars['Int']['output'];
@@ -244,16 +244,16 @@ export interface MiningCountSummary {
   start: Scalars['Time']['output'];
   total: Scalars['Int']['output'];
   won: Scalars['Int']['output'];
-}
+};
 
-export interface MiningSummaryDay {
+export type MiningSummaryDay = {
   __typename?: 'MiningSummaryDay';
   day: Scalars['Time']['output'];
   miner: Scalars['ActorID']['output'];
   wonBlock: Scalars['Int']['output'];
-}
+};
 
-export interface MiningTask {
+export type MiningTask = {
   __typename?: 'MiningTask';
   baseComputeTime: Scalars['Time']['output'];
   epoch: Scalars['Int']['output'];
@@ -265,14 +265,14 @@ export interface MiningTask {
   submittedAt?: Maybe<Scalars['Time']['output']>;
   taskId: Scalars['ID']['output'];
   won: Scalars['Boolean']['output'];
-}
+};
 
 export enum MiningTaskAggregateInterval {
   Day = 'day',
   Hour = 'hour'
 }
 
-export interface Mutation {
+export type Mutation = {
   __typename?: 'Mutation';
   createConfig?: Maybe<Config>;
   dealSealNow: Scalars['Boolean']['output'];
@@ -281,54 +281,54 @@ export interface Mutation {
   restartAllFailedSectors: Scalars['Boolean']['output'];
   restartSector: Scalars['Boolean']['output'];
   updateConfig?: Maybe<Config>;
-}
+};
 
 
-export interface MutationCreateConfigArgs {
+export type MutationCreateConfigArgs = {
   config: Scalars['String']['input'];
   title: Scalars['String']['input'];
-}
+};
 
 
-export interface MutationDealSealNowArgs {
+export type MutationDealSealNowArgs = {
   miner: Scalars['ActorID']['input'];
   sectorNumber: Scalars['Uint64']['input'];
-}
+};
 
 
-export interface MutationRemoveConfigArgs {
+export type MutationRemoveConfigArgs = {
   title: Scalars['String']['input'];
-}
+};
 
 
-export interface MutationRemoveSectorArgs {
+export type MutationRemoveSectorArgs = {
   miner: Scalars['ActorID']['input'];
   sectorNumber: Scalars['Int']['input'];
-}
+};
 
 
-export interface MutationRestartSectorArgs {
+export type MutationRestartSectorArgs = {
   miner: Scalars['ActorID']['input'];
   sectorNumber: Scalars['Int']['input'];
-}
+};
 
 
-export interface MutationUpdateConfigArgs {
+export type MutationUpdateConfigArgs = {
   config: Scalars['String']['input'];
   title: Scalars['String']['input'];
-}
+};
 
-export interface NodeInfo {
+export type NodeInfo = {
   __typename?: 'NodeInfo';
   address: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  layers: Scalars['String']['output'][];
+  layers: Array<Scalars['String']['output']>;
   reachable: Scalars['Boolean']['output'];
   syncState: Scalars['String']['output'];
   version: Scalars['String']['output'];
-}
+};
 
-export interface OpenSectorPiece {
+export type OpenSectorPiece = {
   __typename?: 'OpenSectorPiece';
   createdAt: Scalars['Time']['output'];
   dataDeleteOnFinalize: Scalars['Boolean']['output'];
@@ -349,9 +349,9 @@ export interface OpenSectorPiece {
   pieceSize: Scalars['Int']['output'];
   sectorNumber: Scalars['Int']['output'];
   spID: Scalars['ActorID']['output'];
-}
+};
 
-export interface PipelineSummary {
+export type PipelineSummary = {
   __typename?: 'PipelineSummary';
   commitMsg: Scalars['Int']['output'];
   done: Scalars['Int']['output'];
@@ -362,9 +362,9 @@ export interface PipelineSummary {
   sdr: Scalars['Int']['output'];
   trees: Scalars['Int']['output'];
   waitSeed: Scalars['Int']['output'];
-}
+};
 
-export interface Porep {
+export type Porep = {
   __typename?: 'Porep';
   afterCommitMsg: Scalars['Boolean']['output'];
   afterCommitMsgSuccess: Scalars['Boolean']['output'];
@@ -411,7 +411,7 @@ export interface Porep {
   treeDCid?: Maybe<Scalars['String']['output']>;
   treeRCid?: Maybe<Scalars['String']['output']>;
   userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
-}
+};
 
 export enum PorepStatus {
   Active = 'Active',
@@ -433,190 +433,190 @@ export enum PorepStatus {
   WaitSeed = 'WaitSeed'
 }
 
-export interface PowerClaim {
+export type PowerClaim = {
   __typename?: 'PowerClaim';
   qualityAdjPower?: Maybe<Scalars['BigInt']['output']>;
   rawBytePower?: Maybe<Scalars['BigInt']['output']>;
-}
+};
 
-export interface Query {
+export type Query = {
   __typename?: 'Query';
   actor?: Maybe<Actor>;
-  actors?: Maybe<Maybe<Actor>[]>;
-  alerts?: Maybe<Maybe<Alert>[]>;
+  actors?: Maybe<Array<Maybe<Actor>>>;
+  alerts?: Maybe<Array<Maybe<Alert>>>;
   config?: Maybe<Config>;
-  configs?: Maybe<Maybe<Config>[]>;
-  dealsPending?: Maybe<Maybe<OpenSectorPiece>[]>;
+  configs?: Maybe<Array<Maybe<Config>>>;
+  dealsPending?: Maybe<Array<Maybe<OpenSectorPiece>>>;
   global: Global;
   machine?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
-  machines?: Maybe<Maybe<Machine>[]>;
+  machines?: Maybe<Array<Maybe<Machine>>>;
   messageSend?: Maybe<MessageSend>;
-  messageSends?: Maybe<Maybe<MessageSend>[]>;
+  messageSends?: Maybe<Array<Maybe<MessageSend>>>;
   messageSendsCount: Scalars['Int']['output'];
-  metricsActiveTasks?: Maybe<Maybe<MetricsActiveTask>[]>;
+  metricsActiveTasks?: Maybe<Array<Maybe<MetricsActiveTask>>>;
   miner?: Maybe<Miner>;
   minerPower?: Maybe<MinerPower>;
   miningCount: MiningCount;
-  miningCountAggregate?: Maybe<Maybe<MiningCountAggregated>[]>;
+  miningCountAggregate?: Maybe<Array<Maybe<MiningCountAggregated>>>;
   miningCountSummary?: Maybe<MiningCountSummary>;
-  miningSummaryByDay?: Maybe<Maybe<MiningSummaryDay>[]>;
-  miningWins?: Maybe<Maybe<MiningTask>[]>;
+  miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
+  miningWins?: Maybe<Array<Maybe<MiningTask>>>;
   miningWinsCount: Scalars['Int']['output'];
-  nodesInfo?: Maybe<Maybe<NodeInfo>[]>;
-  pipelinesSummary?: Maybe<Maybe<PipelineSummary>[]>;
+  nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
+  pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
   porep?: Maybe<Porep>;
-  poreps?: Maybe<Maybe<Porep>[]>;
+  poreps?: Maybe<Array<Maybe<Porep>>>;
   sector?: Maybe<Sector>;
-  sectors?: Maybe<Maybe<Sector>[]>;
+  sectors?: Maybe<Array<Maybe<Sector>>>;
   sectorsCount: Scalars['Int']['output'];
   storage?: Maybe<Storage>;
-  storagePaths?: Maybe<Maybe<StoragePath>[]>;
-  storageStats?: Maybe<Maybe<StorageStats>[]>;
+  storagePaths?: Maybe<Array<Maybe<StoragePath>>>;
+  storageStats?: Maybe<Array<Maybe<StorageStats>>>;
   task?: Maybe<Task>;
-  taskHistories?: Maybe<Maybe<TaskHistory>[]>;
-  taskHistoriesAggregate?: Maybe<Maybe<TaskAggregate>[]>;
+  taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
+  taskHistoriesAggregate?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistoriesCount: Scalars['Int']['output'];
-  taskNames?: Maybe<Scalars['String']['output'][]>;
-  tasks?: Maybe<Maybe<Task>[]>;
+  taskNames?: Maybe<Array<Scalars['String']['output']>>;
+  tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
-  tasksStats?: Maybe<Maybe<TaskStats>[]>;
-}
+  tasksStats?: Maybe<Array<Maybe<TaskStats>>>;
+};
 
 
-export interface QueryActorArgs {
+export type QueryActorArgs = {
   address: Scalars['Address']['input'];
-}
+};
 
 
-export interface QueryConfigArgs {
+export type QueryConfigArgs = {
   layer: Scalars['String']['input'];
-}
+};
 
 
-export interface QueryMachineArgs {
+export type QueryMachineArgs = {
   id: Scalars['Int']['input'];
-}
+};
 
 
-export interface QueryMessageSendArgs {
+export type QueryMessageSendArgs = {
   fromKey?: InputMaybe<Scalars['String']['input']>;
   nonce?: InputMaybe<Scalars['Int']['input']>;
   sendTaskId?: InputMaybe<Scalars['Int']['input']>;
   signedCID?: InputMaybe<Scalars['String']['input']>;
-}
+};
 
 
-export interface QueryMessageSendsArgs {
+export type QueryMessageSendsArgs = {
   account?: InputMaybe<Scalars['Address']['input']>;
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
-}
+};
 
 
-export interface QueryMessageSendsCountArgs {
+export type QueryMessageSendsCountArgs = {
   account?: InputMaybe<Scalars['Address']['input']>;
-}
+};
 
 
-export interface QueryMetricsActiveTasksArgs {
+export type QueryMetricsActiveTasksArgs = {
   lastDays: Scalars['Int']['input'];
   machine?: InputMaybe<Scalars['String']['input']>;
-}
+};
 
 
-export interface QueryMinerArgs {
+export type QueryMinerArgs = {
   address: Scalars['Address']['input'];
-}
+};
 
 
-export interface QueryMinerPowerArgs {
+export type QueryMinerPowerArgs = {
   address?: InputMaybe<Scalars['Address']['input']>;
-}
+};
 
 
-export interface QueryMiningCountArgs {
+export type QueryMiningCountArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
-}
+};
 
 
-export interface QueryMiningCountAggregateArgs {
+export type QueryMiningCountAggregateArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
   end: Scalars['Time']['input'];
   interval: MiningTaskAggregateInterval;
   start: Scalars['Time']['input'];
-}
+};
 
 
-export interface QueryMiningCountSummaryArgs {
+export type QueryMiningCountSummaryArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
-}
+};
 
 
-export interface QueryMiningSummaryByDayArgs {
+export type QueryMiningSummaryByDayArgs = {
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
-}
+};
 
 
-export interface QueryMiningWinsArgs {
+export type QueryMiningWinsArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
   end?: InputMaybe<Scalars['Time']['input']>;
   include?: InputMaybe<Scalars['Boolean']['input']>;
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
   start?: InputMaybe<Scalars['Time']['input']>;
-}
+};
 
 
-export interface QueryMiningWinsCountArgs {
+export type QueryMiningWinsCountArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
   end?: InputMaybe<Scalars['Time']['input']>;
   include?: InputMaybe<Scalars['Boolean']['input']>;
   start?: InputMaybe<Scalars['Time']['input']>;
-}
+};
 
 
-export interface QueryPorepArgs {
+export type QueryPorepArgs = {
   sectorNumber: Scalars['Int']['input'];
   sp: Scalars['ActorID']['input'];
-}
+};
 
 
-export interface QuerySectorArgs {
+export type QuerySectorArgs = {
   actor: Scalars['ActorID']['input'];
   sectorNumber: Scalars['Int']['input'];
-}
+};
 
 
-export interface QuerySectorsArgs {
+export type QuerySectorsArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
   sectorNumber?: InputMaybe<Scalars['Int']['input']>;
-}
+};
 
 
-export interface QuerySectorsCountArgs {
+export type QuerySectorsCountArgs = {
   actor?: InputMaybe<Scalars['ActorID']['input']>;
-}
+};
 
 
-export interface QueryStorageArgs {
+export type QueryStorageArgs = {
   id: Scalars['String']['input'];
-}
+};
 
 
-export interface QueryTaskArgs {
+export type QueryTaskArgs = {
   id: Scalars['Int']['input'];
-}
+};
 
 
-export interface QueryTaskHistoriesArgs {
+export type QueryTaskHistoriesArgs = {
   end?: InputMaybe<Scalars['Time']['input']>;
   hostPort?: InputMaybe<Scalars['String']['input']>;
   limit: Scalars['Int']['input'];
@@ -624,46 +624,46 @@ export interface QueryTaskHistoriesArgs {
   offset: Scalars['Int']['input'];
   result?: InputMaybe<Scalars['Boolean']['input']>;
   start?: InputMaybe<Scalars['Time']['input']>;
-}
+};
 
 
-export interface QueryTaskHistoriesAggregateArgs {
+export type QueryTaskHistoriesAggregateArgs = {
   end: Scalars['Time']['input'];
   interval: TaskHistoriesAggregateInterval;
   start: Scalars['Time']['input'];
-}
+};
 
 
-export interface QueryTaskHistoriesCountArgs {
+export type QueryTaskHistoriesCountArgs = {
   end?: InputMaybe<Scalars['Time']['input']>;
   hostPort?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   result?: InputMaybe<Scalars['Boolean']['input']>;
   start?: InputMaybe<Scalars['Time']['input']>;
-}
+};
 
 
-export interface QueryTasksStatsArgs {
+export type QueryTasksStatsArgs = {
   end: Scalars['Time']['input'];
   machine?: InputMaybe<Scalars['String']['input']>;
   start: Scalars['Time']['input'];
-}
+};
 
-export interface Sector {
+export type Sector = {
   __typename?: 'Sector';
-  events: Maybe<TaskHistory>[];
+  events: Array<Maybe<TaskHistory>>;
   id: Scalars['ID']['output'];
-  locations: Maybe<SectorLocation>[];
+  locations: Array<Maybe<SectorLocation>>;
   meta?: Maybe<SectorMeta>;
-  pieces: Maybe<SectorMetaPiece>[];
+  pieces: Array<Maybe<SectorMetaPiece>>;
   porep?: Maybe<Porep>;
   sectorNum: Scalars['Int']['output'];
   spID: Scalars['ActorID']['output'];
   status: PorepStatus;
-  tasks: Maybe<Task>[];
-}
+  tasks: Array<Maybe<Task>>;
+};
 
-export interface SectorLocation {
+export type SectorLocation = {
   __typename?: 'SectorLocation';
   isPrimary?: Maybe<Scalars['Boolean']['output']>;
   minerId: Scalars['ActorID']['output'];
@@ -675,9 +675,9 @@ export interface SectorLocation {
   storageId: Scalars['String']['output'];
   writeLockOwner?: Maybe<Scalars['String']['output']>;
   writeTs?: Maybe<Scalars['String']['output']>;
-}
+};
 
-export interface SectorMeta {
+export type SectorMeta = {
   __typename?: 'SectorMeta';
   curSealedCid: Scalars['String']['output'];
   curUnsealedCid: Scalars['String']['output'];
@@ -696,9 +696,9 @@ export interface SectorMeta {
   spId: Scalars['ActorID']['output'];
   ticketEpoch: Scalars['Int']['output'];
   ticketValue?: Maybe<Scalars['ByteArray']['output']>;
-}
+};
 
-export interface SectorMetaPiece {
+export type SectorMetaPiece = {
   __typename?: 'SectorMetaPiece';
   ddoPam?: Maybe<Scalars['JSONB']['output']>;
   f05DealID?: Maybe<Scalars['Int']['output']>;
@@ -712,16 +712,16 @@ export interface SectorMetaPiece {
   sectorNum: Scalars['Int']['output'];
   spID: Scalars['ActorID']['output'];
   startEpoch?: Maybe<Scalars['Int']['output']>;
-}
+};
 
-export interface Storage {
+export type Storage = {
   __typename?: 'Storage';
   id: Scalars['String']['output'];
   liveness?: Maybe<StorageLiveness>;
   path?: Maybe<StoragePath>;
-}
+};
 
-export interface StorageLiveness {
+export type StorageLiveness = {
   __typename?: 'StorageLiveness';
   lastChecked: Scalars['Time']['output'];
   lastDead?: Maybe<Scalars['Time']['output']>;
@@ -729,9 +729,9 @@ export interface StorageLiveness {
   lastLive?: Maybe<Scalars['Time']['output']>;
   storageId: Scalars['String']['output'];
   url: Scalars['String']['output'];
-}
+};
 
-export interface StoragePath {
+export type StoragePath = {
   __typename?: 'StoragePath';
   allowMiners: Scalars['String']['output'];
   allowTo?: Maybe<Scalars['String']['output']>;
@@ -754,9 +754,9 @@ export interface StoragePath {
   urls: Scalars['String']['output'];
   used: Scalars['Int']['output'];
   weight: Scalars['Int']['output'];
-}
+};
 
-export interface StorageStats {
+export type StorageStats = {
   __typename?: 'StorageStats';
   totalAvailable: Scalars['Int']['output'];
   totalCapacity: Scalars['Int']['output'];
@@ -764,7 +764,7 @@ export interface StorageStats {
   totalReserved: Scalars['Int']['output'];
   totalUsed: Scalars['Int']['output'];
   type: StorageType;
-}
+};
 
 export enum StorageType {
   Hybrid = 'Hybrid',
@@ -773,44 +773,44 @@ export enum StorageType {
   Store = 'Store'
 }
 
-export interface StorageUsage {
+export type StorageUsage = {
   __typename?: 'StorageUsage';
   available: Scalars['Int']['output'];
   fsAvailable: Scalars['Int']['output'];
   reserved: Scalars['Int']['output'];
   time: Scalars['Time']['output'];
   used: Scalars['Int']['output'];
-}
+};
 
-export interface Subscription {
+export type Subscription = {
   __typename?: 'Subscription';
   alerts: Alert;
   completedTask: TaskHistory;
   newTask: Task;
-}
+};
 
 
-export interface SubscriptionAlertsArgs {
+export type SubscriptionAlertsArgs = {
   offset: Scalars['Int']['input'];
-}
+};
 
 
-export interface SubscriptionCompletedTaskArgs {
+export type SubscriptionCompletedTaskArgs = {
   last: Scalars['Int']['input'];
   machine?: InputMaybe<Scalars['String']['input']>;
-}
+};
 
 
-export interface SubscriptionNewTaskArgs {
+export type SubscriptionNewTaskArgs = {
   last: Scalars['Int']['input'];
   machineID?: InputMaybe<Scalars['Int']['input']>;
-}
+};
 
-export interface Task {
+export type Task = {
   __typename?: 'Task';
   addedBy: Machine;
   addedByID: Scalars['Int']['output'];
-  histories?: Maybe<Maybe<TaskHistory>[]>;
+  histories?: Maybe<Array<Maybe<TaskHistory>>>;
   id: Scalars['Int']['output'];
   initiatedBy?: Maybe<Machine>;
   initiatedByID?: Maybe<Scalars['Int']['output']>;
@@ -821,22 +821,22 @@ export interface Task {
   previousTask?: Maybe<TaskHistory>;
   previousTaskID?: Maybe<Scalars['Int']['output']>;
   updateTime: Scalars['Time']['output'];
-}
+};
 
-export interface TaskAggregate {
+export type TaskAggregate = {
   __typename?: 'TaskAggregate';
   failure: Scalars['Int']['output'];
   success: Scalars['Int']['output'];
   time: Scalars['Time']['output'];
   total: Scalars['Int']['output'];
-}
+};
 
 export enum TaskHistoriesAggregateInterval {
   Day = 'day',
   Hour = 'hour'
 }
 
-export interface TaskHistory {
+export type TaskHistory = {
   __typename?: 'TaskHistory';
   completedBy?: Maybe<Machine>;
   completedByHostAndPort: Scalars['String']['output'];
@@ -848,44 +848,44 @@ export interface TaskHistory {
   taskId: Scalars['Int']['output'];
   workEnd: Scalars['Time']['output'];
   workStart: Scalars['Time']['output'];
-}
+};
 
-export interface TaskNameAggregate {
+export type TaskNameAggregate = {
   __typename?: 'TaskNameAggregate';
   failure: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   success: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
-}
+};
 
-export interface TaskStats {
+export type TaskStats = {
   __typename?: 'TaskStats';
   failure: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   success: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
-}
+};
 
-export interface TaskSummary {
+export type TaskSummary = {
   __typename?: 'TaskSummary';
   falseCount: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   totalCount: Scalars['Int']['output'];
   trueCount: Scalars['Int']['output'];
-}
+};
 
-export interface TaskSummaryDay {
+export type TaskSummaryDay = {
   __typename?: 'TaskSummaryDay';
   day: Scalars['Time']['output'];
   falseCount: Scalars['Int']['output'];
   totalCount: Scalars['Int']['output'];
   trueCount: Scalars['Int']['output'];
-}
+};
 
 
-      export interface PossibleTypesResultData {
+      export type PossibleTypesResultData = {
   "possibleTypes": {}
-}
+};
       const result: PossibleTypesResultData = {
   "possibleTypes": {}
 };

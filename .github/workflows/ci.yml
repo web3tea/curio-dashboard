@@ -1,11 +1,7 @@
-name: build
+name: CI
 
 on:
   push:
-    branches:
-      - 'main'
-    tags:
-      - 'v*'
   pull_request:
   release:
     types: [ published ]
@@ -23,25 +19,72 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  eslint:
+    name: eslint
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: ui
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          setup-node: true
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+
+  golangci:
+    name: golangci-lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          setup-go: true
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.60
+          args: --timeout=10m
+
+  gen:
+    name: gen-check
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+        with:
+          setup-go: true
+          setup-node: true
+      - name: Install goimports
+        run: go install golang.org/x/tools/cmd/goimports@latest
+      - name: Install dependencies
+        run: |
+          cd ui && yarn install --frozen-lockfile
+      - name: Run code generation
+        run: make gen
+      - name: Check for changes
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "Generated code is not up to date. Please run 'make gen' locally and commit the changes."
+            git status --porcelain
+            git diff
+            exit 1
+          fi
+
   build:
     name: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - run: sudo apt update -y && sudo apt install -y ocl-icd-opencl-dev libhwloc-dev pkg-config
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup
         with:
-          node-version: 22
-          cache: 'yarn'
-          cache-dependency-path: 'ui/yarn.lock'
+          setup-system-deps: true
+          setup-node: true
+          setup-go: true
       - run: make ui-deps ui
-      - uses: actions/setup-go@v5
-        with:
-          go-version: '1.23'
-          check-latest: true
-          cache-dependency-path: 'go.sum'
       - run: |
-          make go-dist 
+          make go-dist
           cp curio-dashboard curio-dashboard-linux-amd64
       - name: Upload release asset
         if: github.event_name == 'release'
@@ -50,7 +93,6 @@ jobs:
         run: |
           gh release upload ${{ github.ref_name }} curio-dashboard-linux-amd64
 
-      #build docker image
       - name: Set up QEMU
         if: ${{ github.event_name != 'pull_request' }}
         uses: docker/setup-qemu-action@v3

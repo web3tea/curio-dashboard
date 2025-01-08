@@ -5,7 +5,8 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "vue-tsc --noEmit && eslint . --fix"
+    "lint": "vue-tsc --noEmit && eslint . --fix",
+    "type-gen": "graphql-codegen"
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",

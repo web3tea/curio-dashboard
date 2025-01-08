@@ -1,5 +1,5 @@
 # Only used for the ci
-FROM ubuntu:jammy as builder
+FROM ubuntu:jammy AS builder
 
 # Update and install necessary packages
 RUN apt update && apt install -y libhwloc-dev

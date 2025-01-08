@@ -28,7 +28,7 @@ curio-rpc-gen:
 .PHONY: api-gen
 
 type-gen:
-	 cd ui && yarn graphql-codegen -c ../codegen.yml
+	 cd ui && yarn type-gen
 
 go-gen:
 	go generate ./...

@@ -1,0 +1,37 @@
+name: 'Setup Environment'
+description: 'Setup development environment for the project'
+
+inputs:
+  setup-node:
+    description: 'Whether to setup Node.js'
+    required: false
+  setup-go:
+    description: 'Whether to setup Go'
+    required: false
+  setup-system-deps:
+    description: 'Whether to setup system dependencies'
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup system dependencies
+      if: inputs.setup-system-deps
+      shell: bash
+      run: sudo apt update -y && sudo apt install -y ocl-icd-opencl-dev libhwloc-dev pkg-config
+
+    - name: Setup Node.js
+      if: inputs.setup-node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: 'yarn'
+        cache-dependency-path: 'ui/yarn.lock'
+
+    - name: Setup Go
+      if: inputs.setup-go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.23'
+        check-latest: true
+        cache-dependency-path: 'go.sum'

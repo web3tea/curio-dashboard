@@ -1,7 +1,7 @@
 ARG GO_BUILD_IMAGE=golang:1.23
 ARG NODE_BUILD_IMAGE=node:22
 
-FROM ${NODE_BUILD_IMAGE} as node-builder
+FROM ${NODE_BUILD_IMAGE} AS node-builder
 
 WORKDIR /tmp/build
 
@@ -10,7 +10,7 @@ COPY . .
 RUN make ui-deps ui
 
 # Use the Go build image as the builder
-FROM ${GO_BUILD_IMAGE} as go-builder
+FROM ${GO_BUILD_IMAGE} AS go-builder
 
 # Update and install necessary packages
 RUN apt-get update && apt-get install -y hwloc ocl-icd-opencl-dev libhwloc-dev pkg-config
