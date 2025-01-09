@@ -1,6 +1,8 @@
 
 # Curio Dashboard
 
+[![Build Status](https://github.com/strahe/curio-dashboard/workflows/CI/badge.svg)](https://github.com/strahe/curio-dashboard/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/strahe/curio-dashboard)](https://goreportcard.com/report/github.com/strahe/curio-dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/strahe/curio-dashboard/badge)](https://www.codefactor.io/repository/github/strahe/curio-dashboard) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/strahe/curio-dashboard)](https://github.com/strahe/curio-dashboard/releases)
+
 Status: **Alpha**
 
 ## Overview
@@ -30,17 +32,19 @@ Status: **Alpha**
 
 ```bash
 # Pull the latest Docker image
-docker pull ghcr.io/strahe/curio-dashboard:latest  # The Latest release Or use a specific version tag
-# docker pull ghcr.io/strahe/curio-dashboard:main # Use the main branch for the latest changes
+docker pull ghcr.io/strahe/curio-dashboard:latest  # Use the latest release
+# docker pull ghcr.io/strahe/curio-dashboard:main # Use the main branch
 
 # Generate the default configuration file
 docker run --rm ghcr.io/strahe/curio-dashboard:latest config default > config.toml
 
-# Customize the `config.toml` file according to your setup.
+# Edit the configuration file
+# vim config.toml # or use your preferred text editor
 
 # Run the dashboard
-docker run \
+docker run -d \
   -p 9091:9091 \
+  --restart unless-stopped \
   -v "$(pwd)"/config.toml:/config.toml:ro \
   ghcr.io/strahe/curio-dashboard:latest --debug run
 ```
