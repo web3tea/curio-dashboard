@@ -138,6 +138,27 @@ export type MachineSummary = {
   uniqueHostsUp: Scalars['Int']['output'];
 };
 
+export type MarketMk12StorageAsk = {
+  __typename?: 'MarketMk12StorageAsk';
+  createdAt: Scalars['Int']['output'];
+  expiry: Scalars['Int']['output'];
+  maxSize: Scalars['Int']['output'];
+  minSize: Scalars['Int']['output'];
+  price: Scalars['Int']['output'];
+  sequence: Scalars['Int']['output'];
+  spId: Scalars['ActorID']['output'];
+  verifiedPrice: Scalars['Int']['output'];
+};
+
+export type MarketMk12StorageAskInput = {
+  expiry: Scalars['Int']['input'];
+  maxSize: Scalars['Int']['input'];
+  minSize: Scalars['Int']['input'];
+  price: Scalars['Int']['input'];
+  spId: Scalars['ActorID']['input'];
+  verifiedPrice: Scalars['Int']['input'];
+};
+
 export type MessageSend = {
   __typename?: 'MessageSend';
   fromKey: Scalars['String']['output'];
@@ -281,6 +302,7 @@ export type Mutation = {
   restartAllFailedSectors: Scalars['Boolean']['output'];
   restartSector: Scalars['Boolean']['output'];
   updateConfig?: Maybe<Config>;
+  updateMarketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
 };
 
 
@@ -316,6 +338,11 @@ export type MutationRestartSectorArgs = {
 export type MutationUpdateConfigArgs = {
   config: Scalars['String']['input'];
   title: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateMarketMk12StorageAskArgs = {
+  input: MarketMk12StorageAskInput;
 };
 
 export type NodeInfo = {
@@ -451,6 +478,9 @@ export type Query = {
   machine?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
+  marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
+  marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
+  marketMk12StorageAsksCount: Scalars['Int']['output'];
   messageSend?: Maybe<MessageSend>;
   messageSends?: Maybe<Array<Maybe<MessageSend>>>;
   messageSendsCount: Scalars['Int']['output'];
@@ -496,6 +526,11 @@ export type QueryConfigArgs = {
 
 export type QueryMachineArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryMarketMk12StorageAskArgs = {
+  spId: Scalars['ActorID']['input'];
 };
 
 

@@ -23,7 +23,9 @@
     "Task History": "Task History",
     "History": "History",
     "Messages": "Messages",
-    "Sends": "Sends"
+    "Sends": "Sends",
+    "Market": "Market",
+    "Storage Asks": "Storage Asks"
   },
   "fields": {
     "Total Power": "Total Power",

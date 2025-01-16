@@ -34,3 +34,7 @@ go-gen:
 	go generate ./...
 
 gen: go-gen curio-rpc-gen type-gen
+
+clean:
+	rm -f curio-dashboard
+	cd ui && rm -rf dist node_modules

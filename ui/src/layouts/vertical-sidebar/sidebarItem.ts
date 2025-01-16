@@ -1,6 +1,7 @@
 import {
   IconBox,
   IconBrandAsana,
+  IconBuildingStore,
   IconChartHistogram,
   IconCurrency,
   IconDatabase,
@@ -95,6 +96,17 @@ const sidebarItem: menu[] = [
         to: '/app/mining/wins',
       },
     ],
+  },
+  { header: 'Market' },
+  {
+    title: 'Market',
+    icon: IconBuildingStore,
+    children: [
+      {
+        title: 'Storage Asks',
+        to: '/app/market/storage-asks',
+      },
+    ]
   },
   { header: 'Cluster' },
   {

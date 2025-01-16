@@ -198,6 +198,15 @@ const AppRoutes = {
         title: 'Settings',
         description: 'My Settings',
       },
+    },
+    {
+      name: "StorageAsks",
+      path: "/app/market/storage-asks",
+      component: () => import('@/views/market/asks/AskIndex.vue'),
+      meta: {
+        title: 'Storage Asks',
+        description: 'List of all storage asks in the cluster',
+      },
     }
   ],
 }

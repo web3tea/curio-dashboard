@@ -21,7 +21,10 @@ import (
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-const sectorDefaultCacheAge = time.Minute * 5
+const (
+	sectorDefaultCacheAge         = time.Minute * 5
+	marketMk12StorageAsksCacheAge = time.Minute
+)
 
 var log = logging.Logger("resolvers")
 

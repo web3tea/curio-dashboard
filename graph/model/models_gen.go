@@ -62,6 +62,26 @@ type MachineMetrics struct {
 	ProcessMaxFds              int                `json:"processMaxFds"`
 }
 
+type MarketMk12StorageAsk struct {
+	SpID          types.ActorID `json:"spId"`
+	Price         int           `json:"price"`
+	VerifiedPrice int           `json:"verifiedPrice"`
+	MinSize       int           `json:"minSize"`
+	MaxSize       int           `json:"maxSize"`
+	CreatedAt     int           `json:"createdAt"`
+	Expiry        int           `json:"expiry"`
+	Sequence      int           `json:"sequence"`
+}
+
+type MarketMk12StorageAskInput struct {
+	SpID          types.ActorID `json:"spId"`
+	Price         int           `json:"price"`
+	VerifiedPrice int           `json:"verifiedPrice"`
+	MinSize       int           `json:"minSize"`
+	MaxSize       int           `json:"maxSize"`
+	Expiry        int           `json:"expiry"`
+}
+
 type MessageSend struct {
 	FromKey      string          `json:"fromKey"`
 	ToAddr       string          `json:"toAddr"`

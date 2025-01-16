@@ -36,6 +36,8 @@ type WebRPC interface {
 	UpgradeResetTaskIDs(ctx context.Context, spid, sectorNum uint64) error
 	UpgradeDelete(ctx context.Context, spid, sectorNum uint64) error
 	WinStats(ctx context.Context) ([]webrpc.WinStats, error)
+
+	SetStorageAsk(ctx context.Context, ask *webrpc.StorageAsk) error
 }
 
 type sectorListEntry struct {

@@ -169,6 +169,17 @@ type ComplexityRoot struct {
 		UniqueHostsUp    func(childComplexity int) int
 	}
 
+	MarketMk12StorageAsk struct {
+		CreatedAt     func(childComplexity int) int
+		Expiry        func(childComplexity int) int
+		MaxSize       func(childComplexity int) int
+		MinSize       func(childComplexity int) int
+		Price         func(childComplexity int) int
+		Sequence      func(childComplexity int) int
+		SpID          func(childComplexity int) int
+		VerifiedPrice func(childComplexity int) int
+	}
+
 	MessageSend struct {
 		FromKey      func(childComplexity int) int
 		Nonce        func(childComplexity int) int
@@ -286,13 +297,14 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateConfig            func(childComplexity int, title string, config string) int
-		DealSealNow             func(childComplexity int, miner types.ActorID, sectorNumber uint64) int
-		RemoveConfig            func(childComplexity int, title string) int
-		RemoveSector            func(childComplexity int, miner types.ActorID, sectorNumber int) int
-		RestartAllFailedSectors func(childComplexity int) int
-		RestartSector           func(childComplexity int, miner types.ActorID, sectorNumber int) int
-		UpdateConfig            func(childComplexity int, title string, config string) int
+		CreateConfig               func(childComplexity int, title string, config string) int
+		DealSealNow                func(childComplexity int, miner types.ActorID, sectorNumber uint64) int
+		RemoveConfig               func(childComplexity int, title string) int
+		RemoveSector               func(childComplexity int, miner types.ActorID, sectorNumber int) int
+		RestartAllFailedSectors    func(childComplexity int) int
+		RestartSector              func(childComplexity int, miner types.ActorID, sectorNumber int) int
+		UpdateConfig               func(childComplexity int, title string, config string) int
+		UpdateMarketMk12StorageAsk func(childComplexity int, input model.MarketMk12StorageAskInput) int
 	}
 
 	NodeInfo struct {
@@ -392,46 +404,49 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Actor                  func(childComplexity int, address types.Address) int
-		Actors                 func(childComplexity int) int
-		Alerts                 func(childComplexity int) int
-		Config                 func(childComplexity int, layer string) int
-		Configs                func(childComplexity int) int
-		DealsPending           func(childComplexity int) int
-		Global                 func(childComplexity int) int
-		Machine                func(childComplexity int, id int) int
-		MachineSummary         func(childComplexity int) int
-		Machines               func(childComplexity int) int
-		MessageSend            func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
-		MessageSends           func(childComplexity int, account *types.Address, offset int, limit int) int
-		MessageSendsCount      func(childComplexity int, account *types.Address) int
-		MetricsActiveTasks     func(childComplexity int, lastDays int, machine *string) int
-		Miner                  func(childComplexity int, address types.Address) int
-		MinerPower             func(childComplexity int, address *types.Address) int
-		MiningCount            func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
-		MiningCountAggregate   func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) int
-		MiningCountSummary     func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
-		MiningSummaryByDay     func(childComplexity int, start time.Time, end time.Time) int
-		MiningWins             func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) int
-		MiningWinsCount        func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) int
-		NodesInfo              func(childComplexity int) int
-		PipelinesSummary       func(childComplexity int) int
-		Porep                  func(childComplexity int, sp types.ActorID, sectorNumber int) int
-		Poreps                 func(childComplexity int) int
-		Sector                 func(childComplexity int, actor types.ActorID, sectorNumber int) int
-		Sectors                func(childComplexity int, actor *types.ActorID, sectorNumber *int, offset int, limit int) int
-		SectorsCount           func(childComplexity int, actor *types.ActorID) int
-		Storage                func(childComplexity int, id string) int
-		StoragePaths           func(childComplexity int) int
-		StorageStats           func(childComplexity int) int
-		Task                   func(childComplexity int, id int) int
-		TaskHistories          func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) int
-		TaskHistoriesAggregate func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
-		TaskHistoriesCount     func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) int
-		TaskNames              func(childComplexity int) int
-		Tasks                  func(childComplexity int) int
-		TasksCount             func(childComplexity int) int
-		TasksStats             func(childComplexity int, start time.Time, end time.Time, machine *string) int
+		Actor                      func(childComplexity int, address types.Address) int
+		Actors                     func(childComplexity int) int
+		Alerts                     func(childComplexity int) int
+		Config                     func(childComplexity int, layer string) int
+		Configs                    func(childComplexity int) int
+		DealsPending               func(childComplexity int) int
+		Global                     func(childComplexity int) int
+		Machine                    func(childComplexity int, id int) int
+		MachineSummary             func(childComplexity int) int
+		Machines                   func(childComplexity int) int
+		MarketMk12StorageAsk       func(childComplexity int, spID types.ActorID) int
+		MarketMk12StorageAsks      func(childComplexity int) int
+		MarketMk12StorageAsksCount func(childComplexity int) int
+		MessageSend                func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
+		MessageSends               func(childComplexity int, account *types.Address, offset int, limit int) int
+		MessageSendsCount          func(childComplexity int, account *types.Address) int
+		MetricsActiveTasks         func(childComplexity int, lastDays int, machine *string) int
+		Miner                      func(childComplexity int, address types.Address) int
+		MinerPower                 func(childComplexity int, address *types.Address) int
+		MiningCount                func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
+		MiningCountAggregate       func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) int
+		MiningCountSummary         func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
+		MiningSummaryByDay         func(childComplexity int, start time.Time, end time.Time) int
+		MiningWins                 func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) int
+		MiningWinsCount            func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) int
+		NodesInfo                  func(childComplexity int) int
+		PipelinesSummary           func(childComplexity int) int
+		Porep                      func(childComplexity int, sp types.ActorID, sectorNumber int) int
+		Poreps                     func(childComplexity int) int
+		Sector                     func(childComplexity int, actor types.ActorID, sectorNumber int) int
+		Sectors                    func(childComplexity int, actor *types.ActorID, sectorNumber *int, offset int, limit int) int
+		SectorsCount               func(childComplexity int, actor *types.ActorID) int
+		Storage                    func(childComplexity int, id string) int
+		StoragePaths               func(childComplexity int) int
+		StorageStats               func(childComplexity int) int
+		Task                       func(childComplexity int, id int) int
+		TaskHistories              func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) int
+		TaskHistoriesAggregate     func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
+		TaskHistoriesCount         func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) int
+		TaskNames                  func(childComplexity int) int
+		Tasks                      func(childComplexity int) int
+		TasksCount                 func(childComplexity int) int
+		TasksStats                 func(childComplexity int, start time.Time, end time.Time, machine *string) int
 	}
 
 	Sector struct {
@@ -680,6 +695,7 @@ type MutationResolver interface {
 	RestartSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error)
 	RestartAllFailedSectors(ctx context.Context) (bool, error)
 	DealSealNow(ctx context.Context, miner types.ActorID, sectorNumber uint64) (bool, error)
+	UpdateMarketMk12StorageAsk(ctx context.Context, input model.MarketMk12StorageAskInput) (*model.MarketMk12StorageAsk, error)
 }
 type PipelineSummaryResolver interface {
 	Sdr(ctx context.Context, obj *model.PipelineSummary) (int, error)
@@ -735,6 +751,9 @@ type QueryResolver interface {
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
+	MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error)
+	MarketMk12StorageAsk(ctx context.Context, spID types.ActorID) (*model.MarketMk12StorageAsk, error)
+	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
@@ -1316,6 +1335,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MachineSummary.UniqueHostsUp(childComplexity), true
+
+	case "MarketMk12StorageAsk.createdAt":
+		if e.complexity.MarketMk12StorageAsk.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.CreatedAt(childComplexity), true
+
+	case "MarketMk12StorageAsk.expiry":
+		if e.complexity.MarketMk12StorageAsk.Expiry == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.Expiry(childComplexity), true
+
+	case "MarketMk12StorageAsk.maxSize":
+		if e.complexity.MarketMk12StorageAsk.MaxSize == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.MaxSize(childComplexity), true
+
+	case "MarketMk12StorageAsk.minSize":
+		if e.complexity.MarketMk12StorageAsk.MinSize == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.MinSize(childComplexity), true
+
+	case "MarketMk12StorageAsk.price":
+		if e.complexity.MarketMk12StorageAsk.Price == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.Price(childComplexity), true
+
+	case "MarketMk12StorageAsk.sequence":
+		if e.complexity.MarketMk12StorageAsk.Sequence == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.Sequence(childComplexity), true
+
+	case "MarketMk12StorageAsk.spId":
+		if e.complexity.MarketMk12StorageAsk.SpID == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.SpID(childComplexity), true
+
+	case "MarketMk12StorageAsk.verifiedPrice":
+		if e.complexity.MarketMk12StorageAsk.VerifiedPrice == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12StorageAsk.VerifiedPrice(childComplexity), true
 
 	case "MessageSend.fromKey":
 		if e.complexity.MessageSend.FromKey == nil {
@@ -1934,6 +2009,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateConfig(childComplexity, args["title"].(string), args["config"].(string)), true
+
+	case "Mutation.updateMarketMk12StorageAsk":
+		if e.complexity.Mutation.UpdateMarketMk12StorageAsk == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateMarketMk12StorageAsk_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateMarketMk12StorageAsk(childComplexity, args["input"].(model.MarketMk12StorageAskInput)), true
 
 	case "NodeInfo.address":
 		if e.complexity.NodeInfo.Address == nil {
@@ -2586,6 +2673,32 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Machines(childComplexity), true
+
+	case "Query.marketMk12StorageAsk":
+		if e.complexity.Query.MarketMk12StorageAsk == nil {
+			break
+		}
+
+		args, err := ec.field_Query_marketMk12StorageAsk_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MarketMk12StorageAsk(childComplexity, args["spId"].(types.ActorID)), true
+
+	case "Query.marketMk12StorageAsks":
+		if e.complexity.Query.MarketMk12StorageAsks == nil {
+			break
+		}
+
+		return e.complexity.Query.MarketMk12StorageAsks(childComplexity), true
+
+	case "Query.marketMk12StorageAsksCount":
+		if e.complexity.Query.MarketMk12StorageAsksCount == nil {
+			break
+		}
+
+		return e.complexity.Query.MarketMk12StorageAsksCount(childComplexity), true
 
 	case "Query.messageSend":
 		if e.complexity.Query.MessageSend == nil {
@@ -3881,7 +3994,9 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
-	inputUnmarshalMap := graphql.BuildUnmarshalerMap()
+	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputMarketMk12StorageAskInput,
+	)
 	first := true
 
 	switch rc.Operation.Operation {
@@ -3994,7 +4109,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
+//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_storage_ask.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -4014,6 +4129,7 @@ var sources = []*ast.Source{
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
 	{Name: "schema/machine_detail.graphql", Input: sourceData("schema/machine_detail.graphql"), BuiltIn: false},
 	{Name: "schema/machine_summary.graphql", Input: sourceData("schema/machine_summary.graphql"), BuiltIn: false},
+	{Name: "schema/market_storage_ask.graphql", Input: sourceData("schema/market_storage_ask.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
 	{Name: "schema/metrics.graphql", Input: sourceData("schema/metrics.graphql"), BuiltIn: false},
 	{Name: "schema/miner.graphql", Input: sourceData("schema/miner.graphql"), BuiltIn: false},
@@ -4398,6 +4514,38 @@ func (ec *executionContext) field_Mutation_updateConfig_argsConfig(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_updateMarketMk12StorageAsk_argsInput(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_argsInput(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.MarketMk12StorageAskInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["input"]
+	if !ok {
+		var zeroVal model.MarketMk12StorageAskInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+	if tmp, ok := rawArgs["input"]; ok {
+		return ec.unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx, tmp)
+	}
+
+	var zeroVal model.MarketMk12StorageAskInput
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4523,6 +4671,38 @@ func (ec *executionContext) field_Query_machine_argsID(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_marketMk12StorageAsk_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_marketMk12StorageAsk_argsSpID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["spId"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_marketMk12StorageAsk_argsSpID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (types.ActorID, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["spId"]
+	if !ok {
+		var zeroVal types.ActorID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+	if tmp, ok := rawArgs["spId"]; ok {
+		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+	}
+
+	var zeroVal types.ActorID
 	return zeroVal, nil
 }
 
@@ -9872,6 +10052,358 @@ func (ec *executionContext) fieldContext_MachineSummary_totalGpu(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _MarketMk12StorageAsk_spId(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.ActorID)
+	fc.Result = res
+	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ActorID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12StorageAsk_price(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Price, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_price(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12StorageAsk_verifiedPrice(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.VerifiedPrice, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_verifiedPrice(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12StorageAsk_minSize(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MinSize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_minSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12StorageAsk_maxSize(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MaxSize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_maxSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12StorageAsk_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12StorageAsk_expiry(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Expiry, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_expiry(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12StorageAsk_sequence(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sequence, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12StorageAsk_sequence(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12StorageAsk",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _MessageSend_fromKey(ctx context.Context, field graphql.CollectedField, obj *model.MessageSend) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MessageSend_fromKey(ctx, field)
 	if err != nil {
@@ -13688,6 +14220,76 @@ func (ec *executionContext) fieldContext_Mutation_dealSealNow(ctx context.Contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_dealSealNow_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateMarketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateMarketMk12StorageAsk(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateMarketMk12StorageAsk(rctx, fc.Args["input"].(model.MarketMk12StorageAskInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MarketMk12StorageAsk)
+	fc.Result = res
+	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateMarketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spId":
+				return ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
+			case "price":
+				return ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
+			case "verifiedPrice":
+				return ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
+			case "minSize":
+				return ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
+			case "maxSize":
+				return ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
+			case "expiry":
+				return ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
+			case "sequence":
+				return ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketMk12StorageAsk", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateMarketMk12StorageAsk_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -19651,6 +20253,179 @@ func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, f
 	if fc.Args, err = ec.field_Query_minerPower_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12StorageAsks(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12StorageAsks(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MarketMk12StorageAsk)
+	fc.Result = res
+	return ec.marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12StorageAsks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spId":
+				return ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
+			case "price":
+				return ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
+			case "verifiedPrice":
+				return ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
+			case "minSize":
+				return ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
+			case "maxSize":
+				return ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
+			case "expiry":
+				return ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
+			case "sequence":
+				return ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketMk12StorageAsk", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12StorageAsk(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12StorageAsk(rctx, fc.Args["spId"].(types.ActorID))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MarketMk12StorageAsk)
+	fc.Result = res
+	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spId":
+				return ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
+			case "price":
+				return ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
+			case "verifiedPrice":
+				return ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
+			case "minSize":
+				return ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
+			case "maxSize":
+				return ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
+			case "expiry":
+				return ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
+			case "sequence":
+				return ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketMk12StorageAsk", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketMk12StorageAsk_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketMk12StorageAsksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12StorageAsksCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12StorageAsksCount(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12StorageAsksCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
 	}
 	return fc, nil
 }
@@ -28207,6 +28982,68 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputMarketMk12StorageAskInput(ctx context.Context, obj interface{}) (model.MarketMk12StorageAskInput, error) {
+	var it model.MarketMk12StorageAskInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"spId", "price", "verifiedPrice", "minSize", "maxSize", "expiry"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "spId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+			data, err := ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpID = data
+		case "price":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("price"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Price = data
+		case "verifiedPrice":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifiedPrice"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.VerifiedPrice = data
+		case "minSize":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("minSize"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MinSize = data
+		case "maxSize":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("maxSize"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MaxSize = data
+		case "expiry":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("expiry"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Expiry = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -29624,6 +30461,80 @@ func (ec *executionContext) _MachineSummary(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var marketMk12StorageAskImplementors = []string{"MarketMk12StorageAsk"}
+
+func (ec *executionContext) _MarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, obj *model.MarketMk12StorageAsk) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, marketMk12StorageAskImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MarketMk12StorageAsk")
+		case "spId":
+			out.Values[i] = ec._MarketMk12StorageAsk_spId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "price":
+			out.Values[i] = ec._MarketMk12StorageAsk_price(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "verifiedPrice":
+			out.Values[i] = ec._MarketMk12StorageAsk_verifiedPrice(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "minSize":
+			out.Values[i] = ec._MarketMk12StorageAsk_minSize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "maxSize":
+			out.Values[i] = ec._MarketMk12StorageAsk_maxSize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._MarketMk12StorageAsk_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "expiry":
+			out.Values[i] = ec._MarketMk12StorageAsk_expiry(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "sequence":
+			out.Values[i] = ec._MarketMk12StorageAsk_sequence(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var messageSendImplementors = []string{"MessageSend"}
 
 func (ec *executionContext) _MessageSend(ctx context.Context, sel ast.SelectionSet, obj *model.MessageSend) graphql.Marshaler {
@@ -30726,6 +31637,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "updateMarketMk12StorageAsk":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateMarketMk12StorageAsk(ctx, field)
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -32294,6 +33209,66 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_minerPower(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketMk12StorageAsks":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketMk12StorageAsks(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketMk12StorageAsk":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketMk12StorageAsk(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketMk12StorageAsksCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketMk12StorageAsksCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -35010,6 +35985,11 @@ func (ec *executionContext) marshalNMachineDetail2ᚕᚖgithubᚗcomᚋstraheᚋ
 	return ret
 }
 
+func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v interface{}) (model.MarketMk12StorageAskInput, error) {
+	res, err := ec.unmarshalInputMarketMk12StorageAskInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNMiningCount2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx context.Context, sel ast.SelectionSet, v model.MiningCount) graphql.Marshaler {
 	return ec._MiningCount(ctx, sel, &v)
 }
@@ -36064,6 +37044,54 @@ func (ec *executionContext) marshalOMachineSummary2ᚖgithubᚗcomᚋstraheᚋcu
 		return graphql.Null
 	}
 	return ec._MachineSummary(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, v []*model.MarketMk12StorageAsk) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, v *model.MarketMk12StorageAsk) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MarketMk12StorageAsk(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx context.Context, sel ast.SelectionSet, v []*model.MessageSend) graphql.Marshaler {

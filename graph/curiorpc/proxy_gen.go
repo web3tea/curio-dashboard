@@ -53,6 +53,8 @@ type WebRPCMethods struct {
 
 	SectorResume func(p0 context.Context, p1 int64, p2 int64) error ``
 
+	SetStorageAsk func(p0 context.Context, p1 *webrpc.StorageAsk) error ``
+
 	StorageGCApprove func(p0 context.Context, p1 int64, p2 int64, p3 int64, p4 string) error ``
 
 	StorageGCApproveAll func(p0 context.Context) error ``
@@ -272,6 +274,17 @@ func (s *WebRPCStruct) SectorResume(p0 context.Context, p1 int64, p2 int64) erro
 }
 
 func (s *WebRPCStub) SectorResume(p0 context.Context, p1 int64, p2 int64) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetStorageAsk(p0 context.Context, p1 *webrpc.StorageAsk) error {
+	if s.Internal.SetStorageAsk == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetStorageAsk(p0, p1)
+}
+
+func (s *WebRPCStub) SetStorageAsk(p0 context.Context, p1 *webrpc.StorageAsk) error {
 	return ErrNotSupported
 }
 

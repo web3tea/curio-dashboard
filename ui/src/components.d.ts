@@ -22,6 +22,7 @@ declare module 'vue' {
     TruncatedChip: typeof import('./components/shared/TruncatedChip.vue')['default']
     UiChildCard: typeof import('./components/shared/UiChildCard.vue')['default']
     UiParentCard: typeof import('./components/shared/UiParentCard.vue')['default']
+    UiTableCard: typeof import('./components/shared/UiTableCard.vue')['default']
     UiTitleCard: typeof import('./components/shared/UiTitleCard.vue')['default']
     UiWidgetCard: typeof import('./components/shared/UiWidgetCard.vue')['default']
   }

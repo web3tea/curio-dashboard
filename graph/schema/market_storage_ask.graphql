@@ -1,0 +1,29 @@
+type MarketMk12StorageAsk {
+  spId: ActorID!
+  price: Int!
+  verifiedPrice: Int!
+  minSize: Int!
+  maxSize: Int!
+  createdAt: Int!
+  expiry: Int!
+  sequence: Int!
+}
+
+input MarketMk12StorageAskInput {
+  spId: ActorID!
+  price: Int!
+  verifiedPrice: Int!
+  minSize: Int!
+  maxSize: Int!
+  expiry: Int!
+}
+
+extend type Query {
+    marketMk12StorageAsks: [MarketMk12StorageAsk]
+    marketMk12StorageAsk(spId: ActorID!): MarketMk12StorageAsk
+    marketMk12StorageAsksCount: Int!
+}
+
+extend type Mutation {
+    updateMarketMk12StorageAsk(input: MarketMk12StorageAskInput!): MarketMk12StorageAsk
+}
