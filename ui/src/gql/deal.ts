@@ -34,7 +34,7 @@ export const GetPendingDeals = gql`
 `
 
 export const DealSealNow = gql`
-  mutation DealSealNow($miner: ActorID!, $sector: Uint64!) {
+  mutation DealSealNow($miner: Address!, $sector: Uint64!) {
     dealSealNow(miner: $miner, sectorNumber: $sector)
   }
 `

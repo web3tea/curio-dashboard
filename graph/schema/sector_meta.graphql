@@ -1,8 +1,6 @@
-scalar ByteArray
-
 type SectorMeta {
     id: String!
-    spId: ActorID!
+    spId: Address!
     sectorNum: Int!
     regSealProof: Int!
     ticketEpoch: Int!

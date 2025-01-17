@@ -298,11 +298,11 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateConfig               func(childComplexity int, title string, config string) int
-		DealSealNow                func(childComplexity int, miner types.ActorID, sectorNumber uint64) int
+		DealSealNow                func(childComplexity int, miner types.Address, sectorNumber uint64) int
 		RemoveConfig               func(childComplexity int, title string) int
-		RemoveSector               func(childComplexity int, miner types.ActorID, sectorNumber int) int
+		RemoveSector               func(childComplexity int, miner types.Address, sectorNumber int) int
 		RestartAllFailedSectors    func(childComplexity int) int
-		RestartSector              func(childComplexity int, miner types.ActorID, sectorNumber int) int
+		RestartSector              func(childComplexity int, miner types.Address, sectorNumber int) int
 		UpdateConfig               func(childComplexity int, title string, config string) int
 		UpdateMarketMk12StorageAsk func(childComplexity int, input model.MarketMk12StorageAskInput) int
 	}
@@ -414,7 +414,7 @@ type ComplexityRoot struct {
 		Machine                    func(childComplexity int, id int) int
 		MachineSummary             func(childComplexity int) int
 		Machines                   func(childComplexity int) int
-		MarketMk12StorageAsk       func(childComplexity int, spID types.ActorID) int
+		MarketMk12StorageAsk       func(childComplexity int, spID types.Address) int
 		MarketMk12StorageAsks      func(childComplexity int) int
 		MarketMk12StorageAsksCount func(childComplexity int) int
 		MessageSend                func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
@@ -423,19 +423,19 @@ type ComplexityRoot struct {
 		MetricsActiveTasks         func(childComplexity int, lastDays int, machine *string) int
 		Miner                      func(childComplexity int, address types.Address) int
 		MinerPower                 func(childComplexity int, address *types.Address) int
-		MiningCount                func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
-		MiningCountAggregate       func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) int
-		MiningCountSummary         func(childComplexity int, start time.Time, end time.Time, actor *types.ActorID) int
+		MiningCount                func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
+		MiningCountAggregate       func(childComplexity int, start time.Time, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) int
+		MiningCountSummary         func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
 		MiningSummaryByDay         func(childComplexity int, start time.Time, end time.Time) int
-		MiningWins                 func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) int
-		MiningWinsCount            func(childComplexity int, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) int
+		MiningWins                 func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) int
+		MiningWinsCount            func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool) int
 		NodesInfo                  func(childComplexity int) int
 		PipelinesSummary           func(childComplexity int) int
-		Porep                      func(childComplexity int, sp types.ActorID, sectorNumber int) int
+		Porep                      func(childComplexity int, sp types.Address, sectorNumber int) int
 		Poreps                     func(childComplexity int) int
-		Sector                     func(childComplexity int, actor types.ActorID, sectorNumber int) int
-		Sectors                    func(childComplexity int, actor *types.ActorID, sectorNumber *int, offset int, limit int) int
-		SectorsCount               func(childComplexity int, actor *types.ActorID) int
+		Sector                     func(childComplexity int, actor types.Address, sectorNumber int) int
+		Sectors                    func(childComplexity int, actor *types.Address, sectorNumber *int, offset int, limit int) int
+		SectorsCount               func(childComplexity int, actor *types.Address) int
 		Storage                    func(childComplexity int, id string) int
 		StoragePaths               func(childComplexity int) int
 		StorageStats               func(childComplexity int) int
@@ -691,10 +691,10 @@ type MutationResolver interface {
 	CreateConfig(ctx context.Context, title string, config string) (*model.Config, error)
 	UpdateConfig(ctx context.Context, title string, config string) (*model.Config, error)
 	RemoveConfig(ctx context.Context, title string) (*model.Config, error)
-	RemoveSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error)
-	RestartSector(ctx context.Context, miner types.ActorID, sectorNumber int) (bool, error)
+	RemoveSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error)
+	RestartSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error)
 	RestartAllFailedSectors(ctx context.Context) (bool, error)
-	DealSealNow(ctx context.Context, miner types.ActorID, sectorNumber uint64) (bool, error)
+	DealSealNow(ctx context.Context, miner types.Address, sectorNumber uint64) (bool, error)
 	UpdateMarketMk12StorageAsk(ctx context.Context, input model.MarketMk12StorageAskInput) (*model.MarketMk12StorageAsk, error)
 }
 type PipelineSummaryResolver interface {
@@ -731,28 +731,28 @@ type QueryResolver interface {
 	Storage(ctx context.Context, id string) (*model.Storage, error)
 	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
-	Sectors(ctx context.Context, actor *types.ActorID, sectorNumber *int, offset int, limit int) ([]*model.Sector, error)
-	SectorsCount(ctx context.Context, actor *types.ActorID) (int, error)
-	Sector(ctx context.Context, actor types.ActorID, sectorNumber int) (*model.Sector, error)
+	Sectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.Sector, error)
+	SectorsCount(ctx context.Context, actor *types.Address) (int, error)
+	Sector(ctx context.Context, actor types.Address, sectorNumber int) (*model.Sector, error)
 	Actors(ctx context.Context) ([]*model.Actor, error)
 	Actor(ctx context.Context, address types.Address) (*model.Actor, error)
 	Poreps(ctx context.Context) ([]*model.Porep, error)
-	Porep(ctx context.Context, sp types.ActorID, sectorNumber int) (*model.Porep, error)
+	Porep(ctx context.Context, sp types.Address, sectorNumber int) (*model.Porep, error)
 	PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error)
 	NodesInfo(ctx context.Context) ([]*model.NodeInfo, error)
 	MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error)
-	MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCount, error)
-	MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error)
-	MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) (int, error)
-	MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCountSummary, error)
-	MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error)
+	MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCount, error)
+	MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) ([]*model.MiningTask, error)
+	MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.Address, include *bool) (int, error)
+	MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCountSummary, error)
+	MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error)
 	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	Alerts(ctx context.Context) ([]*model.Alert, error)
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
 	MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error)
-	MarketMk12StorageAsk(ctx context.Context, spID types.ActorID) (*model.MarketMk12StorageAsk, error)
+	MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
@@ -1953,7 +1953,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DealSealNow(childComplexity, args["miner"].(types.ActorID), args["sectorNumber"].(uint64)), true
+		return e.complexity.Mutation.DealSealNow(childComplexity, args["miner"].(types.Address), args["sectorNumber"].(uint64)), true
 
 	case "Mutation.removeConfig":
 		if e.complexity.Mutation.RemoveConfig == nil {
@@ -1977,7 +1977,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RemoveSector(childComplexity, args["miner"].(types.ActorID), args["sectorNumber"].(int)), true
+		return e.complexity.Mutation.RemoveSector(childComplexity, args["miner"].(types.Address), args["sectorNumber"].(int)), true
 
 	case "Mutation.restartAllFailedSectors":
 		if e.complexity.Mutation.RestartAllFailedSectors == nil {
@@ -1996,7 +1996,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RestartSector(childComplexity, args["miner"].(types.ActorID), args["sectorNumber"].(int)), true
+		return e.complexity.Mutation.RestartSector(childComplexity, args["miner"].(types.Address), args["sectorNumber"].(int)), true
 
 	case "Mutation.updateConfig":
 		if e.complexity.Mutation.UpdateConfig == nil {
@@ -2684,7 +2684,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MarketMk12StorageAsk(childComplexity, args["spId"].(types.ActorID)), true
+		return e.complexity.Query.MarketMk12StorageAsk(childComplexity, args["spId"].(types.Address)), true
 
 	case "Query.marketMk12StorageAsks":
 		if e.complexity.Query.MarketMk12StorageAsks == nil {
@@ -2782,7 +2782,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningCount(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.ActorID)), true
+		return e.complexity.Query.MiningCount(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.Address)), true
 
 	case "Query.miningCountAggregate":
 		if e.complexity.Query.MiningCountAggregate == nil {
@@ -2794,7 +2794,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningCountAggregate(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.ActorID), args["interval"].(model.MiningTaskAggregateInterval)), true
+		return e.complexity.Query.MiningCountAggregate(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.Address), args["interval"].(model.MiningTaskAggregateInterval)), true
 
 	case "Query.miningCountSummary":
 		if e.complexity.Query.MiningCountSummary == nil {
@@ -2806,7 +2806,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningCountSummary(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.ActorID)), true
+		return e.complexity.Query.MiningCountSummary(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["actor"].(*types.Address)), true
 
 	case "Query.miningSummaryByDay":
 		if e.complexity.Query.MiningSummaryByDay == nil {
@@ -2830,7 +2830,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningWins(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["actor"].(*types.ActorID), args["include"].(*bool), args["offset"].(int), args["limit"].(int)), true
+		return e.complexity.Query.MiningWins(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["actor"].(*types.Address), args["include"].(*bool), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.miningWinsCount":
 		if e.complexity.Query.MiningWinsCount == nil {
@@ -2842,7 +2842,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MiningWinsCount(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["actor"].(*types.ActorID), args["include"].(*bool)), true
+		return e.complexity.Query.MiningWinsCount(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["actor"].(*types.Address), args["include"].(*bool)), true
 
 	case "Query.nodesInfo":
 		if e.complexity.Query.NodesInfo == nil {
@@ -2868,7 +2868,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Porep(childComplexity, args["sp"].(types.ActorID), args["sectorNumber"].(int)), true
+		return e.complexity.Query.Porep(childComplexity, args["sp"].(types.Address), args["sectorNumber"].(int)), true
 
 	case "Query.poreps":
 		if e.complexity.Query.Poreps == nil {
@@ -2887,7 +2887,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Sector(childComplexity, args["actor"].(types.ActorID), args["sectorNumber"].(int)), true
+		return e.complexity.Query.Sector(childComplexity, args["actor"].(types.Address), args["sectorNumber"].(int)), true
 
 	case "Query.sectors":
 		if e.complexity.Query.Sectors == nil {
@@ -2899,7 +2899,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Sectors(childComplexity, args["actor"].(*types.ActorID), args["sectorNumber"].(*int), args["offset"].(int), args["limit"].(int)), true
+		return e.complexity.Query.Sectors(childComplexity, args["actor"].(*types.Address), args["sectorNumber"].(*int), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.sectorsCount":
 		if e.complexity.Query.SectorsCount == nil {
@@ -2911,7 +2911,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.SectorsCount(childComplexity, args["actor"].(*types.ActorID)), true
+		return e.complexity.Query.SectorsCount(childComplexity, args["actor"].(*types.Address)), true
 
 	case "Query.storage":
 		if e.complexity.Query.Storage == nil {
@@ -4264,22 +4264,22 @@ func (ec *executionContext) field_Mutation_dealSealNow_args(ctx context.Context,
 func (ec *executionContext) field_Mutation_dealSealNow_argsMiner(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (types.ActorID, error) {
+) (types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["miner"]
 	if !ok {
-		var zeroVal types.ActorID
+		var zeroVal types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal types.ActorID
+	var zeroVal types.Address
 	return zeroVal, nil
 }
 
@@ -4355,22 +4355,22 @@ func (ec *executionContext) field_Mutation_removeSector_args(ctx context.Context
 func (ec *executionContext) field_Mutation_removeSector_argsMiner(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (types.ActorID, error) {
+) (types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["miner"]
 	if !ok {
-		var zeroVal types.ActorID
+		var zeroVal types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal types.ActorID
+	var zeroVal types.Address
 	return zeroVal, nil
 }
 
@@ -4414,22 +4414,22 @@ func (ec *executionContext) field_Mutation_restartSector_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_restartSector_argsMiner(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (types.ActorID, error) {
+) (types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["miner"]
 	if !ok {
-		var zeroVal types.ActorID
+		var zeroVal types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal types.ActorID
+	var zeroVal types.Address
 	return zeroVal, nil
 }
 
@@ -4687,22 +4687,22 @@ func (ec *executionContext) field_Query_marketMk12StorageAsk_args(ctx context.Co
 func (ec *executionContext) field_Query_marketMk12StorageAsk_argsSpID(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (types.ActorID, error) {
+) (types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["spId"]
 	if !ok {
-		var zeroVal types.ActorID
+		var zeroVal types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
 	if tmp, ok := rawArgs["spId"]; ok {
-		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal types.ActorID
+	var zeroVal types.Address
 	return zeroVal, nil
 }
 
@@ -5132,22 +5132,22 @@ func (ec *executionContext) field_Query_miningCountAggregate_argsEnd(
 func (ec *executionContext) field_Query_miningCountAggregate_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*types.ActorID, error) {
+) (*types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal *types.ActorID
+		var zeroVal *types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal *types.ActorID
+	var zeroVal *types.Address
 	return zeroVal, nil
 }
 
@@ -5240,22 +5240,22 @@ func (ec *executionContext) field_Query_miningCountSummary_argsEnd(
 func (ec *executionContext) field_Query_miningCountSummary_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*types.ActorID, error) {
+) (*types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal *types.ActorID
+		var zeroVal *types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal *types.ActorID
+	var zeroVal *types.Address
 	return zeroVal, nil
 }
 
@@ -5326,22 +5326,22 @@ func (ec *executionContext) field_Query_miningCount_argsEnd(
 func (ec *executionContext) field_Query_miningCount_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*types.ActorID, error) {
+) (*types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal *types.ActorID
+		var zeroVal *types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal *types.ActorID
+	var zeroVal *types.Address
 	return zeroVal, nil
 }
 
@@ -5476,22 +5476,22 @@ func (ec *executionContext) field_Query_miningWinsCount_argsEnd(
 func (ec *executionContext) field_Query_miningWinsCount_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*types.ActorID, error) {
+) (*types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal *types.ActorID
+		var zeroVal *types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal *types.ActorID
+	var zeroVal *types.Address
 	return zeroVal, nil
 }
 
@@ -5599,22 +5599,22 @@ func (ec *executionContext) field_Query_miningWins_argsEnd(
 func (ec *executionContext) field_Query_miningWins_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*types.ActorID, error) {
+) (*types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal *types.ActorID
+		var zeroVal *types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal *types.ActorID
+	var zeroVal *types.Address
 	return zeroVal, nil
 }
 
@@ -5702,22 +5702,22 @@ func (ec *executionContext) field_Query_porep_args(ctx context.Context, rawArgs 
 func (ec *executionContext) field_Query_porep_argsSp(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (types.ActorID, error) {
+) (types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["sp"]
 	if !ok {
-		var zeroVal types.ActorID
+		var zeroVal types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sp"))
 	if tmp, ok := rawArgs["sp"]; ok {
-		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal types.ActorID
+	var zeroVal types.Address
 	return zeroVal, nil
 }
 
@@ -5761,22 +5761,22 @@ func (ec *executionContext) field_Query_sector_args(ctx context.Context, rawArgs
 func (ec *executionContext) field_Query_sector_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (types.ActorID, error) {
+) (types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal types.ActorID
+		var zeroVal types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal types.ActorID
+	var zeroVal types.Address
 	return zeroVal, nil
 }
 
@@ -5815,22 +5815,22 @@ func (ec *executionContext) field_Query_sectorsCount_args(ctx context.Context, r
 func (ec *executionContext) field_Query_sectorsCount_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*types.ActorID, error) {
+) (*types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal *types.ActorID
+		var zeroVal *types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal *types.ActorID
+	var zeroVal *types.Address
 	return zeroVal, nil
 }
 
@@ -5862,22 +5862,22 @@ func (ec *executionContext) field_Query_sectors_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_sectors_argsActor(
 	ctx context.Context,
 	rawArgs map[string]interface{},
-) (*types.ActorID, error) {
+) (*types.Address, error) {
 	// We won't call the directive if the argument is null.
 	// Set call_argument_directives_with_null to true to call directives
 	// even if the argument is null.
 	_, ok := rawArgs["actor"]
 	if !ok {
-		var zeroVal *types.ActorID
+		var zeroVal *types.Address
 		return zeroVal, nil
 	}
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
-	var zeroVal *types.ActorID
+	var zeroVal *types.Address
 	return zeroVal, nil
 }
 
@@ -10078,9 +10078,9 @@ func (ec *executionContext) _MarketMk12StorageAsk_spId(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12StorageAsk_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10090,7 +10090,7 @@ func (ec *executionContext) fieldContext_MarketMk12StorageAsk_spId(_ context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -13344,9 +13344,9 @@ func (ec *executionContext) _MiningSummaryDay_miner(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningSummaryDay_miner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13356,7 +13356,7 @@ func (ec *executionContext) fieldContext_MiningSummaryDay_miner(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -13476,9 +13476,9 @@ func (ec *executionContext) _MiningTask_spId(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningTask_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13488,7 +13488,7 @@ func (ec *executionContext) fieldContext_MiningTask_spId(_ context.Context, fiel
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -14031,7 +14031,7 @@ func (ec *executionContext) _Mutation_removeSector(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RemoveSector(rctx, fc.Args["miner"].(types.ActorID), fc.Args["sectorNumber"].(int))
+		return ec.resolvers.Mutation().RemoveSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14086,7 +14086,7 @@ func (ec *executionContext) _Mutation_restartSector(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RestartSector(rctx, fc.Args["miner"].(types.ActorID), fc.Args["sectorNumber"].(int))
+		return ec.resolvers.Mutation().RestartSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14185,7 +14185,7 @@ func (ec *executionContext) _Mutation_dealSealNow(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DealSealNow(rctx, fc.Args["miner"].(types.ActorID), fc.Args["sectorNumber"].(uint64))
+		return ec.resolvers.Mutation().DealSealNow(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(uint64))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14586,9 +14586,9 @@ func (ec *executionContext) _OpenSectorPiece_spID(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14598,7 +14598,7 @@ func (ec *executionContext) fieldContext_OpenSectorPiece_spID(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15398,9 +15398,9 @@ func (ec *executionContext) _PipelineSummary_id(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PipelineSummary_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15410,7 +15410,7 @@ func (ec *executionContext) fieldContext_PipelineSummary_id(_ context.Context, f
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15838,9 +15838,9 @@ func (ec *executionContext) _Porep_spId(ctx context.Context, field graphql.Colle
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15850,7 +15850,7 @@ func (ec *executionContext) fieldContext_Porep_spId(_ context.Context, field gra
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -18852,7 +18852,7 @@ func (ec *executionContext) _Query_sectors(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Sectors(rctx, fc.Args["actor"].(*types.ActorID), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		return ec.resolvers.Query().Sectors(rctx, fc.Args["actor"].(*types.Address), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -18926,7 +18926,7 @@ func (ec *executionContext) _Query_sectorsCount(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SectorsCount(rctx, fc.Args["actor"].(*types.ActorID))
+		return ec.resolvers.Query().SectorsCount(rctx, fc.Args["actor"].(*types.Address))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -18981,7 +18981,7 @@ func (ec *executionContext) _Query_sector(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Sector(rctx, fc.Args["actor"].(types.ActorID), fc.Args["sectorNumber"].(int))
+		return ec.resolvers.Query().Sector(rctx, fc.Args["actor"].(types.Address), fc.Args["sectorNumber"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -19321,7 +19321,7 @@ func (ec *executionContext) _Query_porep(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Porep(rctx, fc.Args["sp"].(types.ActorID), fc.Args["sectorNumber"].(int))
+		return ec.resolvers.Query().Porep(rctx, fc.Args["sp"].(types.Address), fc.Args["sectorNumber"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -19641,7 +19641,7 @@ func (ec *executionContext) _Query_miningCount(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.ActorID))
+		return ec.resolvers.Query().MiningCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -19702,7 +19702,7 @@ func (ec *executionContext) _Query_miningWins(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWins(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.ActorID), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		return ec.resolvers.Query().MiningWins(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -19776,7 +19776,7 @@ func (ec *executionContext) _Query_miningWinsCount(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWinsCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.ActorID), fc.Args["include"].(*bool))
+		return ec.resolvers.Query().MiningWinsCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -19831,7 +19831,7 @@ func (ec *executionContext) _Query_miningCountSummary(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCountSummary(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.ActorID))
+		return ec.resolvers.Query().MiningCountSummary(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -19897,7 +19897,7 @@ func (ec *executionContext) _Query_miningCountAggregate(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCountAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.ActorID), fc.Args["interval"].(model.MiningTaskAggregateInterval))
+		return ec.resolvers.Query().MiningCountAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address), fc.Args["interval"].(model.MiningTaskAggregateInterval))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -20330,7 +20330,7 @@ func (ec *executionContext) _Query_marketMk12StorageAsk(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12StorageAsk(rctx, fc.Args["spId"].(types.ActorID))
+		return ec.resolvers.Query().MarketMk12StorageAsk(rctx, fc.Args["spId"].(types.Address))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -20844,9 +20844,9 @@ func (ec *executionContext) _Sector_spID(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20856,7 +20856,7 @@ func (ec *executionContext) fieldContext_Sector_spID(_ context.Context, field gr
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -21460,9 +21460,9 @@ func (ec *executionContext) _SectorLocation_minerId(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorLocation_minerId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21472,7 +21472,7 @@ func (ec *executionContext) fieldContext_SectorLocation_minerId(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -21937,9 +21937,9 @@ func (ec *executionContext) _SectorMeta_spId(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMeta_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21949,7 +21949,7 @@ func (ec *executionContext) fieldContext_SectorMeta_spId(_ context.Context, fiel
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -22623,9 +22623,9 @@ func (ec *executionContext) _SectorMetaPiece_spID(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ActorID)
+	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22635,7 +22635,7 @@ func (ec *executionContext) fieldContext_SectorMetaPiece_spID(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ActorID does not have child fields")
+			return nil, errors.New("field of type Address does not have child fields")
 		},
 	}
 	return fc, nil
@@ -28998,7 +28998,7 @@ func (ec *executionContext) unmarshalInputMarketMk12StorageAskInput(ctx context.
 		switch k {
 		case "spId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
-			data, err := ec.unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, v)
+			data, err := ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -35682,16 +35682,6 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v interface{}) (types.ActorID, error) {
-	var res types.ActorID
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v types.ActorID) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v interface{}) (types.Address, error) {
 	var res types.Address
 	err := res.UnmarshalGQL(v)
@@ -36658,22 +36648,6 @@ func (ec *executionContext) marshalOActorDeadline2ᚖgithubᚗcomᚋstraheᚋcur
 		return graphql.Null
 	}
 	return ec._ActorDeadline(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v interface{}) (*types.ActorID, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(types.ActorID)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v *types.ActorID) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
 }
 
 func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v interface{}) ([]*types.Address, error) {

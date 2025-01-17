@@ -1,5 +1,5 @@
 type MarketMk12StorageAsk {
-  spId: ActorID!
+  spId: Address!
   price: Int!
   verifiedPrice: Int!
   minSize: Int!
@@ -10,7 +10,7 @@ type MarketMk12StorageAsk {
 }
 
 input MarketMk12StorageAskInput {
-  spId: ActorID!
+  spId: Address!
   price: Int!
   verifiedPrice: Int!
   minSize: Int!
@@ -20,7 +20,7 @@ input MarketMk12StorageAskInput {
 
 extend type Query {
     marketMk12StorageAsks: [MarketMk12StorageAsk]
-    marketMk12StorageAsk(spId: ActorID!): MarketMk12StorageAsk
+    marketMk12StorageAsk(spId: Address!): MarketMk12StorageAsk
     marketMk12StorageAsksCount: Int!
 }
 

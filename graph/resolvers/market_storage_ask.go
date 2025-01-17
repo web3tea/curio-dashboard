@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/filecoin-project/curio/web/api/webrpc"
-	"github.com/filecoin-project/go-address"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
 	"github.com/strahe/curio-dashboard/graph/utils"
@@ -34,15 +33,11 @@ func (r *mutationResolver) UpdateMarketMk12StorageAsk(ctx context.Context, input
 	if input.MaxSize < input.MinSize {
 		return nil, fmt.Errorf("invalid size range: MaxSize must be greater than or equal to MinSize")
 	}
-	act, err := address.NewIDAddress(uint64(input.SpID))
-	if err != nil {
-		return nil, err
-	}
-	if _, err := r.Query().Actor(ctx, types.Address{Address: act}); err != nil {
+	if _, err := r.Query().Actor(ctx, input.SpID); err != nil {
 		return nil, fmt.Errorf("invalid SpID: %w", err)
 	}
 	ask := webrpc.StorageAsk{
-		SpID:          int64(input.SpID),
+		SpID:          int64(input.SpID.ID),
 		Price:         int64(input.Price),
 		VerifiedPrice: int64(input.VerifiedPrice),
 		MinSize:       int64(input.MinSize),
@@ -53,7 +48,7 @@ func (r *mutationResolver) UpdateMarketMk12StorageAsk(ctx context.Context, input
 	if ask.Expiry == 0 {
 		ask.Expiry = time.Now().Add(time.Hour * 24 * 365).Unix()
 	}
-	err = r.curioAPI.SetStorageAsk(ctx, &ask)
+	err := r.curioAPI.SetStorageAsk(ctx, &ask)
 	if err != nil {
 		return nil, err
 	}
@@ -63,17 +58,17 @@ func (r *mutationResolver) UpdateMarketMk12StorageAsk(ctx context.Context, input
 // MarketMk12StorageAsks is the resolver for the marketMk12StorageAsks field.
 func (r *queryResolver) MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketMk12StorageAsksCacheAge)
-	return r.loader.MarketStorageAskLoader.MarketMk12StorageAsks(ctx)
+	return r.loader.MarketLoader.MarketMk12StorageAsks(ctx)
 }
 
 // MarketMk12StorageAsk is the resolver for the marketMk12StorageAsk field.
-func (r *queryResolver) MarketMk12StorageAsk(ctx context.Context, spID types.ActorID) (*model.MarketMk12StorageAsk, error) {
+func (r *queryResolver) MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketMk12StorageAsksCacheAge)
-	return r.loader.MarketStorageAskLoader.MarketMk12StorageAsk(ctx, int64(spID))
+	return r.loader.MarketLoader.MarketMk12StorageAsk(ctx, spID.ID)
 }
 
 // MarketMk12StorageAsksCount is the resolver for the marketMk12StorageAsksCount field.
 func (r *queryResolver) MarketMk12StorageAsksCount(ctx context.Context) (int, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketMk12StorageAsksCacheAge)
-	return r.loader.MarketStorageAskLoader.MarketMk12StorageAsksCount(ctx)
+	return r.loader.MarketLoader.MarketMk12StorageAsksCount(ctx)
 }

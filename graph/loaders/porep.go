@@ -9,13 +9,22 @@ import (
 )
 
 type PorepLoader interface {
-	Porep(ctx context.Context, sp types.ActorID, sectorNumber int) (*model.Porep, error)
+	Porep(ctx context.Context, sp types.Address, sectorNumber int) (*model.Porep, error)
 	Poreps(ctx context.Context) ([]*model.Porep, error)
+	PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error)
 }
 
-func (l *Loader) Porep(ctx context.Context, sp types.ActorID, sectorNumber int) (*model.Porep, error) {
+type PorepLoaderImpl struct {
+	loader *Loader
+}
+
+func NewPorepLoader(loader *Loader) PorepLoader {
+	return &PorepLoaderImpl{loader}
+}
+
+func (l *PorepLoaderImpl) Porep(ctx context.Context, sp types.Address, sectorNumber int) (*model.Porep, error) {
 	var ms []*model.Porep
-	if err := l.db.Select(ctx, &ms, `SELECT 
+	if err := l.loader.db.Select(ctx, &ms, `SELECT
     sp_id,
     sector_number,
     create_time,
@@ -58,10 +67,10 @@ func (l *Loader) Porep(ctx context.Context, sp types.ActorID, sectorNumber int) 
     task_id_synth,
     after_synth,
     user_sector_duration_epochs
-FROM 
+FROM
     sectors_sdr_pipeline
 WHERE sp_id = $1 AND sector_number = $2
-Order By create_time`, sp, sectorNumber); err != nil {
+Order By create_time`, sp.ID, sectorNumber); err != nil {
 		return nil, err
 	}
 	if len(ms) == 0 {
@@ -70,9 +79,9 @@ Order By create_time`, sp, sectorNumber); err != nil {
 	return ms[0], nil
 }
 
-func (l *Loader) Poreps(ctx context.Context) ([]*model.Porep, error) {
+func (l *PorepLoaderImpl) Poreps(ctx context.Context) ([]*model.Porep, error) {
 	var ms []*model.Porep
-	if err := l.db.Select(ctx, &ms, `SELECT 
+	if err := l.loader.db.Select(ctx, &ms, `SELECT
     sp_id,
     sector_number,
     create_time,
@@ -115,7 +124,7 @@ func (l *Loader) Poreps(ctx context.Context) ([]*model.Porep, error) {
     task_id_synth,
     after_synth,
     user_sector_duration_epochs
-FROM 
+FROM
     sectors_sdr_pipeline
 Order By create_time`); err != nil {
 		return nil, err
@@ -123,8 +132,8 @@ Order By create_time`); err != nil {
 	return ms, nil
 }
 
-func (l *Loader) PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error) {
+func (l *PorepLoaderImpl) PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error) {
 	var ms []*model.PipelineSummary
-	err := l.db.Select(ctx, &ms, "SELECT DISTINCT sp_id FROM sectors_sdr_pipeline")
+	err := l.loader.db.Select(ctx, &ms, "SELECT DISTINCT sp_id FROM sectors_sdr_pipeline")
 	return ms, err
 }

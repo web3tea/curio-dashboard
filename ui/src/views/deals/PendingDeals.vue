@@ -177,6 +177,9 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
         <template #item.dataRawSize="{ value }">
           {{ formatBytes(value, 2).combined }}
         </template>
+        <template #item.pieceCID="{ value }">
+          <TruncatedChip :text="value" />
+        </template>
       </v-data-table-virtual>
     </v-card-text>
   </v-card>

@@ -27,7 +27,6 @@ import (
 var log = logging.Logger("graph")
 
 func Router(e *echo.Echo, cfg *config.Config, resolver ResolverRoot) error {
-
 	ah := authHandler{cfg: cfg}
 	e.POST("/auth/token", ah.Login)
 
@@ -38,7 +37,7 @@ func Router(e *echo.Echo, cfg *config.Config, resolver ResolverRoot) error {
 }
 
 func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
-	var srv = handler.New(NewExecutableSchema(Config{Resolvers: resolver}))
+	srv := handler.New(NewExecutableSchema(Config{Resolvers: resolver}))
 	if cfg.Auth.Secret != "" {
 		log.Infof("JWT secret is set, graphql authentication is enabled")
 	} else {
@@ -63,10 +62,10 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 			}
 		},
 	})
-	//srv.AddTransport(transport.Options{})
-	//srv.AddTransport(transport.GET{})
-	//srv.AddTransport(transport.POST{})
-	//srv.AddTransport(transport.MultipartForm{})
+	// srv.AddTransport(transport.Options{})
+	// srv.AddTransport(transport.GET{})
+	// srv.AddTransport(transport.POST{})
+	// srv.AddTransport(transport.MultipartForm{})
 	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
 	srv.Use(extension.Introspection{})
 	srv.Use(extension.AutomaticPersistedQuery{
@@ -93,9 +92,8 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 	srv.SetErrorPresenter(func(ctx context.Context, e error) *gqlerror.Error {
 		err := graphql.DefaultErrorPresenter(ctx, e)
 		if err != nil {
-			log.Errorw("request", "path", err.Path.String(), "error", err.Error())
+			log.Errorw("request", "path", err.Path.String(), "error", err)
 		}
-		fmt.Printf("error: %+v\n", err)
 		return err
 	})
 

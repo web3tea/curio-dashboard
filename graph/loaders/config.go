@@ -13,17 +13,25 @@ type ConfigLoader interface {
 	ConfigUsed(ctx context.Context, layer string) ([]*model.MachineDetail, error)
 }
 
-func (l *Loader) Config(ctx context.Context, layer string) (*model.Config, error) {
+type ConfigLoaderImpl struct {
+	loader *Loader
+}
+
+func NewConfigLoader(loader *Loader) ConfigLoader {
+	return &ConfigLoaderImpl{loader}
+}
+
+func (l *ConfigLoaderImpl) Config(ctx context.Context, layer string) (*model.Config, error) {
 	var m model.Config
-	err := l.db.QueryRow(ctx, "SELECT id,title,config FROM harmony_config WHERE title = $1", layer).
+	err := l.loader.db.QueryRow(ctx, "SELECT id,title,config FROM harmony_config WHERE title = $1", layer).
 		Scan(&m.ID, &m.Title, &m.Config)
 	return &m, err
 }
 
 // Configs is the resolver for the configs field.
-func (l *Loader) Configs(ctx context.Context) ([]*model.Config, error) {
+func (l *ConfigLoaderImpl) Configs(ctx context.Context) ([]*model.Config, error) {
 	var m []*model.Config
-	if err := l.db.Select(ctx, &m, `SELECT
+	if err := l.loader.db.Select(ctx, &m, `SELECT
     id,
     title,
     config
@@ -34,14 +42,14 @@ FROM
 	return m, nil
 }
 
-func (l *Loader) configUsedMap(ctx context.Context) (map[string][]*model.MachineDetail, error) {
+func (l *ConfigLoaderImpl) configUsedMap(ctx context.Context) (map[string][]*model.MachineDetail, error) {
 	cacheKey := "configUsedMap"
-	m, ok := l.cache.Get(cacheKey)
+	m, ok := l.loader.cache.Get(cacheKey)
 	if ok {
 		return m.(map[string][]*model.MachineDetail), nil
 	}
 
-	mds, err := l.MachineDetails(ctx)
+	mds, err := l.loader.MachineDetails(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -53,12 +61,12 @@ func (l *Loader) configUsedMap(ctx context.Context) (map[string][]*model.Machine
 		}
 	}
 
-	l.cache.Add(cacheKey, confMap)
+	l.loader.cache.Add(cacheKey, confMap)
 
 	return confMap, nil
 }
 
-func (l *Loader) ConfigUsed(ctx context.Context, layer string) ([]*model.MachineDetail, error) {
+func (l *ConfigLoaderImpl) ConfigUsed(ctx context.Context, layer string) ([]*model.MachineDetail, error) {
 	confMap, err := l.configUsedMap(ctx)
 	if err != nil {
 		return nil, err

@@ -4,12 +4,14 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"io"
+	"reflect"
 
 	"github.com/filecoin-project/go-address"
 )
 
 type Address struct {
 	address.Address
+	ID uint64
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
@@ -20,7 +22,18 @@ func (b *Address) UnmarshalGQL(v interface{}) error {
 		if err != nil {
 			return fmt.Errorf("invalid address: %w", err)
 		}
-		*b = Address{addr}
+		aid, err := address.IDFromAddress(addr)
+		if err != nil { // nolint: staticcheck
+			// ignore error
+		}
+		*b = Address{Address: addr, ID: aid}
+	case int, uint, int64, uint64:
+		val := reflect.ValueOf(value).Convert(reflect.TypeOf(uint64(0))).Uint()
+		addr, err := address.NewIDAddress(val)
+		if err != nil {
+			return fmt.Errorf("invalid address: %w", err)
+		}
+		*b = Address{Address: addr, ID: val}
 	default:
 		return fmt.Errorf("invalid address: %v", v)
 	}

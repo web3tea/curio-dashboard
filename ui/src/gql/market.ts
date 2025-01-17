@@ -23,7 +23,7 @@ export const GetMarketMk12StorageAsks = gql`
   `
 
 export const GetMarketMk12StorageAsk = gql`
-  query GetMarketMk12StorageAsk($spId: ActorID!) {
+  query GetMarketMk12StorageAsk($spId: Address!) {
     marketMk12StorageAsk(spId: $spId) {
       ...MarketMk12StorageAskAll
     }

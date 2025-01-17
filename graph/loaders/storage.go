@@ -13,9 +13,17 @@ type StorageLoader interface {
 	StorageLiveness(ctx context.Context, id string) (*model.StorageLiveness, error)
 }
 
-func (l *Loader) StoragePath(ctx context.Context, id string) (*model.StoragePath, error) {
+type StorageLoaderImpl struct {
+	loader *Loader
+}
+
+func NewStorageLoader(loader *Loader) StorageLoader {
+	return &StorageLoaderImpl{loader}
+}
+
+func (l *StorageLoaderImpl) StoragePath(ctx context.Context, id string) (*model.StoragePath, error) {
 	var m []*model.StoragePath
-	if err := l.db.Select(ctx, &m, `SELECT
+	if err := l.loader.db.Select(ctx, &m, `SELECT
     storage_id,
     urls,
     weight,
@@ -46,9 +54,9 @@ WHERE storage_id = $1`, id); err != nil {
 	return m[0], nil
 }
 
-func (l *Loader) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
+func (l *StorageLoaderImpl) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
 	var m []*model.StoragePath
-	if err := l.db.Select(ctx, &m, `SELECT
+	if err := l.loader.db.Select(ctx, &m, `SELECT
     storage_id,
     urls,
     weight,
@@ -76,14 +84,14 @@ FROM
 	return m, nil
 }
 
-func (l *Loader) StorageStats(ctx context.Context) ([]*model.StorageStats, error) {
+func (l *StorageLoaderImpl) StorageStats(ctx context.Context) ([]*model.StorageStats, error) {
 	paths, err := l.StoragePaths(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	statsMap := make(map[model.StorageType]*model.StorageStats)
-	var countFor = func(group *model.StorageStats, path *model.StoragePath) {
+	countFor := func(group *model.StorageStats, path *model.StoragePath) {
 		group.TotalAvailable += path.Available
 		group.TotalCapacity += path.Capacity
 		group.TotalFsAvailable += path.FsAvailable
@@ -126,9 +134,9 @@ func (l *Loader) StorageStats(ctx context.Context) ([]*model.StorageStats, error
 	return res, nil
 }
 
-func (l *Loader) StorageLiveness(ctx context.Context, id string) (*model.StorageLiveness, error) {
+func (l *StorageLoaderImpl) StorageLiveness(ctx context.Context, id string) (*model.StorageLiveness, error) {
 	var m []*model.StorageLiveness
-	if err := l.db.Select(ctx, &m, `SELECT
+	if err := l.loader.db.Select(ctx, &m, `SELECT
     storage_id,
     url,
     last_checked,

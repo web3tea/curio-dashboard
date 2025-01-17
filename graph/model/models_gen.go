@@ -63,7 +63,7 @@ type MachineMetrics struct {
 }
 
 type MarketMk12StorageAsk struct {
-	SpID          types.ActorID `json:"spId"`
+	SpID          types.Address `json:"spId"`
 	Price         int           `json:"price"`
 	VerifiedPrice int           `json:"verifiedPrice"`
 	MinSize       int           `json:"minSize"`
@@ -74,7 +74,7 @@ type MarketMk12StorageAsk struct {
 }
 
 type MarketMk12StorageAskInput struct {
-	SpID          types.ActorID `json:"spId"`
+	SpID          types.Address `json:"spId"`
 	Price         int           `json:"price"`
 	VerifiedPrice int           `json:"verifiedPrice"`
 	MinSize       int           `json:"minSize"`
@@ -156,13 +156,13 @@ type MiningCountAggregated struct {
 
 type MiningSummaryDay struct {
 	Day      time.Time     `json:"day"`
-	Miner    types.ActorID `json:"miner"`
+	Miner    types.Address `json:"miner"`
 	WonBlock int           `json:"wonBlock"`
 }
 
 type MiningTask struct {
 	TaskID          string        `json:"taskId"`
-	SpID            types.ActorID `json:"spId"`
+	SpID            types.Address `json:"spId"`
 	Epoch           int           `json:"epoch"`
 	BaseComputeTime time.Time     `json:"baseComputeTime"`
 	Won             bool          `json:"won"`
@@ -186,7 +186,7 @@ type NodeInfo struct {
 }
 
 type OpenSectorPiece struct {
-	SpID                          types.ActorID `json:"spID"`
+	SpID                          types.Address `json:"spID"`
 	SectorNumber                  int           `json:"sectorNumber"`
 	PieceIndex                    int           `json:"pieceIndex"`
 	PieceCid                      string        `json:"pieceCID"`
@@ -209,7 +209,7 @@ type OpenSectorPiece struct {
 
 type Porep struct {
 	ID                       string          `json:"id"`
-	SpID                     types.ActorID   `json:"spId"`
+	SpID                     types.Address   `json:"spId"`
 	SectorNumber             int             `json:"sectorNumber"`
 	CreateTime               time.Time       `json:"createTime"`
 	RegSealProof             int             `json:"regSealProof"`
@@ -264,7 +264,7 @@ type Query struct {
 }
 
 type SectorMetaPiece struct {
-	SpID              types.ActorID `json:"spID"`
+	SpID              types.Address `json:"spID"`
 	SectorNum         int           `json:"sectorNum"`
 	PieceNum          int           `json:"pieceNum"`
 	PieceCid          string        `json:"pieceCID"`

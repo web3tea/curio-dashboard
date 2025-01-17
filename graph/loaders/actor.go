@@ -15,8 +15,16 @@ type ActorLoader interface {
 	Actor(ctx context.Context, address types.Address) (*model.Actor, error)
 }
 
-func (l *Loader) Actors(ctx context.Context) ([]*model.Actor, error) {
-	cfgs, err := l.Configs(ctx)
+type ActorLoaderImpl struct {
+	loader *Loader
+}
+
+func NewActorLoader(loader *Loader) ActorLoader {
+	return &ActorLoaderImpl{loader}
+}
+
+func (l *ActorLoaderImpl) Actors(ctx context.Context) ([]*model.Actor, error) {
+	cfgs, err := l.loader.Configs(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -51,8 +59,8 @@ func (l *Loader) Actors(ctx context.Context) ([]*model.Actor, error) {
 	return out, nil
 }
 
-func (l *Loader) Actor(ctx context.Context, address types.Address) (*model.Actor, error) {
-	cfgs, err := l.Configs(ctx)
+func (l *ActorLoaderImpl) Actor(ctx context.Context, address types.Address) (*model.Actor, error) {
+	cfgs, err := l.loader.Configs(ctx)
 	if err != nil {
 		return nil, err
 	}

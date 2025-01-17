@@ -7,13 +7,13 @@ import (
 )
 
 type Sector struct {
-	SpID      types.ActorID
+	SpID      types.Address
 	SectorNum int
 	Meta      *SectorMeta `json:"meta,omitempty"`
 }
 
 type SectorMeta struct {
-	SpID            types.ActorID    `json:"spId"`
+	SpID            types.Address    `json:"spId"`
 	SectorNum       int              `json:"sectorNum"`
 	RegSealProof    int              `json:"regSealProof"`
 	TicketEpoch     int              `json:"ticketEpoch"`
@@ -34,7 +34,7 @@ type SectorMeta struct {
 }
 
 type SectorLocation struct {
-	MinerID        types.ActorID    `json:"minerId"`
+	MinerID        types.Address    `json:"minerId"`
 	SectorNum      int              `json:"sectorNum"`
 	SectorFiletype int              `json:"sectorFiletype"`
 	StorageID      string           `json:"storageId"`

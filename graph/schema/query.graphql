@@ -1,4 +1,11 @@
-scalar ActorID
+scalar Address
+scalar BigInt
+scalar Time
+scalar Uint64
+scalar JSONB
+scalar ByteArray
+scalar JSON
+
 
 type Query {
     global: Global!
@@ -27,9 +34,9 @@ type Query {
     storageStats: [StorageStats]
 
     # sector
-    sectors(actor: ActorID, sectorNumber: Int, offset: Int!, limit: Int!): [Sector]
-    sectorsCount(actor: ActorID): Int!
-    sector(actor: ActorID!, sectorNumber: Int!): Sector
+    sectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [Sector]
+    sectorsCount(actor: Address): Int!
+    sector(actor: Address!, sectorNumber: Int!): Sector
 
     # actor
     actors: [Actor]
@@ -37,7 +44,7 @@ type Query {
 
     # porep
     poreps: [Porep]
-    porep(sp: ActorID!, sectorNumber: Int!): Porep
+    porep(sp: Address!, sectorNumber: Int!): Porep
     pipelinesSummary: [PipelineSummary]
 
     # chain
@@ -46,11 +53,11 @@ type Query {
     # mining
 #    miningSummaryByDay(lastDays: Int!): [MiningSummaryDay]
     miningSummaryByDay(start: Time!, end: Time!): [MiningSummaryDay]
-    miningCount(start: Time!, end: Time!, actor: ActorID): MiningCount!
-    miningWins(start: Time, end: Time, actor: ActorID, include: Boolean, offset: Int!, limit: Int!): [MiningTask]
-    miningWinsCount(start: Time, end: Time, actor: ActorID, include: Boolean): Int!
-    miningCountSummary(start: Time!, end: Time!, actor: ActorID): MiningCountSummary
-    miningCountAggregate(start: Time!, end: Time!, actor: ActorID, interval: MiningTaskAggregateInterval!): [MiningCountAggregated]
+    miningCount(start: Time!, end: Time!, actor: Address): MiningCount!
+    miningWins(start: Time, end: Time, actor: Address, include: Boolean, offset: Int!, limit: Int!): [MiningTask]
+    miningWinsCount(start: Time, end: Time, actor: Address, include: Boolean): Int!
+    miningCountSummary(start: Time!, end: Time!, actor: Address): MiningCountSummary
+    miningCountAggregate(start: Time!, end: Time!, actor: Address, interval: MiningTaskAggregateInterval!): [MiningCountAggregated]
 
     dealsPending: [OpenSectorPiece]
 

@@ -12,7 +12,6 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  ActorID: { input: any; output: any; }
   Address: { input: any; output: any; }
   BigInt: { input: any; output: any; }
   ByteArray: { input: any; output: any; }
@@ -146,7 +145,7 @@ export type MarketMk12StorageAsk = {
   minSize: Scalars['Int']['output'];
   price: Scalars['Int']['output'];
   sequence: Scalars['Int']['output'];
-  spId: Scalars['ActorID']['output'];
+  spId: Scalars['Address']['output'];
   verifiedPrice: Scalars['Int']['output'];
 };
 
@@ -155,7 +154,7 @@ export type MarketMk12StorageAskInput = {
   maxSize: Scalars['Int']['input'];
   minSize: Scalars['Int']['input'];
   price: Scalars['Int']['input'];
-  spId: Scalars['ActorID']['input'];
+  spId: Scalars['Address']['input'];
   verifiedPrice: Scalars['Int']['input'];
 };
 
@@ -270,7 +269,7 @@ export type MiningCountSummary = {
 export type MiningSummaryDay = {
   __typename?: 'MiningSummaryDay';
   day: Scalars['Time']['output'];
-  miner: Scalars['ActorID']['output'];
+  miner: Scalars['Address']['output'];
   wonBlock: Scalars['Int']['output'];
 };
 
@@ -282,7 +281,7 @@ export type MiningTask = {
   minedAt?: Maybe<Scalars['Time']['output']>;
   minedCid?: Maybe<Scalars['String']['output']>;
   minedHeader?: Maybe<Scalars['JSONB']['output']>;
-  spId: Scalars['ActorID']['output'];
+  spId: Scalars['Address']['output'];
   submittedAt?: Maybe<Scalars['Time']['output']>;
   taskId: Scalars['ID']['output'];
   won: Scalars['Boolean']['output'];
@@ -313,7 +312,7 @@ export type MutationCreateConfigArgs = {
 
 
 export type MutationDealSealNowArgs = {
-  miner: Scalars['ActorID']['input'];
+  miner: Scalars['Address']['input'];
   sectorNumber: Scalars['Uint64']['input'];
 };
 
@@ -324,13 +323,13 @@ export type MutationRemoveConfigArgs = {
 
 
 export type MutationRemoveSectorArgs = {
-  miner: Scalars['ActorID']['input'];
+  miner: Scalars['Address']['input'];
   sectorNumber: Scalars['Int']['input'];
 };
 
 
 export type MutationRestartSectorArgs = {
-  miner: Scalars['ActorID']['input'];
+  miner: Scalars['Address']['input'];
   sectorNumber: Scalars['Int']['input'];
 };
 
@@ -375,7 +374,7 @@ export type OpenSectorPiece = {
   pieceIndex: Scalars['Int']['output'];
   pieceSize: Scalars['Int']['output'];
   sectorNumber: Scalars['Int']['output'];
-  spID: Scalars['ActorID']['output'];
+  spID: Scalars['Address']['output'];
 };
 
 export type PipelineSummary = {
@@ -383,7 +382,7 @@ export type PipelineSummary = {
   commitMsg: Scalars['Int']['output'];
   done: Scalars['Int']['output'];
   failed: Scalars['Int']['output'];
-  id: Scalars['ActorID']['output'];
+  id: Scalars['Address']['output'];
   porep: Scalars['Int']['output'];
   precommitMsg: Scalars['Int']['output'];
   sdr: Scalars['Int']['output'];
@@ -421,7 +420,7 @@ export type Porep = {
   sectorNumber: Scalars['Int']['output'];
   seedEpoch?: Maybe<Scalars['Int']['output']>;
   seedValue?: Maybe<Scalars['ByteArray']['output']>;
-  spId: Scalars['ActorID']['output'];
+  spId: Scalars['Address']['output'];
   status: PorepStatus;
   taskIdCommitMsg?: Maybe<Scalars['Int']['output']>;
   taskIdFinalize?: Maybe<Scalars['Int']['output']>;
@@ -530,7 +529,7 @@ export type QueryMachineArgs = {
 
 
 export type QueryMarketMk12StorageAskArgs = {
-  spId: Scalars['ActorID']['input'];
+  spId: Scalars['Address']['input'];
 };
 
 
@@ -571,14 +570,14 @@ export type QueryMinerPowerArgs = {
 
 
 export type QueryMiningCountArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
 };
 
 
 export type QueryMiningCountAggregateArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end: Scalars['Time']['input'];
   interval: MiningTaskAggregateInterval;
   start: Scalars['Time']['input'];
@@ -586,7 +585,7 @@ export type QueryMiningCountAggregateArgs = {
 
 
 export type QueryMiningCountSummaryArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
 };
@@ -599,7 +598,7 @@ export type QueryMiningSummaryByDayArgs = {
 
 
 export type QueryMiningWinsArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end?: InputMaybe<Scalars['Time']['input']>;
   include?: InputMaybe<Scalars['Boolean']['input']>;
   limit: Scalars['Int']['input'];
@@ -609,7 +608,7 @@ export type QueryMiningWinsArgs = {
 
 
 export type QueryMiningWinsCountArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end?: InputMaybe<Scalars['Time']['input']>;
   include?: InputMaybe<Scalars['Boolean']['input']>;
   start?: InputMaybe<Scalars['Time']['input']>;
@@ -618,18 +617,18 @@ export type QueryMiningWinsCountArgs = {
 
 export type QueryPorepArgs = {
   sectorNumber: Scalars['Int']['input'];
-  sp: Scalars['ActorID']['input'];
+  sp: Scalars['Address']['input'];
 };
 
 
 export type QuerySectorArgs = {
-  actor: Scalars['ActorID']['input'];
+  actor: Scalars['Address']['input'];
   sectorNumber: Scalars['Int']['input'];
 };
 
 
 export type QuerySectorsArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
   sectorNumber?: InputMaybe<Scalars['Int']['input']>;
@@ -637,7 +636,7 @@ export type QuerySectorsArgs = {
 
 
 export type QuerySectorsCountArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
 };
 
 
@@ -693,7 +692,7 @@ export type Sector = {
   pieces: Array<Maybe<SectorMetaPiece>>;
   porep?: Maybe<Porep>;
   sectorNum: Scalars['Int']['output'];
-  spID: Scalars['ActorID']['output'];
+  spID: Scalars['Address']['output'];
   status: PorepStatus;
   tasks: Array<Maybe<Task>>;
 };
@@ -701,7 +700,7 @@ export type Sector = {
 export type SectorLocation = {
   __typename?: 'SectorLocation';
   isPrimary?: Maybe<Scalars['Boolean']['output']>;
-  minerId: Scalars['ActorID']['output'];
+  minerId: Scalars['Address']['output'];
   readRefs: Scalars['Int']['output'];
   readTs?: Maybe<Scalars['String']['output']>;
   sectorFiletype: Scalars['Int']['output'];
@@ -728,7 +727,7 @@ export type SectorMeta = {
   sectorNum: Scalars['Int']['output'];
   seedEpoch: Scalars['Int']['output'];
   seedValue?: Maybe<Scalars['ByteArray']['output']>;
-  spId: Scalars['ActorID']['output'];
+  spId: Scalars['Address']['output'];
   ticketEpoch: Scalars['Int']['output'];
   ticketValue?: Maybe<Scalars['ByteArray']['output']>;
 };
@@ -745,7 +744,7 @@ export type SectorMetaPiece = {
   rawDataSize?: Maybe<Scalars['Int']['output']>;
   requestedKeepData: Scalars['Boolean']['output'];
   sectorNum: Scalars['Int']['output'];
-  spID: Scalars['ActorID']['output'];
+  spID: Scalars['Address']['output'];
   startEpoch?: Maybe<Scalars['Int']['output']>;
 };
 

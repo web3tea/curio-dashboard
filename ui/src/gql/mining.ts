@@ -26,13 +26,13 @@ export const GetMiningSummary = gql`
 `
 
 export const GetMiningWinsCount = gql`
-    query GetMiningWinsCount($start: Time!, $end: Time!, $miner: ActorID) {
+    query GetMiningWinsCount($start: Time!, $end: Time!, $miner: Address) {
       miningWinsCount(start: $start, end: $end, actor: $miner, include: true)
     }
 `
 
 export const GetMiningWins = gql`
-    query GetMiningWins($start: Time, $end: Time, $miner: ActorID, $include: Boolean, $offset: Int!, $limit: Int!) {
+    query GetMiningWins($start: Time, $end: Time, $miner: Address, $include: Boolean, $offset: Int!, $limit: Int!) {
         miningWins(start: $start, end: $end, actor: $miner, include: $include, offset: $offset, limit: $limit) {
             ...MiningTaskAll
         }
@@ -52,7 +52,7 @@ const miningCountFragment = gql`
 `
 
 export const GetMiningCountSummary = gql`
-    query GetMiningCountSummary($start: Time!, $end: Time!, $miner: ActorID) {
+    query GetMiningCountSummary($start: Time!, $end: Time!, $miner: Address) {
         miningCountSummary(start: $start, end: $end, actor: $miner) {
           ...MiningCount
         }
@@ -61,7 +61,7 @@ export const GetMiningCountSummary = gql`
 `
 
 export const GetMiningCountSummaryWithPrevious = gql`
-    query GetMiningCountSummaryWithPrevious($start: Time!, $end: Time!, $miner: ActorID) {
+    query GetMiningCountSummaryWithPrevious($start: Time!, $end: Time!, $miner: Address) {
         miningCountSummary(start: $start, end: $end, actor: $miner) {
           ...MiningCount
           previous {
@@ -81,7 +81,7 @@ const miningCountAggregateFragment = gql`
 `
 
 export const GetMiningCountAggregation = gql`
-    query GetMiningCountAggregation($start: Time!, $end: Time!, $miner: ActorID, $interval: MiningTaskAggregateInterval!) {
+    query GetMiningCountAggregation($start: Time!, $end: Time!, $miner: Address, $interval: MiningTaskAggregateInterval!) {
         miningCountAggregate(start: $start, end: $end, actor: $miner, interval: $interval) {
           time
           ...MiningCount

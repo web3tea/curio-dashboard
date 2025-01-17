@@ -1,6 +1,6 @@
 type Porep {
     id: ID!
-    spId: ActorID!
+    spId: Address!
     sectorNumber: Int!
     createTime: Time!
     regSealProof: Int!

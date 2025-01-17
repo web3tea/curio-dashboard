@@ -138,6 +138,9 @@ const headers = [
         <template #item.epoch="{ value }">
           <EpochField :epoch="value" />
         </template>
+        <template #item.minedCid="{ value }">
+          <TruncatedChip :text="value" />
+        </template>
         <template #item.minedAt="{value}">
           {{ $d(value, 'long') }}
         </template>

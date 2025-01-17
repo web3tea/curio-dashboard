@@ -1,11 +1,9 @@
-scalar Uint64
-
 type Mutation {
     createConfig(title: String!, config: String!): Config
     updateConfig(title: String!, config: String!): Config
     removeConfig(title: String!): Config
-    removeSector(miner: ActorID!, sectorNumber: Int!): Boolean!
-    restartSector(miner: ActorID!, sectorNumber: Int!): Boolean!
+    removeSector(miner: Address!, sectorNumber: Int!): Boolean!
+    restartSector(miner: Address!, sectorNumber: Int!): Boolean!
     restartAllFailedSectors: Boolean!
-    dealSealNow(miner: ActorID!, sectorNumber: Uint64!): Boolean!
+    dealSealNow(miner: Address!, sectorNumber: Uint64!): Boolean!
 }

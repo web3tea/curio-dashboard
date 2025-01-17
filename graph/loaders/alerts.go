@@ -12,9 +12,17 @@ type AlertLoader interface {
 	SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert, error)
 }
 
-func (l *Loader) Alerts(ctx context.Context) ([]*model.Alert, error) {
+type AlertLoaderImpl struct {
+	loader *Loader
+}
+
+func NewAlertLoader(loader *Loader) AlertLoader {
+	return &AlertLoaderImpl{loader}
+}
+
+func (l *AlertLoaderImpl) Alerts(ctx context.Context) ([]*model.Alert, error) {
 	var alerts []*model.Alert
-	if err := l.db.Select(ctx, &alerts, `SELECT
+	if err := l.loader.db.Select(ctx, &alerts, `SELECT
     id,
     machine_name,
     message
@@ -26,7 +34,7 @@ ORDER BY id DESC`); err != nil {
 	return alerts, nil
 }
 
-func (l *Loader) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert, error) {
+func (l *AlertLoaderImpl) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert, error) {
 	alertsChan := make(chan *model.Alert)
 
 	log.Infof("SubAlerts: offset=%d", offset)
@@ -43,7 +51,7 @@ func (l *Loader) SubAlerts(ctx context.Context, offset int) (<-chan *model.Alert
 				return
 			case <-ticker.C:
 				var alerts []*model.Alert
-				if err := l.db.Select(ctx, &alerts, `SELECT
+				if err := l.loader.db.Select(ctx, &alerts, `SELECT
     id,
     machine_name,
     message
