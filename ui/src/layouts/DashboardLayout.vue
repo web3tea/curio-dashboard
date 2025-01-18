@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { RouterView, useRoute } from 'vue-router'
 import LoaderWrapper from '@/layouts/LoaderWrapper.vue'
-import VerticalSidebarVue from '@/layouts/vertical-sidebar/VerticalSidebar.vue'
 import VerticalHeader from '@/layouts/header/AppHeader.vue'
-import HorizontalSidebar from '@/layouts/horizontal-sidebar/HorizontalSidebar.vue'
 import FooterPanel from '@/layouts/footer/FooterPanel.vue'
 import { useCustomizerStore } from '@/stores/customizer'
 import { useUIStore } from '@/stores/ui'
 import { storeToRefs } from 'pinia'
 import { IconX } from '@tabler/icons-vue'
+import DashboardSidebar from './sidebar/DashboardSidebar.vue'
 
 const uiStore = useUIStore()
 const customizer = useCustomizerStore()
@@ -27,9 +26,7 @@ const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
       :theme="customizer.dark ? 'DarkTheme' : 'LightTheme'"
     >
       <VerticalHeader />
-      <HorizontalSidebar v-if="customizer.horizontalLayout" />
-      <VerticalSidebarVue v-else />
-
+      <DashboardSidebar :mode="customizer.horizontalLayout ? 'horizontal' : 'vertical'" />
       <v-snackbar
         v-model="showSnackbar"
         :color="snackbarMsg?.type"

@@ -13,7 +13,7 @@ import {
   IconVector,
 } from '@tabler/icons-vue'
 
-export interface menu {
+export interface menuItem {
   header?: string;
   title?: string;
   icon?: object;
@@ -24,14 +24,14 @@ export interface menu {
   chipColor?: string;
   chipVariant?: NonNullable<'flat' | 'text' | 'elevated' | 'tonal' | 'outlined' | 'plain'> | undefined;
   chipIcon?: string;
-  children?: menu[];
+  children?: menuItem[];
   disabled?: boolean;
   type?: string;
   subCaption?: string;
 }
 
-const sidebarItem: menu[] = [
-  { header: 'Dashboard' },
+const sidebarItems: menuItem[] = [
+  { header: 'Dashboard', icon:  IconHome },
   {
     title: 'Overview',
     icon: IconHome,
@@ -42,7 +42,7 @@ const sidebarItem: menu[] = [
     icon: IconChartHistogram,
     to: '/app/analytics',
   },
-  { header: 'Sealing' },
+  { header: 'Sealing', icon: IconBrandAsana },
   {
     title: 'Tasks',
     icon: IconBrandAsana,
@@ -77,7 +77,7 @@ const sidebarItem: menu[] = [
     icon: IconVector,
     to: '/app/messages/sends',
   },
-  { header: 'Mining' },
+  { header: 'Mining', icon: IconUsers },
   {
     title: 'Miners',
     icon: IconUsers,
@@ -97,7 +97,7 @@ const sidebarItem: menu[] = [
       },
     ],
   },
-  { header: 'Market' },
+  { header: 'Market', icon: IconBuildingStore },
   {
     title: 'Market',
     icon: IconBuildingStore,
@@ -108,7 +108,7 @@ const sidebarItem: menu[] = [
       },
     ]
   },
-  { header: 'Cluster' },
+  { header: 'Cluster', icon: IconServer },
   {
     title: 'Machines',
     icon: IconServer,
@@ -126,4 +126,4 @@ const sidebarItem: menu[] = [
   },
 ]
 
-export default sidebarItem
+export default sidebarItems

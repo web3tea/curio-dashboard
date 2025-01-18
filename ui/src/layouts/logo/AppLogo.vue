@@ -1,7 +1,4 @@
 <script setup>
-import { useCustomizerStore } from '@/stores/customizer'
-
-const customizer = useCustomizerStore()
 
 </script>
 <template>
@@ -12,7 +9,6 @@ const customizer = useCustomizerStore()
       width="32"
     >
     <h4
-      v-if="!customizer.horizontalLayout"
       style="margin-left: 8px; margin-top: 14px; line-height: 1.2"
     >
       Curio<br>Dashboard
