@@ -3,6 +3,7 @@ import {
   IconBrandAsana,
   IconBuildingStore,
   IconChartHistogram,
+  IconPointFilled,
   IconCurrency,
   IconDatabase,
   IconHome,
@@ -105,6 +106,7 @@ const sidebarItems: menuItem[] = [
       {
         title: 'Storage Asks',
         to: '/app/market/storage-asks',
+        icon: IconPointFilled,
       },
     ]
   },

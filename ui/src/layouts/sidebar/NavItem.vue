@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { PropType, onMounted, ref } from 'vue'
+import { PropType, onMounted, ref,computed } from 'vue'
+import { IconPointFilled } from '@tabler/icons-vue'
 import { menuItem } from './sidebarItems'
 
-defineProps({
+const props = defineProps({
   item: {
     type: Object as PropType<menuItem>,
     required: true
@@ -26,23 +27,35 @@ onMounted(async () => {
     console.error('Error url not found:', error)
   }
 })
+
+const icon = computed(() => {
+  if (props.item.icon) {
+    return props.item.icon
+  }else {
+    if (props.mode === 'horizontal' && props.level > 1) {
+      return IconPointFilled
+    }
+  }
+  return undefined
+})
 </script>
 
 <template>
   <!-- Horizontal Mode -->
   <template v-if="mode === 'horizontal'">
     <router-link
-      class="navItemLink rounded-0 d-flex align-center"
+      class="navItemLink rounded-0"
       :disabled="item.disabled"
       :to="item.to ? item.to : ''"
     >
-      <component
-        :is="item.icon"
-        v-if="item.icon"
-        class="nav-icon mr-2"
-        size="20"
-      />
-      <span class="nav-text">{{ $t("nav."+item.title) }}</span>
+      <i class="navIcon">
+        <component
+          :is="icon"
+          :level="level"
+          size="20"
+        />
+      </i>
+      <span>{{ $t("nav."+item.title) }}</span>
       <small
         v-if="item.subCaption"
         class="text-caption mt-n1 hide-menu"
@@ -76,7 +89,7 @@ onMounted(async () => {
     >
       <template #prepend>
         <component
-          :is="item.icon"
+          :is="icon"
           class="iconClass"
           :level="level"
         />

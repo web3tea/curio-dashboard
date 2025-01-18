@@ -24,20 +24,30 @@ defineProps({
   <!-- Horizontal Mode -->
   <template v-if="mode === 'horizontal'">
     <a class="navItemLink rounded-md cursor-pointer">
-      <component
-        :is="item.icon"
-        v-if="item.icon"
-        class="nav-icon mr-2"
-        size="20"
-      />
-      <span class="nav-text">{{ $t("nav."+item.title) }}</span>
+      <i class="navIcon">
+        <component
+          :is="item.icon"
+          v-if="item.icon"
+          class="nav-icon"
+          size="20"
+        />
+      </i>
+      <span class="mr-auto">{{ $t("nav."+item.title) }}</span>
+      <!---If Caption-->
+      <small
+        v-if="item.subCaption"
+        class="text-caption mt-n1 hide-menu"
+      >
+        {{ item.subCaption }}
+      </small>
       <i class="ddIcon ml-2"><IconChevronRight size="15" /></i>
+
     </a>
-    <ul :class="`ddMenu ddLevel-${level + 1}`">
+    <ul :class="`ddMenu px-0 ddLevel-${level + 1}`">
       <li
         v-for="(subitem, i) in item.children"
         :key="i"
-        class="navItem"
+        class="navItem rounded-0"
       >
         <NavCollapse
           v-if="subitem.children"
