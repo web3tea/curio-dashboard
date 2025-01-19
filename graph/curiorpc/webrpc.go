@@ -38,6 +38,8 @@ type WebRPC interface {
 	WinStats(ctx context.Context) ([]webrpc.WinStats, error)
 
 	SetStorageAsk(ctx context.Context, ask *webrpc.StorageAsk) error
+	MarketBalance(ctx context.Context) ([]webrpc.MarketBalanceStatus, error)
+	MoveBalanceToEscrow(ctx context.Context, miner string, amount string, wallet string) (string, error)
 }
 
 type sectorListEntry struct {

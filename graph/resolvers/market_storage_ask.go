@@ -57,18 +57,18 @@ func (r *mutationResolver) UpdateMarketMk12StorageAsk(ctx context.Context, input
 
 // MarketMk12StorageAsks is the resolver for the marketMk12StorageAsks field.
 func (r *queryResolver) MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketMk12StorageAsksCacheAge)
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)
 	return r.loader.MarketLoader.MarketMk12StorageAsks(ctx)
 }
 
 // MarketMk12StorageAsk is the resolver for the marketMk12StorageAsk field.
 func (r *queryResolver) MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketMk12StorageAsksCacheAge)
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)
 	return r.loader.MarketLoader.MarketMk12StorageAsk(ctx, spID.ID)
 }
 
 // MarketMk12StorageAsksCount is the resolver for the marketMk12StorageAsksCount field.
 func (r *queryResolver) MarketMk12StorageAsksCount(ctx context.Context) (int, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketMk12StorageAsksCacheAge)
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)
 	return r.loader.MarketLoader.MarketMk12StorageAsksCount(ctx)
 }

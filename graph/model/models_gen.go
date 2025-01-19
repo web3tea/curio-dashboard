@@ -62,6 +62,12 @@ type MachineMetrics struct {
 	ProcessMaxFds              int                `json:"processMaxFds"`
 }
 
+type MarketBalance struct {
+	Miner    types.Address    `json:"miner"`
+	Balance  string           `json:"balance"`
+	Balances []*WalletBalance `json:"balances"`
+}
+
 type MarketMk12StorageAsk struct {
 	SpID          types.Address `json:"spId"`
 	Price         int           `json:"price"`
@@ -333,6 +339,11 @@ type TaskSummaryDay struct {
 	TrueCount  int       `json:"trueCount"`
 	FalseCount int       `json:"falseCount"`
 	TotalCount int       `json:"totalCount"`
+}
+
+type WalletBalance struct {
+	Address types.Address `json:"address"`
+	Balance string        `json:"balance"`
 }
 
 type MiningTaskAggregateInterval string

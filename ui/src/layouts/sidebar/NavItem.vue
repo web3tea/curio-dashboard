@@ -82,7 +82,7 @@ const icon = computed(() => {
       class="mb-1"
       color="primary"
       :disabled="item.disabled"
-      :href="item.type === 'external' ? item.to : ''"
+      :href="item.type === 'external' && typeof item.to === 'string' ? item.to : ''"
       rounded
       :target="item.type === 'external' ? '_blank' : ''"
       :to="item.type === 'external' ? '' : item.to"

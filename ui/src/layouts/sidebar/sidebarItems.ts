@@ -13,12 +13,13 @@ import {
   IconUsers,
   IconVector,
 } from '@tabler/icons-vue'
+import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
 
 export interface menuItem {
   header?: string;
   title?: string;
   icon?: object;
-  to?: string;
+  to?: string | RouteLocationAsRelativeGeneric | RouteLocationAsPathGeneric;
   getURL?: boolean;
   divider?: boolean;
   chip?: string;
@@ -106,6 +107,11 @@ const sidebarItems: menuItem[] = [
       {
         title: 'Storage Asks',
         to: '/app/market/storage-asks',
+        icon: IconPointFilled,
+      },
+      {
+        title: 'Balances',
+        to: { name: "MarketBalances" },
         icon: IconPointFilled,
       },
     ]

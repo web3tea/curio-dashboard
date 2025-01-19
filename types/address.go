@@ -14,6 +14,30 @@ type Address struct {
 	ID uint64
 }
 
+func MustParseAddress(addr string) Address {
+	if a, err := NewFromString(addr); err != nil {
+		return Address{}
+	} else {
+		return a
+	}
+}
+
+func NewFromString(addr string) (Address, error) {
+	a, err := address.NewFromString(addr)
+	if err != nil {
+		return Address{}, err
+	}
+	v := Address{Address: a}
+	if a.Protocol() == address.ID {
+		id, err := address.IDFromAddress(a)
+		if err != nil {
+			return Address{}, err
+		}
+		v.ID = id
+	}
+	return v, nil
+}
+
 // UnmarshalGQL implements the graphql.Unmarshaler interface
 func (b *Address) UnmarshalGQL(v interface{}) error {
 	switch value := v.(type) {

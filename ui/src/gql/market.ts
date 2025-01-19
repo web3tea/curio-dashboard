@@ -39,3 +39,16 @@ export const UpdateMarketMk12StorageAsk = gql`
   }
   ${marketMk12StorageAskFragment}
   `
+
+export const GetMarketBalances = gql`
+  query GetMarketBalances {
+    marketBalances {
+      miner
+      balance
+      balances {
+        address
+        balance
+      }
+    }
+  }
+`

@@ -169,6 +169,12 @@ type ComplexityRoot struct {
 		UniqueHostsUp    func(childComplexity int) int
 	}
 
+	MarketBalance struct {
+		Balance  func(childComplexity int) int
+		Balances func(childComplexity int) int
+		Miner    func(childComplexity int) int
+	}
+
 	MarketMk12StorageAsk struct {
 		CreatedAt     func(childComplexity int) int
 		Expiry        func(childComplexity int) int
@@ -414,6 +420,8 @@ type ComplexityRoot struct {
 		Machine                    func(childComplexity int, id int) int
 		MachineSummary             func(childComplexity int) int
 		Machines                   func(childComplexity int) int
+		MarketBalance              func(childComplexity int, miner types.Address) int
+		MarketBalances             func(childComplexity int) int
 		MarketMk12StorageAsk       func(childComplexity int, spID types.Address) int
 		MarketMk12StorageAsks      func(childComplexity int) int
 		MarketMk12StorageAsksCount func(childComplexity int) int
@@ -635,6 +643,11 @@ type ComplexityRoot struct {
 		TotalCount func(childComplexity int) int
 		TrueCount  func(childComplexity int) int
 	}
+
+	WalletBalance struct {
+		Address func(childComplexity int) int
+		Balance func(childComplexity int) int
+	}
 }
 
 type ActorResolver interface {
@@ -751,6 +764,8 @@ type QueryResolver interface {
 	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
+	MarketBalance(ctx context.Context, miner types.Address) (*model.MarketBalance, error)
+	MarketBalances(ctx context.Context) ([]*model.MarketBalance, error)
 	MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
@@ -1335,6 +1350,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MachineSummary.UniqueHostsUp(childComplexity), true
+
+	case "MarketBalance.balance":
+		if e.complexity.MarketBalance.Balance == nil {
+			break
+		}
+
+		return e.complexity.MarketBalance.Balance(childComplexity), true
+
+	case "MarketBalance.balances":
+		if e.complexity.MarketBalance.Balances == nil {
+			break
+		}
+
+		return e.complexity.MarketBalance.Balances(childComplexity), true
+
+	case "MarketBalance.miner":
+		if e.complexity.MarketBalance.Miner == nil {
+			break
+		}
+
+		return e.complexity.MarketBalance.Miner(childComplexity), true
 
 	case "MarketMk12StorageAsk.createdAt":
 		if e.complexity.MarketMk12StorageAsk.CreatedAt == nil {
@@ -2674,6 +2710,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Machines(childComplexity), true
 
+	case "Query.marketBalance":
+		if e.complexity.Query.MarketBalance == nil {
+			break
+		}
+
+		args, err := ec.field_Query_marketBalance_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MarketBalance(childComplexity, args["miner"].(types.Address)), true
+
+	case "Query.marketBalances":
+		if e.complexity.Query.MarketBalances == nil {
+			break
+		}
+
+		return e.complexity.Query.MarketBalances(childComplexity), true
+
 	case "Query.marketMk12StorageAsk":
 		if e.complexity.Query.MarketMk12StorageAsk == nil {
 			break
@@ -3987,6 +4042,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TaskSummaryDay.TrueCount(childComplexity), true
 
+	case "WalletBalance.address":
+		if e.complexity.WalletBalance.Address == nil {
+			break
+		}
+
+		return e.complexity.WalletBalance.Address(childComplexity), true
+
+	case "WalletBalance.balance":
+		if e.complexity.WalletBalance.Balance == nil {
+			break
+		}
+
+		return e.complexity.WalletBalance.Balance(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -4109,7 +4178,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_storage_ask.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
+//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_balance.graphql" "schema/market_storage_ask.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -4129,6 +4198,7 @@ var sources = []*ast.Source{
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
 	{Name: "schema/machine_detail.graphql", Input: sourceData("schema/machine_detail.graphql"), BuiltIn: false},
 	{Name: "schema/machine_summary.graphql", Input: sourceData("schema/machine_summary.graphql"), BuiltIn: false},
+	{Name: "schema/market_balance.graphql", Input: sourceData("schema/market_balance.graphql"), BuiltIn: false},
 	{Name: "schema/market_storage_ask.graphql", Input: sourceData("schema/market_storage_ask.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
 	{Name: "schema/metrics.graphql", Input: sourceData("schema/metrics.graphql"), BuiltIn: false},
@@ -4671,6 +4741,38 @@ func (ec *executionContext) field_Query_machine_argsID(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_marketBalance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_marketBalance_argsMiner(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["miner"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_marketBalance_argsMiner(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (types.Address, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["miner"]
+	if !ok {
+		var zeroVal types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
+	if tmp, ok := rawArgs["miner"]; ok {
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal types.Address
 	return zeroVal, nil
 }
 
@@ -10047,6 +10149,141 @@ func (ec *executionContext) fieldContext_MachineSummary_totalGpu(_ context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketBalance_miner(ctx context.Context, field graphql.CollectedField, obj *model.MarketBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketBalance_miner(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Miner, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketBalance_miner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketBalance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketBalance_balance(ctx context.Context, field graphql.CollectedField, obj *model.MarketBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketBalance_balance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Balance, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNFIL2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketBalance_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketBalance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type FIL does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketBalance_balances(ctx context.Context, field graphql.CollectedField, obj *model.MarketBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketBalance_balances(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Balances, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.WalletBalance)
+	fc.Result = res
+	return ec.marshalOWalletBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalanceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketBalance_balances(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketBalance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "address":
+				return ec.fieldContext_WalletBalance_address(ctx, field)
+			case "balance":
+				return ec.fieldContext_WalletBalance_balance(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WalletBalance", field.Name)
 		},
 	}
 	return fc, nil
@@ -20257,6 +20494,115 @@ func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_marketBalance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketBalance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketBalance(rctx, fc.Args["miner"].(types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MarketBalance)
+	fc.Result = res
+	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketBalance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "miner":
+				return ec.fieldContext_MarketBalance_miner(ctx, field)
+			case "balance":
+				return ec.fieldContext_MarketBalance_balance(ctx, field)
+			case "balances":
+				return ec.fieldContext_MarketBalance_balances(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketBalance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketBalance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketBalances(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketBalances(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketBalances(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MarketBalance)
+	fc.Result = res
+	return ec.marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketBalances(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "miner":
+				return ec.fieldContext_MarketBalance_miner(ctx, field)
+			case "balance":
+				return ec.fieldContext_MarketBalance_balance(ctx, field)
+			case "balances":
+				return ec.fieldContext_MarketBalance_balances(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketBalance", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_marketMk12StorageAsks(ctx, field)
 	if err != nil {
@@ -27209,6 +27555,94 @@ func (ec *executionContext) fieldContext_TaskSummaryDay_totalCount(_ context.Con
 	return fc, nil
 }
 
+func (ec *executionContext) _WalletBalance_address(ctx context.Context, field graphql.CollectedField, obj *model.WalletBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WalletBalance_address(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Address, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WalletBalance_address(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WalletBalance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WalletBalance_balance(ctx context.Context, field graphql.CollectedField, obj *model.WalletBalance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WalletBalance_balance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Balance, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNFIL2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WalletBalance_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WalletBalance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type FIL does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Directive_name(ctx, field)
 	if err != nil {
@@ -30461,6 +30895,52 @@ func (ec *executionContext) _MachineSummary(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var marketBalanceImplementors = []string{"MarketBalance"}
+
+func (ec *executionContext) _MarketBalance(ctx context.Context, sel ast.SelectionSet, obj *model.MarketBalance) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, marketBalanceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MarketBalance")
+		case "miner":
+			out.Values[i] = ec._MarketBalance_miner(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "balance":
+			out.Values[i] = ec._MarketBalance_balance(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "balances":
+			out.Values[i] = ec._MarketBalance_balances(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var marketMk12StorageAskImplementors = []string{"MarketMk12StorageAsk"}
 
 func (ec *executionContext) _MarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, obj *model.MarketMk12StorageAsk) graphql.Marshaler {
@@ -33218,6 +33698,44 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketBalance":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketBalance(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketBalances":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketBalances(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "marketMk12StorageAsks":
 			field := field
 
@@ -35356,6 +35874,50 @@ func (ec *executionContext) _TaskSummaryDay(ctx context.Context, sel ast.Selecti
 	return out
 }
 
+var walletBalanceImplementors = []string{"WalletBalance"}
+
+func (ec *executionContext) _WalletBalance(ctx context.Context, sel ast.SelectionSet, obj *model.WalletBalance) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, walletBalanceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("WalletBalance")
+		case "address":
+			out.Values[i] = ec._WalletBalance_address(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "balance":
+			out.Values[i] = ec._WalletBalance_balance(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var __DirectiveImplementors = []string{"__Directive"}
 
 func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionSet, obj *introspection.Directive) graphql.Marshaler {
@@ -35779,6 +36341,21 @@ func (ec *executionContext) marshalNByteArray2githubᚗcomᚋstraheᚋcurioᚑda
 	return v
 }
 
+func (ec *executionContext) unmarshalNFIL2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNFIL2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalString(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
 	res, err := graphql.UnmarshalFloatContext(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -35973,6 +36550,16 @@ func (ec *executionContext) marshalNMachineDetail2ᚕᚖgithubᚗcomᚋstraheᚋ
 	wg.Wait()
 
 	return ret
+}
+
+func (ec *executionContext) marshalNMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx context.Context, sel ast.SelectionSet, v *model.MarketBalance) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MarketBalance(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v interface{}) (model.MarketMk12StorageAskInput, error) {
@@ -36299,6 +36886,16 @@ func (ec *executionContext) marshalNUint642uint64(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNWalletBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalance(ctx context.Context, sel ast.SelectionSet, v *model.WalletBalance) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._WalletBalance(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -37018,6 +37615,60 @@ func (ec *executionContext) marshalOMachineSummary2ᚖgithubᚗcomᚋstraheᚋcu
 		return graphql.Null
 	}
 	return ec._MachineSummary(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketBalance) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx context.Context, sel ast.SelectionSet, v *model.MarketBalance) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MarketBalance(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, v []*model.MarketMk12StorageAsk) graphql.Marshaler {
@@ -37988,6 +38639,53 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	}
 	res := graphql.MarshalTime(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOWalletBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalanceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.WalletBalance) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNWalletBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalance(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

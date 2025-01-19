@@ -25,7 +25,8 @@
     "Messages": "Messages",
     "Sends": "Sends",
     "Market": "Market",
-    "Storage Asks": "Storage Asks"
+    "Storage Asks": "Storage Asks",
+    "Balances": "Balances"
   },
   "fields": {
     "Total Power": "Total Power",

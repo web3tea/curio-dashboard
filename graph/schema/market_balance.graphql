@@ -1,0 +1,15 @@
+type MarketBalance {
+    miner: Address!
+    balance: FIL!
+    balances: [WalletBalance!]
+}
+
+type WalletBalance {
+    address: Address!
+    balance: FIL!
+}
+
+extend type Query {
+    marketBalance(miner: Address!): MarketBalance
+    marketBalances: [MarketBalance!]
+}

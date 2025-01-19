@@ -207,6 +207,15 @@ const AppRoutes = {
         title: 'Storage Asks',
         description: 'List of all storage asks in the cluster',
       },
+    },
+    {
+      name: "MarketBalances",
+      path: "/app/market/balances",
+      component: () => import('@/views/market/balances/balanceIndex.vue'),
+      meta: {
+        title: 'Market Balances',
+        description: 'List of all market balances in the cluster',
+      },
     }
   ],
 }

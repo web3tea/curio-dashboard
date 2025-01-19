@@ -15,6 +15,7 @@ export type Scalars = {
   Address: { input: any; output: any; }
   BigInt: { input: any; output: any; }
   ByteArray: { input: any; output: any; }
+  FIL: { input: any; output: any; }
   JSON: { input: any; output: any; }
   JSONB: { input: any; output: any; }
   Time: { input: any; output: any; }
@@ -135,6 +136,13 @@ export type MachineSummary = {
   uniqueHostsDown: Scalars['Int']['output'];
   uniqueHostsTotal: Scalars['Int']['output'];
   uniqueHostsUp: Scalars['Int']['output'];
+};
+
+export type MarketBalance = {
+  __typename?: 'MarketBalance';
+  balance: Scalars['FIL']['output'];
+  balances?: Maybe<Array<WalletBalance>>;
+  miner: Scalars['Address']['output'];
 };
 
 export type MarketMk12StorageAsk = {
@@ -477,6 +485,8 @@ export type Query = {
   machine?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
+  marketBalance?: Maybe<MarketBalance>;
+  marketBalances?: Maybe<Array<MarketBalance>>;
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
   marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
   marketMk12StorageAsksCount: Scalars['Int']['output'];
@@ -525,6 +535,11 @@ export type QueryConfigArgs = {
 
 export type QueryMachineArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryMarketBalanceArgs = {
+  miner: Scalars['Address']['input'];
 };
 
 
@@ -914,6 +929,12 @@ export type TaskSummaryDay = {
   falseCount: Scalars['Int']['output'];
   totalCount: Scalars['Int']['output'];
   trueCount: Scalars['Int']['output'];
+};
+
+export type WalletBalance = {
+  __typename?: 'WalletBalance';
+  address: Scalars['Address']['output'];
+  balance: Scalars['FIL']['output'];
 };
 
 

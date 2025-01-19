@@ -5,6 +5,7 @@ scalar Uint64
 scalar JSONB
 scalar ByteArray
 scalar JSON
+scalar FIL
 
 
 type Query {

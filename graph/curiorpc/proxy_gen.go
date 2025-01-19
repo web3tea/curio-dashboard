@@ -41,6 +41,10 @@ type WebRPCMethods struct {
 
 	HarmonyTaskStats func(p0 context.Context) ([]webrpc.HarmonyTaskStats, error) ``
 
+	MarketBalance func(p0 context.Context) ([]webrpc.MarketBalanceStatus, error) ``
+
+	MoveBalanceToEscrow func(p0 context.Context, p1 string, p2 string, p3 string) (string, error) ``
+
 	PipelinePorepRestartAll func(p0 context.Context) error ``
 
 	PipelinePorepSectors func(p0 context.Context) ([]sectorListEntry, error) ``
@@ -209,6 +213,28 @@ func (s *WebRPCStruct) HarmonyTaskStats(p0 context.Context) ([]webrpc.HarmonyTas
 
 func (s *WebRPCStub) HarmonyTaskStats(p0 context.Context) ([]webrpc.HarmonyTaskStats, error) {
 	return *new([]webrpc.HarmonyTaskStats), ErrNotSupported
+}
+
+func (s *WebRPCStruct) MarketBalance(p0 context.Context) ([]webrpc.MarketBalanceStatus, error) {
+	if s.Internal.MarketBalance == nil {
+		return *new([]webrpc.MarketBalanceStatus), ErrNotSupported
+	}
+	return s.Internal.MarketBalance(p0)
+}
+
+func (s *WebRPCStub) MarketBalance(p0 context.Context) ([]webrpc.MarketBalanceStatus, error) {
+	return *new([]webrpc.MarketBalanceStatus), ErrNotSupported
+}
+
+func (s *WebRPCStruct) MoveBalanceToEscrow(p0 context.Context, p1 string, p2 string, p3 string) (string, error) {
+	if s.Internal.MoveBalanceToEscrow == nil {
+		return "", ErrNotSupported
+	}
+	return s.Internal.MoveBalanceToEscrow(p0, p1, p2, p3)
+}
+
+func (s *WebRPCStub) MoveBalanceToEscrow(p0 context.Context, p1 string, p2 string, p3 string) (string, error) {
+	return "", ErrNotSupported
 }
 
 func (s *WebRPCStruct) PipelinePorepRestartAll(p0 context.Context) error {
