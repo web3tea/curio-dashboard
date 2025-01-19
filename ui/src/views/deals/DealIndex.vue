@@ -6,13 +6,13 @@ import PendingDeals from '@/views/deals/PendingDeals.vue'
 const breadcrumbs = ref([
   {
     title: 'Deals',
-    disabled: false,
-    href: '#', // todo: add href
+    disabled: true,
+    to: "#"
   },
   {
     title: 'Pending',
     disabled: true,
-    href: '#',
+    to: { name: 'PendingDeals' },
   },
 ])
 

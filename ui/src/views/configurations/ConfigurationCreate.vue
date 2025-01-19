@@ -41,13 +41,8 @@ const breadcrumbs = ref([
   {
     title: 'Configurations',
     disabled: false,
-    href: '/app/configurations',
-  },
-  {
-    title: 'Create',
-    disabled: true,
-    href: '#',
-  },
+    to: { name: 'Configurations' }
+  }
 ])
 
 const customizer = useCustomizerStore()

@@ -30,7 +30,7 @@
         <v-btn
           class="mt-2"
           color="primary"
-          to="/dashboard/analytics"
+          :to="{name: 'Overview'}"
           variant="flat"
         >
           Back To Home

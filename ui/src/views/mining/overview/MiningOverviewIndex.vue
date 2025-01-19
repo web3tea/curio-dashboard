@@ -6,13 +6,8 @@ import TabCard from "@/views/mining/overview/TabCard.vue"
 const breadcrumbs = ref([
   {
     title: 'Wins',
-    disabled: false,
-    href: '#'
-  },
-  {
-    title: 'Overview',
     disabled: true,
-    href: '#'
+    to: '#'
   }
 ])
 </script>

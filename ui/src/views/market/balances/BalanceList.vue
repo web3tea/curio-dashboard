@@ -11,7 +11,6 @@ const headers = [
   { title: 'Control Balances', key: 'controlBalances' },
   { title: '  ', key: 'actions' },
 ]
-
 const { result, loading, refetch } = useQuery(GetMarketBalances, null, () => ({
   fetchPolicy: 'cache-first',
 }))

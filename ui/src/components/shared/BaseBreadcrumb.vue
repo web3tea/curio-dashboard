@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
 
 const { t } = useI18n()
 
 interface Breadcrumb {
   title: string;
   disabled: boolean;
-  href: string;
+  to: string | RouteLocationAsRelativeGeneric | RouteLocationAsPathGeneric;
 }
 
 const props = defineProps({

@@ -33,16 +33,16 @@ export interface menuItem {
 }
 
 const sidebarItems: menuItem[] = [
-  { header: 'Dashboard', icon:  IconHome },
+  { header: 'Dashboard', icon: IconHome },
   {
     title: 'Overview',
     icon: IconHome,
-    to: '/app/overview',
+    to: { name: "Overview" },
   },
   {
     title: 'Analytics',
     icon: IconChartHistogram,
-    to: '/app/analytics',
+    to: { name: "Analytics" },
   },
   { header: 'Sealing', icon: IconBrandAsana },
   {
@@ -51,39 +51,39 @@ const sidebarItems: menuItem[] = [
     children: [
       {
         title: 'Running',
-        to: '/app/running-tasks',
+        to: { name: 'RunningTasks' }
       },
       {
         title: 'History',
-        to: '/app/task-history',
+        to: { name: "TaskHistory" },
       },
     ],
   },
   {
     title: 'PoRep',
     icon: IconVector,
-    to: '/app/porep',
+    to: { name: "PoRep" },
   },
   {
     title: 'Sectors',
     icon: IconBox,
-    to: '/app/sectors',
+    to: { name: "Sectors" },
   },
   {
     title: 'Deals',
     icon: IconParking,
-    to: '/app/deals/pending',
+    to: { name: "PendingDeals" },
   },
   {
     title: 'Messages',
     icon: IconVector,
-    to: '/app/messages/sends',
+    to: { name: "MessageSends" },
   },
   { header: 'Mining', icon: IconUsers },
   {
     title: 'Miners',
     icon: IconUsers,
-    to: '/app/miners',
+    to: { name: "Miners" },
   },
   {
     title: "Wins",
@@ -91,11 +91,11 @@ const sidebarItems: menuItem[] = [
     children: [
       {
         title: 'Overview',
-        to: '/app/mining/overview',
+        to: { name: "MiningOverview" },
       },
       {
         title: 'Blocks',
-        to: '/app/mining/wins',
+        to: { name: "MiningTaskList" },
       },
     ],
   },
@@ -106,7 +106,7 @@ const sidebarItems: menuItem[] = [
     children: [
       {
         title: 'Storage Asks',
-        to: '/app/market/storage-asks',
+        to: { name: "StorageAsks" },
         icon: IconPointFilled,
       },
       {
@@ -120,17 +120,17 @@ const sidebarItems: menuItem[] = [
   {
     title: 'Machines',
     icon: IconServer,
-    to: '/app/machines',
+    to: { name: "Machines" },
   },
   {
     title: 'Storages',
     icon: IconDatabase,
-    to: '/app/storages',
+    to: { name: "Storages" },
   },
   {
     title: 'Configurations',
     icon: IconSettings,
-    to: '/app/configurations',
+    to: { name: "Configurations" },
   },
 ]
 

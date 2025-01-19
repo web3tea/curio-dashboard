@@ -37,7 +37,7 @@ export const useAuthStore = defineStore({
           username: result.username,
           description: result.description,
         })
-        await router.push(this.returnUrl || '/app/overview')
+        await router.push(this.returnUrl || { name: 'Overview' })
         this.returnUrl = null
       } else {
         if ('message' in result) {
