@@ -304,6 +304,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createConfig?: Maybe<Config>;
   dealSealNow: Scalars['Boolean']['output'];
+  marketAddBalance?: Maybe<MarketBalance>;
   removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
   restartAllFailedSectors: Scalars['Boolean']['output'];
@@ -322,6 +323,13 @@ export type MutationCreateConfigArgs = {
 export type MutationDealSealNowArgs = {
   miner: Scalars['Address']['input'];
   sectorNumber: Scalars['Uint64']['input'];
+};
+
+
+export type MutationMarketAddBalanceArgs = {
+  amount: Scalars['FIL']['input'];
+  miner: Scalars['Address']['input'];
+  wallet: Scalars['Address']['input'];
 };
 
 

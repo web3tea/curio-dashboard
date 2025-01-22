@@ -13,3 +13,7 @@ extend type Query {
     marketBalance(miner: Address!): MarketBalance
     marketBalances: [MarketBalance!]
 }
+
+extend type Mutation {
+    marketAddBalance(miner: Address!, wallet: Address!, amount: FIL!): MarketBalance
+}

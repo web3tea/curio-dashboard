@@ -15,6 +15,10 @@ const props = defineProps({
     type: String,
     default: 'Miner',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { result, loading } = useQuery(GetActorAddresses, null, () => ({
@@ -39,7 +43,7 @@ const localValue = computed({
     clearable
     color="primary"
     density="compact"
-    :disabled="loading"
+    :disabled="loading || props.disabled"
     item-title="address"
     :items="miners"
     :label="props.label"

@@ -40,15 +40,31 @@ export const UpdateMarketMk12StorageAsk = gql`
   ${marketMk12StorageAskFragment}
   `
 
+export const marketBalanceFragment = gql`
+  fragment MarketBalanceAll on MarketBalance {
+    miner
+    balance
+    balances {
+      address
+      balance
+    }
+  }
+`
+
 export const GetMarketBalances = gql`
   query GetMarketBalances {
     marketBalances {
-      miner
-      balance
-      balances {
-        address
-        balance
-      }
+      ...MarketBalanceAll
     }
   }
+  ${marketBalanceFragment}
+`
+
+export const AddMarketBalance = gql`
+  mutation AddMarketBalance($miner: Address!, $amount: FIL!, $wallet: Address!) {
+    marketAddBalance(miner: $miner, amount: $amount, wallet: $wallet) {
+      ...MarketBalanceAll
+    }
+  }
+  ${marketBalanceFragment}
 `

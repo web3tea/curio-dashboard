@@ -4,6 +4,7 @@ import { computed, ComputedRef,ref } from 'vue'
 import { GetMarketBalances } from '@/gql/market'
 import { MarketBalance } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
+import AddBalance from './widgets/AddBalance.vue'
 
 const headers = [
   { title: 'Miner', key: 'miner' },
@@ -43,6 +44,9 @@ const searchValue = ref<string>()
         <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
           {{ value }}
         </RouterLink>
+      </template>
+      <template #item.actions="{ item }">
+        <AddBalance :miner="item.miner" />
       </template>
     </v-data-table-virtual>
   </UiTableCard>

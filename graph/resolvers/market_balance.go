@@ -15,6 +15,16 @@ import (
 	"github.com/strahe/curio-dashboard/types"
 )
 
+// MarketAddBalance is the resolver for the marketAddBalance field.
+func (r *mutationResolver) MarketAddBalance(ctx context.Context, miner types.Address, wallet types.Address, amount string) (*model.MarketBalance, error) {
+	fmt.Println("MarketAddBalance", miner, wallet, amount)
+	_, err := r.curioAPI.MoveBalanceToEscrow(ctx, miner.String(), amount, wallet.String())
+	if err != nil {
+		return nil, fmt.Errorf("failed to move balance to escrow: %w", err)
+	}
+	return r.Resolver.Query().MarketBalance(ctx, miner)
+}
+
 // MarketBalance is the resolver for the marketBalance field.
 func (r *queryResolver) MarketBalance(ctx context.Context, miner types.Address) (*model.MarketBalance, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)

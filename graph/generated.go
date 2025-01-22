@@ -305,6 +305,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateConfig               func(childComplexity int, title string, config string) int
 		DealSealNow                func(childComplexity int, miner types.Address, sectorNumber uint64) int
+		MarketAddBalance           func(childComplexity int, miner types.Address, wallet types.Address, amount string) int
 		RemoveConfig               func(childComplexity int, title string) int
 		RemoveSector               func(childComplexity int, miner types.Address, sectorNumber int) int
 		RestartAllFailedSectors    func(childComplexity int) int
@@ -708,6 +709,7 @@ type MutationResolver interface {
 	RestartSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error)
 	RestartAllFailedSectors(ctx context.Context) (bool, error)
 	DealSealNow(ctx context.Context, miner types.Address, sectorNumber uint64) (bool, error)
+	MarketAddBalance(ctx context.Context, miner types.Address, wallet types.Address, amount string) (*model.MarketBalance, error)
 	UpdateMarketMk12StorageAsk(ctx context.Context, input model.MarketMk12StorageAskInput) (*model.MarketMk12StorageAsk, error)
 }
 type PipelineSummaryResolver interface {
@@ -1990,6 +1992,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DealSealNow(childComplexity, args["miner"].(types.Address), args["sectorNumber"].(uint64)), true
+
+	case "Mutation.marketAddBalance":
+		if e.complexity.Mutation.MarketAddBalance == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_marketAddBalance_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MarketAddBalance(childComplexity, args["miner"].(types.Address), args["wallet"].(types.Address), args["amount"].(string)), true
 
 	case "Mutation.removeConfig":
 		if e.complexity.Mutation.RemoveConfig == nil {
@@ -4372,6 +4386,92 @@ func (ec *executionContext) field_Mutation_dealSealNow_argsSectorNumber(
 	}
 
 	var zeroVal uint64
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_marketAddBalance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Mutation_marketAddBalance_argsMiner(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["miner"] = arg0
+	arg1, err := ec.field_Mutation_marketAddBalance_argsWallet(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["wallet"] = arg1
+	arg2, err := ec.field_Mutation_marketAddBalance_argsAmount(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["amount"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Mutation_marketAddBalance_argsMiner(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (types.Address, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["miner"]
+	if !ok {
+		var zeroVal types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
+	if tmp, ok := rawArgs["miner"]; ok {
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_marketAddBalance_argsWallet(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (types.Address, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["wallet"]
+	if !ok {
+		var zeroVal types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("wallet"))
+	if tmp, ok := rawArgs["wallet"]; ok {
+		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Mutation_marketAddBalance_argsAmount(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["amount"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("amount"))
+	if tmp, ok := rawArgs["amount"]; ok {
+		return ec.unmarshalNFIL2string(ctx, tmp)
+	}
+
+	var zeroVal string
 	return zeroVal, nil
 }
 
@@ -14457,6 +14557,66 @@ func (ec *executionContext) fieldContext_Mutation_dealSealNow(ctx context.Contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_dealSealNow_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_marketAddBalance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_marketAddBalance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().MarketAddBalance(rctx, fc.Args["miner"].(types.Address), fc.Args["wallet"].(types.Address), fc.Args["amount"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MarketBalance)
+	fc.Result = res
+	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_marketAddBalance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "miner":
+				return ec.fieldContext_MarketBalance_miner(ctx, field)
+			case "balance":
+				return ec.fieldContext_MarketBalance_balance(ctx, field)
+			case "balances":
+				return ec.fieldContext_MarketBalance_balances(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketBalance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_marketAddBalance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -32117,6 +32277,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "marketAddBalance":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_marketAddBalance(ctx, field)
+			})
 		case "updateMarketMk12StorageAsk":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateMarketMk12StorageAsk(ctx, field)
