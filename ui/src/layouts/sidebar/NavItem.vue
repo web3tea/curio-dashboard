@@ -94,7 +94,9 @@ const icon = computed(() => {
           :level="level"
         />
       </template>
-      <v-list-item-title>{{ $t("nav."+item.title) }}</v-list-item-title>
+      <v-list-item-title class="mr-auto">
+        {{ $t("nav."+item.title) }}
+      </v-list-item-title>
       <v-list-item-subtitle
         v-if="item.subCaption"
         class="text-caption mt-n1 hide-menu"

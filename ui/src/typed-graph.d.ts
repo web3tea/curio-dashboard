@@ -305,6 +305,9 @@ export type Mutation = {
   createConfig?: Maybe<Config>;
   dealSealNow: Scalars['Boolean']['output'];
   marketAddBalance?: Maybe<MarketBalance>;
+  marketAddPriceFilter?: Maybe<PriceFilter>;
+  marketDeletePriceFilter?: Maybe<PriceFilter>;
+  marketUpdatePriceFilter?: Maybe<PriceFilter>;
   removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
   restartAllFailedSectors: Scalars['Boolean']['output'];
@@ -330,6 +333,21 @@ export type MutationMarketAddBalanceArgs = {
   amount: Scalars['FIL']['input'];
   miner: Scalars['Address']['input'];
   wallet: Scalars['Address']['input'];
+};
+
+
+export type MutationMarketAddPriceFilterArgs = {
+  input: PriceFilterInput;
+};
+
+
+export type MutationMarketDeletePriceFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationMarketUpdatePriceFilterArgs = {
+  input: PriceFilterInput;
 };
 
 
@@ -481,6 +499,27 @@ export type PowerClaim = {
   rawBytePower?: Maybe<Scalars['BigInt']['output']>;
 };
 
+export type PriceFilter = {
+  __typename?: 'PriceFilter';
+  maxDurationDays: Scalars['Int']['output'];
+  maximumSize: Scalars['Int']['output'];
+  minDurationDays: Scalars['Int']['output'];
+  minimumSize: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  price: Scalars['Int']['output'];
+  verified: Scalars['Boolean']['output'];
+};
+
+export type PriceFilterInput = {
+  maxDurationDays: Scalars['Int']['input'];
+  maximumSize: Scalars['Int']['input'];
+  minDurationDays: Scalars['Int']['input'];
+  minimumSize: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+  price: Scalars['Int']['input'];
+  verified: Scalars['Boolean']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   actor?: Maybe<Actor>;
@@ -493,11 +532,13 @@ export type Query = {
   machine?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
+  makretPriceFilters?: Maybe<Array<PriceFilter>>;
   marketBalance?: Maybe<MarketBalance>;
   marketBalances?: Maybe<Array<MarketBalance>>;
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
   marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
   marketMk12StorageAsksCount: Scalars['Int']['output'];
+  marketPriceFilter?: Maybe<PriceFilter>;
   messageSend?: Maybe<MessageSend>;
   messageSends?: Maybe<Array<Maybe<MessageSend>>>;
   messageSendsCount: Scalars['Int']['output'];
@@ -553,6 +594,11 @@ export type QueryMarketBalanceArgs = {
 
 export type QueryMarketMk12StorageAskArgs = {
   spId: Scalars['Address']['input'];
+};
+
+
+export type QueryMarketPriceFilterArgs = {
+  name: Scalars['String']['input'];
 };
 
 

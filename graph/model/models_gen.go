@@ -266,6 +266,26 @@ type PowerClaim struct {
 	QualityAdjPower *types.BigInt `json:"qualityAdjPower"`
 }
 
+type PriceFilter struct {
+	Name            string `json:"name"`
+	MinDurationDays int    `json:"minDurationDays"`
+	MaxDurationDays int    `json:"maxDurationDays"`
+	MinimumSize     int    `json:"minimumSize"`
+	MaximumSize     int    `json:"maximumSize"`
+	Price           int    `json:"price"`
+	Verified        bool   `json:"verified"`
+}
+
+type PriceFilterInput struct {
+	Name            string `json:"name"`
+	MinDurationDays int    `json:"minDurationDays"`
+	MaxDurationDays int    `json:"maxDurationDays"`
+	MinimumSize     int    `json:"minimumSize"`
+	MaximumSize     int    `json:"maximumSize"`
+	Price           int    `json:"price"`
+	Verified        bool   `json:"verified"`
+}
+
 type Query struct {
 }
 

@@ -23,6 +23,8 @@ type WebRPCMethods struct {
 
 	ActorSummary func(p0 context.Context) ([]webrpc.ActorSummary, error) ``
 
+	AddPriceFilters func(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error ``
+
 	ClusterMachines func(p0 context.Context) ([]webrpc.MachineSummary, error) ``
 
 	ClusterNodeInfo func(p0 context.Context, p1 int64) (*webrpc.MachineInfo, error) ``
@@ -34,6 +36,8 @@ type WebRPCMethods struct {
 	DealsPending func(p0 context.Context) ([]webrpc.OpenDealInfo, error) ``
 
 	DealsSealNow func(p0 context.Context, p1 uint64, p2 uint64) error ``
+
+	GetPriceFilters func(p0 context.Context) ([]webrpc.PriceFilter, error) ``
 
 	HarmonyTaskHistory func(p0 context.Context, p1 string) ([]webrpc.HarmonyTaskHistory, error) ``
 
@@ -51,11 +55,15 @@ type WebRPCMethods struct {
 
 	PorepPipelineSummary func(p0 context.Context) ([]webrpc.PorepPipelineSummary, error) ``
 
+	RemovePricingFilter func(p0 context.Context, p1 string) error ``
+
 	SectorInfo func(p0 context.Context, p1 string, p2 int64) (*webrpc.SectorInfo, error) ``
 
 	SectorRemove func(p0 context.Context, p1 int, p2 int) error ``
 
 	SectorResume func(p0 context.Context, p1 int64, p2 int64) error ``
+
+	SetPriceFilters func(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error ``
 
 	SetStorageAsk func(p0 context.Context, p1 *webrpc.StorageAsk) error ``
 
@@ -114,6 +122,17 @@ func (s *WebRPCStruct) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, 
 
 func (s *WebRPCStub) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, error) {
 	return *new([]webrpc.ActorSummary), ErrNotSupported
+}
+
+func (s *WebRPCStruct) AddPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
+	if s.Internal.AddPriceFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.AddPriceFilters(p0, p1, p2, p3, p4, p5, p6, p7)
+}
+
+func (s *WebRPCStub) AddPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
+	return ErrNotSupported
 }
 
 func (s *WebRPCStruct) ClusterMachines(p0 context.Context) ([]webrpc.MachineSummary, error) {
@@ -180,6 +199,17 @@ func (s *WebRPCStruct) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) er
 
 func (s *WebRPCStub) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) error {
 	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) GetPriceFilters(p0 context.Context) ([]webrpc.PriceFilter, error) {
+	if s.Internal.GetPriceFilters == nil {
+		return *new([]webrpc.PriceFilter), ErrNotSupported
+	}
+	return s.Internal.GetPriceFilters(p0)
+}
+
+func (s *WebRPCStub) GetPriceFilters(p0 context.Context) ([]webrpc.PriceFilter, error) {
+	return *new([]webrpc.PriceFilter), ErrNotSupported
 }
 
 func (s *WebRPCStruct) HarmonyTaskHistory(p0 context.Context, p1 string) ([]webrpc.HarmonyTaskHistory, error) {
@@ -270,6 +300,17 @@ func (s *WebRPCStub) PorepPipelineSummary(p0 context.Context) ([]webrpc.PorepPip
 	return *new([]webrpc.PorepPipelineSummary), ErrNotSupported
 }
 
+func (s *WebRPCStruct) RemovePricingFilter(p0 context.Context, p1 string) error {
+	if s.Internal.RemovePricingFilter == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.RemovePricingFilter(p0, p1)
+}
+
+func (s *WebRPCStub) RemovePricingFilter(p0 context.Context, p1 string) error {
+	return ErrNotSupported
+}
+
 func (s *WebRPCStruct) SectorInfo(p0 context.Context, p1 string, p2 int64) (*webrpc.SectorInfo, error) {
 	if s.Internal.SectorInfo == nil {
 		return nil, ErrNotSupported
@@ -300,6 +341,17 @@ func (s *WebRPCStruct) SectorResume(p0 context.Context, p1 int64, p2 int64) erro
 }
 
 func (s *WebRPCStub) SectorResume(p0 context.Context, p1 int64, p2 int64) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
+	if s.Internal.SetPriceFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetPriceFilters(p0, p1, p2, p3, p4, p5, p6, p7)
+}
+
+func (s *WebRPCStub) SetPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
 	return ErrNotSupported
 }
 

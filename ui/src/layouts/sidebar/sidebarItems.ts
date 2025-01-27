@@ -12,6 +12,7 @@ import {
   IconSettings,
   IconUsers,
   IconVector,
+  IconFilterPin,
 } from '@tabler/icons-vue'
 import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
 
@@ -105,14 +106,19 @@ const sidebarItems: menuItem[] = [
     icon: IconBuildingStore,
     children: [
       {
+        title: 'Balances',
+        to: { name: "MarketBalances" },
+        icon: IconPointFilled,
+      },
+      {
         title: 'Storage Asks',
         to: { name: "StorageAsks" },
         icon: IconPointFilled,
       },
       {
-        title: 'Balances',
-        to: { name: "MarketBalances" },
-        icon: IconPointFilled,
+        title: 'Price Filter',
+        to: { name: "PriceFilter" },
+        icon: IconFilterPin,
       },
     ]
   },

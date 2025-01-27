@@ -13,6 +13,17 @@ export const marketMk12StorageAskFragment = gql`
   }
 `
 
+export const marketMk12PriceFilterFragment = gql`
+  fragment MarketMk12PriceFilterAll on PriceFilter {
+    name
+    minDurationDays
+    maxDurationDays
+    minimumSize
+    maximumSize
+    price
+    verified
+  }`
+
 export const GetMarketMk12StorageAsks = gql`
   query GetMarketMk12StorageAsks {
     marketMk12StorageAsks {
@@ -68,3 +79,20 @@ export const AddMarketBalance = gql`
   }
   ${marketBalanceFragment}
 `
+
+export const GetMarketPriceFilters = gql`
+  query GetMarketPriceFilters {
+    makretPriceFilters {
+      ...MarketMk12PriceFilterAll
+    }
+  }
+  ${marketMk12PriceFilterFragment}
+  `
+
+export const AddMarketPriceFilter = gql`
+  mutation AddMarketPriceFilter($input: PriceFilterInput!) {
+    marketAddPriceFilter(input: $input) {
+      ...MarketMk12PriceFilterAll
+    }
+  }
+  `

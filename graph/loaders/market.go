@@ -2,7 +2,9 @@ package loaders
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/filecoin-project/curio/web/api/webrpc"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
@@ -10,6 +12,7 @@ type MarketLoader interface {
 	MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsk(ctx context.Context, spID uint64) (*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
+	MarketMk12PriceFilter(ctx context.Context, name string) (*webrpc.PriceFilter, error)
 }
 
 type MarketLoaderImpl struct {
@@ -66,4 +69,26 @@ func (l *MarketLoaderImpl) MarketMk12StorageAsksCount(ctx context.Context) (int,
 	var result int
 	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM market_mk12_storage_ask`).Scan(&result)
 	return result, err
+}
+
+func (l *MarketLoaderImpl) MarketMk12PriceFilter(ctx context.Context, name string) (*webrpc.PriceFilter, error) {
+	var res []*webrpc.PriceFilter
+	err := l.loader.db.Select(ctx, &res, `
+	SELECT
+		name,
+		min_duration_days,
+		max_duration_days,
+		min_size,
+		max_size,
+		price,
+		verified
+	FROM market_mk12_price_filter
+	WHERE name = $1`, name)
+	if err != nil {
+		return nil, err
+	}
+	if len(res) == 0 {
+		return nil, fmt.Errorf("price filter not found")
+	}
+	return res[0], nil
 }

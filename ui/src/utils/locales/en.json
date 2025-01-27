@@ -26,7 +26,9 @@
     "Sends": "Sends",
     "Market": "Market",
     "Storage Asks": "Storage Asks",
-    "Balances": "Balances"
+    "Balances": "Balances",
+    "Settings": "Settings",
+    "Price Filter": "Price Filter"
   },
   "fields": {
     "Total Power": "Total Power",

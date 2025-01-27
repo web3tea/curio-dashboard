@@ -211,10 +211,19 @@ const AppRoutes = {
     {
       name: "MarketBalances",
       path: "/market/balances",
-      component: () => import('@/views/market/balances/balanceIndex.vue'),
+      component: () => import('@/views/market/balances/BalanceIndex.vue'),
       meta: {
         title: 'Market Balances',
         description: 'List of all market balances in the cluster',
+      },
+    },
+    {
+      name: "PriceFilter",
+      path: "/market/filter/price",
+      component: () => import('@/views/market/filter/price/PriceFilterIndex.vue'),
+      meta: {
+        title: 'Price Filter',
+        description: 'Market price filter',
       },
     }
   ],

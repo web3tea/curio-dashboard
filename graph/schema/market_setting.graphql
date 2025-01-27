@@ -1,0 +1,30 @@
+type PriceFilter {
+  name: String!
+  minDurationDays: Int!
+  maxDurationDays: Int!
+  minimumSize: Int!
+  maximumSize: Int!
+  price: Int!
+  verified: Boolean!
+}
+
+extend type Query {
+  makretPriceFilters: [PriceFilter!]
+  marketPriceFilter(name: String!): PriceFilter
+}
+
+input PriceFilterInput {
+  name: String!
+  minDurationDays: Int!
+  maxDurationDays: Int!
+  minimumSize: Int!
+  maximumSize: Int!
+  price: Int!
+  verified: Boolean!
+}
+
+extend type Mutation {
+  marketAddPriceFilter(input: PriceFilterInput!): PriceFilter
+  marketUpdatePriceFilter(input: PriceFilterInput!): PriceFilter
+  marketDeletePriceFilter(name: String!): PriceFilter
+}
