@@ -11,6 +11,7 @@ type PriceFilter {
 extend type Query {
   makretPriceFilters: [PriceFilter!]
   marketPriceFilter(name: String!): PriceFilter
+  marketCheckPriceFilter(name: String!): Boolean!
 }
 
 input PriceFilterInput {
@@ -24,7 +25,7 @@ input PriceFilterInput {
 }
 
 extend type Mutation {
-  marketAddPriceFilter(input: PriceFilterInput!): PriceFilter
+  marketAddPriceFilter(input: PriceFilterInput!): Boolean!
   marketUpdatePriceFilter(input: PriceFilterInput!): PriceFilter
-  marketDeletePriceFilter(name: String!): PriceFilter
+  marketDeletePriceFilter(name: String!): Boolean!
 }

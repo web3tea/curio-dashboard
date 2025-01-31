@@ -91,8 +91,12 @@ export const GetMarketPriceFilters = gql`
 
 export const AddMarketPriceFilter = gql`
   mutation AddMarketPriceFilter($input: PriceFilterInput!) {
-    marketAddPriceFilter(input: $input) {
-      ...MarketMk12PriceFilterAll
-    }
+    marketAddPriceFilter(input: $input)
+  }
+  `
+
+export const CheckMarketPriceFilter = gql`
+  query CheckMarketPriceFilter($name: String!) {
+    marketCheckPriceFilter(name: $name)
   }
   `

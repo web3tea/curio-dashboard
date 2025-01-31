@@ -305,8 +305,8 @@ export type Mutation = {
   createConfig?: Maybe<Config>;
   dealSealNow: Scalars['Boolean']['output'];
   marketAddBalance?: Maybe<MarketBalance>;
-  marketAddPriceFilter?: Maybe<PriceFilter>;
-  marketDeletePriceFilter?: Maybe<PriceFilter>;
+  marketAddPriceFilter: Scalars['Boolean']['output'];
+  marketDeletePriceFilter: Scalars['Boolean']['output'];
   marketUpdatePriceFilter?: Maybe<PriceFilter>;
   removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
@@ -535,6 +535,7 @@ export type Query = {
   makretPriceFilters?: Maybe<Array<PriceFilter>>;
   marketBalance?: Maybe<MarketBalance>;
   marketBalances?: Maybe<Array<MarketBalance>>;
+  marketCheckPriceFilter: Scalars['Boolean']['output'];
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
   marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
   marketMk12StorageAsksCount: Scalars['Int']['output'];
@@ -589,6 +590,11 @@ export type QueryMachineArgs = {
 
 export type QueryMarketBalanceArgs = {
   miner: Scalars['Address']['input'];
+};
+
+
+export type QueryMarketCheckPriceFilterArgs = {
+  name: Scalars['String']['input'];
 };
 
 

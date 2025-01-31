@@ -82,7 +82,7 @@ func (l *MarketLoaderImpl) MarketMk12PriceFilter(ctx context.Context, name strin
 		max_size,
 		price,
 		verified
-	FROM market_mk12_price_filter
+	FROM market_mk12_pricing_filters
 	WHERE name = $1`, name)
 	if err != nil {
 		return nil, err

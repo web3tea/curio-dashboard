@@ -15,6 +15,7 @@ declare module 'vue' {
     EpochField: typeof import('./components/app/EpochField.vue')['default']
     HostPortSelectInput: typeof import('./components/app/HostPortSelectInput.vue')['default']
     MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
+    PriceInput: typeof import('./components/app/PriceInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StoragePathTable: typeof import('./components/app/StoragePathTable.vue')['default']

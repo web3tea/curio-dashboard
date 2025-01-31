@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref,  watch } from 'vue'
-import { IconAlertCircle, IconSwitchVertical,IconPlus } from '@tabler/icons-vue'
+import { IconAlertCircle, IconPlus } from '@tabler/icons-vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { UpdateMarketMk12StorageAsk, GetMarketMk12StorageAsks, GetMarketMk12StorageAsk } from '@/gql/market'
 import { useUIStore } from '@/stores/ui'
 import { MarketMk12StorageAsk } from '@/typed-graph'
-import { filToAttoFilPerGiBPerEpoch, attoFilToFilPerTiBPerMonth } from '@/utils/helpers/convertPrice'
 import { pieceSizeOptions } from '@/utils/helpers/pieceSize'
 
 const props = defineProps({
@@ -33,17 +32,13 @@ const { result, loading } = useQuery(GetMarketMk12StorageAsk, {
 const minSize = ref<number>()
 const maxSize = ref<number>()
 const expiry = ref(new Date(new Date().setFullYear(new Date().getFullYear() + 1)))
-const priceLocal = ref<number>()
-const verifiedPriceLocal = ref<number>(0)
-
-const priceUnits = ['FIL/TiB/Month', 'attoFIL/GiB/Epoch']
-const priceUnitIndex = ref(0)
-const verifiedPriceIndex = ref(0)
+const price = ref<number>()
+const verifiedPrice = ref<number>()
 
 watch(() => result.value?.marketMk12StorageAsk, (newVal: MarketMk12StorageAsk) => {
   if (newVal) {
-    priceLocal.value = Number(attoFilToFilPerTiBPerMonth(newVal.price))
-    verifiedPriceLocal.value = Number(attoFilToFilPerTiBPerMonth(newVal.verifiedPrice))
+    price.value = newVal.price
+    verifiedPrice.value = newVal.verifiedPrice
     minSize.value = newVal.minSize
     maxSize.value = newVal.maxSize
     expiry.value = new Date(newVal.expiry * 1000)
@@ -54,12 +49,8 @@ const { mutate, loading: updateLoading, onDone, onError } = useMutation(UpdateMa
   variables: {
     input: {
       spId: localMiner.value,
-      price: priceUnitIndex.value === 0
-        ? filToAttoFilPerGiBPerEpoch(priceLocal.value || 0)
-        : priceLocal.value,
-      verifiedPrice: verifiedPriceIndex.value === 0
-        ? filToAttoFilPerGiBPerEpoch(verifiedPriceLocal.value)
-        : verifiedPriceLocal.value,
+      price: price.value,
+      verifiedPrice: verifiedPrice.value,
       minSize: minSize.value,
       maxSize: maxSize.value,
       expiry: Math.floor(expiry.value.getTime() / 1000),
@@ -86,20 +77,7 @@ onError(e => {
   })
 })
 
-function switchPrice() {
-  const converter = priceUnitIndex.value === 0 ? filToAttoFilPerGiBPerEpoch : attoFilToFilPerTiBPerMonth
-  priceLocal.value = Number(converter(priceLocal.value || 0))
-  priceUnitIndex.value = 1 - priceUnitIndex.value
-}
-
-function switchVerifiedPrice() {
-  const converter = verifiedPriceIndex.value === 0 ? filToAttoFilPerGiBPerEpoch : attoFilToFilPerTiBPerMonth
-  verifiedPriceLocal.value = Number(converter(verifiedPriceLocal.value))
-  verifiedPriceIndex.value = 1 - verifiedPriceIndex.value
-}
-
 const form = ref()
-// const handleSubmit = async () => await form.value.validate() && mutate()
 const handleSubmit = async () => {
   const { valid } = await form.value.validate()
   if (!valid) {
@@ -110,10 +88,6 @@ const handleSubmit = async () => {
 
 const rules = {
   required: (v: string) => !!v || 'This field is required',
-  price: [
-    (v: number) => !!v || 'Price is required',
-    (v: number) => v >= 0 || 'Price cannot be negative',
-  ],
   pieceSize: [
     (v: number) => !!v || 'Piece size is required',
   ],
@@ -180,36 +154,14 @@ const rules = {
               <v-label class="text-subtitle-1 text-high-emphasis mb-2">
                 Price
               </v-label>
-              <v-text-field
-                v-model="priceLocal"
-                type="number"
-                color="primary"
-                :rules="rules.price"
-                variant="outlined"
-                :suffix="priceUnits[priceUnitIndex]"
-                density="comfortable"
-                hide-spin-buttons
-                :append-inner-icon="IconSwitchVertical"
-                @click:append-inner="switchPrice"
-              />
+              <PriceInput v-model="price" />
             </v-col>
 
             <v-col cols="12">
               <v-label class="text-subtitle-1 text-high-emphasis mb-2">
                 Verified Price
               </v-label>
-              <v-text-field
-                v-model="verifiedPriceLocal"
-                type="number"
-                color="primary"
-                :rules="rules.price"
-                variant="outlined"
-                :suffix="priceUnits[verifiedPriceIndex]"
-                density="comfortable"
-                hide-spin-buttons
-                :append-inner-icon="IconSwitchVertical"
-                @click:append-inner="switchVerifiedPrice"
-              />
+              <PriceInput v-model="verifiedPrice" />
             </v-col>
 
             <v-col cols="12">

@@ -6,6 +6,7 @@ import { PriceFilter } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
 import SetPriceFilter from './widgets/SetPriceFilter.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { attoFilToFilPerTiBPerMonth } from '@/utils/helpers/convertPrice'
 
 const headers = [
   { title: 'Name', key: 'name' },
@@ -13,7 +14,8 @@ const headers = [
   { title: 'Max Duration (Days)', key: 'maxDurationDays' },
   { title: 'Minimum Size', key: 'minimumSize' },
   { title: 'Maximum Size', key: 'maximumSize' },
-  { title: 'Price', key: 'price' },
+  { title: 'Price (attoFIL/GiB/Epoch)', key: 'price' },
+  { title: 'Price (FIL/TiB/Month)', key: 'priceFTM' },
   { title: 'Verified', key: 'verified' },
 ]
 
@@ -58,7 +60,9 @@ const searchValue = ref<string>()
           disabled
         />
       </template>
-      <template #item.actions="{ }" />
+      <template #item.priceFTM="{ item }">
+        {{ attoFilToFilPerTiBPerMonth(item.price) }}
+      </template>
     </v-data-table-virtual>
   </UiTableCard>
 </template>

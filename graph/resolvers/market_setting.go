@@ -13,13 +13,13 @@ import (
 )
 
 // MarketAddPriceFilter is the resolver for the marketAddPriceFilter field.
-func (r *mutationResolver) MarketAddPriceFilter(ctx context.Context, input model.PriceFilterInput) (*model.PriceFilter, error) {
+func (r *mutationResolver) MarketAddPriceFilter(ctx context.Context, input model.PriceFilterInput) (bool, error) {
 	err := r.curioAPI.AddPriceFilters(ctx, input.Name, input.MinDurationDays, input.MaxDurationDays, int64(input.MinimumSize), int64(input.MaximumSize), int64(input.Price), input.Verified)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 
-	return r.Query().MarketPriceFilter(ctx, input.Name)
+	return true, nil
 }
 
 // MarketUpdatePriceFilter is the resolver for the marketUpdatePriceFilter field.
@@ -33,16 +33,12 @@ func (r *mutationResolver) MarketUpdatePriceFilter(ctx context.Context, input mo
 }
 
 // MarketDeletePriceFilter is the resolver for the marketDeletePriceFilter field.
-func (r *mutationResolver) MarketDeletePriceFilter(ctx context.Context, name string) (*model.PriceFilter, error) {
-	pf, err := r.Query().MarketPriceFilter(ctx, name)
+func (r *mutationResolver) MarketDeletePriceFilter(ctx context.Context, name string) (bool, error) {
+	err := r.curioAPI.RemovePricingFilter(ctx, name)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
-	err = r.curioAPI.RemovePricingFilter(ctx, name)
-	if err != nil {
-		return nil, err
-	}
-	return pf, nil
+	return true, nil
 }
 
 // MakretPriceFilters is the resolver for the makretPriceFilters field.
@@ -79,4 +75,10 @@ func (r *queryResolver) MarketPriceFilter(ctx context.Context, name string) (*mo
 		Price:           int(res.Price),
 		Verified:        res.Verified,
 	}, nil
+}
+
+// MarketCheckPriceFilter is the resolver for the marketCheckPriceFilter field.
+func (r *queryResolver) MarketCheckPriceFilter(ctx context.Context, name string) (bool, error) {
+	res, _ := r.MarketPriceFilter(ctx, name) // nolint: errcheck
+	return res != nil, nil
 }
