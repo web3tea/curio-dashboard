@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { useMutation,useQuery } from '@vue/apollo-composable'
-import { ref, computed } from 'vue'
-import { AddMarketPriceFilter, GetMarketPriceFilters, CheckMarketPriceFilter } from '@/gql/market'
+import { ref, computed, PropType } from 'vue'
+import { AddMarketPriceFilter, GetMarketPriceFilters, CheckMarketPriceFilter, UpdateMarketPriceFilter } from '@/gql/market'
 import { IconAlertCircle,IconPlus } from '@tabler/icons-vue'
+import { refDebounced } from '@vueuse/core'
 import { useUIStore } from '@/stores/ui'
+import { PriceFilter } from '@/typed-graph'
+import { formatBytes } from '@/utils/helpers/formatBytes'
 
 const props = defineProps({
   action: {
@@ -11,20 +14,25 @@ const props = defineProps({
     default: 'add',
     validator: (value: string) => ['update', 'add'].includes(value)
   },
+  item: {
+    type: Object as PropType<PriceFilter>,
+    default: () => null
+  }
 })
 
 const uiStore = useUIStore()
 const dialog = ref(false)
 
-const name = ref<string>()
-const minDurationDays = ref(180)
-const maxDurationDays = ref(1278)
-const minimumSize = ref(256)
-const maximumSize = ref(34359738368)
-const price = ref(0)
-const verified = ref(false)
+const name = ref<string>(props.item ? props.item.name : '')
+const nameDebounced = refDebounced(name, 1000)
+const minDurationDays = ref(props.item ? props.item.minDurationDays : 180)
+const maxDurationDays = ref(props.item ? props.item.maxDurationDays : 1278)
+const minimumSize = ref(props.item ? props.item.minimumSize : 256)
+const maximumSize = ref(props.item ? props.item.maximumSize : 34359738368)
+const price = ref(props.item ? props.item.price : 0)
+const verified = ref(props.item ? props.item.verified : false)
 
-const { mutate, loading, onDone, onError } = useMutation(AddMarketPriceFilter, () => ({
+const { mutate, loading, onDone, onError } = useMutation(props.action === 'add' ? AddMarketPriceFilter: UpdateMarketPriceFilter, () => ({
   variables: {
     input: {
       name: name.value,
@@ -44,6 +52,7 @@ const { mutate, loading, onDone, onError } = useMutation(AddMarketPriceFilter, (
 
 onDone(() => {
   dialog.value = false
+  name.value = ''
   uiStore.appendMsg({
     type: 'success',
     msg: props.action === 'add' ? 'Price filter added successfully' : 'Price filter updated successfully',
@@ -67,7 +76,7 @@ const handleSubmit = async () => {
 }
 
 const { result: checkResult, loading: checkLoading } = useQuery(CheckMarketPriceFilter, {
-  name: name
+  name: nameDebounced
 })
 
 const exists = computed(() => {
@@ -77,9 +86,9 @@ const exists = computed(() => {
 const rules = {
   name: [
     (v: string) => !!v || 'Name is required',
-    () => {
+    (v: string) => {
       if (props.action === 'add') {
-        return !exists.value || 'Price filter with this name already exists'
+        return !exists.value || `Price filter ${v} already exists`
       }
       return true
     }
@@ -141,6 +150,7 @@ const rules = {
                 :rules="rules.name"
                 variant="outlined"
                 density="comfortable"
+                :disabled="props.action === 'update'"
               />
             </v-col>
             <v-col cols="6">
@@ -179,7 +189,10 @@ const rules = {
                 suffix="Days"
               />
             </v-col>
-            <v-col cols="12">
+            <v-col
+              cols="12"
+              class="mb-2"
+            >
               <v-label class="text-subtitle-1 text-high-emphasis mb-2">
                 Min Size
               </v-label>
@@ -190,9 +203,14 @@ const rules = {
                 variant="outlined"
                 density="comfortable"
                 suffix="Bytes"
+                :hint="formatBytes(minimumSize).combined"
+                persistent-hint
               />
             </v-col>
-            <v-col cols="12">
+            <v-col
+              cols="12"
+              class="mb-2"
+            >
               <v-label class="text-subtitle-1 text-high-emphasis mb-2">
                 Max Size
               </v-label>
@@ -203,6 +221,8 @@ const rules = {
                 variant="outlined"
                 density="comfortable"
                 suffix="Bytes"
+                :hint="formatBytes(maximumSize).combined"
+                persistent-hint
               />
             </v-col>
             <v-col cols="12">

@@ -135,7 +135,7 @@ const rules = {
           ref="form"
           @submit.prevent="handleSubmit"
         >
-          <v-row>
+          <v-row no-gutters>
             <v-col
               v-if="action !== 'update'"
               cols="12"

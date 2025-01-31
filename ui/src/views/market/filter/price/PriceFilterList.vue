@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useQuery } from '@vue/apollo-composable'
+import { useQuery, useMutation } from '@vue/apollo-composable'
 import { computed, ComputedRef,ref } from 'vue'
-import { GetMarketPriceFilters } from '@/gql/market'
+import { DeleteMarketPriceFilter, GetMarketPriceFilters } from '@/gql/market'
 import { PriceFilter } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
 import SetPriceFilter from './widgets/SetPriceFilter.vue'
@@ -17,6 +17,7 @@ const headers = [
   { title: 'Price (attoFIL/GiB/Epoch)', key: 'price' },
   { title: 'Price (FIL/TiB/Month)', key: 'priceFTM' },
   { title: 'Verified', key: 'verified' },
+  { title: '    ', key: 'actions' },
 ]
 
 const { result, loading, refetch } = useQuery(GetMarketPriceFilters, null, () => ({
@@ -24,6 +25,22 @@ const { result, loading, refetch } = useQuery(GetMarketPriceFilters, null, () =>
 const items: ComputedRef<[PriceFilter]> = computed(() => result.value?.makretPriceFilters || [])
 
 const searchValue = ref<string>()
+const deletingItem = ref<string | null>(null)
+
+const { mutate } = useMutation(DeleteMarketPriceFilter, {
+  refetchQueries: [{
+    query: GetMarketPriceFilters,
+  }],
+})
+
+const handleDelete = async (name: string) => {
+  deletingItem.value = name
+  try {
+    await mutate({ name })
+  } finally {
+    deletingItem.value = null
+  }
+}
 
 </script>
 <template>
@@ -62,6 +79,22 @@ const searchValue = ref<string>()
       </template>
       <template #item.priceFTM="{ item }">
         {{ attoFilToFilPerTiBPerMonth(item.price) }}
+      </template>
+      <template #item.actions="{ item }">
+        <SetPriceFilter
+          :key="item.name"
+          :item="item"
+          action="update"
+        />
+        <v-btn
+          class="ml-2"
+          color="error"
+          variant="elevated"
+          :loading="deletingItem === item.name"
+          @click="handleDelete(item.name)"
+        >
+          Remove
+        </v-btn>
       </template>
     </v-data-table-virtual>
   </UiTableCard>
