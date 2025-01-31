@@ -3,7 +3,6 @@ import {
   IconBrandAsana,
   IconBuildingStore,
   IconChartHistogram,
-  IconPointFilled,
   IconCurrency,
   IconDatabase,
   IconHome,
@@ -12,7 +11,6 @@ import {
   IconSettings,
   IconUsers,
   IconVector,
-  IconFilterPin,
 } from '@tabler/icons-vue'
 import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
 
@@ -107,18 +105,15 @@ const sidebarItems: menuItem[] = [
     children: [
       {
         title: 'Balances',
-        to: { name: "MarketBalances" },
-        icon: IconPointFilled,
+        to: { name: "MarketBalances" }
       },
       {
         title: 'Storage Asks',
-        to: { name: "StorageAsks" },
-        icon: IconPointFilled,
+        to: { name: "StorageAsks" }
       },
       {
         title: 'Price Filter',
-        to: { name: "PriceFilter" },
-        icon: IconFilterPin,
+        to: { name: "PriceFilter" }
       },
     ]
   },
