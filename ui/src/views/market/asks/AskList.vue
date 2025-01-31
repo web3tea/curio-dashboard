@@ -7,7 +7,10 @@ import { MarketMk12StorageAsk } from '@/typed-graph'
 import { attoFilToFilPerTiBPerMonth } from '@/utils/helpers/convertPrice'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 import SetAsk from './widgets/SetAsk.vue'
+
+const { d } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetMarketMk12StorageAsks, null, () => ({
   fetchPolicy: 'cache-first',
@@ -73,10 +76,10 @@ const searchValue = ref<string>()
         {{ formatBytes(value).combined }}
       </template>
       <template #item.createdAt="{ value }">
-        {{ $d(value * 1000, 'long') }}
+        {{ d(value * 1000, 'long') }}
       </template>
       <template #item.expiry="{ value }">
-        {{ $d(value * 1000, 'long') }}
+        {{ d(value * 1000, 'long') }}
       </template>
       <template #item.actions="{ item }">
         <SetAsk

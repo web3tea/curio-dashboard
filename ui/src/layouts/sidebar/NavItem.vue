@@ -2,6 +2,7 @@
 import { PropType, onMounted, ref,computed } from 'vue'
 import { IconPointFilled } from '@tabler/icons-vue'
 import { menuItem } from './sidebarItems'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   item: {
@@ -17,6 +18,7 @@ const props = defineProps({
     default: 'vertical'
   }
 })
+const { t } = useI18n()
 
 const relativeURL = ref('')
 
@@ -55,7 +57,7 @@ const icon = computed(() => {
           size="20"
         />
       </i>
-      <span>{{ $t("nav."+item.title) }}</span>
+      <span>{{ t("nav."+item.title) }}</span>
       <small
         v-if="item.subCaption"
         class="text-caption mt-n1 hide-menu"
@@ -95,7 +97,7 @@ const icon = computed(() => {
         />
       </template>
       <v-list-item-title class="mr-auto">
-        {{ $t("nav."+item.title) }}
+        {{ t("nav."+item.title) }}
       </v-list-item-title>
       <v-list-item-subtitle
         v-if="item.subCaption"
