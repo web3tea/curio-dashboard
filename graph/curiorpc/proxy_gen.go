@@ -23,6 +23,8 @@ type WebRPCMethods struct {
 
 	ActorSummary func(p0 context.Context) ([]webrpc.ActorSummary, error) ``
 
+	AddClientFilters func(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error ``
+
 	AddPriceFilters func(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error ``
 
 	ClusterMachines func(p0 context.Context) ([]webrpc.MachineSummary, error) ``
@@ -36,6 +38,8 @@ type WebRPCMethods struct {
 	DealsPending func(p0 context.Context) ([]webrpc.OpenDealInfo, error) ``
 
 	DealsSealNow func(p0 context.Context, p1 uint64, p2 uint64) error ``
+
+	GetClientFilters func(p0 context.Context) ([]webrpc.ClientFilter, error) ``
 
 	GetPriceFilters func(p0 context.Context) ([]webrpc.PriceFilter, error) ``
 
@@ -55,6 +59,8 @@ type WebRPCMethods struct {
 
 	PorepPipelineSummary func(p0 context.Context) ([]webrpc.PorepPipelineSummary, error) ``
 
+	RemoveClientFilter func(p0 context.Context, p1 string) error ``
+
 	RemovePricingFilter func(p0 context.Context, p1 string) error ``
 
 	SectorInfo func(p0 context.Context, p1 string, p2 int64) (*webrpc.SectorInfo, error) ``
@@ -62,6 +68,8 @@ type WebRPCMethods struct {
 	SectorRemove func(p0 context.Context, p1 int, p2 int) error ``
 
 	SectorResume func(p0 context.Context, p1 int64, p2 int64) error ``
+
+	SetClientFilters func(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error ``
 
 	SetPriceFilters func(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error ``
 
@@ -122,6 +130,17 @@ func (s *WebRPCStruct) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, 
 
 func (s *WebRPCStub) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, error) {
 	return *new([]webrpc.ActorSummary), ErrNotSupported
+}
+
+func (s *WebRPCStruct) AddClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
+	if s.Internal.AddClientFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.AddClientFilters(p0, p1, p2, p3, p4, p5, p6, p7, p8)
+}
+
+func (s *WebRPCStub) AddClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
+	return ErrNotSupported
 }
 
 func (s *WebRPCStruct) AddPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
@@ -199,6 +218,17 @@ func (s *WebRPCStruct) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) er
 
 func (s *WebRPCStub) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) error {
 	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) GetClientFilters(p0 context.Context) ([]webrpc.ClientFilter, error) {
+	if s.Internal.GetClientFilters == nil {
+		return *new([]webrpc.ClientFilter), ErrNotSupported
+	}
+	return s.Internal.GetClientFilters(p0)
+}
+
+func (s *WebRPCStub) GetClientFilters(p0 context.Context) ([]webrpc.ClientFilter, error) {
+	return *new([]webrpc.ClientFilter), ErrNotSupported
 }
 
 func (s *WebRPCStruct) GetPriceFilters(p0 context.Context) ([]webrpc.PriceFilter, error) {
@@ -300,6 +330,17 @@ func (s *WebRPCStub) PorepPipelineSummary(p0 context.Context) ([]webrpc.PorepPip
 	return *new([]webrpc.PorepPipelineSummary), ErrNotSupported
 }
 
+func (s *WebRPCStruct) RemoveClientFilter(p0 context.Context, p1 string) error {
+	if s.Internal.RemoveClientFilter == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.RemoveClientFilter(p0, p1)
+}
+
+func (s *WebRPCStub) RemoveClientFilter(p0 context.Context, p1 string) error {
+	return ErrNotSupported
+}
+
 func (s *WebRPCStruct) RemovePricingFilter(p0 context.Context, p1 string) error {
 	if s.Internal.RemovePricingFilter == nil {
 		return ErrNotSupported
@@ -341,6 +382,17 @@ func (s *WebRPCStruct) SectorResume(p0 context.Context, p1 int64, p2 int64) erro
 }
 
 func (s *WebRPCStub) SectorResume(p0 context.Context, p1 int64, p2 int64) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
+	if s.Internal.SetClientFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetClientFilters(p0, p1, p2, p3, p4, p5, p6, p7, p8)
+}
+
+func (s *WebRPCStub) SetClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
 	return ErrNotSupported
 }
 

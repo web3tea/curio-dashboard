@@ -103,6 +103,10 @@ models:
     model: "github.com/strahe/curio-dashboard/types.BigInt"
   JSONB:
     model: "github.com/strahe/curio-dashboard/types.JSONB"
+  FIL:
+    model: "github.com/strahe/curio-dashboard/types.FIL"
+  PeerID:
+    model: "github.com/strahe/curio-dashboard/types.PeerID"
   Porep:
     fields:
       id:

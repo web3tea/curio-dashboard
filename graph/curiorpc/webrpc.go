@@ -44,6 +44,10 @@ type WebRPC interface {
 	SetPriceFilters(ctx context.Context, name string, minDur, maxDur int, minSize, maxSize int64, price int64, verified bool) error
 	AddPriceFilters(ctx context.Context, name string, minDur, maxDur int, minSize, maxSize int64, price int64, verified bool) error
 	RemovePricingFilter(ctx context.Context, name string) error
+	GetClientFilters(ctx context.Context) ([]webrpc.ClientFilter, error)
+	SetClientFilters(ctx context.Context, name string, active bool, wallets, peers []string, filters []string, maxDealPerHour, maxDealSizePerHour int64, info string) error
+	AddClientFilters(ctx context.Context, name string, active bool, wallets, peers []string, filters []string, maxDealPerHour, maxDealSizePerHour int64, info string) error
+	RemoveClientFilter(ctx context.Context, name string) error
 }
 
 type sectorListEntry struct {

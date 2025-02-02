@@ -6,7 +6,7 @@ scalar JSONB
 scalar ByteArray
 scalar JSON
 scalar FIL
-
+scalar PeerID
 
 type Query {
     global: Global!

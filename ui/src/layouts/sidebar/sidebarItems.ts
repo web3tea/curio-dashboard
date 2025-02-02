@@ -5,6 +5,7 @@ import {
   IconChartHistogram,
   IconCurrency,
   IconDatabase,
+  IconFilterCog,
   IconHome,
   IconParking,
   IconServer,
@@ -106,16 +107,26 @@ const sidebarItems: menuItem[] = [
       {
         title: 'Balances',
         to: { name: "MarketBalances" }
-      },
+      }
+    ]
+  },
+  {
+    title: 'Settings',
+    icon: IconFilterCog,
+    children: [
       {
         title: 'Storage Asks',
         to: { name: "StorageAsks" }
       },
       {
-        title: 'Price Filter',
-        to: { name: "PriceFilter" }
+        title: 'Pricing Filters',
+        to: { name: "PricingFilters" }
       },
-    ]
+      {
+        title: 'Client Filters',
+        to: { name: "ClientFilters" }
+      }
+    ],
   },
   { header: 'Cluster', icon: IconServer },
   {

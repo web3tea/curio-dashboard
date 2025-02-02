@@ -10,6 +10,7 @@ import (
 	"github.com/filecoin-project/curio/web/api/webrpc"
 	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/strahe/curio-dashboard/types"
 )
 
 // MarketAddPriceFilter is the resolver for the marketAddPriceFilter field.
@@ -35,6 +36,80 @@ func (r *mutationResolver) MarketUpdatePriceFilter(ctx context.Context, input mo
 // MarketDeletePriceFilter is the resolver for the marketDeletePriceFilter field.
 func (r *mutationResolver) MarketDeletePriceFilter(ctx context.Context, name string) (bool, error) {
 	err := r.curioAPI.RemovePricingFilter(ctx, name)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// MarketAddClientFilter is the resolver for the marketAddClientFilter field.
+func (r *mutationResolver) MarketAddClientFilter(ctx context.Context, input model.ClientFilterInput) (bool, error) {
+	err := r.curioAPI.AddClientFilters(ctx,
+		input.Name,
+		input.Active,
+		lo.Map(input.Wallets, func(item *types.Address, index int) string {
+			return item.String()
+		}),
+		lo.Map(input.Peers, func(item *types.PeerID, index int) string {
+			return item.String()
+		}),
+		input.PricingFilters,
+		int64(input.MaxDealsPerHour),
+		int64(input.MaxDealSizePerHour),
+		input.Info,
+	)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// MarketUpdateClientFilter is the resolver for the marketUpdateClientFilter field.
+func (r *mutationResolver) MarketUpdateClientFilter(ctx context.Context, input model.ClientFilterInput) (*model.ClientFilter, error) {
+	err := r.curioAPI.SetClientFilters(ctx,
+		input.Name,
+		input.Active,
+		lo.Map(input.Wallets, func(item *types.Address, index int) string {
+			return item.String()
+		}),
+		lo.Map(input.Peers, func(item *types.PeerID, index int) string {
+			return item.String()
+		}),
+		input.PricingFilters,
+		int64(input.MaxDealsPerHour),
+		int64(input.MaxDealSizePerHour),
+		input.Info,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return r.Query().MarketClientFilter(ctx, input.Name)
+}
+
+// MarketDeleteClientFilter is the resolver for the marketDeleteClientFilter field.
+func (r *mutationResolver) MarketDeleteClientFilter(ctx context.Context, name string) (bool, error) {
+	err := r.curioAPI.RemoveClientFilter(ctx, name)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// MarketToggleClientFilter is the resolver for the marketToggleClientFilter field.
+func (r *mutationResolver) MarketToggleClientFilter(ctx context.Context, name string) (bool, error) {
+	filter, err := r.loader.MarketMk12ClientFilter(ctx, name)
+	if err != nil {
+		return false, err
+	}
+	err = r.curioAPI.SetClientFilters(ctx,
+		filter.Name,
+		!filter.Active,
+		filter.Wallets,
+		filter.Peers,
+		filter.PricingFilters,
+		int64(filter.MaxDealsPerHour),
+		int64(filter.MaxDealSizePerHour),
+		filter.Info)
 	if err != nil {
 		return false, err
 	}
@@ -81,4 +156,60 @@ func (r *queryResolver) MarketPriceFilter(ctx context.Context, name string) (*mo
 func (r *queryResolver) MarketCheckPriceFilter(ctx context.Context, name string) (bool, error) {
 	res, _ := r.MarketPriceFilter(ctx, name) // nolint: errcheck
 	return res != nil, nil
+}
+
+// MarketClientFilters is the resolver for the marketClientFilters field.
+func (r *queryResolver) MarketClientFilters(ctx context.Context) ([]*model.ClientFilter, error) {
+	filters, err := r.curioAPI.GetClientFilters(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return lo.Map(filters, func(item webrpc.ClientFilter, index int) *model.ClientFilter {
+		return &model.ClientFilter{
+			Name:   item.Name,
+			Active: item.Active,
+			Wallets: lo.Map(item.Wallets, func(x string, index int) *types.Address {
+				addr := types.MustParseAddress(x)
+				return &addr
+			}),
+			Peers: lo.Map(item.Peers, func(x string, index int) *types.PeerID {
+				peer := types.MustParsePeerID(x)
+				return &peer
+			}),
+			PricingFilters:     item.PricingFilters,
+			MaxDealsPerHour:    int(item.MaxDealsPerHour),
+			MaxDealSizePerHour: int(item.MaxDealSizePerHour),
+			Info:               item.Info,
+		}
+	}), nil
+}
+
+// MarketClientFilter is the resolver for the marketClientFilter field.
+func (r *queryResolver) MarketClientFilter(ctx context.Context, name string) (*model.ClientFilter, error) {
+	filter, err := r.loader.MarketMk12ClientFilter(ctx, name)
+	if err != nil {
+		return nil, err
+	}
+	return &model.ClientFilter{
+		Name:   filter.Name,
+		Active: filter.Active,
+		Wallets: lo.Map(filter.Wallets, func(item string, index int) *types.Address {
+			addr := types.MustParseAddress(item)
+			return &addr
+		}),
+		Peers: lo.Map(filter.Peers, func(item string, index int) *types.PeerID {
+			peer := types.MustParsePeerID(item)
+			return &peer
+		}),
+		PricingFilters:     filter.PricingFilters,
+		MaxDealsPerHour:    int(filter.MaxDealsPerHour),
+		MaxDealSizePerHour: int(filter.MaxDealSizePerHour),
+		Info:               filter.Info,
+	}, nil
+}
+
+// MarketCheckClientFilter is the resolver for the marketCheckClientFilter field.
+func (r *queryResolver) MarketCheckClientFilter(ctx context.Context, name string) (bool, error) {
+	f, _ := r.MarketClientFilter(ctx, name) // nolint: errcheck
+	return f != nil, nil
 }

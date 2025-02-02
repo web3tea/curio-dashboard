@@ -218,12 +218,21 @@ const AppRoutes = {
       },
     },
     {
-      name: "PriceFilter",
-      path: "/market/filter/price",
+      name: "PricingFilters",
+      path: "/market/filters/price",
       component: () => import('@/views/market/filter/price/PriceFilterIndex.vue'),
       meta: {
-        title: 'Price Filter',
-        description: 'Market price filter',
+        title: 'Pricing Filters',
+        description: 'Market pricing filters',
+      },
+    },
+    {
+      name: "ClientFilters",
+      path: "/market/filters/client",
+      component: () => import('@/views/market/filter/client/ClientFilterIndex.vue'),
+      meta: {
+        title: 'Client Filters',
+        description: 'Market client filters',
       },
     }
   ],

@@ -25,6 +25,28 @@ type Alert struct {
 	Message     string `json:"message"`
 }
 
+type ClientFilter struct {
+	Name               string           `json:"name"`
+	Active             bool             `json:"active"`
+	Wallets            []*types.Address `json:"wallets"`
+	Peers              []*types.PeerID  `json:"peers"`
+	PricingFilters     []string         `json:"pricingFilters"`
+	MaxDealsPerHour    int              `json:"maxDealsPerHour"`
+	MaxDealSizePerHour int              `json:"maxDealSizePerHour"`
+	Info               string           `json:"info"`
+}
+
+type ClientFilterInput struct {
+	Name               string           `json:"name"`
+	Active             bool             `json:"active"`
+	Wallets            []*types.Address `json:"wallets"`
+	Peers              []*types.PeerID  `json:"peers"`
+	PricingFilters     []string         `json:"pricingFilters"`
+	MaxDealsPerHour    int              `json:"maxDealsPerHour"`
+	MaxDealSizePerHour int              `json:"maxDealSizePerHour"`
+	Info               string           `json:"info"`
+}
+
 type GaugeCountValue struct {
 	Key   string `json:"key"`
 	Value int    `json:"value"`
@@ -64,7 +86,7 @@ type MachineMetrics struct {
 
 type MarketBalance struct {
 	Miner    types.Address    `json:"miner"`
-	Balance  string           `json:"balance"`
+	Balance  types.FIL        `json:"balance"`
 	Balances []*WalletBalance `json:"balances"`
 }
 
@@ -363,7 +385,7 @@ type TaskSummaryDay struct {
 
 type WalletBalance struct {
 	Address types.Address `json:"address"`
-	Balance string        `json:"balance"`
+	Balance types.FIL     `json:"balance"`
 }
 
 type MiningTaskAggregateInterval string

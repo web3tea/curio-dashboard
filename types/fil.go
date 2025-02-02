@@ -12,6 +12,14 @@ type FIL struct {
 	types.FIL
 }
 
+func MustParseFIL(s string) FIL {
+	fil, err := types.ParseFIL(s)
+	if err != nil {
+		panic(err)
+	}
+	return FIL{FIL: fil}
+}
+
 // UnmarshalGQL implements the graphql.Unmarshaler interface
 func (b *FIL) UnmarshalGQL(v interface{}) error {
 	switch value := v.(type) {

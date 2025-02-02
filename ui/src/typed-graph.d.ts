@@ -18,6 +18,7 @@ export type Scalars = {
   FIL: { input: any; output: any; }
   JSON: { input: any; output: any; }
   JSONB: { input: any; output: any; }
+  PeerID: { input: any; output: any; }
   Time: { input: any; output: any; }
   Uint64: { input: any; output: any; }
 };
@@ -49,6 +50,29 @@ export type Alert = {
   id: Scalars['Int']['output'];
   machineName: Scalars['String']['output'];
   message: Scalars['String']['output'];
+};
+
+export type ClientFilter = {
+  __typename?: 'ClientFilter';
+  active: Scalars['Boolean']['output'];
+  info: Scalars['String']['output'];
+  maxDealSizePerHour: Scalars['Int']['output'];
+  maxDealsPerHour: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  peers: Array<Scalars['PeerID']['output']>;
+  pricingFilters: Array<Scalars['String']['output']>;
+  wallets: Array<Scalars['Address']['output']>;
+};
+
+export type ClientFilterInput = {
+  active: Scalars['Boolean']['input'];
+  info: Scalars['String']['input'];
+  maxDealSizePerHour: Scalars['Int']['input'];
+  maxDealsPerHour: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+  peers: Array<Scalars['PeerID']['input']>;
+  pricingFilters: Array<Scalars['String']['input']>;
+  wallets: Array<Scalars['Address']['input']>;
 };
 
 export type Config = {
@@ -305,8 +329,12 @@ export type Mutation = {
   createConfig?: Maybe<Config>;
   dealSealNow: Scalars['Boolean']['output'];
   marketAddBalance?: Maybe<MarketBalance>;
+  marketAddClientFilter: Scalars['Boolean']['output'];
   marketAddPriceFilter: Scalars['Boolean']['output'];
+  marketDeleteClientFilter: Scalars['Boolean']['output'];
   marketDeletePriceFilter: Scalars['Boolean']['output'];
+  marketToggleClientFilter: Scalars['Boolean']['output'];
+  marketUpdateClientFilter?: Maybe<ClientFilter>;
   marketUpdatePriceFilter?: Maybe<PriceFilter>;
   removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
@@ -336,13 +364,33 @@ export type MutationMarketAddBalanceArgs = {
 };
 
 
+export type MutationMarketAddClientFilterArgs = {
+  input: ClientFilterInput;
+};
+
+
 export type MutationMarketAddPriceFilterArgs = {
   input: PriceFilterInput;
 };
 
 
+export type MutationMarketDeleteClientFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
 export type MutationMarketDeletePriceFilterArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type MutationMarketToggleClientFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationMarketUpdateClientFilterArgs = {
+  input: ClientFilterInput;
 };
 
 
@@ -535,7 +583,10 @@ export type Query = {
   makretPriceFilters?: Maybe<Array<PriceFilter>>;
   marketBalance?: Maybe<MarketBalance>;
   marketBalances?: Maybe<Array<MarketBalance>>;
+  marketCheckClientFilter: Scalars['Boolean']['output'];
   marketCheckPriceFilter: Scalars['Boolean']['output'];
+  marketClientFilter?: Maybe<ClientFilter>;
+  marketClientFilters?: Maybe<Array<ClientFilter>>;
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
   marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
   marketMk12StorageAsksCount: Scalars['Int']['output'];
@@ -593,7 +644,17 @@ export type QueryMarketBalanceArgs = {
 };
 
 
+export type QueryMarketCheckClientFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
 export type QueryMarketCheckPriceFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryMarketClientFilterArgs = {
   name: Scalars['String']['input'];
 };
 

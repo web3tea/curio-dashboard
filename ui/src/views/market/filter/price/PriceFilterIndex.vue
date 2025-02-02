@@ -10,7 +10,7 @@ const breadcrumbs = ref([
     to: '#',
   },
   {
-    title: 'Price Filter',
+    title: 'Pricing Filters',
     disabled: true,
     to: '#',
   },
@@ -19,6 +19,15 @@ const breadcrumbs = ref([
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
   <v-row>
+    <v-col
+      cols="12"
+    >
+      <v-alert
+        closable
+        type="warning"
+        text="New deal proposals are accepted if they match the first applicable rule; otherwise, default ask is applied, or the proposal is rejected."
+      />
+    </v-col>
     <v-col
       cols="12"
     >

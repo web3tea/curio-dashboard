@@ -13,6 +13,7 @@ type MarketLoader interface {
 	MarketMk12StorageAsk(ctx context.Context, spID uint64) (*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
 	MarketMk12PriceFilter(ctx context.Context, name string) (*webrpc.PriceFilter, error)
+	MarketMk12ClientFilter(ctx context.Context, name string) (*webrpc.ClientFilter, error)
 }
 
 type MarketLoaderImpl struct {
@@ -89,6 +90,29 @@ func (l *MarketLoaderImpl) MarketMk12PriceFilter(ctx context.Context, name strin
 	}
 	if len(res) == 0 {
 		return nil, fmt.Errorf("price filter not found")
+	}
+	return res[0], nil
+}
+
+func (l *MarketLoaderImpl) MarketMk12ClientFilter(ctx context.Context, name string) (*webrpc.ClientFilter, error) {
+	var res []*webrpc.ClientFilter
+	err := l.loader.db.Select(ctx, &res, `
+	SELECT
+		name,
+		active,
+		wallets,
+		peer_ids,
+		pricing_filters,
+		max_deals_per_hour,
+		max_deal_size_per_hour,
+		additional_info
+	FROM market_mk12_client_filters
+	WHERE name = $1`, name)
+	if err != nil {
+		return nil, err
+	}
+	if len(res) == 0 {
+		return nil, fmt.Errorf("client filter not found")
 	}
 	return res[0], nil
 }

@@ -16,9 +16,9 @@ import (
 )
 
 // MarketAddBalance is the resolver for the marketAddBalance field.
-func (r *mutationResolver) MarketAddBalance(ctx context.Context, miner types.Address, wallet types.Address, amount string) (*model.MarketBalance, error) {
+func (r *mutationResolver) MarketAddBalance(ctx context.Context, miner types.Address, wallet types.Address, amount types.FIL) (*model.MarketBalance, error) {
 	fmt.Println("MarketAddBalance", miner, wallet, amount)
-	_, err := r.curioAPI.MoveBalanceToEscrow(ctx, miner.String(), amount, wallet.String())
+	_, err := r.curioAPI.MoveBalanceToEscrow(ctx, miner.String(), amount.String(), wallet.String())
 	if err != nil {
 		return nil, fmt.Errorf("failed to move balance to escrow: %w", err)
 	}
@@ -55,11 +55,11 @@ func (r *queryResolver) MarketBalances(ctx context.Context) (res []*model.Market
 	for _, b := range balances {
 		res = append(res, &model.MarketBalance{
 			Miner:   types.MustParseAddress(b.Miner),
-			Balance: b.MarketBalance,
+			Balance: types.MustParseFIL(b.MarketBalance),
 			Balances: lo.Map(b.Balances, func(x webrpc.WalletBalances, index int) *model.WalletBalance {
 				return &model.WalletBalance{
 					Address: types.MustParseAddress(x.Address),
-					Balance: x.Balance,
+					Balance: types.MustParseFIL(x.Balance),
 				}
 			}),
 		})

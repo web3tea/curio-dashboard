@@ -24,6 +24,18 @@ export const marketMk12PriceFilterFragment = gql`
     verified
   }`
 
+export const marketMk12ClientFilterFragment = gql`
+  fragment MarketMk12ClientFilterAll on ClientFilter {
+    name
+    active
+    wallets
+    peers
+    pricingFilters
+    maxDealsPerHour
+    maxDealSizePerHour
+    info
+  }`
+
 export const GetMarketMk12StorageAsks = gql`
   query GetMarketMk12StorageAsks {
     marketMk12StorageAsks {
@@ -115,3 +127,45 @@ export const DeleteMarketPriceFilter = gql`
     marketDeletePriceFilter(name: $name)
   }
 `
+
+export const GetMarketClientFilters = gql`
+  query GetMarketClientFilters {
+    marketClientFilters {
+      ...MarketMk12ClientFilterAll
+    }
+  }
+  ${marketMk12ClientFilterFragment}
+  `
+
+export const AddMarketClientFilter = gql`
+  mutation AddMarketClientFilter($input: ClientFilterInput!) {
+    marketAddClientFilter(input: $input)
+  }
+  `
+
+export const UpdateMarketClientFilter = gql`
+  mutation UpdateMarketClientFilter($input: ClientFilterInput!) {
+    marketUpdateClientFilter(input: $input) {
+      ...MarketMk12ClientFilterAll
+    }
+  }
+  ${marketMk12ClientFilterFragment}
+  `
+
+export const CheckMarketClientFilter = gql`
+  query CheckMarketClientFilter($name: String!) {
+    marketCheckClientFilter(name: $name)
+  }
+  `
+
+export const DeleteMarketClientFilter = gql`
+  mutation DeleteMarketClientFilter($name: String!) {
+    marketDeleteClientFilter(name: $name)
+  }
+  `
+
+export const ToggleMarketClientFilter = gql`
+  mutation ToggleMarketClientFilter($name: String!) {
+    marketToggleClientFilter(name: $name)
+  }
+  `

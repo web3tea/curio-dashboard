@@ -8,10 +8,24 @@ type PriceFilter {
   verified: Boolean!
 }
 
+type ClientFilter {
+  name: String!
+  active: Boolean!
+  wallets: [Address!]!
+  peers: [PeerID!]!
+  pricingFilters: [String!]!
+  maxDealsPerHour: Int!
+  maxDealSizePerHour: Int!
+  info: String!
+}
+
 extend type Query {
   makretPriceFilters: [PriceFilter!]
   marketPriceFilter(name: String!): PriceFilter
   marketCheckPriceFilter(name: String!): Boolean!
+  marketClientFilters: [ClientFilter!]
+  marketClientFilter(name: String!): ClientFilter
+  marketCheckClientFilter(name: String!): Boolean!
 }
 
 input PriceFilterInput {
@@ -24,8 +38,23 @@ input PriceFilterInput {
   verified: Boolean!
 }
 
+input ClientFilterInput {
+  name: String!
+  active: Boolean!
+  wallets: [Address!]!
+  peers: [PeerID!]!
+  pricingFilters: [String!]!
+  maxDealsPerHour: Int!
+  maxDealSizePerHour: Int!
+  info: String!
+}
+
 extend type Mutation {
   marketAddPriceFilter(input: PriceFilterInput!): Boolean!
   marketUpdatePriceFilter(input: PriceFilterInput!): PriceFilter
   marketDeletePriceFilter(name: String!): Boolean!
+  marketAddClientFilter(input: ClientFilterInput!): Boolean!
+  marketUpdateClientFilter(input: ClientFilterInput!): ClientFilter
+  marketDeleteClientFilter(name: String!): Boolean!
+  marketToggleClientFilter(name: String!): Boolean!
 }

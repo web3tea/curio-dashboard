@@ -28,7 +28,8 @@
     "Storage Asks": "Storage Asks",
     "Balances": "Balances",
     "Settings": "Settings",
-    "Price Filter": "Price Filter"
+    "Pricing Filters": "Pricing Filters",
+    "Client Filters": "Client Filters"
   },
   "fields": {
     "Total Power": "Total Power",
