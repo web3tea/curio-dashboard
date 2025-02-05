@@ -29,7 +29,8 @@
     "Balances": "Balances",
     "Settings": "Settings",
     "Pricing Filters": "Pricing Filters",
-    "Client Filters": "Client Filters"
+    "Client Filters": "Client Filters",
+    "Client Allow/Deny": "Client Allow/Deny"
   },
   "fields": {
     "Total Power": "Total Power",

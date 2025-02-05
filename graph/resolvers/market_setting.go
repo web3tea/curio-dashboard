@@ -6,12 +6,56 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/filecoin-project/curio/web/api/webrpc"
 	"github.com/samber/lo"
+	"github.com/strahe/curio-dashboard/graph/cachecontrol"
+	"github.com/strahe/curio-dashboard/graph/loaders"
 	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/strahe/curio-dashboard/graph/utils"
 	"github.com/strahe/curio-dashboard/types"
 )
+
+// UpdateMarketMk12StorageAsk is the resolver for the updateMarketMk12StorageAsk field.
+func (r *mutationResolver) UpdateMarketMk12StorageAsk(ctx context.Context, input model.MarketMk12StorageAskInput) (*model.MarketMk12StorageAsk, error) {
+	if input.Price < 0 {
+		return nil, fmt.Errorf("invalid Price: must be non-negative")
+	}
+	if input.VerifiedPrice < 0 {
+		return nil, fmt.Errorf("invalid VerifiedPrice: must be non-negative")
+	}
+	if !utils.IsValidPieceSize(uint64(input.MinSize)) {
+		return nil, fmt.Errorf("invalid MinSize: must be a valid piece size")
+	}
+	if !utils.IsValidPieceSize(uint64(input.MaxSize)) {
+		return nil, fmt.Errorf("invalid MaxSize: must be a valid piece size")
+	}
+	if input.MaxSize < input.MinSize {
+		return nil, fmt.Errorf("invalid size range: MaxSize must be greater than or equal to MinSize")
+	}
+	if _, err := r.Query().Actor(ctx, input.SpID); err != nil {
+		return nil, fmt.Errorf("invalid SpID: %w", err)
+	}
+	ask := webrpc.StorageAsk{
+		SpID:          int64(input.SpID.ID),
+		Price:         int64(input.Price),
+		VerifiedPrice: int64(input.VerifiedPrice),
+		MinSize:       int64(input.MinSize),
+		MaxSize:       int64(input.MaxSize),
+		CreatedAt:     time.Now().Unix(),
+		Expiry:        int64(input.Expiry),
+	}
+	if ask.Expiry == 0 {
+		ask.Expiry = time.Now().Add(time.Hour * 24 * 365).Unix()
+	}
+	err := r.curioAPI.SetStorageAsk(ctx, &ask)
+	if err != nil {
+		return nil, err
+	}
+	return r.Resolver.Query().MarketMk12StorageAsk(ctx, input.SpID)
+}
 
 // MarketAddPriceFilter is the resolver for the marketAddPriceFilter field.
 func (r *mutationResolver) MarketAddPriceFilter(ctx context.Context, input model.PriceFilterInput) (bool, error) {
@@ -116,6 +160,72 @@ func (r *mutationResolver) MarketToggleClientFilter(ctx context.Context, name st
 	return true, nil
 }
 
+// MarketSetAllowFilter is the resolver for the marketSetAllowFilter field.
+func (r *mutationResolver) MarketSetAllowFilter(ctx context.Context, wallet types.Address, status bool) (*model.MarketAllowFilter, error) {
+	_, err := r.Query().MarketAllowFilter(ctx, wallet)
+	switch err {
+	case nil: // filter exists, update
+		err = r.curioAPI.SetAllowDenyList(ctx, wallet.String(), status)
+	case loaders.ErrorNotFound: // filter does not exist, add
+		err = r.curioAPI.AddAllowDenyList(ctx, wallet.String(), status)
+	default:
+	}
+	if err != nil {
+		return nil, err
+	}
+	return r.Query().MarketAllowFilter(ctx, wallet)
+}
+
+// MarketDeleteAllowFilter is the resolver for the marketDeleteAllowFilter field.
+func (r *mutationResolver) MarketDeleteAllowFilter(ctx context.Context, wallet types.Address) (bool, error) {
+	_, err := r.Query().MarketAllowFilter(ctx, wallet)
+	switch err {
+	case nil: // filter exists, delete
+		err = r.curioAPI.RemoveAllowFilter(ctx, wallet.String())
+	case loaders.ErrorNotFound: // filter does not exist
+		err = fmt.Errorf("filter does not exist")
+	default:
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// MarketToggleAllowFilter is the resolver for the marketToggleAllowFilter field.
+func (r *mutationResolver) MarketToggleAllowFilter(ctx context.Context, wallet types.Address) (bool, error) {
+	filter, err := r.Query().MarketAllowFilter(ctx, wallet)
+	switch err {
+	case nil: // filter exists, toggle
+		err = r.curioAPI.SetAllowDenyList(ctx, wallet.String(), !filter.Status)
+	case loaders.ErrorNotFound: // filter does not exist
+		err = fmt.Errorf("filter does not exist")
+	default:
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
+// MarketMk12StorageAsks is the resolver for the marketMk12StorageAsks field.
+func (r *queryResolver) MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)
+	return r.loader.MarketLoader.MarketMk12StorageAsks(ctx)
+}
+
+// MarketMk12StorageAsk is the resolver for the marketMk12StorageAsk field.
+func (r *queryResolver) MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)
+	return r.loader.MarketLoader.MarketMk12StorageAsk(ctx, spID.ID)
+}
+
+// MarketMk12StorageAsksCount is the resolver for the marketMk12StorageAsksCount field.
+func (r *queryResolver) MarketMk12StorageAsksCount(ctx context.Context) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)
+	return r.loader.MarketLoader.MarketMk12StorageAsksCount(ctx)
+}
+
 // MakretPriceFilters is the resolver for the makretPriceFilters field.
 func (r *queryResolver) MakretPriceFilters(ctx context.Context) ([]*model.PriceFilter, error) {
 	res, err := r.curioAPI.GetPriceFilters(ctx)
@@ -212,4 +322,29 @@ func (r *queryResolver) MarketClientFilter(ctx context.Context, name string) (*m
 func (r *queryResolver) MarketCheckClientFilter(ctx context.Context, name string) (bool, error) {
 	f, _ := r.MarketClientFilter(ctx, name) // nolint: errcheck
 	return f != nil, nil
+}
+
+// MarketAllowFilters is the resolver for the marketAllowFilters field.
+func (r *queryResolver) MarketAllowFilters(ctx context.Context) ([]*model.MarketAllowFilter, error) {
+	filters, err := r.curioAPI.GetAllowDenyList(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return lo.Map(filters, func(item webrpc.AllowDeny, index int) *model.MarketAllowFilter {
+		return &model.MarketAllowFilter{
+			Wallet: types.MustParseAddress(item.Wallet),
+			Status: item.Status,
+		}
+	}), nil
+}
+
+// MarketAllowFilter is the resolver for the marketAllowFilter field.
+func (r *queryResolver) MarketAllowFilter(ctx context.Context, wallet types.Address) (*model.MarketAllowFilter, error) {
+	return r.loader.MarketAllowFilter(ctx, wallet)
+}
+
+// MarketAllowDefault is the resolver for the marketAllowDefault field.
+func (r *queryResolver) MarketAllowDefault(ctx context.Context) (bool, error) {
+	// todo: implement
+	return false, nil
 }

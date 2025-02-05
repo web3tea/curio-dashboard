@@ -169,3 +169,43 @@ export const ToggleMarketClientFilter = gql`
     marketToggleClientFilter(name: $name)
   }
   `
+
+export const GetMarketClientAllowList = gql`
+  query GetMarketClientAllowList {
+    marketAllowFilters {
+      wallet
+      status
+    }
+    marketAllowDefault
+  }
+  `
+
+export const SetMarketClientAllow = gql`
+  mutation SetMarketClientAllow($wallet: Address!, $status: Boolean!) {
+    marketSetAllowFilter(wallet: $wallet, status: $status) {
+      wallet
+      status
+    }
+  }
+  `
+
+export const ToggleMarketClientAllow = gql`
+  mutation ToggleMarketClientAllow($wallet: Address!) {
+    marketToggleAllowFilter(wallet: $wallet)
+  }
+  `
+
+export const DeleteMarketClientAllow = gql`
+  mutation DeleteMarketClientAllow($wallet: Address!) {
+    marketDeleteAllowFilter(wallet: $wallet)
+  }
+  `
+
+export const GetMarketClientAllow = gql`
+  query GetMarketClientAllow($wallet: Address!) {
+    marketAllowFilter(wallet: $wallet) {
+      wallet
+      status
+    }
+  }
+  `

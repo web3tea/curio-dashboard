@@ -23,6 +23,8 @@ type WebRPCMethods struct {
 
 	ActorSummary func(p0 context.Context) ([]webrpc.ActorSummary, error) ``
 
+	AddAllowDenyList func(p0 context.Context, p1 string, p2 bool) error ``
+
 	AddClientFilters func(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error ``
 
 	AddPriceFilters func(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error ``
@@ -38,6 +40,8 @@ type WebRPCMethods struct {
 	DealsPending func(p0 context.Context) ([]webrpc.OpenDealInfo, error) ``
 
 	DealsSealNow func(p0 context.Context, p1 uint64, p2 uint64) error ``
+
+	GetAllowDenyList func(p0 context.Context) ([]webrpc.AllowDeny, error) ``
 
 	GetClientFilters func(p0 context.Context) ([]webrpc.ClientFilter, error) ``
 
@@ -59,6 +63,8 @@ type WebRPCMethods struct {
 
 	PorepPipelineSummary func(p0 context.Context) ([]webrpc.PorepPipelineSummary, error) ``
 
+	RemoveAllowFilter func(p0 context.Context, p1 string) error ``
+
 	RemoveClientFilter func(p0 context.Context, p1 string) error ``
 
 	RemovePricingFilter func(p0 context.Context, p1 string) error ``
@@ -68,6 +74,8 @@ type WebRPCMethods struct {
 	SectorRemove func(p0 context.Context, p1 int, p2 int) error ``
 
 	SectorResume func(p0 context.Context, p1 int64, p2 int64) error ``
+
+	SetAllowDenyList func(p0 context.Context, p1 string, p2 bool) error ``
 
 	SetClientFilters func(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error ``
 
@@ -130,6 +138,17 @@ func (s *WebRPCStruct) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, 
 
 func (s *WebRPCStub) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, error) {
 	return *new([]webrpc.ActorSummary), ErrNotSupported
+}
+
+func (s *WebRPCStruct) AddAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
+	if s.Internal.AddAllowDenyList == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.AddAllowDenyList(p0, p1, p2)
+}
+
+func (s *WebRPCStub) AddAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
+	return ErrNotSupported
 }
 
 func (s *WebRPCStruct) AddClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
@@ -218,6 +237,17 @@ func (s *WebRPCStruct) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) er
 
 func (s *WebRPCStub) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) error {
 	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) GetAllowDenyList(p0 context.Context) ([]webrpc.AllowDeny, error) {
+	if s.Internal.GetAllowDenyList == nil {
+		return *new([]webrpc.AllowDeny), ErrNotSupported
+	}
+	return s.Internal.GetAllowDenyList(p0)
+}
+
+func (s *WebRPCStub) GetAllowDenyList(p0 context.Context) ([]webrpc.AllowDeny, error) {
+	return *new([]webrpc.AllowDeny), ErrNotSupported
 }
 
 func (s *WebRPCStruct) GetClientFilters(p0 context.Context) ([]webrpc.ClientFilter, error) {
@@ -330,6 +360,17 @@ func (s *WebRPCStub) PorepPipelineSummary(p0 context.Context) ([]webrpc.PorepPip
 	return *new([]webrpc.PorepPipelineSummary), ErrNotSupported
 }
 
+func (s *WebRPCStruct) RemoveAllowFilter(p0 context.Context, p1 string) error {
+	if s.Internal.RemoveAllowFilter == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.RemoveAllowFilter(p0, p1)
+}
+
+func (s *WebRPCStub) RemoveAllowFilter(p0 context.Context, p1 string) error {
+	return ErrNotSupported
+}
+
 func (s *WebRPCStruct) RemoveClientFilter(p0 context.Context, p1 string) error {
 	if s.Internal.RemoveClientFilter == nil {
 		return ErrNotSupported
@@ -382,6 +423,17 @@ func (s *WebRPCStruct) SectorResume(p0 context.Context, p1 int64, p2 int64) erro
 }
 
 func (s *WebRPCStub) SectorResume(p0 context.Context, p1 int64, p2 int64) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
+	if s.Internal.SetAllowDenyList == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetAllowDenyList(p0, p1, p2)
+}
+
+func (s *WebRPCStub) SetAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
 	return ErrNotSupported
 }
 

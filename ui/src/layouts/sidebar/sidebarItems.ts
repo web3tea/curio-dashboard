@@ -125,6 +125,10 @@ const sidebarItems: menuItem[] = [
       {
         title: 'Client Filters',
         to: { name: "ClientFilters" }
+      },
+      {
+        title: 'Client Allow/Deny',
+        to: { name: "ClientAllows" }
       }
     ],
   },

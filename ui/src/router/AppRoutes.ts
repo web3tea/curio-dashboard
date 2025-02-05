@@ -234,6 +234,15 @@ const AppRoutes = {
         title: 'Client Filters',
         description: 'Market client filters',
       },
+    },
+    {
+      name: "ClientAllows",
+      path: "/market/filters/client-allow",
+      component: () => import('@/views/market/filter/clientAllow/ClientAllowIndex.vue'),
+      meta: {
+        title: 'Client Allows',
+        description: 'Market client allows',
+      },
     }
   ],
 }

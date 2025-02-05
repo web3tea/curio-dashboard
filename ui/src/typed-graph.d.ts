@@ -162,6 +162,12 @@ export type MachineSummary = {
   uniqueHostsUp: Scalars['Int']['output'];
 };
 
+export type MarketAllowFilter = {
+  __typename?: 'MarketAllowFilter';
+  status: Scalars['Boolean']['output'];
+  wallet: Scalars['Address']['output'];
+};
+
 export type MarketBalance = {
   __typename?: 'MarketBalance';
   balance: Scalars['FIL']['output'];
@@ -331,8 +337,11 @@ export type Mutation = {
   marketAddBalance?: Maybe<MarketBalance>;
   marketAddClientFilter: Scalars['Boolean']['output'];
   marketAddPriceFilter: Scalars['Boolean']['output'];
+  marketDeleteAllowFilter: Scalars['Boolean']['output'];
   marketDeleteClientFilter: Scalars['Boolean']['output'];
   marketDeletePriceFilter: Scalars['Boolean']['output'];
+  marketSetAllowFilter?: Maybe<MarketAllowFilter>;
+  marketToggleAllowFilter: Scalars['Boolean']['output'];
   marketToggleClientFilter: Scalars['Boolean']['output'];
   marketUpdateClientFilter?: Maybe<ClientFilter>;
   marketUpdatePriceFilter?: Maybe<PriceFilter>;
@@ -374,6 +383,11 @@ export type MutationMarketAddPriceFilterArgs = {
 };
 
 
+export type MutationMarketDeleteAllowFilterArgs = {
+  wallet: Scalars['Address']['input'];
+};
+
+
 export type MutationMarketDeleteClientFilterArgs = {
   name: Scalars['String']['input'];
 };
@@ -381,6 +395,17 @@ export type MutationMarketDeleteClientFilterArgs = {
 
 export type MutationMarketDeletePriceFilterArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type MutationMarketSetAllowFilterArgs = {
+  status: Scalars['Boolean']['input'];
+  wallet: Scalars['Address']['input'];
+};
+
+
+export type MutationMarketToggleAllowFilterArgs = {
+  wallet: Scalars['Address']['input'];
 };
 
 
@@ -581,6 +606,9 @@ export type Query = {
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
   makretPriceFilters?: Maybe<Array<PriceFilter>>;
+  marketAllowDefault: Scalars['Boolean']['output'];
+  marketAllowFilter?: Maybe<MarketAllowFilter>;
+  marketAllowFilters?: Maybe<Array<MarketAllowFilter>>;
   marketBalance?: Maybe<MarketBalance>;
   marketBalances?: Maybe<Array<MarketBalance>>;
   marketCheckClientFilter: Scalars['Boolean']['output'];
@@ -636,6 +664,11 @@ export type QueryConfigArgs = {
 
 export type QueryMachineArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryMarketAllowFilterArgs = {
+  wallet: Scalars['Address']['input'];
 };
 
 

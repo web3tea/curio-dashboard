@@ -84,6 +84,11 @@ type MachineMetrics struct {
 	ProcessMaxFds              int                `json:"processMaxFds"`
 }
 
+type MarketAllowFilter struct {
+	Wallet types.Address `json:"wallet"`
+	Status bool          `json:"status"`
+}
+
 type MarketBalance struct {
 	Miner    types.Address    `json:"miner"`
 	Balance  types.FIL        `json:"balance"`

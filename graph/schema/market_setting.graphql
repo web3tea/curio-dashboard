@@ -1,3 +1,23 @@
+type MarketMk12StorageAsk {
+  spId: Address!
+  price: Int!
+  verifiedPrice: Int!
+  minSize: Int!
+  maxSize: Int!
+  createdAt: Int!
+  expiry: Int!
+  sequence: Int!
+}
+
+input MarketMk12StorageAskInput {
+  spId: Address!
+  price: Int!
+  verifiedPrice: Int!
+  minSize: Int!
+  maxSize: Int!
+  expiry: Int!
+}
+
 type PriceFilter {
   name: String!
   minDurationDays: Int!
@@ -17,15 +37,6 @@ type ClientFilter {
   maxDealsPerHour: Int!
   maxDealSizePerHour: Int!
   info: String!
-}
-
-extend type Query {
-  makretPriceFilters: [PriceFilter!]
-  marketPriceFilter(name: String!): PriceFilter
-  marketCheckPriceFilter(name: String!): Boolean!
-  marketClientFilters: [ClientFilter!]
-  marketClientFilter(name: String!): ClientFilter
-  marketCheckClientFilter(name: String!): Boolean!
 }
 
 input PriceFilterInput {
@@ -49,7 +60,28 @@ input ClientFilterInput {
   info: String!
 }
 
+type MarketAllowFilter {
+    wallet: Address!
+    status: Boolean!
+}
+
+extend type Query {
+  marketMk12StorageAsks: [MarketMk12StorageAsk]
+  marketMk12StorageAsk(spId: Address!): MarketMk12StorageAsk
+  marketMk12StorageAsksCount: Int!
+  makretPriceFilters: [PriceFilter!]
+  marketPriceFilter(name: String!): PriceFilter
+  marketCheckPriceFilter(name: String!): Boolean!
+  marketClientFilters: [ClientFilter!]
+  marketClientFilter(name: String!): ClientFilter
+  marketCheckClientFilter(name: String!): Boolean!
+  marketAllowFilters: [MarketAllowFilter!]
+  marketAllowFilter(wallet: Address!): MarketAllowFilter
+  marketAllowDefault: Boolean!
+}
+
 extend type Mutation {
+  updateMarketMk12StorageAsk(input: MarketMk12StorageAskInput!): MarketMk12StorageAsk
   marketAddPriceFilter(input: PriceFilterInput!): Boolean!
   marketUpdatePriceFilter(input: PriceFilterInput!): PriceFilter
   marketDeletePriceFilter(name: String!): Boolean!
@@ -57,4 +89,7 @@ extend type Mutation {
   marketUpdateClientFilter(input: ClientFilterInput!): ClientFilter
   marketDeleteClientFilter(name: String!): Boolean!
   marketToggleClientFilter(name: String!): Boolean!
+  marketSetAllowFilter(wallet: Address!, status: Boolean!): MarketAllowFilter
+  marketDeleteAllowFilter(wallet: Address!): Boolean!
+  marketToggleAllowFilter(wallet: Address!): Boolean!
 }

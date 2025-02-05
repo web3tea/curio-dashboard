@@ -24,7 +24,8 @@
     "Messages": "消息",
     "Sends": "发送列表",
     "Market": "市场",
-    "Settings": "设置"
+    "Settings": "设置",
+    "Client Allow/Deny": "客户白名单"
   },
   "fields": {
     "Total Power": "总算力",

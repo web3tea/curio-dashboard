@@ -48,6 +48,12 @@ type WebRPC interface {
 	SetClientFilters(ctx context.Context, name string, active bool, wallets, peers []string, filters []string, maxDealPerHour, maxDealSizePerHour int64, info string) error
 	AddClientFilters(ctx context.Context, name string, active bool, wallets, peers []string, filters []string, maxDealPerHour, maxDealSizePerHour int64, info string) error
 	RemoveClientFilter(ctx context.Context, name string) error
+
+	// Client Address Allow/Deny
+	GetAllowDenyList(ctx context.Context) ([]webrpc.AllowDeny, error)
+	SetAllowDenyList(ctx context.Context, wallet string, status bool) error
+	AddAllowDenyList(ctx context.Context, wallet string, status bool) error
+	RemoveAllowFilter(ctx context.Context, wallet string) error
 }
 
 type sectorListEntry struct {

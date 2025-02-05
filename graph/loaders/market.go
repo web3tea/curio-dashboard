@@ -2,10 +2,10 @@ package loaders
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/filecoin-project/curio/web/api/webrpc"
 	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/strahe/curio-dashboard/types"
 )
 
 type MarketLoader interface {
@@ -14,6 +14,7 @@ type MarketLoader interface {
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
 	MarketMk12PriceFilter(ctx context.Context, name string) (*webrpc.PriceFilter, error)
 	MarketMk12ClientFilter(ctx context.Context, name string) (*webrpc.ClientFilter, error)
+	MarketAllowFilter(ctx context.Context, wallet types.Address) (*model.MarketAllowFilter, error)
 }
 
 type MarketLoaderImpl struct {
@@ -89,7 +90,7 @@ func (l *MarketLoaderImpl) MarketMk12PriceFilter(ctx context.Context, name strin
 		return nil, err
 	}
 	if len(res) == 0 {
-		return nil, fmt.Errorf("price filter not found")
+		return nil, ErrorNotFound
 	}
 	return res[0], nil
 }
@@ -112,7 +113,24 @@ func (l *MarketLoaderImpl) MarketMk12ClientFilter(ctx context.Context, name stri
 		return nil, err
 	}
 	if len(res) == 0 {
-		return nil, fmt.Errorf("client filter not found")
+		return nil, ErrorNotFound
+	}
+	return res[0], nil
+}
+
+func (l *MarketLoaderImpl) MarketAllowFilter(ctx context.Context, wallet types.Address) (*model.MarketAllowFilter, error) {
+	var res []*model.MarketAllowFilter
+	err := l.loader.db.Select(ctx, &res, `
+	SELECT
+		wallet,
+		status
+	FROM market_allow_list
+	WHERE wallet = $1`, wallet)
+	if err != nil {
+		return nil, err
+	}
+	if len(res) == 0 {
+		return nil, ErrorNotFound
 	}
 	return res[0], nil
 }
