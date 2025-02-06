@@ -41,6 +41,8 @@ type WebRPCMethods struct {
 
 	DealsSealNow func(p0 context.Context, p1 uint64, p2 uint64) error ``
 
+	DefaultAllowBehaviour func(p0 context.Context) (bool, error) ``
+
 	GetAllowDenyList func(p0 context.Context) ([]webrpc.AllowDeny, error) ``
 
 	GetClientFilters func(p0 context.Context) ([]webrpc.ClientFilter, error) ``
@@ -237,6 +239,17 @@ func (s *WebRPCStruct) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) er
 
 func (s *WebRPCStub) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) error {
 	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) DefaultAllowBehaviour(p0 context.Context) (bool, error) {
+	if s.Internal.DefaultAllowBehaviour == nil {
+		return false, ErrNotSupported
+	}
+	return s.Internal.DefaultAllowBehaviour(p0)
+}
+
+func (s *WebRPCStub) DefaultAllowBehaviour(p0 context.Context) (bool, error) {
+	return false, ErrNotSupported
 }
 
 func (s *WebRPCStruct) GetAllowDenyList(p0 context.Context) ([]webrpc.AllowDeny, error) {

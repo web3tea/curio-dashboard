@@ -54,6 +54,7 @@ type WebRPC interface {
 	SetAllowDenyList(ctx context.Context, wallet string, status bool) error
 	AddAllowDenyList(ctx context.Context, wallet string, status bool) error
 	RemoveAllowFilter(ctx context.Context, wallet string) error
+	DefaultAllowBehaviour(ctx context.Context) (bool, error)
 }
 
 type sectorListEntry struct {

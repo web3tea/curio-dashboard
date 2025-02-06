@@ -101,19 +101,13 @@ const sidebarItems: menuItem[] = [
   },
   { header: 'Market', icon: IconBuildingStore },
   {
-    title: 'Market',
-    icon: IconBuildingStore,
-    children: [
-      {
-        title: 'Balances',
-        to: { name: "MarketBalances" }
-      }
-    ]
-  },
-  {
     title: 'Settings',
     icon: IconFilterCog,
     children: [
+      {
+        title: 'Market Balances',
+        to: { name: "MarketBalances" }
+      },
       {
         title: 'Storage Asks',
         to: { name: "StorageAsks" }

@@ -82,7 +82,7 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 			if !strings.HasPrefix(oc.OperationName, "Sub") {
 				log.Debugw("request", "operation", oc.OperationName,
 					"duration", time.Since(oc.Stats.OperationStart).String(),
-					"variables", oc.Variables)
+					"variables", oc.Variables, "error", ns.Errors.Error())
 			}
 		}
 		return ns
@@ -92,7 +92,7 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 	srv.SetErrorPresenter(func(ctx context.Context, e error) *gqlerror.Error {
 		err := graphql.DefaultErrorPresenter(ctx, e)
 		if err != nil {
-			log.Errorw("request", "path", err.Path.String(), "error", err)
+			log.Errorw("request", "path", err.Path.String(), "error", err.Message)
 		}
 		return err
 	})

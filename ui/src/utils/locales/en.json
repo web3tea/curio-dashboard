@@ -30,7 +30,8 @@
     "Settings": "Settings",
     "Pricing Filters": "Pricing Filters",
     "Client Filters": "Client Filters",
-    "Client Allow/Deny": "Client Allow/Deny"
+    "Client Allow/Deny": "Client Allow/Deny",
+    "Market Balances": "Market Balances"
   },
   "fields": {
     "Total Power": "Total Power",

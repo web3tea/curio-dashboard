@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMutation,useQuery } from '@vue/apollo-composable'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import { ref, computed, PropType } from 'vue'
 import { SetMarketClientAllow, GetMarketClientAllowList, GetMarketClientAllow } from '@/gql/market'
 import { IconAlertCircle,IconPlus } from '@tabler/icons-vue'
@@ -62,7 +62,7 @@ const handleSubmit = async () => {
 }
 
 const { result: checkResult, loading: checkLoading } = useQuery(GetMarketClientAllow, {
-  name: walletDebounced
+  wallet: walletDebounced
 })
 
 const exists = computed(() => {

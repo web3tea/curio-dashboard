@@ -345,6 +345,6 @@ func (r *queryResolver) MarketAllowFilter(ctx context.Context, wallet types.Addr
 
 // MarketAllowDefault is the resolver for the marketAllowDefault field.
 func (r *queryResolver) MarketAllowDefault(ctx context.Context) (bool, error) {
-	// todo: implement
-	return false, nil
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
+	return r.curioAPI.DefaultAllowBehaviour(ctx)
 }
