@@ -5,6 +5,9 @@ import { GetMachinesSummary } from '@/gql/machine'
 import { MachineSummary } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconBrandSpeedtest, IconCpu, IconServer } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t, d } = useI18n()
 
 const { result } = useQuery(GetMachinesSummary, null, () => ({
   fetchPolicy: 'cache-first',
@@ -35,13 +38,13 @@ const cards = computed(() => [
             <div class="d-flex align-items-center justify-space-between">
               <div>
                 <h5 class="text-h5">
-                  {{ $t('fields.'+card.text) }}
+                  {{ t('fields.'+card.text) }}
                 </h5>
                 <h3 class="text-h3 my-2">
                   {{ card.value }}
                 </h3>
                 <h6 class="text-caption font-weight-medium mb-0">
-                  {{ $d(new Date(), "short") }}
+                  {{ d(new Date(), "short") }}
                 </h6>
               </div>
               <span class="d-flex align-center">

@@ -5,6 +5,9 @@ import { useQuery } from '@vue/apollo-composable'
 import { IconBrandAsana } from '@tabler/icons-vue'
 import { GetTasksCount } from '@/gql/task'
 import moment from 'moment'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const { result, onResult } = useQuery(GetTasksCount, null, () => ({
   fetchPolicy: 'cache-first',
@@ -24,7 +27,7 @@ onResult(() => {
         <div class="d-flex align-items-center justify-space-between">
           <div>
             <h5 class="text-h5 justify-space-between">
-              {{ $t('fields.Running Tasks') }}
+              {{ t('fields.Running Tasks') }}
             </h5>
             <h3 class="text-h3 my-2">
               {{ count }}

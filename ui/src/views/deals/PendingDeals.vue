@@ -5,10 +5,12 @@ import { computed, ComputedRef, ref } from 'vue'
 import { OpenSectorPiece } from '@/typed-graph'
 import { DealSealNow, GetPendingDeals } from '@/gql/deal'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 import { useUIStore } from '@/stores/ui'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
 const uiStore = useUIStore()
+const { d } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetPendingDeals, null, () => ({
   fetchPolicy: 'cache-first',
@@ -121,7 +123,7 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
         sticky
       >
         <template #item.createdAt="{ item }">
-          {{ $d(item.createdAt, 'short') }}
+          {{ d(item.createdAt, 'short') }}
         </template>
         <template #group-header="{ item, index, columns, toggleGroup, isGroupOpen }">
           <div

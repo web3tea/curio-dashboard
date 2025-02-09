@@ -4,6 +4,7 @@ import { IconCaretDown, IconCaretUp, IconCaretUpDown } from "@tabler/icons-vue"
 import { useQuery } from "@vue/apollo-composable"
 import { GetMiningCountSummaryWithPrevious } from "@/gql/mining"
 import TabCardChart from "@/views/mining/overview/TabCardChart.vue"
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   start: {
@@ -19,6 +20,8 @@ const props = defineProps({
     default: undefined
   },
 })
+
+const { d } = useI18n()
 
 const items = ref(['Today', 'Last 7 days', 'Last 30 days'])
 const selected = ref('Today')
@@ -101,7 +104,7 @@ const cards = computed(() => {
                   {{ card.value }}
                 </h5>
                 <span class="text-lightText text-caption pt-2">
-                  {{ $d(props.start, 'toShortDay') }} - {{ $d(props.end, 'toShortDay') }}
+                  {{ d(props.start, 'toShortDay') }} - {{ d(props.end, 'toShortDay') }}
                 </span>
               </div>
               <div class="d-flex align-center">

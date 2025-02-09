@@ -5,6 +5,7 @@ import { GetMiningSummary } from '@/gql/mining'
 import { MiningSummaryDay } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   height: {
@@ -14,6 +15,7 @@ const props = defineProps({
 })
 
 const customizer = useCustomizerStore()
+const { t } = useI18n()
 
 const end = new Date()
 const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000) // todo: props
@@ -122,11 +124,11 @@ const totalWonBlocks = computed(() => {
   <UiWidgetCard
     class-name="pt-5 px-0 rounded-md overflow-hidden"
     :loading="loading"
-    :title="$t('fields.Mining Overview')"
+    :title="t('fields.Mining Overview')"
   >
     <template #subtitle>
       <router-link :to="{name: 'MiningTaskList'}">
-        {{ $t('fields.View All') }}
+        {{ t('fields.View All') }}
       </router-link>
     </template>
     <template #append>
@@ -140,7 +142,7 @@ const totalWonBlocks = computed(() => {
     </template>
     <div class="px-5">
       <h6 class="text-h6 text-lightText mb-4">
-        {{ $t('msgs.weekBlock') }}
+        {{ t('msgs.weekBlock') }}
       </h6>
       <h3 class="text-h3 mb-0">
         {{ totalWonBlocks }}

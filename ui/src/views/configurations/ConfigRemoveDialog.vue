@@ -4,8 +4,7 @@ import { useMutation } from '@vue/apollo-composable'
 import { GetConfigs, RemoveConfig } from '@/gql/config'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
-
-const uiStore = useUIStore()
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   title: {
@@ -25,6 +24,8 @@ const props = defineProps({
     default: undefined,
   },
 })
+const uiStore = useUIStore()
+const { t } = useI18n()
 
 const dialog = ref(false)
 
@@ -99,7 +100,7 @@ onError(e => {
             />
           </template>
           <template #title>
-            {{ $t('msgs.sureRemoveConfig', 1) }}
+            {{ t('msgs.sureRemoveConfig', 1) }}
           </template>
         </v-list-item>
 
@@ -107,7 +108,7 @@ onError(e => {
 
         <v-card-text class="text-medium-emphasis pa-6">
           <div class="text-h6 mb-6">
-            {{ $t('msgs.actionCantUndo') }}
+            {{ t('msgs.actionCantUndo') }}
           </div>
           <div class="my-4">
             Configuration: <v-chip
@@ -121,7 +122,7 @@ onError(e => {
         <v-card-actions>
           <v-spacer />
           <v-btn @click="dialog = false">
-            {{ $t('actions.Cancel') }}
+            {{ t('actions.Cancel') }}
           </v-btn>
           <v-btn
             color="error"
@@ -129,43 +130,10 @@ onError(e => {
             variant="flat"
             @click="removeConfig"
           >
-            {{ $t('actions.Remove') }}
+            {{ t('actions.Remove') }}
           </v-btn>
         </v-card-actions>
       </v-card>
     </template>
   </v-dialog>
-
-<!--  <v-btn color="error">-->
-<!--    <template #prepend>-->
-<!--      <IconTrash />-->
-<!--    </template>-->
-<!--    Remove-->
-<!--    <v-dialog v-model="dialog" activator="parent" max-width="600">-->
-<!--      <v-card-->
-<!--        subtitle="Are you sure you want to remove this configuration?"-->
-<!--        title="Remove Configuration"-->
-<!--      >-->
-<!--        <v-card-text>-->
-<!--          <v-chip color="error" label>{{ props.title }}</v-chip>-->
-<!--          <v-alert-->
-<!--            v-if="error"-->
-<!--            class="mt-4"-->
-<!--            color="error"-->
-<!--            :text="error.message"-->
-<!--          />-->
-<!--        </v-card-text>-->
-<!--        <v-card-actions>-->
-<!--          <v-btn-->
-<!--            color="error"-->
-<!--            :loading="loading"-->
-<!--            text="true"-->
-<!--            variant="outlined"-->
-<!--            @click="removeConfig({ title: props.title })"-->
-<!--          > Confirm </v-btn>-->
-<!--        </v-card-actions>-->
-<!--      </v-card>-->
-<!--    </v-dialog>-->
-<!--  </v-btn>-->
 </template>
-

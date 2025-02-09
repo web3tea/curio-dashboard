@@ -74,7 +74,7 @@ const breadcrumbs = computed(() => {
                   class="text-lightText text-h6 text-decoration-none"
                   to="/"
                 >
-                  {{ $t('nav.Home') }}
+                  {{ t('nav.Home') }}
                 </router-link>
                 <div class="d-flex align-center px-2">
                   /

@@ -6,6 +6,9 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetMachines } from '@/gql/machine'
 import { Machine } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { useI18n } from 'vue-i18n'
+
+const { d } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
@@ -154,12 +157,12 @@ const headers = [
             </template>
             <template #item.lastContact="{ value }">
               <div :title="value">
-                {{ $d(value, 'short') }}
+                {{ d(value, 'short') }}
               </div>
             </template>
             <template #item.detail.startupTime="{ value }">
               <div :title="value">
-                {{ $d(value, 'short') }}
+                {{ d(value, 'short') }}
               </div>
             </template>
             <template #item.ram="{ value }">

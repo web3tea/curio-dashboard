@@ -5,6 +5,7 @@ import { GetMiningWins } from '@/gql/mining'
 import { useQuery } from '@vue/apollo-composable'
 import { IconInfoCircle } from '@tabler/icons-vue'
 import { useTableSettingsStore } from "@/stores/table"
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   start: {
@@ -25,6 +26,7 @@ const props = defineProps({
   },
 })
 
+const { d } = useI18n()
 const tableSettings = useTableSettingsStore()
 
 const page = ref(1)
@@ -142,10 +144,10 @@ const headers = [
           <TruncatedChip :text="value" />
         </template>
         <template #item.minedAt="{value}">
-          {{ $d(value, 'long') }}
+          {{ d(value, 'long') }}
         </template>
         <template #item.submittedAt="{value}">
-          {{ $d(value, 'long') }}
+          {{ d(value, 'long') }}
         </template>
         <template #item.minedHeader="{value}">
           <v-dialog>

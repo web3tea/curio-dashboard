@@ -4,6 +4,7 @@ import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeNewTask } from '@/gql/task'
 import { Task } from '@/typed-graph'
 import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   maxLen: {
@@ -15,6 +16,8 @@ const props = defineProps({
     default: null,
   },
 })
+
+const { d, t } = useI18n()
 
 const isStop = ref(false)
 const { result, loading, stop, start } = useSubscription(SubscribeNewTask, {
@@ -45,7 +48,7 @@ const headers = [
 <template>
   <UiWidgetCard
     class-name="px-0 pb-0 rounded-md"
-    :title="$t('fields.New Added Tasks')"
+    :title="t('fields.New Added Tasks')"
   >
     <template #append>
       <v-btn
@@ -57,7 +60,7 @@ const headers = [
     </template>
     <template #subtitle>
       <router-link :to="{name: 'RunningTasks'}">
-        {{ $t('fields.View All') }}
+        {{ t('fields.View All') }}
       </router-link>
     </template>
     <v-data-table-virtual
@@ -73,7 +76,7 @@ const headers = [
         </router-link>
       </template>
       <template #item.postedTime="{ value }">
-        {{ $d(value, 'short') }}
+        {{ d(value, 'short') }}
       </template>
       <template #item.addedBy="{ item }">
         <RouterLink :to="{ name: 'MachineInfo', params: { id: item.addedBy.id } }">

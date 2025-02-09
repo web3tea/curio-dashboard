@@ -4,6 +4,7 @@ import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMiningWinsCount } from '@/gql/mining'
 import { IconCurrency } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   sp: {
@@ -16,6 +17,7 @@ const props = defineProps({
   },
 })
 
+const { d, t } = useI18n()
 const currentEnd = new Date()
 const currentStart = new Date(currentEnd.getTime() - props.lastHours * 60 * 60 * 1000)
 
@@ -38,13 +40,13 @@ const count: ComputedRef<number> = computed(() => result.value?.miningWinsCount 
         <div class="d-flex align-items-center justify-space-between">
           <div>
             <h5 class="text-h5">
-              {{ $t('fields.Blocks Mined') }}
+              {{ t('fields.Blocks Mined') }}
             </h5>
             <h3 class="text-h3 my-2">
               {{ count }}
             </h3>
             <h6 class="text-caption font-weight-medium mb-0">
-              {{ $d(currentStart, 'short') }} - {{ $d(currentEnd, 'short') }}
+              {{ d(currentStart, 'short') }} - {{ d(currentEnd, 'short') }}
             </h6>
           </div>
           <span class="d-flex align-center">

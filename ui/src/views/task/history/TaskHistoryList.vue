@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
-import { defineProps } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetTaskHistories } from '@/gql/task'
 import { computed, ComputedRef, ref } from 'vue'
 import { TaskHistory } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
 import { useTableSettingsStore } from "@/stores/table"
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   start: {
@@ -31,6 +31,7 @@ const props = defineProps({
   },
 })
 
+const { d } = useI18n()
 const tableSettings = useTableSettingsStore()
 
 const start = ref<Date | undefined>(props.start)
@@ -177,13 +178,13 @@ const selectDateRange = computed({
             :items-per-page-options="tableSettings.itemsPerPageOptions"
           >
             <template #item.posted="{ value }">
-              {{ $d(value, 'long') }}
+              {{ d(value, 'long') }}
             </template>
             <template #item.workStart="{ value }">
-              {{ $d(value, 'long') }}
+              {{ d(value, 'long') }}
             </template>
             <template #item.workEnd="{ value }">
-              {{ $d(value, 'long') }}
+              {{ d(value, 'long') }}
             </template>
           </v-data-table-server>
         </v-card-text>
