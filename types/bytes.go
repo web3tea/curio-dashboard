@@ -7,10 +7,10 @@ import (
 	"io"
 )
 
-type ByteArray []byte
+type Bytes []byte
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *ByteArray) UnmarshalGQL(v interface{}) error {
+func (b *Bytes) UnmarshalGQL(v interface{}) error {
 	switch value := v.(type) {
 	case string: // for graphql
 		arr, err := base64.StdEncoding.DecodeString(value)
@@ -29,17 +29,17 @@ func (b *ByteArray) UnmarshalGQL(v interface{}) error {
 }
 
 // MarshalGQL implements the graphql.Marshaler interface
-func (b ByteArray) MarshalGQL(w io.Writer) {
+func (b Bytes) MarshalGQL(w io.Writer) {
 	jsonStr := fmt.Sprintf(`"%s"`, base64.StdEncoding.EncodeToString(b))
 	_, _ = w.Write([]byte(jsonStr)) // nolint: errcheck
 }
 
-func (b *ByteArray) Scan(value interface{}) error {
+func (b *Bytes) Scan(value interface{}) error {
 	return b.UnmarshalGQL(value)
 }
 
 // Value return json value, implement driver.Valuer interface
-func (b ByteArray) Value() (driver.Value, error) {
+func (b Bytes) Value() (driver.Value, error) {
 	jsonStr := fmt.Sprintf(`"%s"`, base64.StdEncoding.EncodeToString(b))
 	return jsonStr, nil
 }

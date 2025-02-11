@@ -243,6 +243,15 @@ const AppRoutes = {
         title: 'Client Allows',
         description: 'Market client allows',
       },
+    },
+    {
+      name: "MarketMk12Deals",
+      path: "/market/mk12-deals",
+      component: () => import('@/views/market/deals/mk12/Mk12DealIndex.vue'),
+      meta: {
+        title: 'MK12 Deals',
+        description: 'Market Mk12 deals',
+      },
     }
   ],
 }

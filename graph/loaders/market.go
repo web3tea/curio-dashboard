@@ -15,6 +15,8 @@ type MarketLoader interface {
 	MarketMk12PriceFilter(ctx context.Context, name string) (*webrpc.PriceFilter, error)
 	MarketMk12ClientFilter(ctx context.Context, name string) (*webrpc.ClientFilter, error)
 	MarketAllowFilter(ctx context.Context, wallet types.Address) (*model.MarketAllowFilter, error)
+	MarketMk12Deals(ctx context.Context, filter model.MarketMk12DealFilterInput, limit int, offset int) ([]*model.MarketMk12Deal, error)
+	MarketMk12DealsCount(ctx context.Context, filter model.MarketMk12DealFilterInput) (int, error)
 }
 
 type MarketLoaderImpl struct {
@@ -133,4 +135,71 @@ func (l *MarketLoaderImpl) MarketAllowFilter(ctx context.Context, wallet types.A
 		return nil, ErrorNotFound
 	}
 	return res[0], nil
+}
+
+func (l *MarketLoaderImpl) MarketMk12Deals(ctx context.Context, filter model.MarketMk12DealFilterInput, limit int, offset int) ([]*model.MarketMk12Deal, error) {
+	var result []*model.MarketMk12Deal
+	err := l.loader.db.Select(ctx, &result, `SELECT
+            uuid,
+            sp_id,
+            created_at,
+            signed_proposal_cid,
+            proposal_signature,
+            proposal,
+            offline,
+            verified,
+            start_epoch,
+            end_epoch,
+            client_peer_id,
+            chain_deal_id,
+            publish_cid,
+            piece_cid,
+            piece_size,
+            fast_retrieval,
+            announce_to_ipni,
+            url,
+            url_headers,
+            error,
+            label,
+            proposal_cid
+        FROM market_mk12_deals
+        WHERE 1=1
+        AND ($1::int8 IS NULL OR sp_id = $1)
+        AND ($2::text IS NULL OR uuid = $2)
+        AND ($3::text IS NULL OR signed_proposal_cid = $3)
+        AND ($4::text IS NULL OR proposal_cid = $4)
+        AND ($5::text IS NULL OR piece_cid = $5)
+        LIMIT $6 OFFSET $7
+    `,
+		filter.SpID,
+		filter.UUID,
+		filter.SignedProposalCid,
+		filter.ProposalCid,
+		filter.PieceCid,
+		limit,
+		offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (l *MarketLoaderImpl) MarketMk12DealsCount(ctx context.Context, filter model.MarketMk12DealFilterInput) (int, error) {
+	var result int
+	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM market_mk12_deals
+		WHERE 1=1
+		AND ($1::int8 IS NULL OR sp_id = $1)
+		AND ($2::text IS NULL OR uuid = $2)
+		AND ($3::text IS NULL OR signed_proposal_cid = $3)
+		AND ($4::text IS NULL OR proposal_cid = $4)
+		AND ($5::text IS NULL OR piece_cid = $5)
+	`,
+		filter.SpID,
+		filter.UUID,
+		filter.SignedProposalCid,
+		filter.ProposalCid,
+		filter.PieceCid,
+	).Scan(&result)
+	return result, err
 }

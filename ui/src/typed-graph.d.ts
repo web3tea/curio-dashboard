@@ -12,9 +12,10 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  ActorID: { input: any; output: any; }
   Address: { input: any; output: any; }
   BigInt: { input: any; output: any; }
-  ByteArray: { input: any; output: any; }
+  Bytes: { input: any; output: any; }
   FIL: { input: any; output: any; }
   JSON: { input: any; output: any; }
   JSONB: { input: any; output: any; }
@@ -175,6 +176,40 @@ export type MarketBalance = {
   miner: Scalars['Address']['output'];
 };
 
+export type MarketMk12Deal = {
+  __typename?: 'MarketMk12Deal';
+  announceToIpni: Scalars['Boolean']['output'];
+  chainDealId?: Maybe<Scalars['Uint64']['output']>;
+  clientPeerId: Scalars['String']['output'];
+  createdAt: Scalars['Time']['output'];
+  endEpoch: Scalars['Uint64']['output'];
+  error?: Maybe<Scalars['String']['output']>;
+  fastRetrieval: Scalars['Boolean']['output'];
+  label?: Maybe<Scalars['Bytes']['output']>;
+  offline: Scalars['Boolean']['output'];
+  pieceCid: Scalars['String']['output'];
+  pieceSize: Scalars['Uint64']['output'];
+  proposal: Scalars['JSONB']['output'];
+  proposalCid: Scalars['String']['output'];
+  proposalSignature: Scalars['Bytes']['output'];
+  publishCid?: Maybe<Scalars['String']['output']>;
+  signedProposalCid: Scalars['String']['output'];
+  spId: Scalars['ActorID']['output'];
+  startEpoch: Scalars['Uint64']['output'];
+  url?: Maybe<Scalars['String']['output']>;
+  urlHeaders: Scalars['JSONB']['output'];
+  uuid: Scalars['String']['output'];
+  verified: Scalars['Boolean']['output'];
+};
+
+export type MarketMk12DealFilterInput = {
+  pieceCid?: InputMaybe<Scalars['String']['input']>;
+  proposalCid?: InputMaybe<Scalars['String']['input']>;
+  signedProposalCid?: InputMaybe<Scalars['String']['input']>;
+  spId?: InputMaybe<Scalars['ActorID']['input']>;
+  uuid?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type MarketMk12StorageAsk = {
   __typename?: 'MarketMk12StorageAsk';
   createdAt: Scalars['Int']['output'];
@@ -206,11 +241,11 @@ export type MessageSend = {
   sendTaskId: Scalars['Int']['output'];
   sendTime?: Maybe<Scalars['Time']['output']>;
   signedCid?: Maybe<Scalars['String']['output']>;
-  signedData?: Maybe<Scalars['ByteArray']['output']>;
+  signedData?: Maybe<Scalars['Bytes']['output']>;
   signedJson?: Maybe<Scalars['JSONB']['output']>;
   toAddr: Scalars['String']['output'];
   unsignedCid: Scalars['String']['output'];
-  unsignedData: Scalars['ByteArray']['output'];
+  unsignedData: Scalars['Bytes']['output'];
 };
 
 export type MetricsActiveTask = {
@@ -512,7 +547,7 @@ export type Porep = {
   afterTreeD: Scalars['Boolean']['output'];
   afterTreeR: Scalars['Boolean']['output'];
   commitMsgCid?: Maybe<Scalars['String']['output']>;
-  commitMsgTsk?: Maybe<Scalars['ByteArray']['output']>;
+  commitMsgTsk?: Maybe<Scalars['Bytes']['output']>;
   createTime: Scalars['Time']['output'];
   currentTask?: Maybe<Task>;
   failed: Scalars['Boolean']['output'];
@@ -520,13 +555,13 @@ export type Porep = {
   failedReason: Scalars['String']['output'];
   failedReasonMsg: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  porepProof?: Maybe<Scalars['ByteArray']['output']>;
+  porepProof?: Maybe<Scalars['Bytes']['output']>;
   precommitMsgCid?: Maybe<Scalars['String']['output']>;
-  precommitMsgTsk?: Maybe<Scalars['ByteArray']['output']>;
+  precommitMsgTsk?: Maybe<Scalars['Bytes']['output']>;
   regSealProof: Scalars['Int']['output'];
   sectorNumber: Scalars['Int']['output'];
   seedEpoch?: Maybe<Scalars['Int']['output']>;
-  seedValue?: Maybe<Scalars['ByteArray']['output']>;
+  seedValue?: Maybe<Scalars['Bytes']['output']>;
   spId: Scalars['Address']['output'];
   status: PorepStatus;
   taskIdCommitMsg?: Maybe<Scalars['Int']['output']>;
@@ -540,7 +575,7 @@ export type Porep = {
   taskIdTreeD?: Maybe<Scalars['Int']['output']>;
   taskIdTreeR?: Maybe<Scalars['Int']['output']>;
   ticketEpoch?: Maybe<Scalars['Int']['output']>;
-  ticketValue?: Maybe<Scalars['ByteArray']['output']>;
+  ticketValue?: Maybe<Scalars['Bytes']['output']>;
   treeDCid?: Maybe<Scalars['String']['output']>;
   treeRCid?: Maybe<Scalars['String']['output']>;
   userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
@@ -615,6 +650,8 @@ export type Query = {
   marketCheckPriceFilter: Scalars['Boolean']['output'];
   marketClientFilter?: Maybe<ClientFilter>;
   marketClientFilters?: Maybe<Array<ClientFilter>>;
+  marketMk12Deals: Array<MarketMk12Deal>;
+  marketMk12DealsCount: Scalars['Int']['output'];
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
   marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
   marketMk12StorageAsksCount: Scalars['Int']['output'];
@@ -689,6 +726,18 @@ export type QueryMarketCheckPriceFilterArgs = {
 
 export type QueryMarketClientFilterArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QueryMarketMk12DealsArgs = {
+  filter: MarketMk12DealFilterInput;
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+};
+
+
+export type QueryMarketMk12DealsCountArgs = {
+  filter: MarketMk12DealFilterInput;
 };
 
 
@@ -895,10 +944,10 @@ export type SectorMeta = {
   regSealProof: Scalars['Int']['output'];
   sectorNum: Scalars['Int']['output'];
   seedEpoch: Scalars['Int']['output'];
-  seedValue?: Maybe<Scalars['ByteArray']['output']>;
+  seedValue?: Maybe<Scalars['Bytes']['output']>;
   spId: Scalars['Address']['output'];
   ticketEpoch: Scalars['Int']['output'];
-  ticketValue?: Maybe<Scalars['ByteArray']['output']>;
+  ticketValue?: Maybe<Scalars['Bytes']['output']>;
 };
 
 export type SectorMetaPiece = {

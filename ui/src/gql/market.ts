@@ -36,6 +36,36 @@ export const marketMk12ClientFilterFragment = gql`
     info
   }`
 
+export const marketMk12DealFragment = gql`
+  fragment MarketMk12DealCommon on MarketMk12Deal {
+    uuid
+    spId
+    createdAt
+    startEpoch
+    endEpoch
+    pieceCid
+    pieceSize
+  }
+  fragment MarketMk12DealAll on MarketMk12Deal {
+    ...MarketMk12DealCommon
+    signedProposalCid
+    proposalSignature
+    proposal
+    offline
+    verified
+    clientPeerId
+    chainDealId
+    publishCid
+    fastRetrieval
+    announceToIpni
+    url
+    urlHeaders
+    error
+    label
+    proposalCid
+  }
+  `
+
 export const GetMarketMk12StorageAsks = gql`
   query GetMarketMk12StorageAsks {
     marketMk12StorageAsks {
@@ -208,4 +238,14 @@ export const GetMarketClientAllow = gql`
       status
     }
   }
+  `
+
+export const GetMarketMk12Deals = gql`
+  query GetMarketMk12Deals($filter: MarketMk12DealFilterInput! $offset: Int!, $limit: Int!) {
+    marketMk12Deals(filter: $filter, offset: $offset, limit: $limit) {
+      ...MarketMk12DealAll
+    }
+    marketMk12DealsCount(filter: $filter)
+  }
+  ${marketMk12DealFragment}
   `

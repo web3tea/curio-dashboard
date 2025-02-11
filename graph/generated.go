@@ -191,6 +191,31 @@ type ComplexityRoot struct {
 		Miner    func(childComplexity int) int
 	}
 
+	MarketMk12Deal struct {
+		AnnounceToIpni    func(childComplexity int) int
+		ChainDealID       func(childComplexity int) int
+		ClientPeerID      func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		EndEpoch          func(childComplexity int) int
+		Error             func(childComplexity int) int
+		FastRetrieval     func(childComplexity int) int
+		Label             func(childComplexity int) int
+		Offline           func(childComplexity int) int
+		PieceCid          func(childComplexity int) int
+		PieceSize         func(childComplexity int) int
+		Proposal          func(childComplexity int) int
+		ProposalCid       func(childComplexity int) int
+		ProposalSignature func(childComplexity int) int
+		PublishCid        func(childComplexity int) int
+		SignedProposalCid func(childComplexity int) int
+		SpID              func(childComplexity int) int
+		StartEpoch        func(childComplexity int) int
+		URL               func(childComplexity int) int
+		URLHeaders        func(childComplexity int) int
+		UUID              func(childComplexity int) int
+		Verified          func(childComplexity int) int
+	}
+
 	MarketMk12StorageAsk struct {
 		CreatedAt     func(childComplexity int) int
 		Expiry        func(childComplexity int) int
@@ -467,6 +492,8 @@ type ComplexityRoot struct {
 		MarketCheckPriceFilter     func(childComplexity int, name string) int
 		MarketClientFilter         func(childComplexity int, name string) int
 		MarketClientFilters        func(childComplexity int) int
+		MarketMk12Deals            func(childComplexity int, filter model.MarketMk12DealFilterInput, limit int, offset int) int
+		MarketMk12DealsCount       func(childComplexity int, filter model.MarketMk12DealFilterInput) int
 		MarketMk12StorageAsk       func(childComplexity int, spID types.Address) int
 		MarketMk12StorageAsks      func(childComplexity int) int
 		MarketMk12StorageAsksCount func(childComplexity int) int
@@ -823,6 +850,8 @@ type QueryResolver interface {
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
 	MarketBalance(ctx context.Context, miner types.Address) (*model.MarketBalance, error)
 	MarketBalances(ctx context.Context) ([]*model.MarketBalance, error)
+	MarketMk12Deals(ctx context.Context, filter model.MarketMk12DealFilterInput, limit int, offset int) ([]*model.MarketMk12Deal, error)
+	MarketMk12DealsCount(ctx context.Context, filter model.MarketMk12DealFilterInput) (int, error)
 	MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
@@ -1507,6 +1536,160 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MarketBalance.Miner(childComplexity), true
+
+	case "MarketMk12Deal.announceToIpni":
+		if e.complexity.MarketMk12Deal.AnnounceToIpni == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.AnnounceToIpni(childComplexity), true
+
+	case "MarketMk12Deal.chainDealId":
+		if e.complexity.MarketMk12Deal.ChainDealID == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.ChainDealID(childComplexity), true
+
+	case "MarketMk12Deal.clientPeerId":
+		if e.complexity.MarketMk12Deal.ClientPeerID == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.ClientPeerID(childComplexity), true
+
+	case "MarketMk12Deal.createdAt":
+		if e.complexity.MarketMk12Deal.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.CreatedAt(childComplexity), true
+
+	case "MarketMk12Deal.endEpoch":
+		if e.complexity.MarketMk12Deal.EndEpoch == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.EndEpoch(childComplexity), true
+
+	case "MarketMk12Deal.error":
+		if e.complexity.MarketMk12Deal.Error == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.Error(childComplexity), true
+
+	case "MarketMk12Deal.fastRetrieval":
+		if e.complexity.MarketMk12Deal.FastRetrieval == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.FastRetrieval(childComplexity), true
+
+	case "MarketMk12Deal.label":
+		if e.complexity.MarketMk12Deal.Label == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.Label(childComplexity), true
+
+	case "MarketMk12Deal.offline":
+		if e.complexity.MarketMk12Deal.Offline == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.Offline(childComplexity), true
+
+	case "MarketMk12Deal.pieceCid":
+		if e.complexity.MarketMk12Deal.PieceCid == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.PieceCid(childComplexity), true
+
+	case "MarketMk12Deal.pieceSize":
+		if e.complexity.MarketMk12Deal.PieceSize == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.PieceSize(childComplexity), true
+
+	case "MarketMk12Deal.proposal":
+		if e.complexity.MarketMk12Deal.Proposal == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.Proposal(childComplexity), true
+
+	case "MarketMk12Deal.proposalCid":
+		if e.complexity.MarketMk12Deal.ProposalCid == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.ProposalCid(childComplexity), true
+
+	case "MarketMk12Deal.proposalSignature":
+		if e.complexity.MarketMk12Deal.ProposalSignature == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.ProposalSignature(childComplexity), true
+
+	case "MarketMk12Deal.publishCid":
+		if e.complexity.MarketMk12Deal.PublishCid == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.PublishCid(childComplexity), true
+
+	case "MarketMk12Deal.signedProposalCid":
+		if e.complexity.MarketMk12Deal.SignedProposalCid == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.SignedProposalCid(childComplexity), true
+
+	case "MarketMk12Deal.spId":
+		if e.complexity.MarketMk12Deal.SpID == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.SpID(childComplexity), true
+
+	case "MarketMk12Deal.startEpoch":
+		if e.complexity.MarketMk12Deal.StartEpoch == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.StartEpoch(childComplexity), true
+
+	case "MarketMk12Deal.url":
+		if e.complexity.MarketMk12Deal.URL == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.URL(childComplexity), true
+
+	case "MarketMk12Deal.urlHeaders":
+		if e.complexity.MarketMk12Deal.URLHeaders == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.URLHeaders(childComplexity), true
+
+	case "MarketMk12Deal.uuid":
+		if e.complexity.MarketMk12Deal.UUID == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.UUID(childComplexity), true
+
+	case "MarketMk12Deal.verified":
+		if e.complexity.MarketMk12Deal.Verified == nil {
+			break
+		}
+
+		return e.complexity.MarketMk12Deal.Verified(childComplexity), true
 
 	case "MarketMk12StorageAsk.createdAt":
 		if e.complexity.MarketMk12StorageAsk.CreatedAt == nil {
@@ -3122,6 +3305,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.MarketClientFilters(childComplexity), true
 
+	case "Query.marketMk12Deals":
+		if e.complexity.Query.MarketMk12Deals == nil {
+			break
+		}
+
+		args, err := ec.field_Query_marketMk12Deals_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MarketMk12Deals(childComplexity, args["filter"].(model.MarketMk12DealFilterInput), args["limit"].(int), args["offset"].(int)), true
+
+	case "Query.marketMk12DealsCount":
+		if e.complexity.Query.MarketMk12DealsCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_marketMk12DealsCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MarketMk12DealsCount(childComplexity, args["filter"].(model.MarketMk12DealFilterInput)), true
+
 	case "Query.marketMk12StorageAsk":
 		if e.complexity.Query.MarketMk12StorageAsk == nil {
 			break
@@ -4470,6 +4677,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputClientFilterInput,
+		ec.unmarshalInputMarketMk12DealFilterInput,
 		ec.unmarshalInputMarketMk12StorageAskInput,
 		ec.unmarshalInputPriceFilterInput,
 	)
@@ -4585,7 +4793,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_balance.graphql" "schema/market_setting.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
+//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_balance.graphql" "schema/market_deal.graphql" "schema/market_setting.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -4606,6 +4814,7 @@ var sources = []*ast.Source{
 	{Name: "schema/machine_detail.graphql", Input: sourceData("schema/machine_detail.graphql"), BuiltIn: false},
 	{Name: "schema/machine_summary.graphql", Input: sourceData("schema/machine_summary.graphql"), BuiltIn: false},
 	{Name: "schema/market_balance.graphql", Input: sourceData("schema/market_balance.graphql"), BuiltIn: false},
+	{Name: "schema/market_deal.graphql", Input: sourceData("schema/market_deal.graphql"), BuiltIn: false},
 	{Name: "schema/market_setting.graphql", Input: sourceData("schema/market_setting.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
 	{Name: "schema/metrics.graphql", Input: sourceData("schema/metrics.graphql"), BuiltIn: false},
@@ -5741,6 +5950,124 @@ func (ec *executionContext) field_Query_marketClientFilter_argsName(
 	}
 
 	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_marketMk12DealsCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_marketMk12DealsCount_argsFilter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_marketMk12DealsCount_argsFilter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.MarketMk12DealFilterInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["filter"]
+	if !ok {
+		var zeroVal model.MarketMk12DealFilterInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+	if tmp, ok := rawArgs["filter"]; ok {
+		return ec.unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx, tmp)
+	}
+
+	var zeroVal model.MarketMk12DealFilterInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_marketMk12Deals_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_marketMk12Deals_argsFilter(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["filter"] = arg0
+	arg1, err := ec.field_Query_marketMk12Deals_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg1
+	arg2, err := ec.field_Query_marketMk12Deals_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_marketMk12Deals_argsFilter(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (model.MarketMk12DealFilterInput, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["filter"]
+	if !ok {
+		var zeroVal model.MarketMk12DealFilterInput
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+	if tmp, ok := rawArgs["filter"]; ok {
+		return ec.unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx, tmp)
+	}
+
+	var zeroVal model.MarketMk12DealFilterInput
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_marketMk12Deals_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["limit"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_marketMk12Deals_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (int, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["offset"]
+	if !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
 	return zeroVal, nil
 }
 
@@ -11729,6 +12056,959 @@ func (ec *executionContext) fieldContext_MarketBalance_balances(_ context.Contex
 	return fc, nil
 }
 
+func (ec *executionContext) _MarketMk12Deal_uuid(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_uuid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UUID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_uuid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_spId(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_spId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.ActorID)
+	fc.Result = res
+	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ActorID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_signedProposalCid(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_signedProposalCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SignedProposalCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_signedProposalCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_proposalSignature(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_proposalSignature(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProposalSignature, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Bytes)
+	fc.Result = res
+	return ec.marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_proposalSignature(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_proposal(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_proposal(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Proposal, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.JSONB)
+	fc.Result = res
+	return ec.marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_proposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSONB does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_offline(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_offline(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Offline, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_offline(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_verified(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_verified(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Verified, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_verified(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_startEpoch(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_startEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_startEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_endEpoch(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_endEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EndEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_endEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_clientPeerId(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_clientPeerId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ClientPeerID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_clientPeerId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_chainDealId(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_chainDealId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ChainDealID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*uint64)
+	fc.Result = res
+	return ec.marshalOUint642ᚖuint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_chainDealId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_publishCid(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_publishCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PublishCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_publishCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_pieceCid(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_pieceCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PieceCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_pieceCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_pieceSize(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_pieceSize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PieceSize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_pieceSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_fastRetrieval(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_fastRetrieval(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FastRetrieval, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_fastRetrieval(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_announceToIpni(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_announceToIpni(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AnnounceToIpni, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_announceToIpni(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_url(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_url(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_urlHeaders(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_urlHeaders(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URLHeaders, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.JSONB)
+	fc.Result = res
+	return ec.marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_urlHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSONB does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_error(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_error(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Error, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_error(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_label(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_label(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Label, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.Bytes)
+	fc.Result = res
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_label(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MarketMk12Deal_proposalCid(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12Deal) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MarketMk12Deal_proposalCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProposalCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MarketMk12Deal_proposalCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MarketMk12Deal",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _MarketMk12StorageAsk_spId(ctx context.Context, field graphql.CollectedField, obj *model.MarketMk12StorageAsk) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
 	if err != nil {
@@ -12283,9 +13563,9 @@ func (ec *executionContext) _MessageSend_unsignedData(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalNByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageSend_unsignedData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12295,7 +13575,7 @@ func (ec *executionContext) fieldContext_MessageSend_unsignedData(_ context.Cont
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12409,9 +13689,9 @@ func (ec *executionContext) _MessageSend_signedData(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageSend_signedData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12421,7 +13701,7 @@ func (ec *executionContext) fieldContext_MessageSend_signedData(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -18370,9 +19650,9 @@ func (ec *executionContext) _Porep_ticketValue(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_ticketValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18382,7 +19662,7 @@ func (ec *executionContext) fieldContext_Porep_ticketValue(_ context.Context, fi
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -19000,9 +20280,9 @@ func (ec *executionContext) _Porep_precommitMsgTsk(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_precommitMsgTsk(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19012,7 +20292,7 @@ func (ec *executionContext) fieldContext_Porep_precommitMsgTsk(_ context.Context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -19085,9 +20365,9 @@ func (ec *executionContext) _Porep_seedValue(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_seedValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19097,7 +20377,7 @@ func (ec *executionContext) fieldContext_Porep_seedValue(_ context.Context, fiel
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -19167,9 +20447,9 @@ func (ec *executionContext) _Porep_porepProof(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_porepProof(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19179,7 +20459,7 @@ func (ec *executionContext) fieldContext_Porep_porepProof(_ context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -19548,9 +20828,9 @@ func (ec *executionContext) _Porep_commitMsgTsk(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_commitMsgTsk(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19560,7 +20840,7 @@ func (ec *executionContext) fieldContext_Porep_commitMsgTsk(_ context.Context, f
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -22992,6 +24272,162 @@ func (ec *executionContext) fieldContext_Query_marketBalances(_ context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_marketMk12Deals(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12Deals(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12Deals(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput), fc.Args["limit"].(int), fc.Args["offset"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MarketMk12Deal)
+	fc.Result = res
+	return ec.marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12Deals(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "uuid":
+				return ec.fieldContext_MarketMk12Deal_uuid(ctx, field)
+			case "spId":
+				return ec.fieldContext_MarketMk12Deal_spId(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MarketMk12Deal_createdAt(ctx, field)
+			case "signedProposalCid":
+				return ec.fieldContext_MarketMk12Deal_signedProposalCid(ctx, field)
+			case "proposalSignature":
+				return ec.fieldContext_MarketMk12Deal_proposalSignature(ctx, field)
+			case "proposal":
+				return ec.fieldContext_MarketMk12Deal_proposal(ctx, field)
+			case "offline":
+				return ec.fieldContext_MarketMk12Deal_offline(ctx, field)
+			case "verified":
+				return ec.fieldContext_MarketMk12Deal_verified(ctx, field)
+			case "startEpoch":
+				return ec.fieldContext_MarketMk12Deal_startEpoch(ctx, field)
+			case "endEpoch":
+				return ec.fieldContext_MarketMk12Deal_endEpoch(ctx, field)
+			case "clientPeerId":
+				return ec.fieldContext_MarketMk12Deal_clientPeerId(ctx, field)
+			case "chainDealId":
+				return ec.fieldContext_MarketMk12Deal_chainDealId(ctx, field)
+			case "publishCid":
+				return ec.fieldContext_MarketMk12Deal_publishCid(ctx, field)
+			case "pieceCid":
+				return ec.fieldContext_MarketMk12Deal_pieceCid(ctx, field)
+			case "pieceSize":
+				return ec.fieldContext_MarketMk12Deal_pieceSize(ctx, field)
+			case "fastRetrieval":
+				return ec.fieldContext_MarketMk12Deal_fastRetrieval(ctx, field)
+			case "announceToIpni":
+				return ec.fieldContext_MarketMk12Deal_announceToIpni(ctx, field)
+			case "url":
+				return ec.fieldContext_MarketMk12Deal_url(ctx, field)
+			case "urlHeaders":
+				return ec.fieldContext_MarketMk12Deal_urlHeaders(ctx, field)
+			case "error":
+				return ec.fieldContext_MarketMk12Deal_error(ctx, field)
+			case "label":
+				return ec.fieldContext_MarketMk12Deal_label(ctx, field)
+			case "proposalCid":
+				return ec.fieldContext_MarketMk12Deal_proposalCid(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketMk12Deal", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketMk12Deals_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketMk12DealsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12DealsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12DealsCount(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12DealsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketMk12DealsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_marketMk12StorageAsks(ctx, field)
 	if err != nil {
@@ -25358,9 +26794,9 @@ func (ec *executionContext) _SectorMeta_ticketValue(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMeta_ticketValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25370,7 +26806,7 @@ func (ec *executionContext) fieldContext_SectorMeta_ticketValue(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -25742,9 +27178,9 @@ func (ec *executionContext) _SectorMeta_seedValue(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.ByteArray)
+	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMeta_seedValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25754,7 +27190,7 @@ func (ec *executionContext) fieldContext_SectorMeta_seedValue(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ByteArray does not have child fields")
+			return nil, errors.New("field of type Bytes does not have child fields")
 		},
 	}
 	return fc, nil
@@ -32394,6 +33830,61 @@ func (ec *executionContext) unmarshalInputClientFilterInput(ctx context.Context,
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputMarketMk12DealFilterInput(ctx context.Context, obj interface{}) (model.MarketMk12DealFilterInput, error) {
+	var it model.MarketMk12DealFilterInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"spId", "uuid", "signedProposalCid", "proposalCid", "pieceCid"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "spId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+			data, err := ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SpID = data
+		case "uuid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uuid"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UUID = data
+		case "signedProposalCid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("signedProposalCid"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.SignedProposalCid = data
+		case "proposalCid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("proposalCid"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProposalCid = data
+		case "pieceCid":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pieceCid"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PieceCid = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputMarketMk12StorageAskInput(ctx context.Context, obj interface{}) (model.MarketMk12StorageAskInput, error) {
 	var it model.MarketMk12StorageAskInput
 	asMap := map[string]interface{}{}
@@ -34083,6 +35574,135 @@ func (ec *executionContext) _MarketBalance(ctx context.Context, sel ast.Selectio
 			}
 		case "balances":
 			out.Values[i] = ec._MarketBalance_balances(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var marketMk12DealImplementors = []string{"MarketMk12Deal"}
+
+func (ec *executionContext) _MarketMk12Deal(ctx context.Context, sel ast.SelectionSet, obj *model.MarketMk12Deal) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, marketMk12DealImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MarketMk12Deal")
+		case "uuid":
+			out.Values[i] = ec._MarketMk12Deal_uuid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "spId":
+			out.Values[i] = ec._MarketMk12Deal_spId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._MarketMk12Deal_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "signedProposalCid":
+			out.Values[i] = ec._MarketMk12Deal_signedProposalCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "proposalSignature":
+			out.Values[i] = ec._MarketMk12Deal_proposalSignature(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "proposal":
+			out.Values[i] = ec._MarketMk12Deal_proposal(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "offline":
+			out.Values[i] = ec._MarketMk12Deal_offline(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "verified":
+			out.Values[i] = ec._MarketMk12Deal_verified(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "startEpoch":
+			out.Values[i] = ec._MarketMk12Deal_startEpoch(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "endEpoch":
+			out.Values[i] = ec._MarketMk12Deal_endEpoch(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "clientPeerId":
+			out.Values[i] = ec._MarketMk12Deal_clientPeerId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "chainDealId":
+			out.Values[i] = ec._MarketMk12Deal_chainDealId(ctx, field, obj)
+		case "publishCid":
+			out.Values[i] = ec._MarketMk12Deal_publishCid(ctx, field, obj)
+		case "pieceCid":
+			out.Values[i] = ec._MarketMk12Deal_pieceCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "pieceSize":
+			out.Values[i] = ec._MarketMk12Deal_pieceSize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "fastRetrieval":
+			out.Values[i] = ec._MarketMk12Deal_fastRetrieval(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "announceToIpni":
+			out.Values[i] = ec._MarketMk12Deal_announceToIpni(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "url":
+			out.Values[i] = ec._MarketMk12Deal_url(ctx, field, obj)
+		case "urlHeaders":
+			out.Values[i] = ec._MarketMk12Deal_urlHeaders(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "error":
+			out.Values[i] = ec._MarketMk12Deal_error(ctx, field, obj)
+		case "label":
+			out.Values[i] = ec._MarketMk12Deal_label(ctx, field, obj)
+		case "proposalCid":
+			out.Values[i] = ec._MarketMk12Deal_proposalCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -37035,6 +38655,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketMk12Deals":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketMk12Deals(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketMk12DealsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketMk12DealsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "marketMk12StorageAsks":
 			field := field
 
@@ -39723,6 +41387,16 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v interface{}) (types.ActorID, error) {
+	var res types.ActorID
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v types.ActorID) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v interface{}) (types.Address, error) {
 	var res types.Address
 	err := res.UnmarshalGQL(v)
@@ -39836,13 +41510,13 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx context.Context, v interface{}) (types.ByteArray, error) {
-	var res types.ByteArray
+func (ec *executionContext) unmarshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v interface{}) (types.Bytes, error) {
+	var res types.Bytes
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx context.Context, sel ast.SelectionSet, v types.ByteArray) graphql.Marshaler {
+func (ec *executionContext) marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, sel ast.SelectionSet, v types.Bytes) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -40021,6 +41695,22 @@ func (ec *executionContext) marshalNJSON2string(ctx context.Context, sel ast.Sel
 	return res
 }
 
+func (ec *executionContext) unmarshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v interface{}) (types.JSONB, error) {
+	var res types.JSONB
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, sel ast.SelectionSet, v types.JSONB) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) marshalNMachine2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v model.Machine) graphql.Marshaler {
 	return ec._Machine(ctx, sel, &v)
 }
@@ -40091,6 +41781,65 @@ func (ec *executionContext) marshalNMarketBalance2ᚖgithubᚗcomᚋstraheᚋcur
 		return graphql.Null
 	}
 	return ec._MarketBalance(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketMk12Deal) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNMarketMk12Deal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Deal(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNMarketMk12Deal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Deal(ctx context.Context, sel ast.SelectionSet, v *model.MarketMk12Deal) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._MarketMk12Deal(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx context.Context, v interface{}) (model.MarketMk12DealFilterInput, error) {
+	res, err := ec.unmarshalInputMarketMk12DealFilterInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v interface{}) (model.MarketMk12StorageAskInput, error) {
@@ -40841,6 +42590,22 @@ func (ec *executionContext) marshalOActorDeadline2ᚖgithubᚗcomᚋstraheᚋcur
 	return ec._ActorDeadline(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v interface{}) (*types.ActorID, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(types.ActorID)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v *types.ActorID) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
+}
+
 func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v interface{}) ([]*types.Address, error) {
 	if v == nil {
 		return nil, nil
@@ -40985,16 +42750,16 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) unmarshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx context.Context, v interface{}) (types.ByteArray, error) {
+func (ec *executionContext) unmarshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v interface{}) (types.Bytes, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res types.ByteArray
+	var res types.Bytes
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOByteArray2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐByteArray(ctx context.Context, sel ast.SelectionSet, v types.ByteArray) graphql.Marshaler {
+func (ec *executionContext) marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, sel ast.SelectionSet, v types.Bytes) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -42394,6 +44159,22 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 		return graphql.Null
 	}
 	res := graphql.MarshalTime(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOUint642ᚖuint64(ctx context.Context, v interface{}) (*uint64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalUint64(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOUint642ᚖuint64(ctx context.Context, sel ast.SelectionSet, v *uint64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalUint64(*v)
 	return res
 }
 

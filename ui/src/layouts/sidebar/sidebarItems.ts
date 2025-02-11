@@ -3,6 +3,7 @@ import {
   IconBrandAsana,
   IconBuildingStore,
   IconChartHistogram,
+  IconContract,
   IconCurrency,
   IconDatabase,
   IconFilterCog,
@@ -100,6 +101,16 @@ const sidebarItems: menuItem[] = [
     ],
   },
   { header: 'Market', icon: IconBuildingStore },
+  {
+    title: 'Deals',
+    icon: IconContract,
+    children: [
+      {
+        title: 'MK12 Deals',
+        to: { name: "MarketMk12Deals" }
+      }
+    ]
+  },
   {
     title: 'Settings',
     icon: IconFilterCog,

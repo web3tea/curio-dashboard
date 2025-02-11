@@ -95,8 +95,8 @@ models:
       - github.com/99designs/gqlgen/graphql.Int64
   ActorID:
     model: "github.com/strahe/curio-dashboard/types.ActorID"
-  ByteArray:
-    model: "github.com/strahe/curio-dashboard/types.ByteArray"
+  Bytes:
+    model: "github.com/strahe/curio-dashboard/types.Bytes"
   Address:
     model: "github.com/strahe/curio-dashboard/types.Address"
   BigInt:

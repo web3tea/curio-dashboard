@@ -5,7 +5,7 @@ type Porep {
     createTime: Time!
     regSealProof: Int!
     ticketEpoch: Int
-    ticketValue: ByteArray
+    ticketValue: Bytes
     taskIdSdr: Int
     afterSdr: Boolean!
     treeDCid: String
@@ -20,11 +20,11 @@ type Porep {
     taskIdPrecommitMsg: Int
     afterPrecommitMsg: Boolean!
     seedEpoch: Int
-    precommitMsgTsk: ByteArray
+    precommitMsgTsk: Bytes
     afterPrecommitMsgSuccess: Boolean!
-    seedValue: ByteArray
+    seedValue: Bytes
     taskIdPorep: Int
-    porepProof: ByteArray
+    porepProof: Bytes
     afterPorep: Boolean!
     taskIdFinalize: Int
     afterFinalize: Boolean!
@@ -33,7 +33,7 @@ type Porep {
     commitMsgCid: String
     taskIdCommitMsg: Int
     afterCommitMsg: Boolean!
-    commitMsgTsk: ByteArray
+    commitMsgTsk: Bytes
     afterCommitMsgSuccess: Boolean!
     failed: Boolean!
     failedAt: Time

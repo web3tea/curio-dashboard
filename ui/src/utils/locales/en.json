@@ -31,7 +31,8 @@
     "Pricing Filters": "Pricing Filters",
     "Client Filters": "Client Filters",
     "Client Allow/Deny": "Client Allow/Deny",
-    "Market Balances": "Market Balances"
+    "Market Balances": "Market Balances",
+    "MK12 Deals": "MK12 Deals"
   },
   "fields": {
     "Total Power": "Total Power",

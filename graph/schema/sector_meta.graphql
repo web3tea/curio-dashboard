@@ -4,7 +4,7 @@ type SectorMeta {
     sectorNum: Int!
     regSealProof: Int!
     ticketEpoch: Int!
-    ticketValue: ByteArray
+    ticketValue: Bytes
     origSealedCid: String!
     origUnsealedCid: String!
     curSealedCid: String!
@@ -13,7 +13,7 @@ type SectorMeta {
     msgCidCommit: String
     msgCidUpdate: String
     seedEpoch: Int!
-    seedValue: ByteArray
+    seedValue: Bytes
     expirationEpoch: Int
     isCC: Boolean!
 }
