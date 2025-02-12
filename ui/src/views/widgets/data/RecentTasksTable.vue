@@ -75,7 +75,6 @@ const headers = [
       :headers="headers"
       height="500"
       hover
-      item-value="taskId"
       :items="tasks"
       :loading="loading"
     >

@@ -5,7 +5,7 @@ import Mk12DealList from "./Mk12DealList.vue"
 
 const breadcrumbs = ref([
   {
-    title: 'Market',
+    title: 'Deals',
     disabled: true,
     to: '#',
   },

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
-import PendingDeals from '@/views/deals/PendingDeals.vue'
+import PendingDealList from '@/views/market/deals/pending/PendingDealList.vue'
 
 const breadcrumbs = ref([
   {
@@ -10,7 +10,7 @@ const breadcrumbs = ref([
     to: "#"
   },
   {
-    title: 'Pending',
+    title: 'Pending Pieces',
     disabled: true,
     to: { name: 'PendingDeals' },
   },
@@ -25,7 +25,7 @@ const breadcrumbs = ref([
       cols="12"
       lg="12"
     >
-      <PendingDeals />
+      <PendingDealList />
     </v-col>
   </v-row>
 </template>

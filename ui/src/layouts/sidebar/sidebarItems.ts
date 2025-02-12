@@ -8,7 +8,6 @@ import {
   IconDatabase,
   IconFilterCog,
   IconHome,
-  IconParking,
   IconServer,
   IconSettings,
   IconUsers,
@@ -71,11 +70,6 @@ const sidebarItems: menuItem[] = [
     to: { name: "Sectors" },
   },
   {
-    title: 'Deals',
-    icon: IconParking,
-    to: { name: "PendingDeals" },
-  },
-  {
     title: 'Messages',
     icon: IconVector,
     to: { name: "MessageSends" },
@@ -105,6 +99,10 @@ const sidebarItems: menuItem[] = [
     title: 'Deals',
     icon: IconContract,
     children: [
+      {
+        title: 'Pending Pieces',
+        to: { name: "PendingDeals" },
+      },
       {
         title: 'MK12 Deals',
         to: { name: "MarketMk12Deals" }

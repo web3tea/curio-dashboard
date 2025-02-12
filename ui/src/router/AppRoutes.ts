@@ -165,11 +165,11 @@ const AppRoutes = {
     },
     {
       name: 'PendingDeals',
-      path: '/deals/pending',
-      component: () => import('@/views/deals/DealIndex.vue'),
+      path: '/market/pending-pieces',
+      component: () => import('@/views/market/deals/pending/PendingDealIndex.vue'),
       meta: {
-        title: 'Pending Deals',
-        description: 'List of all pending deals in the cluster',
+        title: 'Pending Pieces',
+        description: 'List of all pending pieces in the cluster',
       },
     },
     {
