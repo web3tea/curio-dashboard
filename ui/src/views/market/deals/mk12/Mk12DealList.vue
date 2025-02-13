@@ -2,15 +2,13 @@
 import { MarketMk12Deal } from '@/typed-graph'
 import { GetMarketMk12Deals } from '@/gql/market'
 import { useQuery } from '@vue/apollo-composable'
-import { ComputedRef, computed } from 'vue'
+import { ComputedRef, computed, ref } from 'vue'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { useTableSettingsStore } from "@/stores/table"
+import { watchDebounced } from '@vueuse/core'
 
 const { d } = useI18n()
-const tableSettings = useTableSettingsStore()
 
 const headers = [
   { title: "UUID", key: "uuid" },
@@ -26,10 +24,19 @@ const limit = ref(100)
 const page = ref(1)
 const offset = computed(() => (page.value - 1) * limit.value)
 
+const search = ref<string>()
+const searchDebounced = ref<string>()
+
+watchDebounced(search, (value) => {
+  searchDebounced.value = value?.trim() === '' ? undefined : value
+}, { debounce: 1000 })
+
 const { result, loading, refetch } = useQuery(GetMarketMk12Deals, {
-  filter: {},
-  offset: offset.value,
-  limit: limit.value,
+  filter: {
+    uuid: searchDebounced,
+  },
+  offset: offset,
+  limit: limit,
 }, () => ({
   fetchPolicy: 'cache-first',
 }))
@@ -39,7 +46,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
 })
 </script>
 <template>
-  <UiTableCard>
+  <UiTableCard v-model="search">
     <template #actions>
       <v-btn
         :icon="IconReload"
@@ -49,7 +56,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
       />
     </template>
     <v-data-table-server
-      v-model:items-per-page="tableSettings.itemsPerPage"
+      :items-per-page="limit"
       :page="page"
       fixed-header
       :headers="headers"
@@ -57,6 +64,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
       :items="items"
       :loading="loading"
       :items-length="itemsCount"
+      height="calc(100vh - 330px)"
     >
       <template #item.spId="{ value }">
         <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
