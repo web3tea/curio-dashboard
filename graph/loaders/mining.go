@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/types"
 
 	"github.com/strahe/curio-dashboard/graph/model"
@@ -13,14 +14,22 @@ import (
 
 type MiningLoader interface {
 	MiningSummaryByDay(ctx context.Context, start, end time.Time) ([]*model.MiningSummaryDay, error)
-	MiningCount(ctx context.Context, start, end time.Time, actor *types.ActorID) (*model.MiningCount, error)
-	MiningTasks(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID, won *bool) ([]*model.MiningTask, error)
-	MiningTasksCount(ctx context.Context, start, end *time.Time, actor *types.ActorID, won *bool) (int, error)
-	MiningCountSummary(ctx context.Context, start, end time.Time, actor *types.ActorID) (*model.MiningCountSummary, error)
-	MiningCountAggregate(ctx context.Context, start, end time.Time, actor *types.ActorID, unit model.TaskHistoriesAggregateInterval) ([]*model.MiningCountAggregated, error)
+	MiningCount(ctx context.Context, start, end time.Time, actor *types.Address) (*model.MiningCount, error)
+	MiningTasks(ctx context.Context, start, end *time.Time, actor *types.Address, won *bool, include *bool, offset int, limit int) ([]*model.MiningTask, error)
+	MiningTasksCount(ctx context.Context, start, end *time.Time, actorid *types.Address, won *bool, include *bool) (int, error)
+	MiningCountSummary(ctx context.Context, start, end time.Time, actor *types.Address) (*model.MiningCountSummary, error)
+	MiningCountAggregate(ctx context.Context, start, end time.Time, actor *types.Address, unit model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error)
 }
 
-func (l *Loader) MiningSummaryByDay(ctx context.Context, start, end time.Time) ([]*model.MiningSummaryDay, error) {
+type MiningLoaderImpl struct {
+	loader *Loader
+}
+
+func NewMiningLoader(loader *Loader) MiningLoader {
+	return &MiningLoaderImpl{loader}
+}
+
+func (l *MiningLoaderImpl) MiningSummaryByDay(ctx context.Context, start, end time.Time) ([]*model.MiningSummaryDay, error) {
 	if end.IsZero() {
 		end = time.Now()
 	}
@@ -29,7 +38,7 @@ func (l *Loader) MiningSummaryByDay(ctx context.Context, start, end time.Time) (
 	}
 
 	var result []*model.MiningSummaryDay
-	err := l.db.Select(ctx, &result,
+	err := l.loader.db.Select(ctx, &result,
 		`SELECT
     DATE_TRUNC('day', base_compute_time) AS day,
     sp_id as miner,
@@ -49,7 +58,7 @@ ORDER BY
 	return result, nil
 }
 
-func (l *Loader) MiningCount(ctx context.Context, start, end time.Time, actor *types.ActorID) (*model.MiningCount, error) {
+func (l *MiningLoaderImpl) MiningCount(ctx context.Context, start, end time.Time, actor *types.Address) (*model.MiningCount, error) {
 	if end.IsZero() {
 		end = time.Now()
 	}
@@ -62,7 +71,7 @@ func (l *Loader) MiningCount(ctx context.Context, start, end time.Time, actor *t
 	}
 	var res []mm
 
-	err := l.db.Select(ctx, &res, `
+	err := l.loader.db.Select(ctx, &res, `
 SELECT
     included,
     COUNT(*) AS count
@@ -73,7 +82,7 @@ WHERE
     ($1::int IS NULL OR sp_id = $1) AND
     base_compute_time BETWEEN $2 AND $3
 GROUP BY
-    included;`, actor, start, end)
+    included;`, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), start, end)
 	if err != nil {
 		return nil, err
 	}
@@ -89,9 +98,9 @@ GROUP BY
 	return result, nil
 }
 
-func (l *Loader) MiningTasksCount(ctx context.Context, start, end *time.Time, actor *types.ActorID, won *bool, include *bool) (int, error) {
+func (l *MiningLoaderImpl) MiningTasksCount(ctx context.Context, start, end *time.Time, actor *types.Address, won *bool, include *bool) (int, error) {
 	var count int
-	err := l.db.QueryRow(ctx, `
+	err := l.loader.db.QueryRow(ctx, `
 SELECT COUNT(*)
 FROM
     mining_tasks
@@ -100,17 +109,17 @@ WHERE
     ($2::int IS NULL OR sp_id = $2) AND
     ($3::bool IS NULL OR included = $3) AND
     ($4::timestamp IS NULL OR base_compute_time >= $4) AND
-    ($5::timestamp IS NULL OR base_compute_time <= $5);`, won, actor, include, start, end).Scan(&count)
+    ($5::timestamp IS NULL OR base_compute_time <= $5);`, won, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), include, start, end).Scan(&count)
 	if err != nil {
 		return 0, err
 	}
 	return count, nil
 }
 
-func (l *Loader) MiningTasks(ctx context.Context, start, end *time.Time, actor *types.ActorID, won *bool, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
+func (l *MiningLoaderImpl) MiningTasks(ctx context.Context, start, end *time.Time, actor *types.Address, won *bool, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
 	var result []*model.MiningTask
 
-	err := l.db.Select(ctx, &result, `
+	err := l.loader.db.Select(ctx, &result, `
 SELECT
     task_id,
     sp_id,
@@ -131,16 +140,15 @@ WHERE
     ($4::timestamp IS NULL OR base_compute_time >= $4) AND
     ($5::timestamp IS NULL OR base_compute_time <= $5)
 ORDER BY
-    base_compute_time DESC 
-LIMIT $6 OFFSET $7;`, won, actor, include, start, end, limit, offset)
-
+    base_compute_time DESC
+LIMIT $6 OFFSET $7;`, won, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), include, start, end, limit, offset)
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func (l *Loader) MiningCountSummary(ctx context.Context, start, end time.Time, actor *types.ActorID) (*model.MiningCountSummary, error) {
+func (l *MiningLoaderImpl) MiningCountSummary(ctx context.Context, start, end time.Time, actor *types.Address) (*model.MiningCountSummary, error) {
 	if end.IsZero() {
 		end = time.Now()
 	}
@@ -160,25 +168,25 @@ func (l *Loader) MiningCountSummary(ctx context.Context, start, end time.Time, a
                 $2::timestamptz as end_time,
                 $3::int8 as actor_id
         )
-        SELECT 
+        SELECT
             COUNT(*) as total,
             COUNT(CASE WHEN won = true THEN 1 END) as won,
             COUNT(CASE WHEN included = true THEN 1 END) as included
         FROM mining_tasks mt
         WHERE base_compute_time BETWEEN (SELECT start_time FROM params) AND (SELECT end_time FROM params)
           AND (
-              (SELECT actor_id FROM params) IS NULL 
+              (SELECT actor_id FROM params) IS NULL
               OR mt.sp_id = (SELECT actor_id FROM params)
           )
     `
-	err := l.db.QueryRow(ctx, query, start, end, actor).Scan(&stats.Total, &stats.Won, &stats.Included)
+	err := l.loader.db.QueryRow(ctx, query, start, end, lo.If[*uint64](actor == nil, nil).Else(&actor.ID)).Scan(&stats.Total, &stats.Won, &stats.Included)
 	if err != nil {
 		return nil, err
 	}
 	return &stats, nil
 }
 
-func (l *Loader) MiningCountAggregate(ctx context.Context, start, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error) {
+func (l *MiningLoaderImpl) MiningCountAggregate(ctx context.Context, start, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error) {
 	if end.IsZero() {
 		end = time.Now()
 	}
@@ -212,7 +220,7 @@ func (l *Loader) MiningCountAggregate(ctx context.Context, start, end time.Time,
     ORDER BY
         time;
 `
-	err := l.db.Select(ctx, &result, query, start, end, actor, interval)
+	err := l.loader.db.Select(ctx, &result, query, start, end, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), interval)
 	if err != nil {
 		return nil, err
 	}

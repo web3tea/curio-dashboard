@@ -36,6 +36,25 @@ type WebRPC interface {
 	UpgradeResetTaskIDs(ctx context.Context, spid, sectorNum uint64) error
 	UpgradeDelete(ctx context.Context, spid, sectorNum uint64) error
 	WinStats(ctx context.Context) ([]webrpc.WinStats, error)
+
+	SetStorageAsk(ctx context.Context, ask *webrpc.StorageAsk) error
+	MarketBalance(ctx context.Context) ([]webrpc.MarketBalanceStatus, error)
+	MoveBalanceToEscrow(ctx context.Context, miner string, amount string, wallet string) (string, error)
+	GetPriceFilters(ctx context.Context) ([]webrpc.PriceFilter, error)
+	SetPriceFilters(ctx context.Context, name string, minDur, maxDur int, minSize, maxSize int64, price int64, verified bool) error
+	AddPriceFilters(ctx context.Context, name string, minDur, maxDur int, minSize, maxSize int64, price int64, verified bool) error
+	RemovePricingFilter(ctx context.Context, name string) error
+	GetClientFilters(ctx context.Context) ([]webrpc.ClientFilter, error)
+	SetClientFilters(ctx context.Context, name string, active bool, wallets, peers []string, filters []string, maxDealPerHour, maxDealSizePerHour int64, info string) error
+	AddClientFilters(ctx context.Context, name string, active bool, wallets, peers []string, filters []string, maxDealPerHour, maxDealSizePerHour int64, info string) error
+	RemoveClientFilter(ctx context.Context, name string) error
+
+	// Client Address Allow/Deny
+	GetAllowDenyList(ctx context.Context) ([]webrpc.AllowDeny, error)
+	SetAllowDenyList(ctx context.Context, wallet string, status bool) error
+	AddAllowDenyList(ctx context.Context, wallet string, status bool) error
+	RemoveAllowFilter(ctx context.Context, wallet string) error
+	DefaultAllowBehaviour(ctx context.Context) (bool, error)
 }
 
 type sectorListEntry struct {

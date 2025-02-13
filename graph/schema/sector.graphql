@@ -1,8 +1,6 @@
-scalar JSONB
-
 type Sector {
     id: ID!
-    spID: ActorID!
+    spID: Address!
     sectorNum: Int!
     status: PorepStatus!
     meta: SectorMeta
@@ -14,7 +12,7 @@ type Sector {
 }
 
 type SectorLocation {
-    minerId: ActorID!
+    minerId: Address!
     sectorNum: Int!
     sectorFiletype: Int!
     storageId: String!
@@ -27,7 +25,7 @@ type SectorLocation {
 }
 
 type SectorMetaPiece {
-    spID: ActorID!
+    spID: Address!
     sectorNum: Int!
     pieceNum: Int!
     pieceCID: String!

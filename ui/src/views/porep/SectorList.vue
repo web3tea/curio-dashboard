@@ -9,8 +9,10 @@ import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
 import { RestartAllFailedSector } from '@/gql/sector'
 import { useUIStore } from '@/stores/ui'
 import SectorRestart from '@/views/sectors/SectorRestart.vue'
+import { useI18n } from 'vue-i18n'
 
 const uiStore = useUIStore()
+const { d } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
   fetchPolicy: 'network-only',
@@ -179,7 +181,7 @@ onDone(() => {
               </div>
             </template>
             <template #item.createTime="{value}">
-              {{ $d(value, 'short') }}
+              {{ d(value, 'short') }}
             </template>
             <template #item.actions="{ item }">
               <SectorRemoveDialog

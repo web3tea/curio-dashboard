@@ -4,6 +4,9 @@ import { computed, ComputedRef, ref } from 'vue'
 import { Task } from '@/typed-graph'
 import { GetRunningTasks } from '@/gql/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { d } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
   fetchPolicy: 'cache-and-network',
@@ -87,10 +90,10 @@ const searchValue = ref('')
               <v-chip>{{ value }}</v-chip>
             </template>
             <template #item.postedTime="{ value }">
-              {{ $d(value, 'short') }}
+              {{ d(value, 'short') }}
             </template>
             <template #item.updateTime="{ value }">
-              {{ $d(value, 'short') }}
+              {{ d(value, 'short') }}
             </template>
             <template #item.ownerId="{ item }">
               {{ item.owner? item.owner.hostAndPort : item.ownerId }}

@@ -2,6 +2,7 @@
 import { PropType, ref } from 'vue'
 import { MachineDetail } from '@/typed-graph'
 import { IconSearch } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   title: {
@@ -13,6 +14,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const { t, d } = useI18n()
 
 const searchValue = ref('')
 const dialog = ref(false)
@@ -39,7 +42,7 @@ const headers = [
         @click="dialog = true"
       >
         {{ props.usedBy.length }}
-      </v-btn> {{ $t('fields.Node', props.usedBy.length) }}
+      </v-btn> {{ t('fields.Node', props.usedBy.length) }}
     </template>
     <template #default="{ }">
       <v-data-table-virtual
@@ -64,7 +67,7 @@ const headers = [
           </v-text-field>
         </template>
         <template #item.startupTime="{ value }">
-          {{ $d(value, 'short') }}
+          {{ d(value, 'short') }}
         </template>
       </v-data-table-virtual>
     </template>

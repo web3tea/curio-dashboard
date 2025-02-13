@@ -15,6 +15,7 @@ declare module 'vue' {
     EpochField: typeof import('./components/app/EpochField.vue')['default']
     HostPortSelectInput: typeof import('./components/app/HostPortSelectInput.vue')['default']
     MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
+    PriceInput: typeof import('./components/app/PriceInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StoragePathTable: typeof import('./components/app/StoragePathTable.vue')['default']
@@ -22,6 +23,7 @@ declare module 'vue' {
     TruncatedChip: typeof import('./components/shared/TruncatedChip.vue')['default']
     UiChildCard: typeof import('./components/shared/UiChildCard.vue')['default']
     UiParentCard: typeof import('./components/shared/UiParentCard.vue')['default']
+    UiTableCard: typeof import('./components/shared/UiTableCard.vue')['default']
     UiTitleCard: typeof import('./components/shared/UiTitleCard.vue')['default']
     UiWidgetCard: typeof import('./components/shared/UiWidgetCard.vue')['default']
   }

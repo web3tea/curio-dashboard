@@ -7,7 +7,7 @@ const breadcrumbs = ref([
   {
     title: 'Settings',
     disabled: false,
-    href: '#',
+    to: { name: 'Settings' },
   },
 ])
 </script>

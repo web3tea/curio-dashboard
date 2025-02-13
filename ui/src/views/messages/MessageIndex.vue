@@ -7,12 +7,12 @@ const breadcrumbs = ref([
   {
     title: 'Messages',
     disabled: true,
-    href: '#',
+    to: '#',
   },
   {
     title: 'Sends',
     disabled: true,
-    href: '#',
+    to: '#',
   },
 ])
 </script>

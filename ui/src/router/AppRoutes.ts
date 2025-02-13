@@ -1,16 +1,16 @@
 import { RouteLocationNormalizedLoaded } from 'vue-router'
 
 const AppRoutes = {
-  path: '/app',
+  path: '/',
   meta: {
     requiresAuth: true,
   },
-  redirect: '/app/overview',
+  redirect: '/overview',
   component: () => import('@/layouts/DashboardLayout.vue'),
   children: [
     {
       name: 'Overview',
-      path: '/app/overview',
+      path: '/overview',
       component: () => import('@/views/overview/OverviewIndex.vue'),
       meta: {
         title: 'Overview',
@@ -19,7 +19,7 @@ const AppRoutes = {
     },
     {
       name: 'Analytics',
-      path: '/app/analytics',
+      path: '/analytics',
       component: () => import('@/views/analytics/AnalyticsIndex.vue'),
       meta: {
         title: 'Analytics',
@@ -28,7 +28,7 @@ const AppRoutes = {
     },
     {
       name: 'Machines',
-      path: '/app/machines',
+      path: '/machines',
       component: () => import('@/views/machines/MachineIndex.vue'),
       meta: {
         title: 'Machine List',
@@ -37,7 +37,7 @@ const AppRoutes = {
     },
     {
       name: 'MachineInfo',
-      path: '/app/machines/:id',
+      path: '/machines/:id',
       component: () => import('@/views/machines/MachineInfo.vue'),
       props: true,
       meta: {
@@ -47,7 +47,7 @@ const AppRoutes = {
     },
     {
       name: 'Storages',
-      path: '/app/storages',
+      path: '/storages',
       component: () => import('@/views/storages/StorageIndex.vue'),
       meta: {
         title: 'Storage List',
@@ -56,7 +56,7 @@ const AppRoutes = {
     },
     {
       name: 'PoRep',
-      path: '/app/porep',
+      path: '/porep',
       component: () => import('@/views/porep/PorepIndex.vue'),
       meta: {
         title: 'PoRep Pipeline',
@@ -65,7 +65,7 @@ const AppRoutes = {
     },
     {
       name: 'RunningTasks',
-      path: '/app/running-tasks',
+      path: '/running-tasks',
       component: () => import('@/views/task/TaskIndex.vue'),
       meta: {
         title: 'Running',
@@ -74,7 +74,7 @@ const AppRoutes = {
     },
     {
       name: 'TaskHistory',
-      path: '/app/task-history',
+      path: '/task-history',
       component: () => import('@/views/task/history/TaskHistoryIndex.vue'),
       props: (route: RouteLocationNormalizedLoaded) => ({
         start: Number(route.query.start),
@@ -90,7 +90,7 @@ const AppRoutes = {
     },
     {
       name: 'Sectors',
-      path: '/app/sectors',
+      path: '/sectors',
       component: () => import('@/views/sectors/SectorIndex.vue'),
       meta: {
         title: 'Sector List',
@@ -99,7 +99,7 @@ const AppRoutes = {
     },
     {
       name: 'SectorDetails',
-      path: '/app/sectors/:miner/:sectorNumber',
+      path: '/sectors/:miner/:sectorNumber',
       component: () => import('@/views/sectors/SectorDetails.vue'),
       props: true,
       meta: {
@@ -109,7 +109,7 @@ const AppRoutes = {
     },
     {
       name: 'MiningTaskList',
-      path: '/app/mining/wins',
+      path: '/mining/wins',
       component: () => import('@/views/mining/wins/MiningWinsIndex.vue'),
       meta: {
         title: 'Mining Wins',
@@ -118,7 +118,7 @@ const AppRoutes = {
     },
     {
       name: 'Configurations',
-      path: '/app/configurations',
+      path: '/configurations',
       component: () => import('@/views/configurations/ConfigurationIndex.vue'),
       meta: {
         title: 'Configuration List',
@@ -127,7 +127,7 @@ const AppRoutes = {
     },
     {
       name: 'ConfigurationEdit',
-      path: '/app/configurations/:layer',
+      path: '/configurations/:layer',
       component: () => import('@/views/configurations/ConfigurationEdit.vue'),
       props: true,
       meta: {
@@ -137,7 +137,7 @@ const AppRoutes = {
     },
     {
       name: 'ConfigurationCreate',
-      path: '/app/configurations/create',
+      path: '/configurations/create',
       component: () => import('@/views/configurations/ConfigurationCreate.vue'),
       meta: {
         title: 'Configuration Create',
@@ -146,7 +146,7 @@ const AppRoutes = {
     },
     {
       name: 'Miners',
-      path: '/app/miners',
+      path: '/miners',
       component: () => import('@/views/miners/MinerIndex.vue'),
       meta: {
         title: 'Miner List',
@@ -155,7 +155,7 @@ const AppRoutes = {
     },
     {
       name: 'MinerDetails',
-      path: '/app/miners/:id',
+      path: '/miners/:id',
       component: () => import('@/views/miners/MinerDetails.vue'),
       props: true,
       meta: {
@@ -165,16 +165,16 @@ const AppRoutes = {
     },
     {
       name: 'PendingDeals',
-      path: '/app/deals/pending',
-      component: () => import('@/views/deals/DealIndex.vue'),
+      path: '/market/pending-pieces',
+      component: () => import('@/views/market/deals/pending/PendingDealIndex.vue'),
       meta: {
-        title: 'Pending Deals',
-        description: 'List of all pending deals in the cluster',
+        title: 'Pending Pieces',
+        description: 'List of all pending pieces in the cluster',
       },
     },
     {
       name: 'MiningOverview',
-      path: '/app/mining/overview',
+      path: '/mining/overview',
       component: () => import('@/views/mining/overview/MiningOverviewIndex.vue'),
       meta: {
         title: 'Mining Overview',
@@ -183,7 +183,7 @@ const AppRoutes = {
     },
     {
       name: "MessageSends",
-      path: "/app/messages/sends",
+      path: "/messages/sends",
       component: () => import('@/views/messages/MessageIndex.vue'),
       meta: {
         title: 'Message Sends',
@@ -192,11 +192,65 @@ const AppRoutes = {
     },
     {
       name: "Settings",
-      path: "/app/settings",
+      path: "/settings",
       component: () => import('@/views/settings/SettingsIndex.vue'),
       meta: {
         title: 'Settings',
         description: 'My Settings',
+      },
+    },
+    {
+      name: "StorageAsks",
+      path: "/market/storage-asks",
+      component: () => import('@/views/market/asks/AskIndex.vue'),
+      meta: {
+        title: 'Storage Asks',
+        description: 'List of all storage asks in the cluster',
+      },
+    },
+    {
+      name: "MarketBalances",
+      path: "/market/balances",
+      component: () => import('@/views/market/balances/BalanceIndex.vue'),
+      meta: {
+        title: 'Market Balances',
+        description: 'List of all market balances in the cluster',
+      },
+    },
+    {
+      name: "PricingFilters",
+      path: "/market/filters/price",
+      component: () => import('@/views/market/filter/price/PriceFilterIndex.vue'),
+      meta: {
+        title: 'Pricing Filters',
+        description: 'Market pricing filters',
+      },
+    },
+    {
+      name: "ClientFilters",
+      path: "/market/filters/client",
+      component: () => import('@/views/market/filter/client/ClientFilterIndex.vue'),
+      meta: {
+        title: 'Client Filters',
+        description: 'Market client filters',
+      },
+    },
+    {
+      name: "ClientAllows",
+      path: "/market/filters/client-allow",
+      component: () => import('@/views/market/filter/clientAllow/ClientAllowIndex.vue'),
+      meta: {
+        title: 'Client Allows',
+        description: 'Market client allows',
+      },
+    },
+    {
+      name: "MarketMk12Deals",
+      path: "/market/mk12-deals",
+      component: () => import('@/views/market/deals/mk12/Mk12DealIndex.vue'),
+      meta: {
+        title: 'MK12 Deals',
+        description: 'Market Mk12 deals',
       },
     }
   ],

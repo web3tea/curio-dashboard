@@ -23,6 +23,12 @@ type WebRPCMethods struct {
 
 	ActorSummary func(p0 context.Context) ([]webrpc.ActorSummary, error) ``
 
+	AddAllowDenyList func(p0 context.Context, p1 string, p2 bool) error ``
+
+	AddClientFilters func(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error ``
+
+	AddPriceFilters func(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error ``
+
 	ClusterMachines func(p0 context.Context) ([]webrpc.MachineSummary, error) ``
 
 	ClusterNodeInfo func(p0 context.Context, p1 int64) (*webrpc.MachineInfo, error) ``
@@ -35,11 +41,23 @@ type WebRPCMethods struct {
 
 	DealsSealNow func(p0 context.Context, p1 uint64, p2 uint64) error ``
 
+	DefaultAllowBehaviour func(p0 context.Context) (bool, error) ``
+
+	GetAllowDenyList func(p0 context.Context) ([]webrpc.AllowDeny, error) ``
+
+	GetClientFilters func(p0 context.Context) ([]webrpc.ClientFilter, error) ``
+
+	GetPriceFilters func(p0 context.Context) ([]webrpc.PriceFilter, error) ``
+
 	HarmonyTaskHistory func(p0 context.Context, p1 string) ([]webrpc.HarmonyTaskHistory, error) ``
 
 	HarmonyTaskMachines func(p0 context.Context, p1 string) ([]webrpc.HarmonyMachineDesc, error) ``
 
 	HarmonyTaskStats func(p0 context.Context) ([]webrpc.HarmonyTaskStats, error) ``
+
+	MarketBalance func(p0 context.Context) ([]webrpc.MarketBalanceStatus, error) ``
+
+	MoveBalanceToEscrow func(p0 context.Context, p1 string, p2 string, p3 string) (string, error) ``
 
 	PipelinePorepRestartAll func(p0 context.Context) error ``
 
@@ -47,11 +65,25 @@ type WebRPCMethods struct {
 
 	PorepPipelineSummary func(p0 context.Context) ([]webrpc.PorepPipelineSummary, error) ``
 
+	RemoveAllowFilter func(p0 context.Context, p1 string) error ``
+
+	RemoveClientFilter func(p0 context.Context, p1 string) error ``
+
+	RemovePricingFilter func(p0 context.Context, p1 string) error ``
+
 	SectorInfo func(p0 context.Context, p1 string, p2 int64) (*webrpc.SectorInfo, error) ``
 
 	SectorRemove func(p0 context.Context, p1 int, p2 int) error ``
 
 	SectorResume func(p0 context.Context, p1 int64, p2 int64) error ``
+
+	SetAllowDenyList func(p0 context.Context, p1 string, p2 bool) error ``
+
+	SetClientFilters func(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error ``
+
+	SetPriceFilters func(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error ``
+
+	SetStorageAsk func(p0 context.Context, p1 *webrpc.StorageAsk) error ``
 
 	StorageGCApprove func(p0 context.Context, p1 int64, p2 int64, p3 int64, p4 string) error ``
 
@@ -108,6 +140,39 @@ func (s *WebRPCStruct) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, 
 
 func (s *WebRPCStub) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, error) {
 	return *new([]webrpc.ActorSummary), ErrNotSupported
+}
+
+func (s *WebRPCStruct) AddAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
+	if s.Internal.AddAllowDenyList == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.AddAllowDenyList(p0, p1, p2)
+}
+
+func (s *WebRPCStub) AddAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) AddClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
+	if s.Internal.AddClientFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.AddClientFilters(p0, p1, p2, p3, p4, p5, p6, p7, p8)
+}
+
+func (s *WebRPCStub) AddClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) AddPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
+	if s.Internal.AddPriceFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.AddPriceFilters(p0, p1, p2, p3, p4, p5, p6, p7)
+}
+
+func (s *WebRPCStub) AddPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
+	return ErrNotSupported
 }
 
 func (s *WebRPCStruct) ClusterMachines(p0 context.Context) ([]webrpc.MachineSummary, error) {
@@ -176,6 +241,50 @@ func (s *WebRPCStub) DealsSealNow(p0 context.Context, p1 uint64, p2 uint64) erro
 	return ErrNotSupported
 }
 
+func (s *WebRPCStruct) DefaultAllowBehaviour(p0 context.Context) (bool, error) {
+	if s.Internal.DefaultAllowBehaviour == nil {
+		return false, ErrNotSupported
+	}
+	return s.Internal.DefaultAllowBehaviour(p0)
+}
+
+func (s *WebRPCStub) DefaultAllowBehaviour(p0 context.Context) (bool, error) {
+	return false, ErrNotSupported
+}
+
+func (s *WebRPCStruct) GetAllowDenyList(p0 context.Context) ([]webrpc.AllowDeny, error) {
+	if s.Internal.GetAllowDenyList == nil {
+		return *new([]webrpc.AllowDeny), ErrNotSupported
+	}
+	return s.Internal.GetAllowDenyList(p0)
+}
+
+func (s *WebRPCStub) GetAllowDenyList(p0 context.Context) ([]webrpc.AllowDeny, error) {
+	return *new([]webrpc.AllowDeny), ErrNotSupported
+}
+
+func (s *WebRPCStruct) GetClientFilters(p0 context.Context) ([]webrpc.ClientFilter, error) {
+	if s.Internal.GetClientFilters == nil {
+		return *new([]webrpc.ClientFilter), ErrNotSupported
+	}
+	return s.Internal.GetClientFilters(p0)
+}
+
+func (s *WebRPCStub) GetClientFilters(p0 context.Context) ([]webrpc.ClientFilter, error) {
+	return *new([]webrpc.ClientFilter), ErrNotSupported
+}
+
+func (s *WebRPCStruct) GetPriceFilters(p0 context.Context) ([]webrpc.PriceFilter, error) {
+	if s.Internal.GetPriceFilters == nil {
+		return *new([]webrpc.PriceFilter), ErrNotSupported
+	}
+	return s.Internal.GetPriceFilters(p0)
+}
+
+func (s *WebRPCStub) GetPriceFilters(p0 context.Context) ([]webrpc.PriceFilter, error) {
+	return *new([]webrpc.PriceFilter), ErrNotSupported
+}
+
 func (s *WebRPCStruct) HarmonyTaskHistory(p0 context.Context, p1 string) ([]webrpc.HarmonyTaskHistory, error) {
 	if s.Internal.HarmonyTaskHistory == nil {
 		return *new([]webrpc.HarmonyTaskHistory), ErrNotSupported
@@ -207,6 +316,28 @@ func (s *WebRPCStruct) HarmonyTaskStats(p0 context.Context) ([]webrpc.HarmonyTas
 
 func (s *WebRPCStub) HarmonyTaskStats(p0 context.Context) ([]webrpc.HarmonyTaskStats, error) {
 	return *new([]webrpc.HarmonyTaskStats), ErrNotSupported
+}
+
+func (s *WebRPCStruct) MarketBalance(p0 context.Context) ([]webrpc.MarketBalanceStatus, error) {
+	if s.Internal.MarketBalance == nil {
+		return *new([]webrpc.MarketBalanceStatus), ErrNotSupported
+	}
+	return s.Internal.MarketBalance(p0)
+}
+
+func (s *WebRPCStub) MarketBalance(p0 context.Context) ([]webrpc.MarketBalanceStatus, error) {
+	return *new([]webrpc.MarketBalanceStatus), ErrNotSupported
+}
+
+func (s *WebRPCStruct) MoveBalanceToEscrow(p0 context.Context, p1 string, p2 string, p3 string) (string, error) {
+	if s.Internal.MoveBalanceToEscrow == nil {
+		return "", ErrNotSupported
+	}
+	return s.Internal.MoveBalanceToEscrow(p0, p1, p2, p3)
+}
+
+func (s *WebRPCStub) MoveBalanceToEscrow(p0 context.Context, p1 string, p2 string, p3 string) (string, error) {
+	return "", ErrNotSupported
 }
 
 func (s *WebRPCStruct) PipelinePorepRestartAll(p0 context.Context) error {
@@ -242,6 +373,39 @@ func (s *WebRPCStub) PorepPipelineSummary(p0 context.Context) ([]webrpc.PorepPip
 	return *new([]webrpc.PorepPipelineSummary), ErrNotSupported
 }
 
+func (s *WebRPCStruct) RemoveAllowFilter(p0 context.Context, p1 string) error {
+	if s.Internal.RemoveAllowFilter == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.RemoveAllowFilter(p0, p1)
+}
+
+func (s *WebRPCStub) RemoveAllowFilter(p0 context.Context, p1 string) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) RemoveClientFilter(p0 context.Context, p1 string) error {
+	if s.Internal.RemoveClientFilter == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.RemoveClientFilter(p0, p1)
+}
+
+func (s *WebRPCStub) RemoveClientFilter(p0 context.Context, p1 string) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) RemovePricingFilter(p0 context.Context, p1 string) error {
+	if s.Internal.RemovePricingFilter == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.RemovePricingFilter(p0, p1)
+}
+
+func (s *WebRPCStub) RemovePricingFilter(p0 context.Context, p1 string) error {
+	return ErrNotSupported
+}
+
 func (s *WebRPCStruct) SectorInfo(p0 context.Context, p1 string, p2 int64) (*webrpc.SectorInfo, error) {
 	if s.Internal.SectorInfo == nil {
 		return nil, ErrNotSupported
@@ -272,6 +436,50 @@ func (s *WebRPCStruct) SectorResume(p0 context.Context, p1 int64, p2 int64) erro
 }
 
 func (s *WebRPCStub) SectorResume(p0 context.Context, p1 int64, p2 int64) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
+	if s.Internal.SetAllowDenyList == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetAllowDenyList(p0, p1, p2)
+}
+
+func (s *WebRPCStub) SetAllowDenyList(p0 context.Context, p1 string, p2 bool) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
+	if s.Internal.SetClientFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetClientFilters(p0, p1, p2, p3, p4, p5, p6, p7, p8)
+}
+
+func (s *WebRPCStub) SetClientFilters(p0 context.Context, p1 string, p2 bool, p3 []string, p4 []string, p5 []string, p6 int64, p7 int64, p8 string) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
+	if s.Internal.SetPriceFilters == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetPriceFilters(p0, p1, p2, p3, p4, p5, p6, p7)
+}
+
+func (s *WebRPCStub) SetPriceFilters(p0 context.Context, p1 string, p2 int, p3 int, p4 int64, p5 int64, p6 int64, p7 bool) error {
+	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) SetStorageAsk(p0 context.Context, p1 *webrpc.StorageAsk) error {
+	if s.Internal.SetStorageAsk == nil {
+		return ErrNotSupported
+	}
+	return s.Internal.SetStorageAsk(p0, p1)
+}
+
+func (s *WebRPCStub) SetStorageAsk(p0 context.Context, p1 *webrpc.StorageAsk) error {
 	return ErrNotSupported
 }
 

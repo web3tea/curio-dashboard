@@ -7,17 +7,17 @@ import (
 )
 
 type Sector struct {
-	SpID      types.ActorID
+	SpID      types.Address
 	SectorNum int
 	Meta      *SectorMeta `json:"meta,omitempty"`
 }
 
 type SectorMeta struct {
-	SpID            types.ActorID    `json:"spId"`
+	SpID            types.Address    `json:"spId"`
 	SectorNum       int              `json:"sectorNum"`
 	RegSealProof    int              `json:"regSealProof"`
 	TicketEpoch     int              `json:"ticketEpoch"`
-	TicketValue     types.ByteArray  `json:"ticketValue,omitempty"`
+	TicketValue     types.Bytes      `json:"ticketValue,omitempty"`
 	OrigSealedCid   string           `json:"origSealedCid"`
 	OrigUnsealedCid string           `json:"origUnsealedCid"`
 	CurSealedCid    string           `json:"curSealedCid"`
@@ -26,7 +26,7 @@ type SectorMeta struct {
 	MsgCidCommit    sql.Null[string] `json:"msgCidCommit,omitempty"`
 	MsgCidUpdate    sql.Null[string] `json:"msgCidUpdate,omitempty"`
 	SeedEpoch       int              `json:"seedEpoch"`
-	SeedValue       types.ByteArray  `json:"seedValue,omitempty"`
+	SeedValue       types.Bytes      `json:"seedValue,omitempty"`
 	ExpirationEpoch sql.Null[int]    `json:"expirationEpoch,omitempty"`
 	IsCC            bool             `json:"isCC"`
 	Deadline        sql.Null[int]    `json:"deadline,omitempty"`
@@ -34,7 +34,7 @@ type SectorMeta struct {
 }
 
 type SectorLocation struct {
-	MinerID        types.ActorID    `json:"minerId"`
+	MinerID        types.Address    `json:"minerId"`
 	SectorNum      int              `json:"sectorNum"`
 	SectorFiletype int              `json:"sectorFiletype"`
 	StorageID      string           `json:"storageId"`

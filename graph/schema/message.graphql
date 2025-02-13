@@ -3,10 +3,10 @@ type MessageSend {
     toAddr: String!
     sendReason: String!
     sendTaskId: Int!
-    unsignedData: ByteArray!
+    unsignedData: Bytes!
     unsignedCid: String!
     nonce: Int
-    signedData: ByteArray
+    signedData: Bytes
     signedJson: JSONB
     signedCid: String
     sendTime: Time

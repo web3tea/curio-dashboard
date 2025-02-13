@@ -10,7 +10,7 @@
     "PoRep": "PoRep",
     "Tasks": "Tasks",
     "Sectors": "Sectors",
-    "Pending Deals": "Pending Deals",
+    "Pending Pieces": "Pending Pieces",
     "Deals": "Deals",
     "Machines": "Machines",
     "Storages": "Storages",
@@ -23,7 +23,16 @@
     "Task History": "Task History",
     "History": "History",
     "Messages": "Messages",
-    "Sends": "Sends"
+    "Sends": "Sends",
+    "Market": "Market",
+    "Storage Asks": "Storage Asks",
+    "Balances": "Balances",
+    "Settings": "Settings",
+    "Pricing Filters": "Pricing Filters",
+    "Client Filters": "Client Filters",
+    "Client Allow/Deny": "Client Allow/Deny",
+    "Market Balances": "Market Balances",
+    "MK12 Deals": "MK12 Deals"
   },
   "fields": {
     "Total Power": "Total Power",

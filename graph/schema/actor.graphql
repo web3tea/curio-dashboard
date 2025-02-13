@@ -1,6 +1,3 @@
-scalar Address
-scalar BigInt
-
 type Actor{
     id: ID!
     address: Address!

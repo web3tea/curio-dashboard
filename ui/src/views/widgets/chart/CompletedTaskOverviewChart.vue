@@ -7,7 +7,9 @@ import { useCustomizerStore } from '@/stores/customizer'
 import { GetTaskHistoriesAggregation } from '@/gql/task'
 import { useTheme } from 'vuetify'
 import UiWidgetCard from '@/components/shared/UiWidgetCard.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const theme = useTheme()
 const InfoColor = theme.current.value.colors.info
 const ErrorColor = theme.current.value.colors.error
@@ -122,11 +124,11 @@ const areaChart = computed(() => {
 <template>
   <UiWidgetCard
     :loading="loading"
-    :title="$t('fields.Tasks Completed')"
+    :title="t('fields.Tasks Completed')"
   >
     <template #subtitle>
       <router-link :to="{name: 'TaskHistory'}">
-        {{ $t('fields.View All') }}
+        {{ t('fields.View All') }}
       </router-link>
     </template>
     <template #append>
@@ -145,14 +147,14 @@ const areaChart = computed(() => {
             value="7"
             variant="outlined"
           >
-            {{ $t('fields.Week') }}
+            {{ t('fields.Week') }}
           </v-tab>
           <v-tab
             rounded="md"
             value="30"
             variant="outlined"
           >
-            {{ $t('fields.Month') }}
+            {{ t('fields.Month') }}
           </v-tab>
         </v-tabs>
       </div>

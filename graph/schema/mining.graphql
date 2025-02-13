@@ -1,6 +1,6 @@
 type MiningSummaryDay {
     day: Time!
-    miner: ActorID!
+    miner: Address!
     wonBlock: Int!
 }
 
@@ -20,7 +20,7 @@ type MiningCountSummary {
 
 type MiningTask {
     taskId: ID!
-    spId: ActorID!
+    spId: Address!
     epoch: Int!
     baseComputeTime: Time!
     won: Boolean!

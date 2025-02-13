@@ -14,7 +14,7 @@ import (
 
 // ID is the resolver for the id field.
 func (r *sectorMetaResolver) ID(ctx context.Context, obj *model.SectorMeta) (string, error) {
-	return fmt.Sprintf("%d-%d", obj.SpID, obj.SectorNum), nil
+	return fmt.Sprintf("%s-%d", obj.SpID, obj.SectorNum), nil
 }
 
 // MsgCidPrecommit is the resolver for the msgCidPrecommit field.

@@ -6,6 +6,9 @@ import { StorageStats } from '@/typed-graph'
 import { GetStorageStats } from '@/gql/storage'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const headers = [
   { title: 'Type', key: 'type' },
@@ -31,7 +34,7 @@ function usePercentage (available: number, total: number) {
 <template>
   <UiWidgetCard
     class-name="px-0 pb-0 rounded-md"
-    :title="$t('fields.Storage Usages')"
+    :title="t('fields.Storage Usages')"
   >
     <template #append>
       <v-btn

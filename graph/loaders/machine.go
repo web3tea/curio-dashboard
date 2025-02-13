@@ -14,30 +14,38 @@ type MachineLoader interface {
 	MachineStorages(ctx context.Context, hostPort string) ([]*model.StoragePath, error)
 }
 
-func (l *Loader) MachineStorages(ctx context.Context, hostPort string) ([]*model.StoragePath, error) {
+type MachineLoaderImpl struct {
+	loader *Loader
+}
+
+func NewMachineLoader(loader *Loader) MachineLoader {
+	return &MachineLoaderImpl{loader}
+}
+
+func (l *MachineLoaderImpl) MachineStorages(ctx context.Context, hostPort string) ([]*model.StoragePath, error) {
 	var ss []*model.StoragePath
-	err := l.db.Select(ctx, &ss, `SELECT 
-    storage_id, 
+	err := l.loader.db.Select(ctx, &ss, `SELECT
+    storage_id,
     urls,
-    weight, 
-    max_storage, 
-    can_seal, 
-    can_store, 
-    groups, 
-    allow_to, 
-    allow_types, 
-    deny_types, 
-    capacity, 
-    available, 
-    fs_available, 
-    reserved, 
-    used, 
-    allow_miners, 
-    deny_miners, 
-    last_heartbeat, 
-    heartbeat_err 
-FROM storage_path 
-WHERE urls 
+    weight,
+    max_storage,
+    can_seal,
+    can_store,
+    groups,
+    allow_to,
+    allow_types,
+    deny_types,
+    capacity,
+    available,
+    fs_available,
+    reserved,
+    used,
+    allow_miners,
+    deny_miners,
+    last_heartbeat,
+    heartbeat_err
+FROM storage_path
+WHERE urls
           LIKE '%' || $1 || '%'`, hostPort)
 	if err != nil {
 		return nil, err
@@ -45,9 +53,9 @@ WHERE urls
 	return ss, nil
 }
 
-func (l *Loader) Machine(ctx context.Context, id int) (*model.Machine, error) {
+func (l *MachineLoaderImpl) Machine(ctx context.Context, id int) (*model.Machine, error) {
 	var out model.Machine
-	err := l.db.QueryRow(ctx, `SELECT
+	err := l.loader.db.QueryRow(ctx, `SELECT
     id,
     last_contact,
     host_and_port,
@@ -61,9 +69,9 @@ WHERE id = $1`, id).
 	return &out, err
 }
 
-func (l *Loader) Machines(ctx context.Context) ([]*model.Machine, error) {
+func (l *MachineLoaderImpl) Machines(ctx context.Context) ([]*model.Machine, error) {
 	var out []*model.Machine
-	if err := l.db.Select(ctx, &out, `SELECT
+	if err := l.loader.db.Select(ctx, &out, `SELECT
     id,
     last_contact,
     host_and_port,
@@ -77,9 +85,9 @@ FROM
 	return out, nil
 }
 
-func (l *Loader) MachineByHostPort(ctx context.Context, hostPort string) (*model.Machine, error) {
+func (l *MachineLoaderImpl) MachineByHostPort(ctx context.Context, hostPort string) (*model.Machine, error) {
 	var res []*model.Machine
-	if err := l.db.Select(ctx, &res, `SELECT
+	if err := l.loader.db.Select(ctx, &res, `SELECT
     id,
     last_contact,
     host_and_port,
@@ -97,9 +105,9 @@ WHERE host_and_port = $1`, hostPort); err != nil {
 	return res[0], nil
 }
 
-func (l *Loader) MachineDetails(ctx context.Context) ([]*model.MachineDetail, error) {
+func (l *MachineLoaderImpl) MachineDetails(ctx context.Context) ([]*model.MachineDetail, error) {
 	var out []*model.MachineDetail
-	if err := l.db.Select(ctx, &out, `SELECT
+	if err := l.loader.db.Select(ctx, &out, `SELECT
     id,
     tasks,
     layers,

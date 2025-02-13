@@ -19,12 +19,35 @@ type Loader struct {
 	db    *db.HarmonyDB
 	cache *expirable.LRU[string, any] // low level cache
 	MessageLoader
+	MarketLoader
+	MiningLoader
+	ActorLoader
+	AlertLoader
+	ConfigLoader
+	MachineLoader
+	PorepLoader
+	SectorLoader
+	StorageLoader
+	TaskLoader
 }
 
 func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
-	return &Loader{
-		db:            db,
-		cache:         expirable.NewLRU[string, any](cacheSize, nil, time.Minute),
-		MessageLoader: NewMessageLoader(db),
+	loader := &Loader{
+		db:    db,
+		cache: expirable.NewLRU[string, any](cacheSize, nil, time.Minute),
 	}
+
+	loader.ConfigLoader = NewConfigLoader(loader)
+	loader.MessageLoader = NewMessageLoader(loader)
+	loader.MarketLoader = NewMarketLoader(loader)
+	loader.MiningLoader = NewMiningLoader(loader)
+	loader.ActorLoader = NewActorLoader(loader)
+	loader.AlertLoader = NewAlertLoader(loader)
+	loader.MachineLoader = NewMachineLoader(loader)
+	loader.PorepLoader = NewPorepLoader(loader)
+	loader.SectorLoader = NewSectorLoader(loader)
+	loader.StorageLoader = NewStorageLoader(loader)
+	loader.TaskLoader = NewTaskLoader(loader)
+
+	return loader
 }

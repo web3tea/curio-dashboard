@@ -23,12 +23,12 @@ const breadcrumbs = ref([
   {
     title: 'Sectors',
     disabled: false,
-    href: '/app/sectors',
+    to: { name: 'Sectors' },
   },
   {
     title: props.miner + '-' + props.sectorNumber,
     disabled: true,
-    href: '#',
+    to: '#',
   },
 ])
 

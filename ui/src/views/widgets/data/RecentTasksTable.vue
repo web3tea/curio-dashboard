@@ -5,6 +5,7 @@ import { SubscribeCompletedTask } from '@/gql/task'
 import { TaskHistory } from '@/typed-graph'
 import { formatDuration } from '@/utils/helpers/formatDuration'
 import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   maxMessages: {
@@ -16,6 +17,8 @@ const props = defineProps({
     default: null,
   },
 })
+
+const { d, t } = useI18n()
 
 const isStop = ref(false)
 const { result, loading, stop, start } = useSubscription(SubscribeCompletedTask, {
@@ -52,7 +55,7 @@ const headers = [
 <template>
   <UiWidgetCard
     class-name="px-0 pb-0 rounded-md"
-    :title="$t('fields.Recently Finished Tasks')"
+    :title="t('fields.Recently Finished Tasks')"
   >
     <template #append>
       <v-btn
@@ -64,7 +67,7 @@ const headers = [
     </template>
     <template #subtitle>
       <router-link :to="{name: 'TaskHistory'}">
-        {{ $t('fields.View All') }}
+        {{ t('fields.View All') }}
       </router-link>
     </template>
     <v-data-table-virtual
@@ -72,7 +75,6 @@ const headers = [
       :headers="headers"
       height="500"
       hover
-      item-value="taskId"
       :items="tasks"
       :loading="loading"
     >
@@ -82,10 +84,10 @@ const headers = [
         </router-link>
       </template>
       <template #item.posted="{ value }">
-        {{ $d(value, 'short') }}
+        {{ d(value, 'short') }}
       </template>
       <template #item.workStart="{ value }">
-        {{ $d(value, 'short') }}
+        {{ d(value, 'short') }}
       </template>
       <template #item.completedByHostAndPort="{ item }">
         <RouterLink

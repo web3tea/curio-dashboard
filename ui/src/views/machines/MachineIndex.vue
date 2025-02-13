@@ -8,13 +8,8 @@ const breadcrumbs = ref([
   {
     title: 'Machines',
     disabled: false,
-    href: '/app/machines',
-  },
-  {
-    title: 'List',
-    disabled: true,
-    href: '#',
-  },
+    to: { name: 'Machines' }
+  }
 ])
 
 </script>

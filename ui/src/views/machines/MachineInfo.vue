@@ -21,12 +21,12 @@ const breadcrumbs = ref([
   {
     title: 'Machines',
     disabled: false,
-    href: '/app/machines',
+    to: { name: 'Machines' },
   },
   {
     title: props.id,
     disabled: true,
-    href: '#',
+    to: '#'
   },
 ])
 

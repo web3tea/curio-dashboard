@@ -5,6 +5,7 @@ import { computed, ComputedRef, ref } from "vue"
 import { MessageSend } from "@/typed-graph"
 import { IconInfoCircle, IconReload } from "@tabler/icons-vue"
 import { useTableSettingsStore } from "@/stores/table"
+import { useI18n } from "vue-i18n"
 
 const props = defineProps({
   account: {
@@ -20,6 +21,8 @@ const props = defineProps({
     default: 'calc(100vh - 330px)'
   },
 })
+
+const { d } = useI18n()
 
 const tableSettings = useTableSettingsStore()
 
@@ -121,7 +124,7 @@ const headers = [
           <TruncatedChip :text="value" />
         </template>
         <template #item.sendTime="{ value }">
-          {{ value ? $d(value, 'short') : '' }}
+          {{ value ? d(value, 'short') : '' }}
         </template>
         <template #item.signedCid="{ value }">
           <TruncatedChip :text="value" />

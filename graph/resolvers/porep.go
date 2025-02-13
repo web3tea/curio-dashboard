@@ -14,7 +14,7 @@ import (
 
 // ID is the resolver for the id field.
 func (r *porepResolver) ID(ctx context.Context, obj *model.Porep) (string, error) {
-	return fmt.Sprintf("%d-%d", obj.SpID, obj.SectorNumber), nil
+	return fmt.Sprintf("%s-%d", obj.SpID, obj.SectorNumber), nil
 }
 
 // Status is the resolver for the status field.

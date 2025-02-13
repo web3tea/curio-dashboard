@@ -1,5 +1,3 @@
-scalar Time
-
 type Machine {
     id: Int!
     lastContact: Time!

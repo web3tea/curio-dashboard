@@ -39,7 +39,7 @@ const locationPrimaryFragment = gql`
 `
 
 export const GetSectors = gql`
-  query GetSectors($miner: ActorID, $sectorNumber: Int, $offset: Int!, $limit: Int!) {
+  query GetSectors($miner: Address, $sectorNumber: Int, $offset: Int!, $limit: Int!) {
     sectors(actor: $miner, sectorNumber: $sectorNumber, offset: $offset, limit: $limit) {
       id
       sectorNum
@@ -58,7 +58,7 @@ export const GetSectors = gql`
 `
 
 export const GetSectorMeta = gql`
-  query GetSectorMeta($miner: ActorID!, $sectorNumber: Int!) {
+  query GetSectorMeta($miner: Address!, $sectorNumber: Int!) {
     sector(actor: $miner, sectorNumber: $sectorNumber) {
       id
       status
@@ -71,7 +71,7 @@ export const GetSectorMeta = gql`
 `
 
 export const GetSectorPoRep = gql`
-  query GetSectorPoRep($miner: ActorID!, $sectorNumber: Int!) {
+  query GetSectorPoRep($miner: Address!, $sectorNumber: Int!) {
     sector(actor: $miner, sectorNumber: $sectorNumber) {
       id
       porep {
@@ -83,7 +83,7 @@ export const GetSectorPoRep = gql`
 `
 
 export const GetSectorPieces = gql`
-  query GetSectorPieces($miner: ActorID!, $sectorNumber: Int!) {
+  query GetSectorPieces($miner: Address!, $sectorNumber: Int!) {
     sector(actor: $miner, sectorNumber: $sectorNumber) {
       id
       pieces {
@@ -105,7 +105,7 @@ export const GetSectorPieces = gql`
 `
 
 export const GetSectorLocations = gql`
-  query GetSectorLocations($miner: ActorID!, $sectorNumber: Int!) {
+  query GetSectorLocations($miner: Address!, $sectorNumber: Int!) {
     sector(actor: $miner, sectorNumber: $sectorNumber) {
       id
       locations {
@@ -125,7 +125,7 @@ export const GetSectorLocations = gql`
 `
 
 export const GetSectorEvents = gql`
-  query GetSectorEvents($miner: ActorID!, $sectorNumber: Int!) {
+  query GetSectorEvents($miner: Address!, $sectorNumber: Int!) {
     sector(actor: $miner, sectorNumber: $sectorNumber) {
       id
       events {
@@ -137,7 +137,7 @@ export const GetSectorEvents = gql`
 `
 
 export const GetSectorTasks = gql`
-    query GetSectorTasks($miner: ActorID!, $sectorNumber: Int!) {
+    query GetSectorTasks($miner: Address!, $sectorNumber: Int!) {
       sector(actor: $miner, sectorNumber: $sectorNumber) {
         id
         spID
@@ -151,13 +151,13 @@ export const GetSectorTasks = gql`
 `
 
 export const RemoveSector = gql`
-    mutation RemoveSector($miner: ActorID!, $sectorNumber: Int!) {
+    mutation RemoveSector($miner: Address!, $sectorNumber: Int!) {
       removeSector(miner: $miner, sectorNumber: $sectorNumber)
     }
 `
 
 export const RestartSector = gql`
-  mutation RestartSector($miner: ActorID!, $sectorNumber: Int!) {
+  mutation RestartSector($miner: Address!, $sectorNumber: Int!) {
     restartSector(miner: $miner, sectorNumber: $sectorNumber)
   }
 `

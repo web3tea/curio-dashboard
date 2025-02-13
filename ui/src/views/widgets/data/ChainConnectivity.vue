@@ -1,10 +1,12 @@
 <script setup lang="ts">
-
 import { useQuery } from '@vue/apollo-composable'
 import { GetNodeInfos } from '@/gql/chain'
 import { computed, ComputedRef } from 'vue'
 import { NodeInfo } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const headers = [
   { title: 'Address', key: 'address', sortable: false },
@@ -24,7 +26,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
 <template>
   <UiWidgetCard
     class-name="px-0 pb-0 rounded-md"
-    :title="$t('fields.Chain Connectivity')"
+    :title="t('fields.Chain Connectivity')"
   >
     <template #append>
       <v-btn

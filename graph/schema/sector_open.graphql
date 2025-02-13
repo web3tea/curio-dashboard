@@ -1,7 +1,5 @@
-scalar JSON
-
 type OpenSectorPiece {
-    spID: ActorID!
+    spID: Address!
     sectorNumber: Int!
     pieceIndex: Int!
     pieceCID: String!

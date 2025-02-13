@@ -6,6 +6,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { MinerPower } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconUsers } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   miner: {
@@ -13,6 +14,8 @@ const props = defineProps({
     default: undefined
   },
 })
+
+const { t } = useI18n()
 
 const { result } = useQuery(GetMinerPower, {
   miner: props.miner,
@@ -30,13 +33,13 @@ const minerPower: ComputedRef<MinerPower> = computed(() => result.value?.minerPo
         <div class="d-flex align-items-center justify-space-between">
           <div>
             <h5 class="text-h5">
-              {{ $t('fields.Total Power') }}
+              {{ t('fields.Total Power') }}
             </h5>
             <h3 class="text-h3 my-2">
               {{ formatBytes(minerPower.minerPower?.qualityAdjPower).combined }}
             </h3>
             <h6 class="text-caption font-weight-medium mb-0">
-              {{ $t('fields.Raw Byte Power') }}: {{ formatBytes(minerPower.minerPower?.rawBytePower).combined }}
+              {{ t('fields.Raw Byte Power') }}: {{ formatBytes(minerPower.minerPower?.rawBytePower).combined }}
             </h6>
           </div>
           <span class="d-flex align-center">

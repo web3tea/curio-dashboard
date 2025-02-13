@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/hashicorp/golang-lru/v2/expirable"
 	"github.com/samber/lo"
 
 	"github.com/filecoin-project/lotus/api/v1api"
@@ -21,7 +22,10 @@ import (
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-const sectorDefaultCacheAge = time.Minute * 5
+const (
+	sectorDefaultCacheAge = time.Minute * 5
+	marketDefaultCacheAge = time.Minute
+)
 
 var log = logging.Logger("resolvers")
 
@@ -33,6 +37,7 @@ type Resolver struct {
 	prometheusAPI    v1.API
 	curioAPI         curiorpc.WebRPC
 	prometheusClient *prometheus.Client
+	cache            *expirable.LRU[string, any]
 }
 
 func NewResolver(cfg *config.Config, db *db.HarmonyDB, fullNode v1api.FullNode, curioAPI curiorpc.WebRPC, client api.Client) *Resolver {
@@ -45,6 +50,7 @@ func NewResolver(cfg *config.Config, db *db.HarmonyDB, fullNode v1api.FullNode, 
 		prometheusAPI:    papi,
 		prometheusClient: prometheus.NewClient(papi),
 		curioAPI:         curioAPI,
+		cache:            expirable.NewLRU[string, any](1000, nil, time.Minute),
 	}
 }
 

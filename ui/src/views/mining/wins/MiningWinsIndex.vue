@@ -6,13 +6,13 @@ import MiningTaskList from '@/views/mining/wins/MiningTaskList.vue'
 const breadcrumbs = ref([
   {
     title: 'Mining',
-    disabled: false,
-    href: '#', // todo: add href
+    disabled: true,
+    to: '#'
   },
   {
     title: 'Wins',
     disabled: true,
-    href: '#',
+    to: '#',
   },
 ])
 

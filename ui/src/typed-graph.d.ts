@@ -15,9 +15,11 @@ export type Scalars = {
   ActorID: { input: any; output: any; }
   Address: { input: any; output: any; }
   BigInt: { input: any; output: any; }
-  ByteArray: { input: any; output: any; }
+  Bytes: { input: any; output: any; }
+  FIL: { input: any; output: any; }
   JSON: { input: any; output: any; }
   JSONB: { input: any; output: any; }
+  PeerID: { input: any; output: any; }
   Time: { input: any; output: any; }
   Uint64: { input: any; output: any; }
 };
@@ -49,6 +51,29 @@ export type Alert = {
   id: Scalars['Int']['output'];
   machineName: Scalars['String']['output'];
   message: Scalars['String']['output'];
+};
+
+export type ClientFilter = {
+  __typename?: 'ClientFilter';
+  active: Scalars['Boolean']['output'];
+  info: Scalars['String']['output'];
+  maxDealSizePerHour: Scalars['Int']['output'];
+  maxDealsPerHour: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  peers: Array<Scalars['PeerID']['output']>;
+  pricingFilters: Array<Scalars['String']['output']>;
+  wallets: Array<Scalars['Address']['output']>;
+};
+
+export type ClientFilterInput = {
+  active: Scalars['Boolean']['input'];
+  info: Scalars['String']['input'];
+  maxDealSizePerHour: Scalars['Int']['input'];
+  maxDealsPerHour: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+  peers: Array<Scalars['PeerID']['input']>;
+  pricingFilters: Array<Scalars['String']['input']>;
+  wallets: Array<Scalars['Address']['input']>;
 };
 
 export type Config = {
@@ -138,6 +163,74 @@ export type MachineSummary = {
   uniqueHostsUp: Scalars['Int']['output'];
 };
 
+export type MarketAllowFilter = {
+  __typename?: 'MarketAllowFilter';
+  status: Scalars['Boolean']['output'];
+  wallet: Scalars['Address']['output'];
+};
+
+export type MarketBalance = {
+  __typename?: 'MarketBalance';
+  balance: Scalars['FIL']['output'];
+  balances?: Maybe<Array<WalletBalance>>;
+  miner: Scalars['Address']['output'];
+};
+
+export type MarketMk12Deal = {
+  __typename?: 'MarketMk12Deal';
+  announceToIpni: Scalars['Boolean']['output'];
+  chainDealId?: Maybe<Scalars['Uint64']['output']>;
+  clientPeerId: Scalars['String']['output'];
+  createdAt: Scalars['Time']['output'];
+  endEpoch: Scalars['Uint64']['output'];
+  error?: Maybe<Scalars['String']['output']>;
+  fastRetrieval: Scalars['Boolean']['output'];
+  label?: Maybe<Scalars['Bytes']['output']>;
+  offline: Scalars['Boolean']['output'];
+  pieceCid: Scalars['String']['output'];
+  pieceSize: Scalars['Uint64']['output'];
+  proposal: Scalars['JSONB']['output'];
+  proposalCid: Scalars['String']['output'];
+  proposalSignature: Scalars['Bytes']['output'];
+  publishCid?: Maybe<Scalars['String']['output']>;
+  signedProposalCid: Scalars['String']['output'];
+  spId: Scalars['ActorID']['output'];
+  startEpoch: Scalars['Uint64']['output'];
+  url?: Maybe<Scalars['String']['output']>;
+  urlHeaders: Scalars['JSONB']['output'];
+  uuid: Scalars['String']['output'];
+  verified: Scalars['Boolean']['output'];
+};
+
+export type MarketMk12DealFilterInput = {
+  pieceCid?: InputMaybe<Scalars['String']['input']>;
+  proposalCid?: InputMaybe<Scalars['String']['input']>;
+  signedProposalCid?: InputMaybe<Scalars['String']['input']>;
+  spId?: InputMaybe<Scalars['ActorID']['input']>;
+  uuid?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type MarketMk12StorageAsk = {
+  __typename?: 'MarketMk12StorageAsk';
+  createdAt: Scalars['Int']['output'];
+  expiry: Scalars['Int']['output'];
+  maxSize: Scalars['Int']['output'];
+  minSize: Scalars['Int']['output'];
+  price: Scalars['Int']['output'];
+  sequence: Scalars['Int']['output'];
+  spId: Scalars['Address']['output'];
+  verifiedPrice: Scalars['Int']['output'];
+};
+
+export type MarketMk12StorageAskInput = {
+  expiry: Scalars['Int']['input'];
+  maxSize: Scalars['Int']['input'];
+  minSize: Scalars['Int']['input'];
+  price: Scalars['Int']['input'];
+  spId: Scalars['Address']['input'];
+  verifiedPrice: Scalars['Int']['input'];
+};
+
 export type MessageSend = {
   __typename?: 'MessageSend';
   fromKey: Scalars['String']['output'];
@@ -148,11 +241,11 @@ export type MessageSend = {
   sendTaskId: Scalars['Int']['output'];
   sendTime?: Maybe<Scalars['Time']['output']>;
   signedCid?: Maybe<Scalars['String']['output']>;
-  signedData?: Maybe<Scalars['ByteArray']['output']>;
+  signedData?: Maybe<Scalars['Bytes']['output']>;
   signedJson?: Maybe<Scalars['JSONB']['output']>;
   toAddr: Scalars['String']['output'];
   unsignedCid: Scalars['String']['output'];
-  unsignedData: Scalars['ByteArray']['output'];
+  unsignedData: Scalars['Bytes']['output'];
 };
 
 export type MetricsActiveTask = {
@@ -249,7 +342,7 @@ export type MiningCountSummary = {
 export type MiningSummaryDay = {
   __typename?: 'MiningSummaryDay';
   day: Scalars['Time']['output'];
-  miner: Scalars['ActorID']['output'];
+  miner: Scalars['Address']['output'];
   wonBlock: Scalars['Int']['output'];
 };
 
@@ -261,7 +354,7 @@ export type MiningTask = {
   minedAt?: Maybe<Scalars['Time']['output']>;
   minedCid?: Maybe<Scalars['String']['output']>;
   minedHeader?: Maybe<Scalars['JSONB']['output']>;
-  spId: Scalars['ActorID']['output'];
+  spId: Scalars['Address']['output'];
   submittedAt?: Maybe<Scalars['Time']['output']>;
   taskId: Scalars['ID']['output'];
   won: Scalars['Boolean']['output'];
@@ -276,11 +369,23 @@ export type Mutation = {
   __typename?: 'Mutation';
   createConfig?: Maybe<Config>;
   dealSealNow: Scalars['Boolean']['output'];
+  marketAddBalance?: Maybe<MarketBalance>;
+  marketAddClientFilter: Scalars['Boolean']['output'];
+  marketAddPriceFilter: Scalars['Boolean']['output'];
+  marketDeleteAllowFilter: Scalars['Boolean']['output'];
+  marketDeleteClientFilter: Scalars['Boolean']['output'];
+  marketDeletePriceFilter: Scalars['Boolean']['output'];
+  marketSetAllowFilter?: Maybe<MarketAllowFilter>;
+  marketToggleAllowFilter: Scalars['Boolean']['output'];
+  marketToggleClientFilter: Scalars['Boolean']['output'];
+  marketUpdateClientFilter?: Maybe<ClientFilter>;
+  marketUpdatePriceFilter?: Maybe<PriceFilter>;
   removeConfig?: Maybe<Config>;
   removeSector: Scalars['Boolean']['output'];
   restartAllFailedSectors: Scalars['Boolean']['output'];
   restartSector: Scalars['Boolean']['output'];
   updateConfig?: Maybe<Config>;
+  updateMarketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
 };
 
 
@@ -291,8 +396,66 @@ export type MutationCreateConfigArgs = {
 
 
 export type MutationDealSealNowArgs = {
-  miner: Scalars['ActorID']['input'];
+  miner: Scalars['Address']['input'];
   sectorNumber: Scalars['Uint64']['input'];
+};
+
+
+export type MutationMarketAddBalanceArgs = {
+  amount: Scalars['FIL']['input'];
+  miner: Scalars['Address']['input'];
+  wallet: Scalars['Address']['input'];
+};
+
+
+export type MutationMarketAddClientFilterArgs = {
+  input: ClientFilterInput;
+};
+
+
+export type MutationMarketAddPriceFilterArgs = {
+  input: PriceFilterInput;
+};
+
+
+export type MutationMarketDeleteAllowFilterArgs = {
+  wallet: Scalars['Address']['input'];
+};
+
+
+export type MutationMarketDeleteClientFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationMarketDeletePriceFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationMarketSetAllowFilterArgs = {
+  status: Scalars['Boolean']['input'];
+  wallet: Scalars['Address']['input'];
+};
+
+
+export type MutationMarketToggleAllowFilterArgs = {
+  wallet: Scalars['Address']['input'];
+};
+
+
+export type MutationMarketToggleClientFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type MutationMarketUpdateClientFilterArgs = {
+  input: ClientFilterInput;
+};
+
+
+export type MutationMarketUpdatePriceFilterArgs = {
+  input: PriceFilterInput;
 };
 
 
@@ -302,13 +465,13 @@ export type MutationRemoveConfigArgs = {
 
 
 export type MutationRemoveSectorArgs = {
-  miner: Scalars['ActorID']['input'];
+  miner: Scalars['Address']['input'];
   sectorNumber: Scalars['Int']['input'];
 };
 
 
 export type MutationRestartSectorArgs = {
-  miner: Scalars['ActorID']['input'];
+  miner: Scalars['Address']['input'];
   sectorNumber: Scalars['Int']['input'];
 };
 
@@ -316,6 +479,11 @@ export type MutationRestartSectorArgs = {
 export type MutationUpdateConfigArgs = {
   config: Scalars['String']['input'];
   title: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateMarketMk12StorageAskArgs = {
+  input: MarketMk12StorageAskInput;
 };
 
 export type NodeInfo = {
@@ -348,7 +516,7 @@ export type OpenSectorPiece = {
   pieceIndex: Scalars['Int']['output'];
   pieceSize: Scalars['Int']['output'];
   sectorNumber: Scalars['Int']['output'];
-  spID: Scalars['ActorID']['output'];
+  spID: Scalars['Address']['output'];
 };
 
 export type PipelineSummary = {
@@ -356,7 +524,7 @@ export type PipelineSummary = {
   commitMsg: Scalars['Int']['output'];
   done: Scalars['Int']['output'];
   failed: Scalars['Int']['output'];
-  id: Scalars['ActorID']['output'];
+  id: Scalars['Address']['output'];
   porep: Scalars['Int']['output'];
   precommitMsg: Scalars['Int']['output'];
   sdr: Scalars['Int']['output'];
@@ -379,7 +547,7 @@ export type Porep = {
   afterTreeD: Scalars['Boolean']['output'];
   afterTreeR: Scalars['Boolean']['output'];
   commitMsgCid?: Maybe<Scalars['String']['output']>;
-  commitMsgTsk?: Maybe<Scalars['ByteArray']['output']>;
+  commitMsgTsk?: Maybe<Scalars['Bytes']['output']>;
   createTime: Scalars['Time']['output'];
   currentTask?: Maybe<Task>;
   failed: Scalars['Boolean']['output'];
@@ -387,14 +555,14 @@ export type Porep = {
   failedReason: Scalars['String']['output'];
   failedReasonMsg: Scalars['String']['output'];
   id: Scalars['ID']['output'];
-  porepProof?: Maybe<Scalars['ByteArray']['output']>;
+  porepProof?: Maybe<Scalars['Bytes']['output']>;
   precommitMsgCid?: Maybe<Scalars['String']['output']>;
-  precommitMsgTsk?: Maybe<Scalars['ByteArray']['output']>;
+  precommitMsgTsk?: Maybe<Scalars['Bytes']['output']>;
   regSealProof: Scalars['Int']['output'];
   sectorNumber: Scalars['Int']['output'];
   seedEpoch?: Maybe<Scalars['Int']['output']>;
-  seedValue?: Maybe<Scalars['ByteArray']['output']>;
-  spId: Scalars['ActorID']['output'];
+  seedValue?: Maybe<Scalars['Bytes']['output']>;
+  spId: Scalars['Address']['output'];
   status: PorepStatus;
   taskIdCommitMsg?: Maybe<Scalars['Int']['output']>;
   taskIdFinalize?: Maybe<Scalars['Int']['output']>;
@@ -407,7 +575,7 @@ export type Porep = {
   taskIdTreeD?: Maybe<Scalars['Int']['output']>;
   taskIdTreeR?: Maybe<Scalars['Int']['output']>;
   ticketEpoch?: Maybe<Scalars['Int']['output']>;
-  ticketValue?: Maybe<Scalars['ByteArray']['output']>;
+  ticketValue?: Maybe<Scalars['Bytes']['output']>;
   treeDCid?: Maybe<Scalars['String']['output']>;
   treeRCid?: Maybe<Scalars['String']['output']>;
   userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
@@ -439,6 +607,27 @@ export type PowerClaim = {
   rawBytePower?: Maybe<Scalars['BigInt']['output']>;
 };
 
+export type PriceFilter = {
+  __typename?: 'PriceFilter';
+  maxDurationDays: Scalars['Int']['output'];
+  maximumSize: Scalars['Int']['output'];
+  minDurationDays: Scalars['Int']['output'];
+  minimumSize: Scalars['Int']['output'];
+  name: Scalars['String']['output'];
+  price: Scalars['Int']['output'];
+  verified: Scalars['Boolean']['output'];
+};
+
+export type PriceFilterInput = {
+  maxDurationDays: Scalars['Int']['input'];
+  maximumSize: Scalars['Int']['input'];
+  minDurationDays: Scalars['Int']['input'];
+  minimumSize: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
+  price: Scalars['Int']['input'];
+  verified: Scalars['Boolean']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   actor?: Maybe<Actor>;
@@ -451,6 +640,22 @@ export type Query = {
   machine?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
+  makretPriceFilters?: Maybe<Array<PriceFilter>>;
+  marketAllowDefault: Scalars['Boolean']['output'];
+  marketAllowFilter?: Maybe<MarketAllowFilter>;
+  marketAllowFilters?: Maybe<Array<MarketAllowFilter>>;
+  marketBalance?: Maybe<MarketBalance>;
+  marketBalances?: Maybe<Array<MarketBalance>>;
+  marketCheckClientFilter: Scalars['Boolean']['output'];
+  marketCheckPriceFilter: Scalars['Boolean']['output'];
+  marketClientFilter?: Maybe<ClientFilter>;
+  marketClientFilters?: Maybe<Array<ClientFilter>>;
+  marketMk12Deals: Array<MarketMk12Deal>;
+  marketMk12DealsCount: Scalars['Int']['output'];
+  marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
+  marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
+  marketMk12StorageAsksCount: Scalars['Int']['output'];
+  marketPriceFilter?: Maybe<PriceFilter>;
   messageSend?: Maybe<MessageSend>;
   messageSends?: Maybe<Array<Maybe<MessageSend>>>;
   messageSendsCount: Scalars['Int']['output'];
@@ -499,6 +704,53 @@ export type QueryMachineArgs = {
 };
 
 
+export type QueryMarketAllowFilterArgs = {
+  wallet: Scalars['Address']['input'];
+};
+
+
+export type QueryMarketBalanceArgs = {
+  miner: Scalars['Address']['input'];
+};
+
+
+export type QueryMarketCheckClientFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryMarketCheckPriceFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryMarketClientFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryMarketMk12DealsArgs = {
+  filter: MarketMk12DealFilterInput;
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+};
+
+
+export type QueryMarketMk12DealsCountArgs = {
+  filter: MarketMk12DealFilterInput;
+};
+
+
+export type QueryMarketMk12StorageAskArgs = {
+  spId: Scalars['Address']['input'];
+};
+
+
+export type QueryMarketPriceFilterArgs = {
+  name: Scalars['String']['input'];
+};
+
+
 export type QueryMessageSendArgs = {
   fromKey?: InputMaybe<Scalars['String']['input']>;
   nonce?: InputMaybe<Scalars['Int']['input']>;
@@ -536,14 +788,14 @@ export type QueryMinerPowerArgs = {
 
 
 export type QueryMiningCountArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
 };
 
 
 export type QueryMiningCountAggregateArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end: Scalars['Time']['input'];
   interval: MiningTaskAggregateInterval;
   start: Scalars['Time']['input'];
@@ -551,7 +803,7 @@ export type QueryMiningCountAggregateArgs = {
 
 
 export type QueryMiningCountSummaryArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
 };
@@ -564,7 +816,7 @@ export type QueryMiningSummaryByDayArgs = {
 
 
 export type QueryMiningWinsArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end?: InputMaybe<Scalars['Time']['input']>;
   include?: InputMaybe<Scalars['Boolean']['input']>;
   limit: Scalars['Int']['input'];
@@ -574,7 +826,7 @@ export type QueryMiningWinsArgs = {
 
 
 export type QueryMiningWinsCountArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   end?: InputMaybe<Scalars['Time']['input']>;
   include?: InputMaybe<Scalars['Boolean']['input']>;
   start?: InputMaybe<Scalars['Time']['input']>;
@@ -583,18 +835,18 @@ export type QueryMiningWinsCountArgs = {
 
 export type QueryPorepArgs = {
   sectorNumber: Scalars['Int']['input'];
-  sp: Scalars['ActorID']['input'];
+  sp: Scalars['Address']['input'];
 };
 
 
 export type QuerySectorArgs = {
-  actor: Scalars['ActorID']['input'];
+  actor: Scalars['Address']['input'];
   sectorNumber: Scalars['Int']['input'];
 };
 
 
 export type QuerySectorsArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
   limit: Scalars['Int']['input'];
   offset: Scalars['Int']['input'];
   sectorNumber?: InputMaybe<Scalars['Int']['input']>;
@@ -602,7 +854,7 @@ export type QuerySectorsArgs = {
 
 
 export type QuerySectorsCountArgs = {
-  actor?: InputMaybe<Scalars['ActorID']['input']>;
+  actor?: InputMaybe<Scalars['Address']['input']>;
 };
 
 
@@ -658,7 +910,7 @@ export type Sector = {
   pieces: Array<Maybe<SectorMetaPiece>>;
   porep?: Maybe<Porep>;
   sectorNum: Scalars['Int']['output'];
-  spID: Scalars['ActorID']['output'];
+  spID: Scalars['Address']['output'];
   status: PorepStatus;
   tasks: Array<Maybe<Task>>;
 };
@@ -666,7 +918,7 @@ export type Sector = {
 export type SectorLocation = {
   __typename?: 'SectorLocation';
   isPrimary?: Maybe<Scalars['Boolean']['output']>;
-  minerId: Scalars['ActorID']['output'];
+  minerId: Scalars['Address']['output'];
   readRefs: Scalars['Int']['output'];
   readTs?: Maybe<Scalars['String']['output']>;
   sectorFiletype: Scalars['Int']['output'];
@@ -692,10 +944,10 @@ export type SectorMeta = {
   regSealProof: Scalars['Int']['output'];
   sectorNum: Scalars['Int']['output'];
   seedEpoch: Scalars['Int']['output'];
-  seedValue?: Maybe<Scalars['ByteArray']['output']>;
-  spId: Scalars['ActorID']['output'];
+  seedValue?: Maybe<Scalars['Bytes']['output']>;
+  spId: Scalars['Address']['output'];
   ticketEpoch: Scalars['Int']['output'];
-  ticketValue?: Maybe<Scalars['ByteArray']['output']>;
+  ticketValue?: Maybe<Scalars['Bytes']['output']>;
 };
 
 export type SectorMetaPiece = {
@@ -710,7 +962,7 @@ export type SectorMetaPiece = {
   rawDataSize?: Maybe<Scalars['Int']['output']>;
   requestedKeepData: Scalars['Boolean']['output'];
   sectorNum: Scalars['Int']['output'];
-  spID: Scalars['ActorID']['output'];
+  spID: Scalars['Address']['output'];
   startEpoch?: Maybe<Scalars['Int']['output']>;
 };
 
@@ -880,6 +1132,12 @@ export type TaskSummaryDay = {
   falseCount: Scalars['Int']['output'];
   totalCount: Scalars['Int']['output'];
   trueCount: Scalars['Int']['output'];
+};
+
+export type WalletBalance = {
+  __typename?: 'WalletBalance';
+  address: Scalars['Address']['output'];
+  balance: Scalars['FIL']['output'];
 };
 
 

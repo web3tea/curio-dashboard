@@ -5,8 +5,10 @@ import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { MetricsActiveTask } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
+import { useI18n } from 'vue-i18n'
 
 const customizer = useCustomizerStore()
+const { t } = useI18n()
 
 const tab = ref(7)
 watch(() => tab.value, () => {
@@ -114,7 +116,7 @@ const areaChart = computed(() => {
     <v-card-item class="pb-2 px-0 pt-0">
       <div class="d-flex justify-space-between">
         <v-card-title class="text-h5">
-          {{ $t('fields.Active Tasks') }}
+          {{ t('fields.Active Tasks') }}
         </v-card-title>
         <div class="d-flex flex-wrap">
           <v-tabs
@@ -130,14 +132,14 @@ const areaChart = computed(() => {
               value="7"
               variant="outlined"
             >
-              {{ $t('fields.Week') }}
+              {{ t('fields.Week') }}
             </v-tab>
             <v-tab
               rounded="md"
               value="30"
               variant="outlined"
             >
-              {{ $t('fields.Month') }}
+              {{ t('fields.Month') }}
             </v-tab>
           </v-tabs>
         </div>

@@ -3,115 +3,98 @@ package loaders
 import (
 	"context"
 
+	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/types"
+	"golang.org/x/xerrors"
 
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
 type SectorLoader interface {
-	SectorMetas(ctx context.Context, actor *types.ActorID, offset int, limit int) ([]*model.SectorMeta, error)
-	SectorMeta(ctx context.Context, actor types.ActorID, sectorNumber int) (*model.SectorMeta, error)
-	SectorsCount(ctx context.Context, actor *types.ActorID) (int, error)
-	SectorLocations(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorLocation, error)
-	SectorPieces(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorMetaPiece, error)
-	SectorEvents(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.TaskHistory, error)
-	SectorTasks(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.Task, error)
+	SectorMetas(ctx context.Context, actor *types.Address, offset int, limit int) ([]*model.SectorMeta, error)
+	SectorMeta(ctx context.Context, actor types.Address, sectorNumber int) (*model.SectorMeta, error)
+	SectorsCount(ctx context.Context, actor *types.Address) (int, error)
+	SectorLocations(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.SectorLocation, error)
+	SectorPieces(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.SectorMetaPiece, error)
+	SectorEvents(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.TaskHistory, error)
+	SectorTasks(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.Task, error)
+	OpenSectorPieces(ctx context.Context) ([]*model.OpenSectorPiece, error)
 }
 
-var _ SectorLoader = &Loader{}
+type SectorLoaderImpl struct {
+	loader *Loader
+}
 
-func (l *Loader) SectorTasks(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.Task, error) {
+func NewSectorLoader(loader *Loader) SectorLoader {
+	return &SectorLoaderImpl{loader}
+}
+
+func (l *SectorLoaderImpl) SectorTasks(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.Task, error) {
 	var tasks []*model.Task
-	if err := l.db.Select(ctx, &tasks, `
+	if err := l.loader.db.Select(ctx, &tasks, `
 WITH task_ids AS (
     SELECT unnest(get_sdr_pipeline_tasks($1, $2)) AS task_id
 )
 SELECT ht.id, ht.name, ht.posted_time, ht.update_time, ht.initiated_by, ht.owner_id, ht.previous_task, ht.added_by
 FROM task_ids
 INNER JOIN harmony_task ht ON ht.id = task_id;
-`, actor, sectorNumber); err != nil {
+`, actor.ID, sectorNumber); err != nil {
 		return nil, err
 	}
 	return tasks, nil
 }
 
-func (l *Loader) SectorMetas(ctx context.Context, actor *types.ActorID, offset int, limit int) ([]*model.SectorMeta, error) {
+func (l *SectorLoaderImpl) SectorMetas(ctx context.Context, actor *types.Address, offset int, limit int) ([]*model.SectorMeta, error) {
 	var m []*model.SectorMeta
-	if actor == nil {
-		if err := l.db.Select(ctx, &m, `SELECT
-    sp_id,
-    sector_num,
-    reg_seal_proof,
-    ticket_epoch,
-    ticket_value,
-    orig_sealed_cid,
-    orig_unsealed_cid,
-    cur_sealed_cid,
-    cur_unsealed_cid,
-    msg_cid_precommit,
-    msg_cid_commit,
-    msg_cid_update,
-    seed_epoch,
-    seed_value,
-    expiration_epoch,
-    is_cc,
-    deadline,
-    partition
+	if err := l.loader.db.Select(ctx, &m, `SELECT
+				sp_id,
+				sector_num,
+				reg_seal_proof,
+				ticket_epoch,
+				ticket_value,
+				orig_sealed_cid,
+				orig_unsealed_cid,
+				cur_sealed_cid,
+				cur_unsealed_cid,
+				msg_cid_precommit,
+				msg_cid_commit,
+				msg_cid_update,
+				seed_epoch,
+				seed_value,
+				expiration_epoch,
+				is_cc,
+				deadline,
+				partition
 FROM
-    sectors_meta
-LIMIT $1 OFFSET $2`, limit, offset); err != nil {
-			return nil, err
-		}
-	} else {
-		if err := l.db.Select(ctx, &m, `SELECT
-    sp_id,
-    sector_num,
-    reg_seal_proof,
-    ticket_epoch,
-    ticket_value,
-    orig_sealed_cid,
-    orig_unsealed_cid,
-    cur_sealed_cid,
-    cur_unsealed_cid,
-    msg_cid_precommit,
-    msg_cid_commit,
-    msg_cid_update,
-    seed_epoch,
-    seed_value,
-    expiration_epoch,
-    is_cc,
-    deadline,
-    partition
-FROM
-    sectors_meta
-WHERE sp_id = $1 LIMIT $2 OFFSET $3`, *actor, limit, offset); err != nil {
-			return nil, err
-		}
+				sectors_meta
+WHERE ($1::bigint IS NULL OR sp_id = $1)
+LIMIT $2 OFFSET $3`, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), limit, offset); err != nil {
+		return nil, err
 	}
 	return m, nil
 }
 
-func (l *Loader) SectorMeta(ctx context.Context, actor types.ActorID, sectorNumber int) (*model.SectorMeta, error) {
+func (l *SectorLoaderImpl) SectorMeta(ctx context.Context, actor types.Address, sectorNumber int) (*model.SectorMeta, error) {
 	var mm []*model.SectorMeta
-	err := l.db.Select(ctx, &mm, `SELECT 
-    sp_id, 
-    sector_num, 
-    reg_seal_proof, 
-    ticket_epoch, 
-    ticket_value, 
-    orig_sealed_cid, 
-    orig_unsealed_cid, 
-    cur_sealed_cid, 
-    cur_unsealed_cid, 
-    msg_cid_precommit, 
-    msg_cid_commit, 
-    msg_cid_update, 
-    seed_epoch, 
-    seed_value 
-FROM sectors_meta 
-WHERE sp_id = $1 
+	err := l.loader.db.Select(ctx, &mm, `SELECT
+    sp_id,
+    sector_num,
+    reg_seal_proof,
+    ticket_epoch,
+    ticket_value,
+    orig_sealed_cid,
+    orig_unsealed_cid,
+    cur_sealed_cid,
+    cur_unsealed_cid,
+    msg_cid_precommit,
+    msg_cid_commit,
+    msg_cid_update,
+    seed_epoch,
+    seed_value
+FROM sectors_meta
+WHERE sp_id = $1
   AND sector_num = $2`,
-		actor, sectorNumber)
+		actor.ID, sectorNumber)
 	if err != nil {
 		return nil, err
 	}
@@ -121,24 +104,20 @@ WHERE sp_id = $1
 	return mm[0], nil
 }
 
-func (l *Loader) SectorsCount(ctx context.Context, actor *types.ActorID) (int, error) {
-	if actor == nil {
-		var count int
-		if err := l.db.QueryRow(ctx, "SELECT COUNT(*) FROM sectors_meta").Scan(&count); err != nil {
-			return 0, err
-		}
-		return count, nil
-	}
+func (l *SectorLoaderImpl) SectorsCount(ctx context.Context, actor *types.Address) (int, error) {
 	var count int
-	if err := l.db.QueryRow(ctx, "SELECT COUNT(*) FROM sectors_meta WHERE sp_id = $1", *actor).Scan(&count); err != nil {
-		return 0, err
+	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*)
+FROM sectors_meta
+WHERE ($1::bigint IS NULL OR sp_id = $1)`, lo.If[*uint64](actor == nil, nil).Else(&actor.ID)).Scan(&count)
+	if err != nil {
+		return 0, xerrors.Errorf("counting sectors: %w", err)
 	}
 	return count, nil
 }
 
-func (l *Loader) SectorLocations(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorLocation, error) {
+func (l *SectorLoaderImpl) SectorLocations(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.SectorLocation, error) {
 	var locations []*model.SectorLocation
-	if err := l.db.Select(ctx, &locations, `SELECT
+	if err := l.loader.db.Select(ctx, &locations, `SELECT
     miner_id,
     sector_num,
     sector_filetype,
@@ -149,16 +128,16 @@ func (l *Loader) SectorLocations(ctx context.Context, actor types.ActorID, secto
     write_ts,
     write_lock_owner
 FROM
-    sector_location 
-WHERE miner_id = $1 AND sector_num = $2`, actor, sectorNumber); err != nil {
+    sector_location
+WHERE miner_id = $1 AND sector_num = $2`, actor.ID, sectorNumber); err != nil {
 		return nil, err
 	}
 	return locations, nil
 }
 
-func (l *Loader) SectorPieces(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.SectorMetaPiece, error) {
+func (l *SectorLoaderImpl) SectorPieces(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.SectorMetaPiece, error) {
 	var pieces []*model.SectorMetaPiece
-	if err := l.db.Select(ctx, &pieces, `SELECT
+	if err := l.loader.db.Select(ctx, &pieces, `SELECT
     sp_id,
     sector_num,
     piece_num,
@@ -173,23 +152,54 @@ func (l *Loader) SectorPieces(ctx context.Context, actor types.ActorID, sectorNu
     f05_deal_proposal
 FROM
     sectors_meta_pieces
-WHERE sp_id = $1 AND sector_num = $2`, actor, sectorNumber); err != nil {
+WHERE sp_id = $1 AND sector_num = $2`, actor.ID, sectorNumber); err != nil {
 		return nil, err
 	}
 	return pieces, nil
 }
 
-func (l *Loader) SectorEvents(ctx context.Context, actor types.ActorID, sectorNumber int) ([]*model.TaskHistory, error) {
+func (l *SectorLoaderImpl) SectorEvents(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.TaskHistory, error) {
 	var events []*model.TaskHistory
 
-	err := l.db.Select(ctx, &events, `SELECT h.*
+	err := l.loader.db.Select(ctx, &events, `SELECT h.*
 				FROM harmony_task_history h
          			JOIN sectors_pipeline_events s ON h.id = s.task_history_id
-				WHERE s.sp_id = $1 AND s.sector_number = $2 ORDER BY h.work_end DESC;`, actor, sectorNumber)
-
+				WHERE s.sp_id = $1 AND s.sector_number = $2 ORDER BY h.work_end DESC;`, actor.ID, sectorNumber)
 	if err != nil {
 		return nil, err
 	}
 
 	return events, nil
+}
+
+func (l *SectorLoaderImpl) OpenSectorPieces(ctx context.Context) ([]*model.OpenSectorPiece, error) {
+	var deals []*model.OpenSectorPiece
+	err := l.loader.db.Select(ctx, &deals, `SELECT
+    sp_id,
+    sector_number,
+    piece_index,
+    piece_cid,
+    piece_size,
+    data_url,
+    data_headers,
+    data_raw_size,
+    data_delete_on_finalize,
+    f05_publish_cid,
+    f05_deal_id,
+    f05_deal_proposal,
+    f05_deal_start_epoch,
+    f05_deal_end_epoch,
+    direct_start_epoch,
+    direct_end_epoch,
+    direct_piece_activation_manifest,
+    created_at,
+    is_snap
+FROM
+    open_sector_pieces
+ORDER BY
+    created_at DESC`)
+	if err != nil {
+		return nil, err
+	}
+	return deals, nil
 }

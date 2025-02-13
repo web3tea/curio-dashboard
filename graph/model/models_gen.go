@@ -25,6 +25,28 @@ type Alert struct {
 	Message     string `json:"message"`
 }
 
+type ClientFilter struct {
+	Name               string           `json:"name"`
+	Active             bool             `json:"active"`
+	Wallets            []*types.Address `json:"wallets"`
+	Peers              []*types.PeerID  `json:"peers"`
+	PricingFilters     []string         `json:"pricingFilters"`
+	MaxDealsPerHour    int              `json:"maxDealsPerHour"`
+	MaxDealSizePerHour int              `json:"maxDealSizePerHour"`
+	Info               string           `json:"info"`
+}
+
+type ClientFilterInput struct {
+	Name               string           `json:"name"`
+	Active             bool             `json:"active"`
+	Wallets            []*types.Address `json:"wallets"`
+	Peers              []*types.PeerID  `json:"peers"`
+	PricingFilters     []string         `json:"pricingFilters"`
+	MaxDealsPerHour    int              `json:"maxDealsPerHour"`
+	MaxDealSizePerHour int              `json:"maxDealSizePerHour"`
+	Info               string           `json:"info"`
+}
+
 type GaugeCountValue struct {
 	Key   string `json:"key"`
 	Value int    `json:"value"`
@@ -62,20 +84,84 @@ type MachineMetrics struct {
 	ProcessMaxFds              int                `json:"processMaxFds"`
 }
 
+type MarketAllowFilter struct {
+	Wallet types.Address `json:"wallet"`
+	Status bool          `json:"status"`
+}
+
+type MarketBalance struct {
+	Miner    types.Address    `json:"miner"`
+	Balance  types.FIL        `json:"balance"`
+	Balances []*WalletBalance `json:"balances"`
+}
+
+type MarketMk12Deal struct {
+	UUID              string        `json:"uuid"`
+	SpID              types.ActorID `json:"spId"`
+	CreatedAt         time.Time     `json:"createdAt"`
+	SignedProposalCid string        `json:"signedProposalCid"`
+	ProposalSignature types.Bytes   `json:"proposalSignature"`
+	Proposal          types.JSONB   `json:"proposal"`
+	Offline           bool          `json:"offline"`
+	Verified          bool          `json:"verified"`
+	StartEpoch        uint64        `json:"startEpoch"`
+	EndEpoch          uint64        `json:"endEpoch"`
+	ClientPeerID      string        `json:"clientPeerId"`
+	ChainDealID       *uint64       `json:"chainDealId"`
+	PublishCid        *string       `json:"publishCid"`
+	PieceCid          string        `json:"pieceCid"`
+	PieceSize         uint64        `json:"pieceSize"`
+	FastRetrieval     bool          `json:"fastRetrieval"`
+	AnnounceToIpni    bool          `json:"announceToIpni"`
+	URL               *string       `json:"url"`
+	URLHeaders        types.JSONB   `json:"urlHeaders"`
+	Error             *string       `json:"error"`
+	Label             types.Bytes   `json:"label"`
+	ProposalCid       string        `json:"proposalCid"`
+}
+
+type MarketMk12DealFilterInput struct {
+	SpID              *types.ActorID `json:"spId"`
+	UUID              *string        `json:"uuid"`
+	SignedProposalCid *string        `json:"signedProposalCid"`
+	ProposalCid       *string        `json:"proposalCid"`
+	PieceCid          *string        `json:"pieceCid"`
+}
+
+type MarketMk12StorageAsk struct {
+	SpID          types.Address `json:"spId"`
+	Price         int           `json:"price"`
+	VerifiedPrice int           `json:"verifiedPrice"`
+	MinSize       int           `json:"minSize"`
+	MaxSize       int           `json:"maxSize"`
+	CreatedAt     int           `json:"createdAt"`
+	Expiry        int           `json:"expiry"`
+	Sequence      int           `json:"sequence"`
+}
+
+type MarketMk12StorageAskInput struct {
+	SpID          types.Address `json:"spId"`
+	Price         int           `json:"price"`
+	VerifiedPrice int           `json:"verifiedPrice"`
+	MinSize       int           `json:"minSize"`
+	MaxSize       int           `json:"maxSize"`
+	Expiry        int           `json:"expiry"`
+}
+
 type MessageSend struct {
-	FromKey      string          `json:"fromKey"`
-	ToAddr       string          `json:"toAddr"`
-	SendReason   string          `json:"sendReason"`
-	SendTaskID   int             `json:"sendTaskId"`
-	UnsignedData types.ByteArray `json:"unsignedData"`
-	UnsignedCid  string          `json:"unsignedCid"`
-	Nonce        *int            `json:"nonce"`
-	SignedData   types.ByteArray `json:"signedData"`
-	SignedJSON   types.JSONB     `json:"signedJson"`
-	SignedCid    *string         `json:"signedCid"`
-	SendTime     *time.Time      `json:"sendTime"`
-	SendSuccess  *bool           `json:"sendSuccess"`
-	SendError    *string         `json:"sendError"`
+	FromKey      string      `json:"fromKey"`
+	ToAddr       string      `json:"toAddr"`
+	SendReason   string      `json:"sendReason"`
+	SendTaskID   int         `json:"sendTaskId"`
+	UnsignedData types.Bytes `json:"unsignedData"`
+	UnsignedCid  string      `json:"unsignedCid"`
+	Nonce        *int        `json:"nonce"`
+	SignedData   types.Bytes `json:"signedData"`
+	SignedJSON   types.JSONB `json:"signedJson"`
+	SignedCid    *string     `json:"signedCid"`
+	SendTime     *time.Time  `json:"sendTime"`
+	SendSuccess  *bool       `json:"sendSuccess"`
+	SendError    *string     `json:"sendError"`
 }
 
 type MetricsActiveTask struct {
@@ -136,13 +222,13 @@ type MiningCountAggregated struct {
 
 type MiningSummaryDay struct {
 	Day      time.Time     `json:"day"`
-	Miner    types.ActorID `json:"miner"`
+	Miner    types.Address `json:"miner"`
 	WonBlock int           `json:"wonBlock"`
 }
 
 type MiningTask struct {
 	TaskID          string        `json:"taskId"`
-	SpID            types.ActorID `json:"spId"`
+	SpID            types.Address `json:"spId"`
 	Epoch           int           `json:"epoch"`
 	BaseComputeTime time.Time     `json:"baseComputeTime"`
 	Won             bool          `json:"won"`
@@ -166,7 +252,7 @@ type NodeInfo struct {
 }
 
 type OpenSectorPiece struct {
-	SpID                          types.ActorID `json:"spID"`
+	SpID                          types.Address `json:"spID"`
 	SectorNumber                  int           `json:"sectorNumber"`
 	PieceIndex                    int           `json:"pieceIndex"`
 	PieceCid                      string        `json:"pieceCID"`
@@ -188,51 +274,51 @@ type OpenSectorPiece struct {
 }
 
 type Porep struct {
-	ID                       string          `json:"id"`
-	SpID                     types.ActorID   `json:"spId"`
-	SectorNumber             int             `json:"sectorNumber"`
-	CreateTime               time.Time       `json:"createTime"`
-	RegSealProof             int             `json:"regSealProof"`
-	TicketEpoch              *int            `json:"ticketEpoch"`
-	TicketValue              types.ByteArray `json:"ticketValue"`
-	TaskIDSdr                *int            `json:"taskIdSdr"`
-	AfterSdr                 bool            `json:"afterSdr"`
-	TreeDCid                 *string         `json:"treeDCid"`
-	TaskIDTreeD              *int            `json:"taskIdTreeD"`
-	AfterTreeD               bool            `json:"afterTreeD"`
-	TaskIDTreeC              *int            `json:"taskIdTreeC"`
-	AfterTreeC               bool            `json:"afterTreeC"`
-	TreeRCid                 *string         `json:"treeRCid"`
-	TaskIDTreeR              *int            `json:"taskIdTreeR"`
-	AfterTreeR               bool            `json:"afterTreeR"`
-	PrecommitMsgCid          *string         `json:"precommitMsgCid"`
-	TaskIDPrecommitMsg       *int            `json:"taskIdPrecommitMsg"`
-	AfterPrecommitMsg        bool            `json:"afterPrecommitMsg"`
-	SeedEpoch                *int            `json:"seedEpoch"`
-	PrecommitMsgTsk          types.ByteArray `json:"precommitMsgTsk"`
-	AfterPrecommitMsgSuccess bool            `json:"afterPrecommitMsgSuccess"`
-	SeedValue                types.ByteArray `json:"seedValue"`
-	TaskIDPorep              *int            `json:"taskIdPorep"`
-	PorepProof               types.ByteArray `json:"porepProof"`
-	AfterPorep               bool            `json:"afterPorep"`
-	TaskIDFinalize           *int            `json:"taskIdFinalize"`
-	AfterFinalize            bool            `json:"afterFinalize"`
-	TaskIDMoveStorage        *int            `json:"taskIdMoveStorage"`
-	AfterMoveStorage         bool            `json:"afterMoveStorage"`
-	CommitMsgCid             *string         `json:"commitMsgCid"`
-	TaskIDCommitMsg          *int            `json:"taskIdCommitMsg"`
-	AfterCommitMsg           bool            `json:"afterCommitMsg"`
-	CommitMsgTsk             types.ByteArray `json:"commitMsgTsk"`
-	AfterCommitMsgSuccess    bool            `json:"afterCommitMsgSuccess"`
-	Failed                   bool            `json:"failed"`
-	FailedAt                 *time.Time      `json:"failedAt"`
-	FailedReason             string          `json:"failedReason"`
-	FailedReasonMsg          string          `json:"failedReasonMsg"`
-	TaskIDSynth              *int            `json:"taskIdSynth"`
-	AfterSynth               bool            `json:"afterSynth"`
-	UserSectorDurationEpochs *int            `json:"userSectorDurationEpochs"`
-	Status                   PorepStatus     `json:"status"`
-	CurrentTask              *Task           `json:"currentTask"`
+	ID                       string        `json:"id"`
+	SpID                     types.Address `json:"spId"`
+	SectorNumber             int           `json:"sectorNumber"`
+	CreateTime               time.Time     `json:"createTime"`
+	RegSealProof             int           `json:"regSealProof"`
+	TicketEpoch              *int          `json:"ticketEpoch"`
+	TicketValue              types.Bytes   `json:"ticketValue"`
+	TaskIDSdr                *int          `json:"taskIdSdr"`
+	AfterSdr                 bool          `json:"afterSdr"`
+	TreeDCid                 *string       `json:"treeDCid"`
+	TaskIDTreeD              *int          `json:"taskIdTreeD"`
+	AfterTreeD               bool          `json:"afterTreeD"`
+	TaskIDTreeC              *int          `json:"taskIdTreeC"`
+	AfterTreeC               bool          `json:"afterTreeC"`
+	TreeRCid                 *string       `json:"treeRCid"`
+	TaskIDTreeR              *int          `json:"taskIdTreeR"`
+	AfterTreeR               bool          `json:"afterTreeR"`
+	PrecommitMsgCid          *string       `json:"precommitMsgCid"`
+	TaskIDPrecommitMsg       *int          `json:"taskIdPrecommitMsg"`
+	AfterPrecommitMsg        bool          `json:"afterPrecommitMsg"`
+	SeedEpoch                *int          `json:"seedEpoch"`
+	PrecommitMsgTsk          types.Bytes   `json:"precommitMsgTsk"`
+	AfterPrecommitMsgSuccess bool          `json:"afterPrecommitMsgSuccess"`
+	SeedValue                types.Bytes   `json:"seedValue"`
+	TaskIDPorep              *int          `json:"taskIdPorep"`
+	PorepProof               types.Bytes   `json:"porepProof"`
+	AfterPorep               bool          `json:"afterPorep"`
+	TaskIDFinalize           *int          `json:"taskIdFinalize"`
+	AfterFinalize            bool          `json:"afterFinalize"`
+	TaskIDMoveStorage        *int          `json:"taskIdMoveStorage"`
+	AfterMoveStorage         bool          `json:"afterMoveStorage"`
+	CommitMsgCid             *string       `json:"commitMsgCid"`
+	TaskIDCommitMsg          *int          `json:"taskIdCommitMsg"`
+	AfterCommitMsg           bool          `json:"afterCommitMsg"`
+	CommitMsgTsk             types.Bytes   `json:"commitMsgTsk"`
+	AfterCommitMsgSuccess    bool          `json:"afterCommitMsgSuccess"`
+	Failed                   bool          `json:"failed"`
+	FailedAt                 *time.Time    `json:"failedAt"`
+	FailedReason             string        `json:"failedReason"`
+	FailedReasonMsg          string        `json:"failedReasonMsg"`
+	TaskIDSynth              *int          `json:"taskIdSynth"`
+	AfterSynth               bool          `json:"afterSynth"`
+	UserSectorDurationEpochs *int          `json:"userSectorDurationEpochs"`
+	Status                   PorepStatus   `json:"status"`
+	CurrentTask              *Task         `json:"currentTask"`
 }
 
 type PowerClaim struct {
@@ -240,11 +326,31 @@ type PowerClaim struct {
 	QualityAdjPower *types.BigInt `json:"qualityAdjPower"`
 }
 
+type PriceFilter struct {
+	Name            string `json:"name"`
+	MinDurationDays int    `json:"minDurationDays"`
+	MaxDurationDays int    `json:"maxDurationDays"`
+	MinimumSize     int    `json:"minimumSize"`
+	MaximumSize     int    `json:"maximumSize"`
+	Price           int    `json:"price"`
+	Verified        bool   `json:"verified"`
+}
+
+type PriceFilterInput struct {
+	Name            string `json:"name"`
+	MinDurationDays int    `json:"minDurationDays"`
+	MaxDurationDays int    `json:"maxDurationDays"`
+	MinimumSize     int    `json:"minimumSize"`
+	MaximumSize     int    `json:"maximumSize"`
+	Price           int    `json:"price"`
+	Verified        bool   `json:"verified"`
+}
+
 type Query struct {
 }
 
 type SectorMetaPiece struct {
-	SpID              types.ActorID `json:"spID"`
+	SpID              types.Address `json:"spID"`
 	SectorNum         int           `json:"sectorNum"`
 	PieceNum          int           `json:"pieceNum"`
 	PieceCid          string        `json:"pieceCID"`
@@ -313,6 +419,11 @@ type TaskSummaryDay struct {
 	TrueCount  int       `json:"trueCount"`
 	FalseCount int       `json:"falseCount"`
 	TotalCount int       `json:"totalCount"`
+}
+
+type WalletBalance struct {
+	Address types.Address `json:"address"`
+	Balance types.FIL     `json:"balance"`
 }
 
 type MiningTaskAggregateInterval string

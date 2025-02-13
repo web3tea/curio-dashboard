@@ -4,6 +4,7 @@ import { useMutation } from '@vue/apollo-composable'
 import { RemoveSector } from '@/gql/sector'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
+import { useI18n } from 'vue-i18n'
 
 interface Sector {
   spId: string,
@@ -30,6 +31,7 @@ const props = defineProps({
   },
 })
 
+const { t } = useI18n()
 const uiStore = useUIStore()
 
 const success = ref(0)
@@ -118,7 +120,7 @@ function removeSector () {
             />
           </template>
           <template #title>
-            {{ $t('msgs.sureRemoveSector', sectors.length) }}
+            {{ t('msgs.sureRemoveSector', sectors.length) }}
           </template>
         </v-list-item>
 
@@ -126,7 +128,7 @@ function removeSector () {
 
         <v-card-text class="text-medium-emphasis pa-6">
           <div class="text-h6 mb-6">
-            {{ $t('msgs.actionCantUndo') }}
+            {{ t('msgs.actionCantUndo') }}
           </div>
 
           <template v-if="sectors.length > 1">
@@ -169,14 +171,14 @@ function removeSector () {
                 class="my-4  text-overline"
                 style="color: yellow"
               >
-                ({{ $t('msgs.sectorNotFailed', props.sectors.length) }})
+                ({{ t('msgs.sectorNotFailed', props.sectors.length) }})
               </div>
             </v-col>
             <v-col cols="auto">
               <v-checkbox v-model="doubleCheck">
                 <template #label>
                   {{
-                    $t('msgs.understand')
+                    t('msgs.understand')
                   }}
                 </template>
               </v-checkbox>
@@ -186,7 +188,7 @@ function removeSector () {
         <v-card-actions>
           <v-spacer />
           <v-btn @click="dialog = false">
-            {{ $t('actions.Cancel') }}
+            {{ t('actions.Cancel') }}
           </v-btn>
           <v-btn
             color="error"
@@ -195,7 +197,7 @@ function removeSector () {
             variant="flat"
             @click="removeSector"
           >
-            {{ $t('actions.Remove') }}
+            {{ t('actions.Remove') }}
           </v-btn>
         </v-card-actions>
       </v-card>

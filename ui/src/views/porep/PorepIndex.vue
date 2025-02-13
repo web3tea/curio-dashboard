@@ -7,13 +7,8 @@ const breadcrumbs = ref([
   {
     title: 'PoRep',
     disabled: false,
-    href: '#',
-  },
-  {
-    title: 'List',
-    disabled: true,
-    href: '#',
-  },
+    to: { name: 'PoRep' }
+  }
 ])
 </script>
 

@@ -3,7 +3,6 @@ package loaders
 import (
 	"context"
 
-	"github.com/strahe/curio-dashboard/db"
 	"github.com/strahe/curio-dashboard/graph/model"
 	"github.com/strahe/curio-dashboard/types"
 )
@@ -15,17 +14,21 @@ type MessageLoader interface {
 }
 
 type MessageLoaderImpl struct {
-	db *db.HarmonyDB
+	loader *Loader
+}
+
+func NewMessageLoader(loader *Loader) *MessageLoaderImpl {
+	return &MessageLoaderImpl{loader}
 }
 
 func (l *MessageLoaderImpl) MessageSendCount(ctx context.Context, account *types.Address) (int, error) {
 	var result int
-	err := l.db.QueryRow(ctx, `
-SELECT 
-    COUNT(*) 
-FROM 
-    message_sends 
-WHERE 
+	err := l.loader.db.QueryRow(ctx, `
+SELECT
+    COUNT(*)
+FROM
+    message_sends
+WHERE
     ($1::text IS NULL OR from_key = $1 OR to_addr = $1)`, account).Scan(&result)
 	return result, err
 }
@@ -34,7 +37,7 @@ func (l *MessageLoaderImpl) MessageSends(ctx context.Context, account *types.Add
 	var result []*model.MessageSend
 
 	// important: send_time and to_addr are not indexed
-	err := l.db.Select(ctx, &result, `
+	err := l.loader.db.Select(ctx, &result, `
 SELECT
     from_key,
     to_addr,
@@ -56,7 +59,6 @@ WHERE
 ORDER BY
     send_task_id DESC
 LIMIT $2 OFFSET $3;`, account, limit, offset)
-
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +68,7 @@ LIMIT $2 OFFSET $3;`, account, limit, offset)
 func (l *MessageLoaderImpl) MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error) {
 	var result model.MessageSend
 
-	err := l.db.QueryRow(ctx, `
+	err := l.loader.db.QueryRow(ctx, `
 SELECT
     from_key,
     to_addr,
@@ -100,17 +102,8 @@ LIMIT 1;`, sendTaskID, fromKey, nonce, signedCid).Scan(&result.FromKey,
 		&result.SendTime,
 		&result.SendSuccess,
 		&result.SendError)
-
 	if err != nil {
 		return nil, err
 	}
 	return &result, nil
 }
-
-func NewMessageLoader(db *db.HarmonyDB) *MessageLoaderImpl {
-	return &MessageLoaderImpl{
-		db: db,
-	}
-}
-
-var _ MessageLoader = &MessageLoaderImpl{}

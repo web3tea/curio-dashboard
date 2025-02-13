@@ -7,7 +7,7 @@ import { GetMachineTasks } from '@/gql/machine'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, d } = useI18n()
 
 const props = defineProps({
   id: {
@@ -66,10 +66,10 @@ const headers = [
         </v-chip>
       </template>
       <template #item.updateTime="{ value }">
-        {{ $d(value, 'short') }}
+        {{ d(value, 'short') }}
       </template>
       <template #item.postedTime="{ value }">
-        {{ $d(value, 'short') }}
+        {{ d(value, 'short') }}
       </template>
       <template #item.previousTask="{ value }">
         <!--        todo: add router link to previous task details-->

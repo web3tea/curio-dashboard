@@ -125,7 +125,7 @@ func (r *queryResolver) StorageStats(ctx context.Context) ([]*model.StorageStats
 }
 
 // Sectors is the resolver for the sectors field.
-func (r *queryResolver) Sectors(ctx context.Context, actor *types.ActorID, sectorNumber *int, offset int, limit int) ([]*model.Sector, error) {
+func (r *queryResolver) Sectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.Sector, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
 	if actor != nil && sectorNumber != nil {
 		meta, err := r.loader.SectorMeta(ctx, *actor, *sectorNumber)
@@ -150,13 +150,13 @@ func (r *queryResolver) Sectors(ctx context.Context, actor *types.ActorID, secto
 }
 
 // SectorsCount is the resolver for the sectorsCount field.
-func (r *queryResolver) SectorsCount(ctx context.Context, actor *types.ActorID) (int, error) {
+func (r *queryResolver) SectorsCount(ctx context.Context, actor *types.Address) (int, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
 	return r.loader.SectorsCount(ctx, actor)
 }
 
 // Sector is the resolver for the sector field.
-func (r *queryResolver) Sector(ctx context.Context, actor types.ActorID, sectorNumber int) (*model.Sector, error) {
+func (r *queryResolver) Sector(ctx context.Context, actor types.Address, sectorNumber int) (*model.Sector, error) {
 	return &model.Sector{SpID: actor, SectorNum: sectorNumber}, nil
 }
 
@@ -178,7 +178,7 @@ func (r *queryResolver) Poreps(ctx context.Context) ([]*model.Porep, error) {
 }
 
 // Porep is the resolver for the porep field.
-func (r *queryResolver) Porep(ctx context.Context, sp types.ActorID, sectorNumber int) (*model.Porep, error) {
+func (r *queryResolver) Porep(ctx context.Context, sp types.Address, sectorNumber int) (*model.Porep, error) {
 	return r.loader.Porep(ctx, sp, sectorNumber)
 }
 
@@ -218,31 +218,31 @@ func (r *queryResolver) MiningSummaryByDay(ctx context.Context, start time.Time,
 }
 
 // MiningCount is the resolver for the miningCount field.
-func (r *queryResolver) MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCount, error) {
+func (r *queryResolver) MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCount, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
 	return r.loader.MiningCount(ctx, start, end, actor)
 }
 
 // MiningWins is the resolver for the miningWins field.
-func (r *queryResolver) MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
+func (r *queryResolver) MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
 	return r.loader.MiningTasks(ctx, start, end, actor, lo.ToPtr(true), include, offset, limit)
 }
 
 // MiningWinsCount is the resolver for the miningWinsCount field.
-func (r *queryResolver) MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.ActorID, include *bool) (int, error) {
+func (r *queryResolver) MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.Address, include *bool) (int, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
 	return r.loader.MiningTasksCount(ctx, start, end, actor, lo.ToPtr(true), include)
 }
 
 // MiningCountSummary is the resolver for the miningCountSummary field.
-func (r *queryResolver) MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID) (*model.MiningCountSummary, error) {
+func (r *queryResolver) MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCountSummary, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
 	return r.loader.MiningCountSummary(ctx, start, end, actor)
 }
 
 // MiningCountAggregate is the resolver for the miningCountAggregate field.
-func (r *queryResolver) MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.ActorID, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error) {
+func (r *queryResolver) MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
 	return r.loader.MiningCountAggregate(ctx, start, end, actor, interval)
 }

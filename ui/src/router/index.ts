@@ -12,8 +12,8 @@ export const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      redirect: '/app/overview',
+      path: '/:pathMatch(.*)*',
+      component: () => import('@/views/error/Error404Page.vue')
     },
     AuthRoutes,
     AppRoutes,

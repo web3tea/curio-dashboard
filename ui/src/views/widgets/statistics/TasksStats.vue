@@ -1,11 +1,11 @@
 <script setup lang="ts">
-
 import { useQuery } from '@vue/apollo-composable'
 import { GetTasksStats } from '@/gql/task'
 import { computed, ComputedRef } from 'vue'
 import { TaskStats } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
 import { IconReload } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
   machine: {
@@ -17,6 +17,9 @@ const props = defineProps({
     default: 24,
   },
 })
+
+const { t } = useI18n()
+
 const currentEnd = new Date()
 const currentStart = new Date(currentEnd.getTime() - props.lastHours * 60 * 60 * 1000)
 
@@ -43,7 +46,7 @@ const failedPercentage = (item: TaskStats) => {
 <template>
   <UiTitleCard
     class-name="px-0 pb-0 rounded-md"
-    :title="$t('fields.24H Task Counts')"
+    :title="t('fields.24H Task Counts')"
   >
     <template #action>
       <v-btn
