@@ -6,7 +6,6 @@ import (
 	"context"
 
 	"github.com/filecoin-project/curio/web/api/webrpc"
-	"github.com/filecoin-project/go-address"
 	"golang.org/x/xerrors"
 )
 
@@ -18,8 +17,6 @@ type WebRPCStruct struct {
 
 type WebRPCMethods struct {
 	ActorList func(p0 context.Context) ([]string, error) ``
-
-	ActorSectorExpirations func(p0 context.Context, p1 address.Address) (*webrpc.SectorExpirations, error) ``
 
 	ActorSummary func(p0 context.Context) ([]webrpc.ActorSummary, error) ``
 
@@ -103,6 +100,8 @@ type WebRPCMethods struct {
 
 	UpgradeSectors func(p0 context.Context) ([]webrpc.UpgradeSector, error) ``
 
+	Version func(p0 context.Context) (string, error) ``
+
 	WinStats func(p0 context.Context) ([]webrpc.WinStats, error) ``
 }
 
@@ -118,17 +117,6 @@ func (s *WebRPCStruct) ActorList(p0 context.Context) ([]string, error) {
 
 func (s *WebRPCStub) ActorList(p0 context.Context) ([]string, error) {
 	return *new([]string), ErrNotSupported
-}
-
-func (s *WebRPCStruct) ActorSectorExpirations(p0 context.Context, p1 address.Address) (*webrpc.SectorExpirations, error) {
-	if s.Internal.ActorSectorExpirations == nil {
-		return nil, ErrNotSupported
-	}
-	return s.Internal.ActorSectorExpirations(p0, p1)
-}
-
-func (s *WebRPCStub) ActorSectorExpirations(p0 context.Context, p1 address.Address) (*webrpc.SectorExpirations, error) {
-	return nil, ErrNotSupported
 }
 
 func (s *WebRPCStruct) ActorSummary(p0 context.Context) ([]webrpc.ActorSummary, error) {
@@ -580,6 +568,17 @@ func (s *WebRPCStruct) UpgradeSectors(p0 context.Context) ([]webrpc.UpgradeSecto
 
 func (s *WebRPCStub) UpgradeSectors(p0 context.Context) ([]webrpc.UpgradeSector, error) {
 	return *new([]webrpc.UpgradeSector), ErrNotSupported
+}
+
+func (s *WebRPCStruct) Version(p0 context.Context) (string, error) {
+	if s.Internal.Version == nil {
+		return "", ErrNotSupported
+	}
+	return s.Internal.Version(p0)
+}
+
+func (s *WebRPCStub) Version(p0 context.Context) (string, error) {
+	return "", ErrNotSupported
 }
 
 func (s *WebRPCStruct) WinStats(p0 context.Context) ([]webrpc.WinStats, error) {

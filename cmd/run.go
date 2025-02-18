@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/api"
@@ -14,6 +15,7 @@ import (
 	"github.com/strahe/curio-dashboard/graph/resolvers"
 
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/filecoin-project/curio/build"
 	cliutil "github.com/filecoin-project/lotus/cli/util"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -42,15 +44,24 @@ var runCmd = &cli.Command{
 		}
 		defer harmonyDB.Close()
 
-		chainAPI, closer, err := getChainAPI(cctx, cfg.Chain)
-		if err != nil {
-			return fmt.Errorf("failed to get chain API: %w", err)
-		}
-		defer closer()
-
 		curioAPI, closer, err := getCurioWebRPCV0(cctx, cfg)
 		if err != nil {
 			return fmt.Errorf("failed to get curio web rpc: %w", err)
+		}
+		defer closer()
+
+		curioVersion, err := curioAPI.Version(cctx.Context)
+		if err != nil {
+			return fmt.Errorf("failed to get curio version: %w", err)
+		}
+
+		if strings.Split(curioVersion, "+")[0] != build.BuildVersion {
+			return fmt.Errorf("curio version mismatch: %s != %s", strings.Split(curioVersion, "+")[0], build.BuildVersion)
+		}
+
+		chainAPI, closer, err := getChainAPI(cctx, cfg.Chain, curioVersion)
+		if err != nil {
+			return fmt.Errorf("failed to get chain API: %w", err)
 		}
 		defer closer()
 

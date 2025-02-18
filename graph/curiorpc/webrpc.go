@@ -8,7 +8,8 @@ import (
 )
 
 type WebRPC interface {
-	ActorSectorExpirations(ctx context.Context, maddr address.Address) (*webrpc.SectorExpirations, error)
+	Version(context.Context) (string, error)
+
 	ActorSummary(ctx context.Context) ([]webrpc.ActorSummary, error)
 	ActorList(ctx context.Context) ([]string, error)
 	ClusterMachines(ctx context.Context) ([]webrpc.MachineSummary, error)

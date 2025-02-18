@@ -190,8 +190,8 @@ github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7
 github.com/fatih/color v1.8.0/go.mod h1:3l45GVGkyrnYNl9HoIjnp2NnNWvh6hLAqD8yTfGjnw8=
 github.com/fatih/color v1.16.0 h1:zmkK9Ngbjj+K0yRhTVONQh1p/HknKYSlNT+vZCzyokM=
 github.com/fatih/color v1.16.0/go.mod h1:fL2Sau1YI5c0pdGEVCbKQbLXB6edEj1ZgiY4NijnWvE=
-github.com/filecoin-project/curio v1.24.3 h1:sHPBH97S2DjIGiwbfRbGCLdeCyno3XFnr2+1dlsp7X4=
-github.com/filecoin-project/curio v1.24.3/go.mod h1:k5whzLGVx087O0G0jEZtYgoVGH51QmxWEq5WuF8BNMw=
+github.com/filecoin-project/curio v1.24.4 h1:WK36FroTo5397fKQZIIy12V6bq69O0zjGsb+FtmWWoQ=
+github.com/filecoin-project/curio v1.24.4/go.mod h1:k5whzLGVx087O0G0jEZtYgoVGH51QmxWEq5WuF8BNMw=
 github.com/filecoin-project/go-address v0.0.3/go.mod h1:jr8JxKsYx+lQlQZmF5i2U0Z+cGQ59wMIps/8YW/lDj8=
 github.com/filecoin-project/go-address v0.0.5/go.mod h1:jr8JxKsYx+lQlQZmF5i2U0Z+cGQ59wMIps/8YW/lDj8=
 github.com/filecoin-project/go-address v1.2.0 h1:NHmWUE/J7Pi2JZX3gZt32XuY69o9StVZeJxdBodIwOE=

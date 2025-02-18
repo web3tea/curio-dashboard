@@ -5,7 +5,7 @@ go 1.23.4
 require (
 	github.com/99designs/gqlgen v0.17.55
 	github.com/BurntSushi/toml v1.4.0
-	github.com/filecoin-project/curio v1.24.3
+	github.com/filecoin-project/curio v1.24.4
 	github.com/filecoin-project/go-address v1.2.0
 	github.com/filecoin-project/go-jsonrpc v0.7.0
 	github.com/filecoin-project/go-state-types v0.16.0-rc1
