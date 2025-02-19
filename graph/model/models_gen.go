@@ -47,6 +47,33 @@ type ClientFilterInput struct {
 	Info               string           `json:"info"`
 }
 
+type DealInfo struct {
+	ID                string           `json:"id"`
+	SpID              types.ActorID    `json:"spId"`
+	Sector            types.NullInt64  `json:"sector"`
+	CreatedAt         time.Time        `json:"createdAt"`
+	SignedProposalCid string           `json:"signedProposalCid"`
+	Offline           bool             `json:"offline"`
+	Verified          bool             `json:"verified"`
+	StartEpoch        int64            `json:"startEpoch"`
+	EndEpoch          int64            `json:"endEpoch"`
+	ClientPeerID      types.PeerID     `json:"clientPeerId"`
+	ChainDealID       types.NullInt64  `json:"chainDealId"`
+	PublishCid        types.NullString `json:"publishCid"`
+	PieceCid          string           `json:"pieceCid"`
+	PieceSize         int64            `json:"pieceSize"`
+	FastRetrieval     bool             `json:"fastRetrieval"`
+	AnnounceToIpni    bool             `json:"announceToIpni"`
+	URL               types.NullString `json:"url"`
+	Urls              string           `json:"urls"`
+	URLHeaders        types.JSONB      `json:"urlHeaders"`
+	Error             string           `json:"error"`
+	Miner             string           `json:"miner"`
+	IsLegacy          bool             `json:"isLegacy"`
+	Indexed           types.NullBool   `json:"indexed"`
+	IsDdo             bool             `json:"isDdo"`
+}
+
 type GaugeCountValue struct {
 	Key   string `json:"key"`
 	Value int    `json:"value"`
@@ -96,28 +123,28 @@ type MarketBalance struct {
 }
 
 type MarketMk12Deal struct {
-	UUID              string        `json:"uuid"`
-	SpID              types.ActorID `json:"spId"`
-	CreatedAt         time.Time     `json:"createdAt"`
-	SignedProposalCid string        `json:"signedProposalCid"`
-	ProposalSignature types.Bytes   `json:"proposalSignature"`
-	Proposal          types.JSONB   `json:"proposal"`
-	Offline           bool          `json:"offline"`
-	Verified          bool          `json:"verified"`
-	StartEpoch        uint64        `json:"startEpoch"`
-	EndEpoch          uint64        `json:"endEpoch"`
-	ClientPeerID      string        `json:"clientPeerId"`
-	ChainDealID       *uint64       `json:"chainDealId"`
-	PublishCid        *string       `json:"publishCid"`
-	PieceCid          string        `json:"pieceCid"`
-	PieceSize         uint64        `json:"pieceSize"`
-	FastRetrieval     bool          `json:"fastRetrieval"`
-	AnnounceToIpni    bool          `json:"announceToIpni"`
-	URL               *string       `json:"url"`
-	URLHeaders        types.JSONB   `json:"urlHeaders"`
-	Error             *string       `json:"error"`
-	Label             types.Bytes   `json:"label"`
-	ProposalCid       string        `json:"proposalCid"`
+	UUID              string           `json:"uuid"`
+	SpID              types.ActorID    `json:"spId"`
+	CreatedAt         time.Time        `json:"createdAt"`
+	SignedProposalCid string           `json:"signedProposalCid"`
+	ProposalSignature types.Bytes      `json:"proposalSignature"`
+	Proposal          types.JSONB      `json:"proposal"`
+	Offline           bool             `json:"offline"`
+	Verified          bool             `json:"verified"`
+	StartEpoch        int64            `json:"startEpoch"`
+	EndEpoch          int64            `json:"endEpoch"`
+	ClientPeerID      string           `json:"clientPeerId"`
+	ChainDealID       types.NullInt64  `json:"chainDealId"`
+	PublishCid        types.NullString `json:"publishCid"`
+	PieceCid          string           `json:"pieceCid"`
+	PieceSize         uint64           `json:"pieceSize"`
+	FastRetrieval     bool             `json:"fastRetrieval"`
+	AnnounceToIpni    bool             `json:"announceToIpni"`
+	URL               types.NullString `json:"url"`
+	URLHeaders        types.JSONB      `json:"urlHeaders"`
+	Error             types.NullString `json:"error"`
+	Label             types.Bytes      `json:"label"`
+	ProposalCid       string           `json:"proposalCid"`
 }
 
 type MarketMk12DealFilterInput struct {
@@ -149,19 +176,19 @@ type MarketMk12StorageAskInput struct {
 }
 
 type MessageSend struct {
-	FromKey      string      `json:"fromKey"`
-	ToAddr       string      `json:"toAddr"`
-	SendReason   string      `json:"sendReason"`
-	SendTaskID   int         `json:"sendTaskId"`
-	UnsignedData types.Bytes `json:"unsignedData"`
-	UnsignedCid  string      `json:"unsignedCid"`
-	Nonce        *int        `json:"nonce"`
-	SignedData   types.Bytes `json:"signedData"`
-	SignedJSON   types.JSONB `json:"signedJson"`
-	SignedCid    *string     `json:"signedCid"`
-	SendTime     *time.Time  `json:"sendTime"`
-	SendSuccess  *bool       `json:"sendSuccess"`
-	SendError    *string     `json:"sendError"`
+	FromKey      string       `json:"fromKey"`
+	ToAddr       string       `json:"toAddr"`
+	SendReason   string       `json:"sendReason"`
+	SendTaskID   int          `json:"sendTaskId"`
+	UnsignedData types.Bytes  `json:"unsignedData"`
+	UnsignedCid  string       `json:"unsignedCid"`
+	Nonce        *int         `json:"nonce"`
+	SignedData   types.Bytes  `json:"signedData"`
+	SignedJSON   *types.JSONB `json:"signedJson"`
+	SignedCid    *string      `json:"signedCid"`
+	SendTime     *time.Time   `json:"sendTime"`
+	SendSuccess  *bool        `json:"sendSuccess"`
+	SendError    *string      `json:"sendError"`
 }
 
 type MetricsActiveTask struct {
@@ -233,7 +260,7 @@ type MiningTask struct {
 	BaseComputeTime time.Time     `json:"baseComputeTime"`
 	Won             bool          `json:"won"`
 	MinedCid        *string       `json:"minedCid"`
-	MinedHeader     types.JSONB   `json:"minedHeader"`
+	MinedHeader     *types.JSONB  `json:"minedHeader"`
 	MinedAt         *time.Time    `json:"minedAt"`
 	SubmittedAt     *time.Time    `json:"submittedAt"`
 	Included        *bool         `json:"included"`
@@ -360,8 +387,8 @@ type SectorMetaPiece struct {
 	StartEpoch        *int          `json:"startEpoch"`
 	OrigEndEpoch      *int          `json:"origEndEpoch"`
 	F05DealID         *int          `json:"f05DealID"`
-	DdoPam            types.JSONB   `json:"ddoPam"`
-	F05DealProposal   types.JSONB   `json:"f05DealProposal"`
+	DdoPam            *types.JSONB  `json:"ddoPam"`
+	F05DealProposal   *types.JSONB  `json:"f05DealProposal"`
 }
 
 type StorageLiveness struct {

@@ -82,6 +82,8 @@ type WebRPCMethods struct {
 
 	SetStorageAsk func(p0 context.Context, p1 *webrpc.StorageAsk) error ``
 
+	StorageDealInfo func(p0 context.Context, p1 string) (*webrpc.StorageDealSummary, error) ``
+
 	StorageGCApprove func(p0 context.Context, p1 int64, p2 int64, p3 int64, p4 string) error ``
 
 	StorageGCApproveAll func(p0 context.Context) error ``
@@ -469,6 +471,17 @@ func (s *WebRPCStruct) SetStorageAsk(p0 context.Context, p1 *webrpc.StorageAsk) 
 
 func (s *WebRPCStub) SetStorageAsk(p0 context.Context, p1 *webrpc.StorageAsk) error {
 	return ErrNotSupported
+}
+
+func (s *WebRPCStruct) StorageDealInfo(p0 context.Context, p1 string) (*webrpc.StorageDealSummary, error) {
+	if s.Internal.StorageDealInfo == nil {
+		return nil, ErrNotSupported
+	}
+	return s.Internal.StorageDealInfo(p0, p1)
+}
+
+func (s *WebRPCStub) StorageDealInfo(p0 context.Context, p1 string) (*webrpc.StorageDealSummary, error) {
+	return nil, ErrNotSupported
 }
 
 func (s *WebRPCStruct) StorageGCApprove(p0 context.Context, p1 int64, p2 int64, p3 int64, p4 string) error {

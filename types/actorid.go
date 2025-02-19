@@ -38,8 +38,8 @@ func (b *ActorID) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL implements the graphql.Marshaler interface
 func (b ActorID) MarshalGQL(w io.Writer) {
-	addr, _ := address.NewIDAddress(b.ID)             // nolint: errcheck
-	_, _ = w.Write([]byte(`"` + addr.String() + `"`)) // nolint: errcheck
+	addr, _ := address.NewIDAddress(b.ID)           // nolint: errcheck
+	io.WriteString(w, strconv.Quote(addr.String())) // nolint: errcheck
 }
 
 func (b *ActorID) Scan(value interface{}) error {

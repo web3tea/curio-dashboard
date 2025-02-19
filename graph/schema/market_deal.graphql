@@ -7,20 +7,47 @@ type MarketMk12Deal {
   proposal: JSONB!
   offline: Boolean!
   verified: Boolean!
-  startEpoch: Uint64!
-  endEpoch: Uint64!
+  startEpoch: Int64!
+  endEpoch: Int64!
   clientPeerId: String!
-  chainDealId: Uint64
-  publishCid: String
+  chainDealId: NullInt64!
+  publishCid: NullString!
   pieceCid: String!
   pieceSize: Uint64!
   fastRetrieval: Boolean!
   announceToIpni: Boolean!
-  url: String
+  url: NullString!
   urlHeaders: JSONB!
-  error: String
+  error: NullString!
   label: Bytes
   proposalCid: String!
+}
+
+type DealInfo {
+  id: String!
+  spId: ActorID!
+  sector: NullInt64!
+  createdAt: Time!
+  signedProposalCid: String!
+  offline: Boolean!
+  verified: Boolean!
+  startEpoch: Int64!
+  endEpoch: Int64!
+  clientPeerId: PeerID!
+  chainDealId: NullInt64!
+  publishCid: NullString!
+  pieceCid: String!
+  pieceSize: Int64!
+  fastRetrieval: Boolean!
+  announceToIpni: Boolean!
+  url: NullString!
+  urls: String!
+  urlHeaders: JSONB!
+  error: String!
+  miner: String!
+  isLegacy: Boolean!
+  indexed: NullBool!
+  isDdo: Boolean!
 }
 
 input MarketMk12DealFilterInput {
@@ -34,4 +61,5 @@ input MarketMk12DealFilterInput {
 extend type Query {
   marketMk12Deals(filter: MarketMk12DealFilterInput!, limit: Int!, offset: Int!): [MarketMk12Deal!]!
   marketMk12DealsCount(filter: MarketMk12DealFilterInput!): Int!
+  marketDealInfo(id: String!): DealInfo
 }

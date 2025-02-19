@@ -66,6 +66,11 @@ const itemsCount: ComputedRef<number> = computed(() => {
       :items-length="itemsCount"
       height="calc(100vh - 330px)"
     >
+      <template #item.uuid="{ value }">
+        <RouterLink :to="{ name: 'MakretDealInfo', params: { id: value } }">
+          {{ value }}
+        </RouterLink>
+      </template>
       <template #item.spId="{ value }">
         <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
           {{ value }}

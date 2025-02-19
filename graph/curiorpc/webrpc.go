@@ -56,6 +56,9 @@ type WebRPC interface {
 	AddAllowDenyList(ctx context.Context, wallet string, status bool) error
 	RemoveAllowFilter(ctx context.Context, wallet string) error
 	DefaultAllowBehaviour(ctx context.Context) (bool, error)
+
+	// Market Deals
+	StorageDealInfo(ctx context.Context, deal string) (*webrpc.StorageDealSummary, error)
 }
 
 type sectorListEntry struct {

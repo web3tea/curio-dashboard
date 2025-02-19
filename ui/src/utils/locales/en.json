@@ -82,7 +82,8 @@
     "Running Tasks": "Running Tasks",
     "Storages": "Storages",
     "Node": "Node|Nodes",
-    "View All": "View All"
+    "View All": "View All",
+    "Deal Details": "Deal Details"
   },
   "msgs": {
     "weekBlock": "This Week Total Mined",

@@ -17,8 +17,12 @@ export type Scalars = {
   BigInt: { input: any; output: any; }
   Bytes: { input: any; output: any; }
   FIL: { input: any; output: any; }
+  Int64: { input: any; output: any; }
   JSON: { input: any; output: any; }
   JSONB: { input: any; output: any; }
+  NullBool: { input: any; output: any; }
+  NullInt64: { input: any; output: any; }
+  NullString: { input: any; output: any; }
   PeerID: { input: any; output: any; }
   Time: { input: any; output: any; }
   Uint64: { input: any; output: any; }
@@ -82,6 +86,34 @@ export type Config = {
   id: Scalars['Int']['output'];
   title: Scalars['String']['output'];
   usedBy: Array<Maybe<MachineDetail>>;
+};
+
+export type DealInfo = {
+  __typename?: 'DealInfo';
+  announceToIpni: Scalars['Boolean']['output'];
+  chainDealId: Scalars['NullInt64']['output'];
+  clientPeerId: Scalars['PeerID']['output'];
+  createdAt: Scalars['Time']['output'];
+  endEpoch: Scalars['Int64']['output'];
+  error: Scalars['String']['output'];
+  fastRetrieval: Scalars['Boolean']['output'];
+  id: Scalars['String']['output'];
+  indexed: Scalars['NullBool']['output'];
+  isDdo: Scalars['Boolean']['output'];
+  isLegacy: Scalars['Boolean']['output'];
+  miner: Scalars['String']['output'];
+  offline: Scalars['Boolean']['output'];
+  pieceCid: Scalars['String']['output'];
+  pieceSize: Scalars['Int64']['output'];
+  publishCid: Scalars['NullString']['output'];
+  sector: Scalars['NullInt64']['output'];
+  signedProposalCid: Scalars['String']['output'];
+  spId: Scalars['ActorID']['output'];
+  startEpoch: Scalars['Int64']['output'];
+  url: Scalars['NullString']['output'];
+  urlHeaders: Scalars['JSONB']['output'];
+  urls: Scalars['String']['output'];
+  verified: Scalars['Boolean']['output'];
 };
 
 export type GaugeCountValue = {
@@ -179,11 +211,11 @@ export type MarketBalance = {
 export type MarketMk12Deal = {
   __typename?: 'MarketMk12Deal';
   announceToIpni: Scalars['Boolean']['output'];
-  chainDealId?: Maybe<Scalars['Uint64']['output']>;
+  chainDealId: Scalars['NullInt64']['output'];
   clientPeerId: Scalars['String']['output'];
   createdAt: Scalars['Time']['output'];
-  endEpoch: Scalars['Uint64']['output'];
-  error?: Maybe<Scalars['String']['output']>;
+  endEpoch: Scalars['Int64']['output'];
+  error: Scalars['NullString']['output'];
   fastRetrieval: Scalars['Boolean']['output'];
   label?: Maybe<Scalars['Bytes']['output']>;
   offline: Scalars['Boolean']['output'];
@@ -192,11 +224,11 @@ export type MarketMk12Deal = {
   proposal: Scalars['JSONB']['output'];
   proposalCid: Scalars['String']['output'];
   proposalSignature: Scalars['Bytes']['output'];
-  publishCid?: Maybe<Scalars['String']['output']>;
+  publishCid: Scalars['NullString']['output'];
   signedProposalCid: Scalars['String']['output'];
   spId: Scalars['ActorID']['output'];
-  startEpoch: Scalars['Uint64']['output'];
-  url?: Maybe<Scalars['String']['output']>;
+  startEpoch: Scalars['Int64']['output'];
+  url: Scalars['NullString']['output'];
   urlHeaders: Scalars['JSONB']['output'];
   uuid: Scalars['String']['output'];
   verified: Scalars['Boolean']['output'];
@@ -650,6 +682,7 @@ export type Query = {
   marketCheckPriceFilter: Scalars['Boolean']['output'];
   marketClientFilter?: Maybe<ClientFilter>;
   marketClientFilters?: Maybe<Array<ClientFilter>>;
+  marketDealInfo?: Maybe<DealInfo>;
   marketMk12Deals: Array<MarketMk12Deal>;
   marketMk12DealsCount: Scalars['Int']['output'];
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
@@ -726,6 +759,11 @@ export type QueryMarketCheckPriceFilterArgs = {
 
 export type QueryMarketClientFilterArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type QueryMarketDealInfoArgs = {
+  id: Scalars['String']['input'];
 };
 
 

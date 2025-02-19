@@ -252,6 +252,16 @@ const AppRoutes = {
         title: 'MK12 Deals',
         description: 'Market Mk12 deals',
       },
+    },
+    {
+      name: "MakretDealInfo",
+      path: "/market/deals/:id",
+      component: () => import('@/views/market/deals/detail/DealDetailIndex.vue'),
+      props: true,
+      meta: {
+        title: 'Deal Info',
+        description: 'Market deal info',
+      },
     }
   ],
 }

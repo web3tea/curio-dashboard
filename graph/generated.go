@@ -112,6 +112,33 @@ type ComplexityRoot struct {
 		UsedBy func(childComplexity int) int
 	}
 
+	DealInfo struct {
+		AnnounceToIpni    func(childComplexity int) int
+		ChainDealID       func(childComplexity int) int
+		ClientPeerID      func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		EndEpoch          func(childComplexity int) int
+		Error             func(childComplexity int) int
+		FastRetrieval     func(childComplexity int) int
+		ID                func(childComplexity int) int
+		Indexed           func(childComplexity int) int
+		IsDdo             func(childComplexity int) int
+		IsLegacy          func(childComplexity int) int
+		Miner             func(childComplexity int) int
+		Offline           func(childComplexity int) int
+		PieceCid          func(childComplexity int) int
+		PieceSize         func(childComplexity int) int
+		PublishCid        func(childComplexity int) int
+		Sector            func(childComplexity int) int
+		SignedProposalCid func(childComplexity int) int
+		SpID              func(childComplexity int) int
+		StartEpoch        func(childComplexity int) int
+		URL               func(childComplexity int) int
+		URLHeaders        func(childComplexity int) int
+		Urls              func(childComplexity int) int
+		Verified          func(childComplexity int) int
+	}
+
 	GaugeCountValue struct {
 		Key   func(childComplexity int) int
 		Value func(childComplexity int) int
@@ -492,6 +519,7 @@ type ComplexityRoot struct {
 		MarketCheckPriceFilter     func(childComplexity int, name string) int
 		MarketClientFilter         func(childComplexity int, name string) int
 		MarketClientFilters        func(childComplexity int) int
+		MarketDealInfo             func(childComplexity int, id string) int
 		MarketMk12Deals            func(childComplexity int, filter model.MarketMk12DealFilterInput, limit int, offset int) int
 		MarketMk12DealsCount       func(childComplexity int, filter model.MarketMk12DealFilterInput) int
 		MarketMk12StorageAsk       func(childComplexity int, spID types.Address) int
@@ -852,6 +880,7 @@ type QueryResolver interface {
 	MarketBalances(ctx context.Context) ([]*model.MarketBalance, error)
 	MarketMk12Deals(ctx context.Context, filter model.MarketMk12DealFilterInput, limit int, offset int) ([]*model.MarketMk12Deal, error)
 	MarketMk12DealsCount(ctx context.Context, filter model.MarketMk12DealFilterInput) (int, error)
+	MarketDealInfo(ctx context.Context, id string) (*model.DealInfo, error)
 	MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
@@ -1146,6 +1175,174 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Config.UsedBy(childComplexity), true
+
+	case "DealInfo.announceToIpni":
+		if e.complexity.DealInfo.AnnounceToIpni == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.AnnounceToIpni(childComplexity), true
+
+	case "DealInfo.chainDealId":
+		if e.complexity.DealInfo.ChainDealID == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.ChainDealID(childComplexity), true
+
+	case "DealInfo.clientPeerId":
+		if e.complexity.DealInfo.ClientPeerID == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.ClientPeerID(childComplexity), true
+
+	case "DealInfo.createdAt":
+		if e.complexity.DealInfo.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.CreatedAt(childComplexity), true
+
+	case "DealInfo.endEpoch":
+		if e.complexity.DealInfo.EndEpoch == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.EndEpoch(childComplexity), true
+
+	case "DealInfo.error":
+		if e.complexity.DealInfo.Error == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.Error(childComplexity), true
+
+	case "DealInfo.fastRetrieval":
+		if e.complexity.DealInfo.FastRetrieval == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.FastRetrieval(childComplexity), true
+
+	case "DealInfo.id":
+		if e.complexity.DealInfo.ID == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.ID(childComplexity), true
+
+	case "DealInfo.indexed":
+		if e.complexity.DealInfo.Indexed == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.Indexed(childComplexity), true
+
+	case "DealInfo.isDdo":
+		if e.complexity.DealInfo.IsDdo == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.IsDdo(childComplexity), true
+
+	case "DealInfo.isLegacy":
+		if e.complexity.DealInfo.IsLegacy == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.IsLegacy(childComplexity), true
+
+	case "DealInfo.miner":
+		if e.complexity.DealInfo.Miner == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.Miner(childComplexity), true
+
+	case "DealInfo.offline":
+		if e.complexity.DealInfo.Offline == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.Offline(childComplexity), true
+
+	case "DealInfo.pieceCid":
+		if e.complexity.DealInfo.PieceCid == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.PieceCid(childComplexity), true
+
+	case "DealInfo.pieceSize":
+		if e.complexity.DealInfo.PieceSize == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.PieceSize(childComplexity), true
+
+	case "DealInfo.publishCid":
+		if e.complexity.DealInfo.PublishCid == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.PublishCid(childComplexity), true
+
+	case "DealInfo.sector":
+		if e.complexity.DealInfo.Sector == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.Sector(childComplexity), true
+
+	case "DealInfo.signedProposalCid":
+		if e.complexity.DealInfo.SignedProposalCid == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.SignedProposalCid(childComplexity), true
+
+	case "DealInfo.spId":
+		if e.complexity.DealInfo.SpID == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.SpID(childComplexity), true
+
+	case "DealInfo.startEpoch":
+		if e.complexity.DealInfo.StartEpoch == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.StartEpoch(childComplexity), true
+
+	case "DealInfo.url":
+		if e.complexity.DealInfo.URL == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.URL(childComplexity), true
+
+	case "DealInfo.urlHeaders":
+		if e.complexity.DealInfo.URLHeaders == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.URLHeaders(childComplexity), true
+
+	case "DealInfo.urls":
+		if e.complexity.DealInfo.Urls == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.Urls(childComplexity), true
+
+	case "DealInfo.verified":
+		if e.complexity.DealInfo.Verified == nil {
+			break
+		}
+
+		return e.complexity.DealInfo.Verified(childComplexity), true
 
 	case "GaugeCountValue.key":
 		if e.complexity.GaugeCountValue.Key == nil {
@@ -3304,6 +3501,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.MarketClientFilters(childComplexity), true
+
+	case "Query.marketDealInfo":
+		if e.complexity.Query.MarketDealInfo == nil {
+			break
+		}
+
+		args, err := ec.field_Query_marketDealInfo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MarketDealInfo(childComplexity, args["id"].(string)), true
 
 	case "Query.marketMk12Deals":
 		if e.complexity.Query.MarketMk12Deals == nil {
@@ -5946,6 +6155,38 @@ func (ec *executionContext) field_Query_marketClientFilter_argsName(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
 	if tmp, ok := rawArgs["name"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_marketDealInfo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_marketDealInfo_argsID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["id"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_marketDealInfo_argsID(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["id"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["id"]; ok {
 		return ec.unmarshalNString2string(ctx, tmp)
 	}
 
@@ -9472,6 +9713,1062 @@ func (ec *executionContext) fieldContext_Config_usedBy(_ context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _DealInfo_id(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_spId(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_spId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.ActorID)
+	fc.Result = res
+	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ActorID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_sector(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_sector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sector, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.NullInt64)
+	fc.Result = res
+	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_sector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type NullInt64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_signedProposalCid(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_signedProposalCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SignedProposalCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_signedProposalCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_offline(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_offline(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Offline, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_offline(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_verified(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_verified(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Verified, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_verified(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_startEpoch(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_startEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_startEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_endEpoch(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_endEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EndEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_endEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_clientPeerId(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_clientPeerId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ClientPeerID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.PeerID)
+	fc.Result = res
+	return ec.marshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_clientPeerId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type PeerID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_chainDealId(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_chainDealId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ChainDealID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.NullInt64)
+	fc.Result = res
+	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_chainDealId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type NullInt64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_publishCid(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_publishCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PublishCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.NullString)
+	fc.Result = res
+	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_publishCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type NullString does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_pieceCid(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_pieceCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PieceCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_pieceCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_pieceSize(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_pieceSize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PieceSize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	fc.Result = res
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_pieceSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_fastRetrieval(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_fastRetrieval(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FastRetrieval, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_fastRetrieval(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_announceToIpni(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_announceToIpni(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AnnounceToIpni, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_announceToIpni(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_url(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_url(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.NullString)
+	fc.Result = res
+	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type NullString does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_urls(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_urls(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Urls, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_urls(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_urlHeaders(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_urlHeaders(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URLHeaders, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.JSONB)
+	fc.Result = res
+	return ec.marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_urlHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSONB does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_error(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_error(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Error, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_error(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_miner(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_miner(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Miner, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_miner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_isLegacy(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_isLegacy(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsLegacy, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_isLegacy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_indexed(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_indexed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Indexed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.NullBool)
+	fc.Result = res
+	return ec.marshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_indexed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type NullBool does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DealInfo_isDdo(ctx context.Context, field graphql.CollectedField, obj *model.DealInfo) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DealInfo_isDdo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDdo, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DealInfo_isDdo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DealInfo",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _GaugeCountValue_key(ctx context.Context, field graphql.CollectedField, obj *model.GaugeCountValue) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_GaugeCountValue_key(ctx, field)
 	if err != nil {
@@ -12434,9 +13731,9 @@ func (ec *executionContext) _MarketMk12Deal_startEpoch(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(uint64)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_startEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12446,7 +13743,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_startEpoch(_ context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Uint64 does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12478,9 +13775,9 @@ func (ec *executionContext) _MarketMk12Deal_endEpoch(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(uint64)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_endEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12490,7 +13787,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_endEpoch(_ context.Conte
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Uint64 does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12561,11 +13858,14 @@ func (ec *executionContext) _MarketMk12Deal_chainDealId(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*uint64)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalOUint642ᚖuint64(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_chainDealId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12575,7 +13875,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_chainDealId(_ context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Uint64 does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12602,11 +13902,14 @@ func (ec *executionContext) _MarketMk12Deal_publishCid(ctx context.Context, fiel
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_publishCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12616,7 +13919,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_publishCid(_ context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12819,11 +14122,14 @@ func (ec *executionContext) _MarketMk12Deal_url(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12833,7 +14139,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_url(_ context.Context, f
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12904,11 +14210,14 @@ func (ec *executionContext) _MarketMk12Deal_error(ctx context.Context, field gra
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_error(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12918,7 +14227,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_error(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -13730,9 +15039,9 @@ func (ec *executionContext) _MessageSend_signedJson(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.JSONB)
+	res := resTmp.(*types.JSONB)
 	fc.Result = res
-	return ec.marshalOJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageSend_signedJson(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16647,9 +17956,9 @@ func (ec *executionContext) _MiningTask_minedHeader(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.JSONB)
+	res := resTmp.(*types.JSONB)
 	fc.Result = res
-	return ec.marshalOJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningTask_minedHeader(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24428,6 +25737,108 @@ func (ec *executionContext) fieldContext_Query_marketMk12DealsCount(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_marketDealInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketDealInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketDealInfo(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.DealInfo)
+	fc.Result = res
+	return ec.marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketDealInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_DealInfo_id(ctx, field)
+			case "spId":
+				return ec.fieldContext_DealInfo_spId(ctx, field)
+			case "sector":
+				return ec.fieldContext_DealInfo_sector(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_DealInfo_createdAt(ctx, field)
+			case "signedProposalCid":
+				return ec.fieldContext_DealInfo_signedProposalCid(ctx, field)
+			case "offline":
+				return ec.fieldContext_DealInfo_offline(ctx, field)
+			case "verified":
+				return ec.fieldContext_DealInfo_verified(ctx, field)
+			case "startEpoch":
+				return ec.fieldContext_DealInfo_startEpoch(ctx, field)
+			case "endEpoch":
+				return ec.fieldContext_DealInfo_endEpoch(ctx, field)
+			case "clientPeerId":
+				return ec.fieldContext_DealInfo_clientPeerId(ctx, field)
+			case "chainDealId":
+				return ec.fieldContext_DealInfo_chainDealId(ctx, field)
+			case "publishCid":
+				return ec.fieldContext_DealInfo_publishCid(ctx, field)
+			case "pieceCid":
+				return ec.fieldContext_DealInfo_pieceCid(ctx, field)
+			case "pieceSize":
+				return ec.fieldContext_DealInfo_pieceSize(ctx, field)
+			case "fastRetrieval":
+				return ec.fieldContext_DealInfo_fastRetrieval(ctx, field)
+			case "announceToIpni":
+				return ec.fieldContext_DealInfo_announceToIpni(ctx, field)
+			case "url":
+				return ec.fieldContext_DealInfo_url(ctx, field)
+			case "urls":
+				return ec.fieldContext_DealInfo_urls(ctx, field)
+			case "urlHeaders":
+				return ec.fieldContext_DealInfo_urlHeaders(ctx, field)
+			case "error":
+				return ec.fieldContext_DealInfo_error(ctx, field)
+			case "miner":
+				return ec.fieldContext_DealInfo_miner(ctx, field)
+			case "isLegacy":
+				return ec.fieldContext_DealInfo_isLegacy(ctx, field)
+			case "indexed":
+				return ec.fieldContext_DealInfo_indexed(ctx, field)
+			case "isDdo":
+				return ec.fieldContext_DealInfo_isDdo(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DealInfo", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketDealInfo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_marketMk12StorageAsks(ctx, field)
 	if err != nil {
@@ -27732,9 +29143,9 @@ func (ec *executionContext) _SectorMetaPiece_ddoPam(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.JSONB)
+	res := resTmp.(*types.JSONB)
 	fc.Result = res
-	return ec.marshalOJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_ddoPam(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27773,9 +29184,9 @@ func (ec *executionContext) _SectorMetaPiece_f05DealProposal(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(types.JSONB)
+	res := resTmp.(*types.JSONB)
 	fc.Result = res
-	return ec.marshalOJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_f05DealProposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -34581,6 +35992,160 @@ func (ec *executionContext) _Config(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var dealInfoImplementors = []string{"DealInfo"}
+
+func (ec *executionContext) _DealInfo(ctx context.Context, sel ast.SelectionSet, obj *model.DealInfo) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, dealInfoImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("DealInfo")
+		case "id":
+			out.Values[i] = ec._DealInfo_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "spId":
+			out.Values[i] = ec._DealInfo_spId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "sector":
+			out.Values[i] = ec._DealInfo_sector(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._DealInfo_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "signedProposalCid":
+			out.Values[i] = ec._DealInfo_signedProposalCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "offline":
+			out.Values[i] = ec._DealInfo_offline(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "verified":
+			out.Values[i] = ec._DealInfo_verified(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "startEpoch":
+			out.Values[i] = ec._DealInfo_startEpoch(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "endEpoch":
+			out.Values[i] = ec._DealInfo_endEpoch(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "clientPeerId":
+			out.Values[i] = ec._DealInfo_clientPeerId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "chainDealId":
+			out.Values[i] = ec._DealInfo_chainDealId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "publishCid":
+			out.Values[i] = ec._DealInfo_publishCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "pieceCid":
+			out.Values[i] = ec._DealInfo_pieceCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "pieceSize":
+			out.Values[i] = ec._DealInfo_pieceSize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "fastRetrieval":
+			out.Values[i] = ec._DealInfo_fastRetrieval(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "announceToIpni":
+			out.Values[i] = ec._DealInfo_announceToIpni(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "url":
+			out.Values[i] = ec._DealInfo_url(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "urls":
+			out.Values[i] = ec._DealInfo_urls(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "urlHeaders":
+			out.Values[i] = ec._DealInfo_urlHeaders(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "error":
+			out.Values[i] = ec._DealInfo_error(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "miner":
+			out.Values[i] = ec._DealInfo_miner(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "isLegacy":
+			out.Values[i] = ec._DealInfo_isLegacy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "indexed":
+			out.Values[i] = ec._DealInfo_indexed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "isDdo":
+			out.Values[i] = ec._DealInfo_isDdo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var gaugeCountValueImplementors = []string{"GaugeCountValue"}
 
 func (ec *executionContext) _GaugeCountValue(ctx context.Context, sel ast.SelectionSet, obj *model.GaugeCountValue) graphql.Marshaler {
@@ -35665,8 +37230,14 @@ func (ec *executionContext) _MarketMk12Deal(ctx context.Context, sel ast.Selecti
 			}
 		case "chainDealId":
 			out.Values[i] = ec._MarketMk12Deal_chainDealId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "publishCid":
 			out.Values[i] = ec._MarketMk12Deal_publishCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "pieceCid":
 			out.Values[i] = ec._MarketMk12Deal_pieceCid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35689,6 +37260,9 @@ func (ec *executionContext) _MarketMk12Deal(ctx context.Context, sel ast.Selecti
 			}
 		case "url":
 			out.Values[i] = ec._MarketMk12Deal_url(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "urlHeaders":
 			out.Values[i] = ec._MarketMk12Deal_urlHeaders(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -35696,6 +37270,9 @@ func (ec *executionContext) _MarketMk12Deal(ctx context.Context, sel ast.Selecti
 			}
 		case "error":
 			out.Values[i] = ec._MarketMk12Deal_error(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "label":
 			out.Values[i] = ec._MarketMk12Deal_label(ctx, field, obj)
 		case "proposalCid":
@@ -38699,6 +40276,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketDealInfo":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketDealInfo(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "marketMk12StorageAsks":
 			field := field
 
@@ -41680,6 +43276,21 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
+func (ec *executionContext) unmarshalNInt642int64(ctx context.Context, v interface{}) (int64, error) {
+	res, err := graphql.UnmarshalInt64(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.SelectionSet, v int64) graphql.Marshaler {
+	res := graphql.MarshalInt64(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNJSON2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -41702,12 +43313,6 @@ func (ec *executionContext) unmarshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdash
 }
 
 func (ec *executionContext) marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, sel ast.SelectionSet, v types.JSONB) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
 	return v
 }
 
@@ -41868,6 +43473,46 @@ func (ec *executionContext) unmarshalNMiningTaskAggregateInterval2githubᚗcom�
 }
 
 func (ec *executionContext) marshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, sel ast.SelectionSet, v model.MiningTaskAggregateInterval) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, v interface{}) (types.NullBool, error) {
+	var res types.NullBool
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, sel ast.SelectionSet, v types.NullBool) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, v interface{}) (types.NullInt64, error) {
+	var res types.NullInt64
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, sel ast.SelectionSet, v types.NullInt64) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, v interface{}) (types.NullString, error) {
+	var res types.NullString
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, sel ast.SelectionSet, v types.NullString) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v interface{}) (types.PeerID, error) {
+	var res types.PeerID
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, sel ast.SelectionSet, v types.PeerID) graphql.Marshaler {
 	return v
 }
 
@@ -42868,6 +44513,13 @@ func (ec *executionContext) marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return ec._Config(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx context.Context, sel ast.SelectionSet, v *model.DealInfo) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._DealInfo(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOFloat2ᚕᚕfloat64ᚄ(ctx context.Context, v interface{}) ([][]float64, error) {
 	if v == nil {
 		return nil, nil
@@ -42945,16 +44597,16 @@ func (ec *executionContext) marshalOJSON2ᚖstring(ctx context.Context, sel ast.
 	return res
 }
 
-func (ec *executionContext) unmarshalOJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v interface{}) (types.JSONB, error) {
+func (ec *executionContext) unmarshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v interface{}) (*types.JSONB, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var res types.JSONB
+	var res = new(types.JSONB)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, sel ast.SelectionSet, v types.JSONB) graphql.Marshaler {
+func (ec *executionContext) marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, sel ast.SelectionSet, v *types.JSONB) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -44159,22 +45811,6 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 		return graphql.Null
 	}
 	res := graphql.MarshalTime(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOUint642ᚖuint64(ctx context.Context, v interface{}) (*uint64, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalUint64(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUint642ᚖuint64(ctx context.Context, sel ast.SelectionSet, v *uint64) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalUint64(*v)
 	return res
 }
 

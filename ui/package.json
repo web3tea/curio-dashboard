@@ -32,6 +32,7 @@
     "moment": "^2.30.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "vue": "^3.5.6",
+    "vue-clipboard3": "^2.0.0",
     "vue-codemirror": "^6.1.1",
     "vue-i18n": "10",
     "vue3-apexcharts": "^1.5.3",

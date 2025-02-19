@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"io"
+	"strconv"
 
 	"github.com/filecoin-project/lotus/chain/types"
 )
@@ -37,7 +38,7 @@ func (b *FIL) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL implements the graphql.Marshaler interface
 func (b FIL) MarshalGQL(w io.Writer) {
-	_, _ = w.Write([]byte(`"` + b.String() + `"`)) // nolint: errcheck
+	io.WriteString(w, strconv.Quote(b.String())) // nolint: errcheck
 }
 
 func (b *FIL) Scan(value interface{}) error {

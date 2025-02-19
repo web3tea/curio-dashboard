@@ -17,7 +17,6 @@ import (
 
 // MarketAddBalance is the resolver for the marketAddBalance field.
 func (r *mutationResolver) MarketAddBalance(ctx context.Context, miner types.Address, wallet types.Address, amount types.FIL) (*model.MarketBalance, error) {
-	fmt.Println("MarketAddBalance", miner, wallet, amount)
 	_, err := r.curioAPI.MoveBalanceToEscrow(ctx, miner.String(), amount.String(), wallet.String())
 	if err != nil {
 		return nil, fmt.Errorf("failed to move balance to escrow: %w", err)

@@ -24,6 +24,35 @@ export const dealsPendingFragment = gql`
   }
 `
 
+export const dealInfoFragment = gql`
+  fragment dealInfoAll on DealInfo {
+    id
+    spId
+    announceToIpni
+    chainDealId
+    clientPeerId
+    createdAt
+    endEpoch
+    error
+    fastRetrieval
+    indexed
+    isDdo
+    isLegacy
+    miner
+    offline
+    pieceCid
+    pieceSize
+    publishCid
+    sector
+    signedProposalCid
+    startEpoch
+    url
+    urlHeaders
+    urls
+    verified
+  }
+  `
+
 export const GetPendingDeals = gql`
   query GetPendingDeals {
     dealsPending {
@@ -38,3 +67,12 @@ export const DealSealNow = gql`
     dealSealNow(miner: $miner, sectorNumber: $sector)
   }
 `
+
+export const GetDealInfo = gql`
+  query GetDealInfo($id: String!) {
+    marketDealInfo(id: $id) {
+      ...dealInfoAll
+    }
+  }
+  ${dealInfoFragment}
+  `

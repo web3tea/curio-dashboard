@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"io"
+	"strconv"
 
 	"github.com/libp2p/go-libp2p/core/peer"
 )
@@ -41,7 +42,7 @@ func (b *PeerID) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL implements the graphql.Marshaler interface
 func (b PeerID) MarshalGQL(w io.Writer) {
-	_, _ = w.Write([]byte(`"` + b.String() + `"`)) // nolint: errcheck
+	io.WriteString(w, strconv.Quote(b.String())) // nolint: errcheck
 }
 
 func (b *PeerID) Scan(value interface{}) error {

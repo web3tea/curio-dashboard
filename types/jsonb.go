@@ -6,34 +6,74 @@ import (
 	"io"
 )
 
-type JSONB []byte
+type JSONB struct {
+	json.RawMessage
+}
+
+func MustJSONB(v interface{}) JSONB {
+	j, err := ToJSONB(v)
+	if err != nil {
+		return JSONB{}
+	}
+	return j
+}
+
+func ToJSONB(v interface{}) (JSONB, error) {
+	switch v := v.(type) {
+	case nil:
+		return JSONB{}, nil
+	case JSONB:
+		return v, nil
+	case json.RawMessage:
+		return JSONB{RawMessage: v}, nil
+	case []byte:
+		if !json.Valid(v) {
+			return JSONB{}, fmt.Errorf("invalid JSON bytes")
+		}
+		return JSONB{RawMessage: v}, nil
+	case string:
+		if !json.Valid([]byte(v)) {
+			return JSONB{}, fmt.Errorf("invalid JSON string")
+		}
+		return JSONB{RawMessage: json.RawMessage(v)}, nil
+	default:
+		bytes, err := json.Marshal(v)
+		if err != nil {
+			return JSONB{}, err
+		}
+		return JSONB{RawMessage: bytes}, nil
+	}
+}
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *JSONB) UnmarshalGQL(v interface{}) error {
-	switch value := v.(type) {
-	case nil:
+func (c *JSONB) UnmarshalGQL(v interface{}) error {
+	if v == nil {
+		c.RawMessage = nil
 		return nil
+	}
+
+	switch v := v.(type) {
 	case string:
-		*b = JSONB(value)
+		fmt.Println("2222", v)
+		c.RawMessage = json.RawMessage(v)
 	case []byte:
-		*b = value
-	case map[string]interface{}:
-		jsonBytes, err := json.Marshal(value)
-		if err != nil {
-			return fmt.Errorf("invalid JSONB: %v", err)
-		}
-		*b = jsonBytes
+		fmt.Println("33333", v)
+		c.RawMessage = json.RawMessage(v)
 	default:
-		return fmt.Errorf("invalid JSONB: %v", v)
+		fmt.Println("11111", v)
+		bytes, err := json.Marshal(v)
+		if err != nil {
+			return err
+		}
+		c.RawMessage = json.RawMessage(bytes)
 	}
 	return nil
 }
 
-// MarshalGQL implements the graphql.Marshaler interface
-func (b JSONB) MarshalGQL(w io.Writer) {
-	_, _ = w.Write(b) // nolint: errcheck
-}
-
-func (b *JSONB) Scan(value interface{}) error {
-	return b.UnmarshalGQL(value)
+func (c JSONB) MarshalGQL(w io.Writer) {
+	if c.RawMessage == nil {
+		w.Write([]byte("null")) // nolint: errcheck
+		return
+	}
+	w.Write([]byte(c.RawMessage)) // nolint: errcheck
 }
