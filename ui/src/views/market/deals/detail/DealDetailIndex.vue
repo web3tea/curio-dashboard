@@ -16,6 +16,11 @@ const breadcrumbs = ref([
     to: '#',
   },
   {
+    title: 'MK12 Deals',
+    disabled: false,
+    to: { name: 'MarketMk12Deals' },
+  },
+  {
     title: props.id,
     disabled: true,
     to: '#',

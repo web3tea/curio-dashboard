@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue'
+import CopyIcon from './CopyIcon.vue'
 
 const props = defineProps({
   text: {
     type: String,
     default: ''
   },
+  maxWidth: {
+    type: String,
+    default: '150px'
+  }
 })
 
 const contentRef = ref<HTMLElement | null>(null)
@@ -30,10 +35,15 @@ onMounted(() => {
     <span
       ref="contentRef"
       class="d-inline-block text-truncate"
-      style="max-width: 150px;"
+      :style="{ 'max-width': props.maxWidth }"
     >
       {{ props.text }}
     </span>
+
+    <CopyIcon
+      v-if="isOverflowing"
+      :value="props.text"
+    />
 
     <v-tooltip
       v-if="isOverflowing"
@@ -44,4 +54,3 @@ onMounted(() => {
     </v-tooltip>
   </v-chip>
 </template>
-

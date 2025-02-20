@@ -3,13 +3,11 @@
 
 [![Build Status](https://github.com/strahe/curio-dashboard/workflows/CI/badge.svg)](https://github.com/strahe/curio-dashboard/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/strahe/curio-dashboard)](https://goreportcard.com/report/github.com/strahe/curio-dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/strahe/curio-dashboard/badge)](https://www.codefactor.io/repository/github/strahe/curio-dashboard) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/strahe/curio-dashboard)](https://github.com/strahe/curio-dashboard/releases)
 
-Status: **Alpha**
-
 ## Overview
 
 `Curio Dashboard` is a web-based interface designed for monitoring and managing your [Curio](https://github.com/filecoin-project/curio) cluster. It provides an intuitive layout with real-time metrics and rich visualizations, allowing you to efficiently oversee cluster activity and data insights.
 
-| ![Overview](images/overview.png) | ![Machine](images/machine.png) |
+| ![Overview](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/overview.png) | ![Machine](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/machines.png) |
 |:--------------------------------:|:------------------------------:|
 ### Key Features
 
