@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"time"
 
@@ -55,8 +56,8 @@ var runCmd = &cli.Command{
 			return fmt.Errorf("failed to get curio version: %w", err)
 		}
 
-		if strings.Split(curioVersion, "+")[0] != build.BuildVersion {
-			return fmt.Errorf("curio version mismatch: %s != %s", strings.Split(curioVersion, "+")[0], build.BuildVersion)
+		if !compareVersion(curioVersion, build.BuildVersion) {
+			return fmt.Errorf("curio version mismatch: %s != %s", curioVersion, build.BuildVersion)
 		}
 
 		chainAPI, closer, err := getChainAPI(cctx, cfg.Chain, curioVersion)
@@ -117,4 +118,28 @@ func uiHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return c.String(http.StatusNotFound, "UI assets not found")
 	}
+}
+
+func compareVersion(version1, version2 string) bool {
+	v1Parts := strings.Split(version1, ".")
+	v2Parts := strings.Split(version2, ".")
+
+	if len(v1Parts) < 2 || len(v2Parts) < 2 {
+		return false
+	}
+
+	for i := 0; i < 2; i++ {
+		num1, err1 := strconv.Atoi(v1Parts[i])
+		num2, err2 := strconv.Atoi(v2Parts[i])
+
+		if err1 != nil || err2 != nil {
+			return false
+		}
+
+		if num1 != num2 {
+			return false
+		}
+	}
+
+	return true
 }
