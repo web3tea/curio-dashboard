@@ -175,6 +175,28 @@ type MarketMk12StorageAskInput struct {
 	Expiry        int           `json:"expiry"`
 }
 
+type MarketPieceDeal struct {
+	ID          string       `json:"id"`
+	PieceCid    string       `json:"pieceCid"`
+	BoostDeal   bool         `json:"boostDeal"`
+	LegacyDeal  bool         `json:"legacyDeal"`
+	ChainDealID types.BigInt `json:"chainDealId"`
+	SpID        types.BigInt `json:"spId"`
+	SectorNum   types.BigInt `json:"sectorNum"`
+	PieceOffset types.BigInt `json:"pieceOffset"`
+	PieceLength types.BigInt `json:"pieceLength"`
+	RawSize     types.BigInt `json:"rawSize"`
+}
+
+type MarketPieceMetadata struct {
+	PieceCid  string       `json:"pieceCid"`
+	PieceSize types.BigInt `json:"pieceSize"`
+	Version   int          `json:"version"`
+	CreatedAt time.Time    `json:"createdAt"`
+	Indexed   bool         `json:"indexed"`
+	IndexedAt time.Time    `json:"indexedAt"`
+}
+
 type MessageSend struct {
 	FromKey      string       `json:"fromKey"`
 	ToAddr       string       `json:"toAddr"`

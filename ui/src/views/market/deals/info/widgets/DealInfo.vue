@@ -77,7 +77,9 @@ const dealProperties = computed(() => ({
             Piece CID
           </v-col>
           <v-col cols="9">
-            {{ item.pieceCid }}
+            <RouterLink :to="{ name: 'MarketPieceInfo', params: { id: item.pieceCid } }">
+              {{ item.pieceCid }}
+            </RouterLink>
             <CopyIcon :value="item.pieceCid" />
           </v-col>
         </v-row>

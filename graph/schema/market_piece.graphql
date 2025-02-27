@@ -1,0 +1,31 @@
+type MarketPieceMetadata {
+    pieceCid: String!
+    pieceSize: BigInt!
+    version: Int!
+    createdAt: Time!
+    indexed: Boolean!
+    indexedAt: Time!
+}
+
+type MarketPieceDeal {
+    id: String!
+    pieceCid: String!
+    boostDeal: Boolean!
+    legacyDeal: Boolean!
+    chainDealId: BigInt!
+    spId: BigInt!
+    sectorNum: BigInt!
+    pieceOffset: BigInt!
+    pieceLength: BigInt!
+    rawSize: BigInt!
+}
+
+type MarketPieceInfo {
+    cid: Cid!
+    metadata: MarketPieceMetadata!
+    deals: [MarketPieceDeal!]!
+}
+
+extend type Query {
+  marketPieceInfo(id: Cid!): MarketPieceInfo
+}

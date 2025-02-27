@@ -12,6 +12,7 @@ scalar ActorID
 scalar NullString
 scalar NullInt64
 scalar NullBool
+scalar Cid
 
 type Query {
     global: Global!

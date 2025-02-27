@@ -83,7 +83,9 @@ const itemsCount: ComputedRef<number> = computed(() => {
         <EpochField :epoch="value" />
       </template>
       <template #item.pieceCid="{ value }">
-        <TruncatedChip :text="value" />
+        <RouterLink :to="{ name: 'MarketPieceInfo', params: { id: value } }">
+          {{ value }}
+        </RouterLink>
       </template>
       <template #item.createdAt="{ value }">
         {{ d(value, 'long') }}

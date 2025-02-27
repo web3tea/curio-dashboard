@@ -17,6 +17,8 @@ type MarketLoader interface {
 	MarketAllowFilter(ctx context.Context, wallet types.Address) (*model.MarketAllowFilter, error)
 	MarketMk12Deals(ctx context.Context, filter model.MarketMk12DealFilterInput, limit int, offset int) ([]*model.MarketMk12Deal, error)
 	MarketMk12DealsCount(ctx context.Context, filter model.MarketMk12DealFilterInput) (int, error)
+	MarketPieceMetadata(ctx context.Context, id types.Cid) (*model.MarketPieceMetadata, error)
+	MakretPieceDeals(ctx context.Context, id types.Cid) ([]*model.MarketPieceDeal, error)
 }
 
 type MarketLoaderImpl struct {
@@ -201,5 +203,42 @@ func (l *MarketLoaderImpl) MarketMk12DealsCount(ctx context.Context, filter mode
 		filter.ProposalCid,
 		filter.PieceCid,
 	).Scan(&result)
+	return result, err
+}
+
+func (l *MarketLoaderImpl) MarketPieceMetadata(ctx context.Context, id types.Cid) (*model.MarketPieceMetadata, error) {
+	var result model.MarketPieceMetadata
+	err := l.loader.db.QueryRow(ctx, `SELECT
+		piece_cid,
+		piece_size,
+		version,
+		created_at,
+		indexed,
+		indexed_at FROM market_piece_metadata
+		WHERE piece_cid = $1`, id.String()).Scan(
+		&result.PieceCid,
+		&result.PieceSize,
+		&result.Version,
+		&result.CreatedAt,
+		&result.Indexed,
+		&result.IndexedAt)
+	return &result, err
+}
+
+func (l *MarketLoaderImpl) MakretPieceDeals(ctx context.Context, id types.Cid) ([]*model.MarketPieceDeal, error) {
+	var result []*model.MarketPieceDeal
+	err := l.loader.db.Select(ctx, &result, `SELECT
+		id,
+		piece_cid,
+		boost_deal,
+		legacy_deal,
+		chain_deal_id,
+		sp_id,
+		sector_num,
+		piece_offset,
+		piece_length,
+		raw_size
+		FROM market_piece_deal
+		WHERE piece_cid = $1`, id.String())
 	return result, err
 }

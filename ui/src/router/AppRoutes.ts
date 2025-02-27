@@ -256,11 +256,21 @@ const AppRoutes = {
     {
       name: "MakretDealInfo",
       path: "/market/deals/:id",
-      component: () => import('@/views/market/deals/detail/DealDetailIndex.vue'),
+      component: () => import('@/views/market/deals/info/DealInfoIndex.vue'),
       props: true,
       meta: {
         title: 'Deal Info',
         description: 'Market deal info',
+      },
+    },
+    {
+      name: "MarketPieceInfo",
+      path: "/market/pieces/:id",
+      component: () => import('@/views/market/pieces/info/PieceInfoIndex.vue'),
+      props: true,
+      meta: {
+        title: 'Piece Info',
+        description: 'Market piece info',
       },
     }
   ],

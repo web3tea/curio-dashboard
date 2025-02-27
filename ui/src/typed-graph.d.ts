@@ -16,6 +16,7 @@ export type Scalars = {
   Address: { input: any; output: any; }
   BigInt: { input: any; output: any; }
   Bytes: { input: any; output: any; }
+  Cid: { input: any; output: any; }
   FIL: { input: any; output: any; }
   Int64: { input: any; output: any; }
   JSON: { input: any; output: any; }
@@ -261,6 +262,37 @@ export type MarketMk12StorageAskInput = {
   price: Scalars['Int']['input'];
   spId: Scalars['Address']['input'];
   verifiedPrice: Scalars['Int']['input'];
+};
+
+export type MarketPieceDeal = {
+  __typename?: 'MarketPieceDeal';
+  boostDeal: Scalars['Boolean']['output'];
+  chainDealId: Scalars['BigInt']['output'];
+  id: Scalars['String']['output'];
+  legacyDeal: Scalars['Boolean']['output'];
+  pieceCid: Scalars['String']['output'];
+  pieceLength: Scalars['BigInt']['output'];
+  pieceOffset: Scalars['BigInt']['output'];
+  rawSize: Scalars['BigInt']['output'];
+  sectorNum: Scalars['BigInt']['output'];
+  spId: Scalars['BigInt']['output'];
+};
+
+export type MarketPieceInfo = {
+  __typename?: 'MarketPieceInfo';
+  cid: Scalars['Cid']['output'];
+  deals: Array<MarketPieceDeal>;
+  metadata: MarketPieceMetadata;
+};
+
+export type MarketPieceMetadata = {
+  __typename?: 'MarketPieceMetadata';
+  createdAt: Scalars['Time']['output'];
+  indexed: Scalars['Boolean']['output'];
+  indexedAt: Scalars['Time']['output'];
+  pieceCid: Scalars['String']['output'];
+  pieceSize: Scalars['BigInt']['output'];
+  version: Scalars['Int']['output'];
 };
 
 export type MessageSend = {
@@ -688,6 +720,7 @@ export type Query = {
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;
   marketMk12StorageAsks?: Maybe<Array<Maybe<MarketMk12StorageAsk>>>;
   marketMk12StorageAsksCount: Scalars['Int']['output'];
+  marketPieceInfo?: Maybe<MarketPieceInfo>;
   marketPriceFilter?: Maybe<PriceFilter>;
   messageSend?: Maybe<MessageSend>;
   messageSends?: Maybe<Array<Maybe<MessageSend>>>;
@@ -781,6 +814,11 @@ export type QueryMarketMk12DealsCountArgs = {
 
 export type QueryMarketMk12StorageAskArgs = {
   spId: Scalars['Address']['input'];
+};
+
+
+export type QueryMarketPieceInfoArgs = {
+  id: Scalars['Cid']['input'];
 };
 
 
