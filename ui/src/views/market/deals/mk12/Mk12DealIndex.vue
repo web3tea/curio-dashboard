@@ -3,14 +3,17 @@ import BaseBreadcrumb from "@/components/shared/BaseBreadcrumb.vue"
 import { ref } from "vue"
 import Mk12DealList from "./Mk12DealList.vue"
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Deals',
+    title: t('nav.Deals'),
     disabled: true,
     to: '#',
   },
   {
-    title: 'MK12 Deals',
+    title: t('nav.MK12Deals'),
     disabled: true,
     to: '#',
   },

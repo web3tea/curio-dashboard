@@ -6,7 +6,7 @@ import { GetRunningTasks } from '@/gql/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
-const { d } = useI18n()
+const { d, t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
   fetchPolicy: 'cache-and-network',
@@ -52,7 +52,7 @@ const searchValue = ref('')
                 v-model="searchValue"
                 hide-details
                 persistent-placeholder
-                placeholder="Search"
+                :placeholder="t('fields.Search')"
                 type="text"
                 variant="outlined"
               >

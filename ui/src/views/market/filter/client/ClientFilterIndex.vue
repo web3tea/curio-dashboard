@@ -3,14 +3,17 @@
 import { ref } from "vue"
 import ClientFilterList from "./ClientFilterList.vue"
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Market',
+    title: t('nav.Market'),
     disabled: true,
     to: '#',
   },
   {
-    title: 'Client Filters',
+    title: t('nav.Client Filters'),
     disabled: true,
     to: '#',
   },

@@ -3,14 +3,17 @@ import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import PendingDealList from '@/views/market/deals/pending/PendingDealList.vue'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Deals',
+    title: t('nav.Deals'),
     disabled: true,
     to: "#"
   },
   {
-    title: 'Pending Pieces',
+    title: t('nav.PendingPieces'),
     disabled: true,
     to: { name: 'PendingDeals' },
   },

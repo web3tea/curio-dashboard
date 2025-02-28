@@ -2,15 +2,17 @@
 
 import { ref } from "vue"
 import ClientAllowList from "./ClientAllowList.vue"
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const breadcrumbs = ref([
   {
-    title: 'Market',
+    title: t('nav.Market'),
     disabled: true,
     to: '#',
   },
   {
-    title: 'Client Allow/Deny',
+    title: t('nav.Client Allow/Deny'),
     disabled: true,
     to: '#',
   },

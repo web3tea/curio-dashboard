@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import DealInfo from './widgets/DealInfo.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   id: {
@@ -11,12 +14,12 @@ const props = defineProps({
 
 const breadcrumbs = ref([
   {
-    title: 'Deals',
+    title: t('nav.Deals'),
     disabled: true,
     to: '#',
   },
   {
-    title: 'MK12 Deals',
+    title: t('nav.MK12Deals'),
     disabled: false,
     to: { name: 'MarketMk12Deals' },
   },

@@ -79,7 +79,7 @@ onError(e => {
         variant="flat"
         @click="dialog = true"
       >
-        Remove
+        {{ t('actions.Remove') }}
       </v-btn>
     </template>
     <template #default="{ }">

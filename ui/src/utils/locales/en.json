@@ -15,7 +15,6 @@
     "Machines": "Machines",
     "Storages": "Storages",
     "Configurations": "Configurations",
-    "List": "List",
     "Wins": "Wins",
     "Mining": "Mining",
     "Blocks": "Blocks",
@@ -32,7 +31,10 @@
     "Client Filters": "Client Filters",
     "Client Allow/Deny": "Client Allow/Deny",
     "Market Balances": "Market Balances",
-    "MK12 Deals": "MK12 Deals"
+    "MK12 Deals": "MK12 Deals",
+    "StorageAsks": "StorageAsks",
+    "MK12Deals": "MK12Deals",
+    "PendingPieces": "PendingPieces"
   },
   "fields": {
     "Total Power": "Total Power",
@@ -53,7 +55,6 @@
     "CPU": "CPU",
     "GPU": "GPU",
     "RAM": "RAM",
-    "List": "List",
     "Machines": "Machines",
     "Balance": "Balance",
     "Initial Pledge": "Initial Pledge",
@@ -83,7 +84,19 @@
     "Storages": "Storages",
     "Node": "Node|Nodes",
     "View All": "View All",
-    "Deal Details": "Deal Details"
+    "Deal Details": "Deal Details",
+    "Create Configuration": "Create Configuration",
+    "Layer": "Layer",
+    "Config": "Config",
+    "Today": "Today",
+    "Last 7 days": "Last 7 days",
+    "Last 30 days": "Last 30 days",
+    "Basic": "Basic",
+    "Data": "Data",
+    "Login": "Login",
+    "Username": "Username",
+    "Password": "Password",
+    "Search": "Search"
   },
   "msgs": {
     "weekBlock": "This Week Total Mined",
@@ -98,7 +111,8 @@
     "Save": "Save",
     "Edit": "Edit",
     "Remove": "Remove",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "Restart": "Restart"
   },
   "common": {
     "timeAgo": {

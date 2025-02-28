@@ -2,7 +2,9 @@
 import { ref } from 'vue'
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const username = ref('')
 const password = ref('')
 const show1 = ref(false)
@@ -22,7 +24,7 @@ function submit () {
 <template>
   <div class="d-flex justify-space-between align-center">
     <h3 class="text-h3 text-center mb-0">
-      Login
+      {{ t('fields.Login') }}
     </h3>
   </div>
   <v-form
@@ -30,7 +32,7 @@ function submit () {
     @submit.prevent="submit"
   >
     <div class="mb-6">
-      <v-label>Username</v-label>
+      <v-label>{{ t('fields.Username') }}</v-label>
       <v-text-field
         v-model="username"
         aria-label="username"
@@ -42,7 +44,7 @@ function submit () {
       />
     </div>
     <div>
-      <v-label>Password</v-label>
+      <v-label>{{ t('fields.Password') }}</v-label>
       <v-text-field
         v-model="password"
         aria-label="password"

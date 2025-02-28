@@ -3,14 +3,17 @@ import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import MiningTaskList from '@/views/mining/wins/MiningTaskList.vue'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Mining',
+    title: t('nav.Mining'),
     disabled: true,
     to: '#'
   },
   {
-    title: 'Wins',
+    title: t('nav.Wins'),
     disabled: true,
     to: '#',
   },

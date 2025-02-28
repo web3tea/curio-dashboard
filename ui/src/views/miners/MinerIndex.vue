@@ -4,9 +4,12 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import { ref } from 'vue'
 import MinerList from '@/views/miners/MinerList.vue'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Miners',
+    title: t('nav.Miners'),
     disabled: false,
     to: { name: 'Miners' }
   }

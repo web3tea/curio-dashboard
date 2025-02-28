@@ -11,7 +11,9 @@ import { useCustomizerStore } from '@/stores/customizer'
 import { useRouter } from 'vue-router'
 import { IconDeviceFloppy } from '@tabler/icons-vue'
 import { useUIStore } from '@/stores/ui'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const uiStore = useUIStore()
 const router = useRouter()
 
@@ -39,7 +41,7 @@ onDone(() => {
 
 const breadcrumbs = ref([
   {
-    title: 'Configurations',
+    title: t('nav.Configurations'),
     disabled: false,
     to: { name: 'Configurations' }
   }
@@ -57,7 +59,7 @@ const extensions = computed(() => {
 
 <template>
   <BaseBreadcrumb :breadcrumbs="breadcrumbs" />
-  <UiParentCard title="Create Configuration">
+  <UiParentCard :title="t('fields.Create Configuration')">
     <template #action>
       <v-btn
         color="primary"
@@ -67,11 +69,11 @@ const extensions = computed(() => {
         <template #prepend>
           <IconDeviceFloppy />
         </template>
-        Create
+        {{ t('actions.Create') }}
       </v-btn>
     </template>
     <v-label class="mb-1">
-      Layer
+      {{ t('fields.Layer') }}
     </v-label>
     <v-text-field
       v-model="editTitle"
@@ -83,7 +85,7 @@ const extensions = computed(() => {
       variant="outlined"
     />
     <v-label class="mb-1 mt-5">
-      Config
+      {{ t('fields.Config') }}
     </v-label>
     <Codemirror
       v-model="editConfig"

@@ -33,7 +33,23 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
 
-  golangci:
+  i18n-check:
+      name: i18n-check
+      runs-on: ubuntu-24.04
+      defaults:
+        run:
+          working-directory: ui
+      steps:
+        - uses: actions/checkout@v4
+        - uses: ./.github/actions/setup
+          with:
+            setup-node: true
+        - name: Install dependencies
+          run: yarn install --frozen-lockfile
+        - name: Check i18n translations
+          run: yarn i18n:check
+
+  golangci-lint:
     name: golangci-lint
     runs-on: ubuntu-24.04
     steps:
@@ -47,7 +63,7 @@ jobs:
           version: v1.60
           args: --timeout=10m
 
-  gen:
+  gen-check:
     name: gen-check
     runs-on: ubuntu-24.04
     steps:

@@ -57,7 +57,7 @@ const headers = [
             v-model="searchValue"
             hide-details
             persistent-placeholder
-            placeholder="Search"
+            :placeholder="t('fields.Search')"
             type="text"
             variant="outlined"
           >

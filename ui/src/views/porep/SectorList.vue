@@ -12,7 +12,7 @@ import SectorRestart from '@/views/sectors/SectorRestart.vue'
 import { useI18n } from 'vue-i18n'
 
 const uiStore = useUIStore()
-const { d } = useI18n()
+const { d, t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
   fetchPolicy: 'network-only',
@@ -94,7 +94,7 @@ onDone(() => {
                 v-model="searchValue"
                 hide-details
                 persistent-placeholder
-                placeholder="Search"
+                :placeholder="t('fields.Search')"
                 type="text"
                 variant="outlined"
               >

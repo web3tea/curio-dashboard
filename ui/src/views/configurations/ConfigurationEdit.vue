@@ -60,7 +60,7 @@ onDone(() => {
 
 const breadcrumbs = ref([
   {
-    title: 'Configurations',
+    title: t('nav.Configurations'),
     disabled: false,
     to: { name: 'Configurations' }
   }
@@ -106,7 +106,7 @@ const extensions = computed(() => {
       </v-btn>
     </template>
     <v-label class="mb-1">
-      Layer
+      {{ t('fields.Layer') }}
     </v-label>
     <v-text-field
       v-model="editTitle"
@@ -120,7 +120,7 @@ const extensions = computed(() => {
       variant="outlined"
     />
     <v-label class="mb-1 mt-5">
-      Config
+      {{ t('fields.Config') }}
     </v-label>
     <Codemirror
       v-model="editConfig"

@@ -18,9 +18,19 @@ ui:
 	cd ui && yarn build
 .PHONY: ui
 
-lint:
+lint: golanglint uilint i18n-check
+
+golanglint:
 	golangci-lint run -v ./...
+
+uilint:
 	cd ui && yarn lint
+
+i18n-check:
+	cd ui && yarn i18n:check
+
+i18n-extract:
+	cd ui && yarn i18n:extract
 
 curio-rpc-gen:
 	go run ./graph/curiorpc/gen

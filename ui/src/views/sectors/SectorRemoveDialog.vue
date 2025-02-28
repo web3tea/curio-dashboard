@@ -99,7 +99,7 @@ function removeSector () {
         variant="flat"
         @click="dialog = true"
       >
-        Remove ({{ props.sectors.length }})
+        {{ t('actions.Remove') }} ({{ props.sectors.length }})
       </v-btn>
     </template>
     <template #default="{ }">

@@ -3,9 +3,12 @@
 import { ref } from 'vue'
 import TabCard from "@/views/mining/overview/TabCard.vue"
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Wins',
+    title: t('nav.Wins'),
     disabled: true,
     to: '#'
   }

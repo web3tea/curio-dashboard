@@ -4,11 +4,14 @@ import { useUIStore } from '@/stores/ui'
 import { useMutation } from '@vue/apollo-composable'
 import { RestartSector } from '@/gql/sector'
 import { IconRotateDot } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 interface Sector {
   spId: string,
   sectorNumber: number,
 }
+
+const { t } = useI18n()
 
 const props = defineProps({
   sectors: {
@@ -67,7 +70,7 @@ async function doRestart () {
     variant="flat"
     @click="doRestart"
   >
-    Restart ({{ props.sectors.length }})
+    {{ t('actions.Restart') }} ({{ props.sectors.length }})
   </v-btn>
 </template>
 

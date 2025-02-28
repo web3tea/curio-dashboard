@@ -4,9 +4,12 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import StoragePathList from '@/views/storages/StoragePathList.vue'
 import StorageUsageChart from '@/views/storages/StorageUsageChart.vue'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Storages',
+    title: t('nav.Storages'),
     disabled: false,
     to: { name: 'Storages' }
   }

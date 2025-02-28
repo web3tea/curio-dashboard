@@ -17,10 +17,10 @@ const { result } = useQuery(GetMachinesSummary, null, () => ({
 const stats: ComputedRef<MachineSummary> = computed(() => result.value?.machineSummary)
 
 const cards = computed(() => [
-  { value: stats.value?.total || 0, text: 'Machines', icon: IconServer, color: 'primary' },
-  { value: stats.value?.totalCpu || 0, text: 'CPU', icon: IconCpu, color: 'info' },
-  { value: stats.value?.totalGpu || 0, text: 'GPU', icon: IconCpu, color: 'success' },
-  { value: formatBytes(stats.value?.totalRam || 0).combined, text: 'RAM', icon: IconBrandSpeedtest, color: 'warning' },
+  { value: stats.value?.total || 0, text: t('fields.Machines'), icon: IconServer, color: 'primary' },
+  { value: stats.value?.totalCpu || 0, text: t('fields.CPU'), icon: IconCpu, color: 'info' },
+  { value: stats.value?.totalGpu || 0, text: t('fields.GPU'), icon: IconCpu, color: 'success' },
+  { value: formatBytes(stats.value?.totalRam || 0).combined, text: t('fields.RAM'), icon: IconBrandSpeedtest, color: 'warning' },
 ])
 
 </script>
@@ -38,7 +38,7 @@ const cards = computed(() => [
             <div class="d-flex align-items-center justify-space-between">
               <div>
                 <h5 class="text-h5">
-                  {{ t('fields.'+card.text) }}
+                  {{ card.text }}
                 </h5>
                 <h3 class="text-h3 my-2">
                   {{ card.value }}

@@ -2,7 +2,7 @@
 import {  computed } from 'vue'
 import { useDisplay } from 'vuetify'
 import NavItem from './NavItem.vue'
-import sidebarItems from './sidebarItems'
+import { useSidebarItems } from './sidebarItems'
 import NavCollapse from './NavCollapse.vue'
 import NavGroup from './NavGroup.vue'
 import Logo from '@/layouts/logo/AppLogo.vue'
@@ -18,12 +18,13 @@ const props = defineProps({
 
 const customizer = useCustomizerStore()
 const { mdAndUp } = useDisplay()
+const sidebarItemsRef = useSidebarItems()
 
 const horizontalMenu = computed(() => {
   const menu: menuItem[] = []
   let currentGroup: menuItem | null = null
 
-  sidebarItems.forEach(item => {
+  sidebarItemsRef.value.forEach(item => {
     if (item.header) {
       currentGroup = {
         title: item.header,
@@ -44,7 +45,7 @@ const horizontalMenu = computed(() => {
 })
 
 const menuItems = computed(() => {
-  return props.mode === 'horizontal' ? horizontalMenu.value : sidebarItems
+  return props.mode === 'horizontal' ? horizontalMenu.value : sidebarItemsRef.value
 })
 </script>
 

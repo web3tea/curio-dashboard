@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, PropType } from 'vue'
+import { PropType } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
 
@@ -26,23 +26,6 @@ const props = defineProps({
   },
 })
 
-const getTitle = (breadcrumb: Breadcrumb, index: number) => {
-  if (index === props.breadcrumbs.length - 1) {
-    if (breadcrumb.title === 'List') {
-      return t(`nav.List`)
-    }
-    return breadcrumb.title
-  }
-  return t(`nav.${breadcrumb.title}`)
-}
-
-const breadcrumbs = computed(() => {
-  return props.breadcrumbs.map((breadcrumb, index) => ({
-    ...breadcrumb,
-    title: getTitle(breadcrumb, index),
-  }))
-})
-
 </script>
 
 <template>
@@ -62,7 +45,7 @@ const breadcrumbs = computed(() => {
           <v-col sm="12">
             <v-breadcrumbs
               class="text-h6 pa-1 font-weight-medium mb-0"
-              :items="breadcrumbs"
+              :items="props.breadcrumbs"
             >
               <template #divider>
                 <div class="d-flex align-center">
@@ -82,7 +65,7 @@ const breadcrumbs = computed(() => {
               </template>
             </v-breadcrumbs>
             <h3 class="text-h3 mt-1 mb-0">
-              {{ props.title }}
+              {{ t('nav.Home') }}
             </h3>
           </v-col>
         </v-row>

@@ -3,9 +3,12 @@ import { ref } from "vue"
 import BaseBreadcrumb from "@/components/shared/BaseBreadcrumb.vue"
 import TableSettings from "@/views/settings/TableSettings.vue"
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 const breadcrumbs = ref([
   {
-    title: 'Settings',
+    title: t('nav.Settings'),
     disabled: false,
     to: { name: 'Settings' },
   },

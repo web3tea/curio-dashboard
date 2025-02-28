@@ -8,7 +8,7 @@ import { Machine } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { useI18n } from 'vue-i18n'
 
-const { d } = useI18n()
+const { d, t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
@@ -85,7 +85,7 @@ const headers = [
                 v-model="searchValue"
                 hide-details
                 persistent-placeholder
-                placeholder="Search"
+                :placeholder="t('fields.Search')"
                 type="text"
                 variant="outlined"
               >

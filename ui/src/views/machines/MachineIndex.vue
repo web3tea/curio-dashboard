@@ -3,10 +3,12 @@ import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import MachineList from '@/views/machines/MachineList.vue'
 import WidgetMachineSummaryCharts from '@/views/machines/MachineSummaryCharts.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const breadcrumbs = ref([
   {
-    title: 'Machines',
+    title: t('nav.Machines'),
     disabled: false,
     to: { name: 'Machines' }
   }

@@ -7,6 +7,9 @@ import { Actor } from '@/typed-graph'
 import { GetActors } from '@/gql/miner'
 import { formatFIL } from '@/utils/helpers/formatFIL'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetActors, null, () => ({
   fetchPolicy: 'cache-first',
@@ -51,7 +54,7 @@ const headers = [
                 v-model="searchValue"
                 hide-details
                 persistent-placeholder
-                placeholder="Search"
+                :placeholder="t('fields.Search')"
                 type="text"
                 variant="outlined"
               >

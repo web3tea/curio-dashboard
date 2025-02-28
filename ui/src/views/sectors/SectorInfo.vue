@@ -74,7 +74,7 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
         sm="6"
       >
         <h4 class="mb-2 text-h4">
-          Basic
+          {{ t('fields.Basic') }}
         </h4>
         <div class="mt-3 mb-2 text-subtitle-1">
           <span class="font-weight-semibold mr-2">expirationEpoch :</span>
@@ -110,7 +110,7 @@ const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.sta
         sm="6"
       >
         <h4 class="mb-2 text-h4">
-          Data
+          {{ t('fields.Data') }}
         </h4>
         <div class="mt-3 mb-2 text-subtitle-1">
           <span class="font-weight-semibold mr-2">curSealedCid :</span>

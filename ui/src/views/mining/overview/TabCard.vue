@@ -21,18 +21,23 @@ const props = defineProps({
   },
 })
 
-const { d } = useI18n()
+const { d, t } = useI18n()
 
-const items = ref(['Today', 'Last 7 days', 'Last 30 days'])
-const selected = ref('Today')
+const items = computed(()=> [
+  { title: t('fields.Today'), value: '1d' },
+  { title: t('fields.Last 7 days'), value: '7d' },
+  { title: t('fields.Last 30 days'), value: '30d' }
+])
+
+const selected = ref('1d')
 
 const realStart = computed(() => {
   switch (selected.value) {
-  case 'Today':
+  case '1d':
     return new Date(new Date().setHours(0, 0, 0, 0))
-  case 'Last 7 days':
+  case '7d':
     return new Date(new Date().setDate(new Date().getDate() - 7))
-  case 'Last 30 days':
+  case '30d':
     return new Date(new Date().setDate(new Date().getDate() - 30))
   default:
     return props.start

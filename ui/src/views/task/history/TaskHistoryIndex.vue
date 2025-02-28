@@ -4,6 +4,9 @@ import { ref } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import TaskHistoryList from '@/views/task/history/TaskHistoryList.vue'
 
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
+
 defineProps({
   start: {
     type: Number,
@@ -29,7 +32,7 @@ defineProps({
 
 const breadcrumbs = ref([
   {
-    title: 'Task History',
+    title: t('nav.Task History'),
     disabled: false,
     to: { name: 'TaskHistory' }
   }

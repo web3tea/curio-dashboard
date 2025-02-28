@@ -2,7 +2,6 @@
 import { PropType } from 'vue'
 import NavItem from './NavItem.vue'
 import { IconChevronRight } from '@tabler/icons-vue'
-import { useI18n } from 'vue-i18n'
 import { menuItem } from './sidebarItems'
 
 defineProps({
@@ -19,8 +18,6 @@ defineProps({
     default: 'vertical'
   }
 })
-
-const { t } = useI18n()
 </script>
 
 <template>
@@ -35,7 +32,7 @@ const { t } = useI18n()
           size="20"
         />
       </i>
-      <span class="mr-auto">{{ t("nav."+item.title) }}</span>
+      <span class="mr-auto">{{ item.title }}</span>
       <!---If Caption-->
       <small
         v-if="item.subCaption"
@@ -87,7 +84,7 @@ const { t } = useI18n()
             />
           </template>
           <v-list-item-title class="mr-auto">
-            {{ t("nav."+item.title) }}
+            {{ item.title }}
           </v-list-item-title>
         </v-list-item>
       </template>
