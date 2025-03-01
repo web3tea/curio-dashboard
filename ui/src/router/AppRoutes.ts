@@ -89,6 +89,15 @@ const AppRoutes = {
       },
     },
     {
+      name: 'TaskMetrics',
+      path: '/task-metrics',
+      component: () => import('@/views/task/metrics/TaskMetricsIndex.vue'),
+      meta: {
+        title: 'Task Metrics',
+        description: 'Task metrics in the cluster',
+      },
+    },
+    {
       name: 'Sectors',
       path: '/sectors',
       component: () => import('@/views/sectors/SectorIndex.vue'),

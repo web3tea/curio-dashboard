@@ -2,7 +2,6 @@ import {
   IconBox,
   IconBrandAsana,
   IconBuildingStore,
-  IconChartHistogram,
   IconContract,
   IconCurrency,
   IconDatabase,
@@ -44,35 +43,38 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconHome,
       to: { name: "Overview" },
     },
-    {
-      title: t('nav.Analytics'),
-      icon: IconChartHistogram,
-      to: { name: "Analytics" },
-    },
-    { header: t('nav.Sealing'), icon: IconBrandAsana },
+    { header: t('nav.Storage Processing'), icon: IconBrandAsana },
     {
       title: t('nav.Tasks'),
       icon: IconBrandAsana,
       children: [
         {
-          title: t('nav.Running'),
+          title: t('nav.Active Tasks'),
           to: { name: 'RunningTasks' }
         },
         {
-          title: t('nav.History'),
+          title: t('nav.Task History'),
           to: { name: "TaskHistory" },
         },
+        {
+          title: t('nav.Task Metrics'),
+          to: { name: "TaskMetrics" },
+        }
       ],
-    },
-    {
-      title: t('nav.PoRep'),
-      icon: IconVector,
-      to: { name: "PoRep" },
     },
     {
       title: t('nav.Sectors'),
       icon: IconBox,
-      to: { name: "Sectors" },
+      children: [
+        {
+          title: t('nav.Sectors Overview'),
+          to: { name: "Sectors" },
+        },
+        {
+          title: t('nav.SDR Pipeline'),
+          to: { name: "PoRep" },
+        }
+      ]
     },
     {
       title: t('nav.Messages'),
@@ -99,7 +101,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         },
       ],
     },
-    { header: t('nav.Market'), icon: IconBuildingStore },
+    { header: t('nav.Market && Deals'), icon: IconBuildingStore },
     {
       title: t('nav.Deals'),
       icon: IconContract,

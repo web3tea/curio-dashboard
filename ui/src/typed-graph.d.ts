@@ -712,12 +712,14 @@ export type Query = {
   storagePaths?: Maybe<Array<Maybe<StoragePath>>>;
   storageStats?: Maybe<Array<Maybe<StorageStats>>>;
   task?: Maybe<Task>;
+  taskDurationStats?: Maybe<TaskDurationStats>;
   taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;
   taskHistoriesAggregate?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistoriesCount: Scalars['Int']['output'];
   taskNames?: Maybe<Array<Scalars['String']['output']>>;
   tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
+  tasksDurationStats: Array<TaskDurationStats>;
   tasksStats?: Maybe<Array<Maybe<TaskStats>>>;
 };
 
@@ -906,6 +908,13 @@ export type QueryTaskArgs = {
 };
 
 
+export type QueryTaskDurationStatsArgs = {
+  end: Scalars['Time']['input'];
+  name: Scalars['String']['input'];
+  start: Scalars['Time']['input'];
+};
+
+
 export type QueryTaskHistoriesArgs = {
   end?: InputMaybe<Scalars['Time']['input']>;
   hostPort?: InputMaybe<Scalars['String']['input']>;
@@ -930,6 +939,12 @@ export type QueryTaskHistoriesCountArgs = {
   name?: InputMaybe<Scalars['String']['input']>;
   result?: InputMaybe<Scalars['Boolean']['input']>;
   start?: InputMaybe<Scalars['Time']['input']>;
+};
+
+
+export type QueryTasksDurationStatsArgs = {
+  end: Scalars['Time']['input'];
+  start: Scalars['Time']['input'];
 };
 
 
@@ -1119,6 +1134,19 @@ export type TaskAggregate = {
   success: Scalars['Int']['output'];
   time: Scalars['Time']['output'];
   total: Scalars['Int']['output'];
+};
+
+export type TaskDurationStats = {
+  __typename?: 'TaskDurationStats';
+  avgDurationSeconds: Scalars['Float']['output'];
+  maxDurationSeconds: Scalars['Float']['output'];
+  medianDurationSeconds: Scalars['Float']['output'];
+  minDurationSeconds: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
+  p90DurationSeconds: Scalars['Float']['output'];
+  p95DurationSeconds: Scalars['Float']['output'];
+  p99DurationSeconds: Scalars['Float']['output'];
+  totalTasks: Scalars['Int']['output'];
 };
 
 export enum TaskHistoriesAggregateInterval {

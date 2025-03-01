@@ -64,9 +64,6 @@ const props = defineProps({
                 </div>
               </template>
             </v-breadcrumbs>
-            <h3 class="text-h3 mt-1 mb-0">
-              {{ t('nav.Home') }}
-            </h3>
           </v-col>
         </v-row>
       </v-card>

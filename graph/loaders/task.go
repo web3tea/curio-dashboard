@@ -18,6 +18,8 @@ type TaskLoader interface {
 	TaskHistoriesCount(ctx context.Context, start, end *time.Time, hostPort, name *string, result *bool) (int, error)
 	TaskHistoriesAggregate(ctx context.Context, start, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error)
 	TasksStats(ctx context.Context, start, end time.Time, machine *string) ([]*model.TaskStats, error)
+	TaskDurationStats(ctx context.Context, name string, start, end time.Time) (*model.TaskDurationStats, error)
+	TasksDurationStats(ctx context.Context, start, end time.Time) ([]*model.TaskDurationStats, error)
 }
 
 type TaskLoaderImpl struct {
@@ -343,6 +345,69 @@ WHERE work_end BETWEEN $1 AND $2
   AND ($3::text IS NULL OR completed_by_host_and_port = $3)
 GROUP BY name
 ORDER BY total desc`, start, end, machine)
+	if err != nil {
+		return nil, err
+	}
+	return stats, nil
+}
+
+func (l *TaskLoaderImpl) TaskDurationStats(ctx context.Context, name string, start, end time.Time) (*model.TaskDurationStats, error) {
+	stats := model.TaskDurationStats{
+		Name: name,
+	}
+	err := l.loader.db.QueryRow(ctx, `
+SELECT
+	COUNT(*) as total_tasks,
+	CAST(MIN(EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as min_duration_seconds,
+	CAST(MAX(EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as max_duration_seconds,
+	CAST(AVG(EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as avg_duration_seconds,
+	CAST(percentile_cont(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as median_duration_seconds,
+	CAST(percentile_cont(0.9) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as p90_duration_seconds,
+	CAST(percentile_cont(0.95) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as p95_duration_seconds,
+	CAST(percentile_cont(0.99) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as p99_duration_seconds
+FROM
+	harmony_task_history
+WHERE
+	work_end BETWEEN $1 AND $2
+	AND name = $3
+	AND work_start IS NOT NULL`, start, end, name).Scan(
+		&stats.TotalTasks,
+		&stats.MinDurationSeconds,
+		&stats.MaxDurationSeconds,
+		&stats.AvgDurationSeconds,
+		&stats.MedianDurationSeconds,
+		&stats.P90DurationSeconds,
+		&stats.P95DurationSeconds,
+		&stats.P99DurationSeconds,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &stats, nil
+}
+
+func (l *TaskLoaderImpl) TasksDurationStats(ctx context.Context, start, end time.Time) ([]*model.TaskDurationStats, error) {
+	var stats []*model.TaskDurationStats
+	err := l.loader.db.Select(ctx, &stats, `
+SELECT
+    name,
+    COUNT(*) as total_tasks,
+    CAST(MIN(EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as min_duration_seconds,
+    CAST(MAX(EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as max_duration_seconds,
+    CAST(AVG(EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as avg_duration_seconds,
+    CAST(percentile_cont(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as median_duration_seconds,
+    CAST(percentile_cont(0.9) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as p90_duration_seconds,
+    CAST(percentile_cont(0.95) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as p95_duration_seconds,
+    CAST(percentile_cont(0.99) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (work_end - work_start))) AS numeric(20,4)) as p99_duration_seconds
+FROM
+    harmony_task_history
+WHERE
+	work_end BETWEEN $1 AND $2
+    AND work_start IS NOT NULL
+GROUP BY
+    name
+ORDER BY
+    avg_duration_seconds DESC;`, start, end)
 	if err != nil {
 		return nil, err
 	}

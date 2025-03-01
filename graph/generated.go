@@ -549,12 +549,14 @@ type ComplexityRoot struct {
 		StoragePaths               func(childComplexity int) int
 		StorageStats               func(childComplexity int) int
 		Task                       func(childComplexity int, id int) int
+		TaskDurationStats          func(childComplexity int, name string, start time.Time, end time.Time) int
 		TaskHistories              func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) int
 		TaskHistoriesAggregate     func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
 		TaskHistoriesCount         func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) int
 		TaskNames                  func(childComplexity int) int
 		Tasks                      func(childComplexity int) int
 		TasksCount                 func(childComplexity int) int
+		TasksDurationStats         func(childComplexity int, start time.Time, end time.Time) int
 		TasksStats                 func(childComplexity int, start time.Time, end time.Time, machine *string) int
 	}
 
@@ -702,6 +704,18 @@ type ComplexityRoot struct {
 		Success func(childComplexity int) int
 		Time    func(childComplexity int) int
 		Total   func(childComplexity int) int
+	}
+
+	TaskDurationStats struct {
+		AvgDurationSeconds    func(childComplexity int) int
+		MaxDurationSeconds    func(childComplexity int) int
+		MedianDurationSeconds func(childComplexity int) int
+		MinDurationSeconds    func(childComplexity int) int
+		Name                  func(childComplexity int) int
+		P90DurationSeconds    func(childComplexity int) int
+		P95DurationSeconds    func(childComplexity int) int
+		P99DurationSeconds    func(childComplexity int) int
+		TotalTasks            func(childComplexity int) int
 	}
 
 	TaskHistory struct {
@@ -896,6 +910,8 @@ type QueryResolver interface {
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
+	TaskDurationStats(ctx context.Context, name string, start time.Time, end time.Time) (*model.TaskDurationStats, error)
+	TasksDurationStats(ctx context.Context, start time.Time, end time.Time) ([]*model.TaskDurationStats, error)
 }
 type SectorResolver interface {
 	ID(ctx context.Context, obj *model.Sector) (string, error)
@@ -3827,6 +3843,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Task(childComplexity, args["id"].(int)), true
 
+	case "Query.taskDurationStats":
+		if e.complexity.Query.TaskDurationStats == nil {
+			break
+		}
+
+		args, err := ec.field_Query_taskDurationStats_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TaskDurationStats(childComplexity, args["name"].(string), args["start"].(time.Time), args["end"].(time.Time)), true
+
 	case "Query.taskHistories":
 		if e.complexity.Query.TaskHistories == nil {
 			break
@@ -3883,6 +3911,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.TasksCount(childComplexity), true
+
+	case "Query.tasksDurationStats":
+		if e.complexity.Query.TasksDurationStats == nil {
+			break
+		}
+
+		args, err := ec.field_Query_tasksDurationStats_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TasksDurationStats(childComplexity, args["start"].(time.Time), args["end"].(time.Time)), true
 
 	case "Query.tasksStats":
 		if e.complexity.Query.TasksStats == nil {
@@ -4680,6 +4720,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.TaskAggregate.Total(childComplexity), true
+
+	case "TaskDurationStats.avgDurationSeconds":
+		if e.complexity.TaskDurationStats.AvgDurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.AvgDurationSeconds(childComplexity), true
+
+	case "TaskDurationStats.maxDurationSeconds":
+		if e.complexity.TaskDurationStats.MaxDurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.MaxDurationSeconds(childComplexity), true
+
+	case "TaskDurationStats.medianDurationSeconds":
+		if e.complexity.TaskDurationStats.MedianDurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.MedianDurationSeconds(childComplexity), true
+
+	case "TaskDurationStats.minDurationSeconds":
+		if e.complexity.TaskDurationStats.MinDurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.MinDurationSeconds(childComplexity), true
+
+	case "TaskDurationStats.name":
+		if e.complexity.TaskDurationStats.Name == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.Name(childComplexity), true
+
+	case "TaskDurationStats.p90DurationSeconds":
+		if e.complexity.TaskDurationStats.P90DurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.P90DurationSeconds(childComplexity), true
+
+	case "TaskDurationStats.p95DurationSeconds":
+		if e.complexity.TaskDurationStats.P95DurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.P95DurationSeconds(childComplexity), true
+
+	case "TaskDurationStats.p99DurationSeconds":
+		if e.complexity.TaskDurationStats.P99DurationSeconds == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.P99DurationSeconds(childComplexity), true
+
+	case "TaskDurationStats.totalTasks":
+		if e.complexity.TaskDurationStats.TotalTasks == nil {
+			break
+		}
+
+		return e.complexity.TaskDurationStats.TotalTasks(childComplexity), true
 
 	case "TaskHistory.completedBy":
 		if e.complexity.TaskHistory.CompletedBy == nil {
@@ -7649,6 +7752,92 @@ func (ec *executionContext) field_Query_storage_argsID(
 	return zeroVal, nil
 }
 
+func (ec *executionContext) field_Query_taskDurationStats_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_taskDurationStats_argsName(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["name"] = arg0
+	arg1, err := ec.field_Query_taskDurationStats_argsStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["start"] = arg1
+	arg2, err := ec.field_Query_taskDurationStats_argsEnd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["end"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_taskDurationStats_argsName(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["name"]
+	if !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+	if tmp, ok := rawArgs["name"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskDurationStats_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskDurationStats_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
 func (ec *executionContext) field_Query_taskHistoriesAggregate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -8098,6 +8287,65 @@ func (ec *executionContext) field_Query_task_argsID(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_tasksDurationStats_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_tasksDurationStats_argsStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["start"] = arg0
+	arg1, err := ec.field_Query_tasksDurationStats_argsEnd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["end"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Query_tasksDurationStats_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_tasksDurationStats_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
 	return zeroVal, nil
 }
 
@@ -26740,6 +26988,153 @@ func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_taskDurationStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskDurationStats(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TaskDurationStats(rctx, fc.Args["name"].(string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.TaskDurationStats)
+	fc.Result = res
+	return ec.marshalOTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_taskDurationStats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_TaskDurationStats_name(ctx, field)
+			case "totalTasks":
+				return ec.fieldContext_TaskDurationStats_totalTasks(ctx, field)
+			case "minDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_minDurationSeconds(ctx, field)
+			case "maxDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_maxDurationSeconds(ctx, field)
+			case "avgDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_avgDurationSeconds(ctx, field)
+			case "medianDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_medianDurationSeconds(ctx, field)
+			case "p90DurationSeconds":
+				return ec.fieldContext_TaskDurationStats_p90DurationSeconds(ctx, field)
+			case "p95DurationSeconds":
+				return ec.fieldContext_TaskDurationStats_p95DurationSeconds(ctx, field)
+			case "p99DurationSeconds":
+				return ec.fieldContext_TaskDurationStats_p99DurationSeconds(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TaskDurationStats", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_taskDurationStats_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_tasksDurationStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_tasksDurationStats(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TasksDurationStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TaskDurationStats)
+	fc.Result = res
+	return ec.marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStatsᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_tasksDurationStats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_TaskDurationStats_name(ctx, field)
+			case "totalTasks":
+				return ec.fieldContext_TaskDurationStats_totalTasks(ctx, field)
+			case "minDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_minDurationSeconds(ctx, field)
+			case "maxDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_maxDurationSeconds(ctx, field)
+			case "avgDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_avgDurationSeconds(ctx, field)
+			case "medianDurationSeconds":
+				return ec.fieldContext_TaskDurationStats_medianDurationSeconds(ctx, field)
+			case "p90DurationSeconds":
+				return ec.fieldContext_TaskDurationStats_p90DurationSeconds(ctx, field)
+			case "p95DurationSeconds":
+				return ec.fieldContext_TaskDurationStats_p95DurationSeconds(ctx, field)
+			case "p99DurationSeconds":
+				return ec.fieldContext_TaskDurationStats_p99DurationSeconds(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TaskDurationStats", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_tasksDurationStats_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -32137,6 +32532,402 @@ func (ec *executionContext) fieldContext_TaskAggregate_failure(_ context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_name(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_totalTasks(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_totalTasks(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalTasks, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_totalTasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_minDurationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_minDurationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MinDurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_minDurationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_maxDurationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_maxDurationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MaxDurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_maxDurationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_avgDurationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_avgDurationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AvgDurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_avgDurationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_medianDurationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_medianDurationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MedianDurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_medianDurationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_p90DurationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_p90DurationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.P90DurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_p90DurationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_p95DurationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_p95DurationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.P95DurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_p95DurationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskDurationStats_p99DurationSeconds(ctx context.Context, field graphql.CollectedField, obj *model.TaskDurationStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskDurationStats_p99DurationSeconds(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.P99DurationSeconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskDurationStats_p99DurationSeconds(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskDurationStats",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
 		},
 	}
 	return fc, nil
@@ -40595,6 +41386,47 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "taskDurationStats":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_taskDurationStats(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "tasksDurationStats":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_tasksDurationStats(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -42288,6 +43120,85 @@ func (ec *executionContext) _TaskAggregate(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var taskDurationStatsImplementors = []string{"TaskDurationStats"}
+
+func (ec *executionContext) _TaskDurationStats(ctx context.Context, sel ast.SelectionSet, obj *model.TaskDurationStats) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, taskDurationStatsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TaskDurationStats")
+		case "name":
+			out.Values[i] = ec._TaskDurationStats_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "totalTasks":
+			out.Values[i] = ec._TaskDurationStats_totalTasks(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "minDurationSeconds":
+			out.Values[i] = ec._TaskDurationStats_minDurationSeconds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "maxDurationSeconds":
+			out.Values[i] = ec._TaskDurationStats_maxDurationSeconds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "avgDurationSeconds":
+			out.Values[i] = ec._TaskDurationStats_avgDurationSeconds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "medianDurationSeconds":
+			out.Values[i] = ec._TaskDurationStats_medianDurationSeconds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "p90DurationSeconds":
+			out.Values[i] = ec._TaskDurationStats_p90DurationSeconds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "p95DurationSeconds":
+			out.Values[i] = ec._TaskDurationStats_p95DurationSeconds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "p99DurationSeconds":
+			out.Values[i] = ec._TaskDurationStats_p99DurationSeconds(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var taskHistoryImplementors = []string{"TaskHistory"}
 
 func (ec *executionContext) _TaskHistory(ctx context.Context, sel ast.SelectionSet, obj *model.TaskHistory) graphql.Marshaler {
@@ -43782,6 +44693,60 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdash
 		return graphql.Null
 	}
 	return ec._Task(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskDurationStats) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskDurationStats) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._TaskDurationStats(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, v interface{}) (model.TaskHistoriesAggregateInterval, error) {
@@ -45700,6 +46665,13 @@ func (ec *executionContext) marshalOTaskAggregate2ᚖgithubᚗcomᚋstraheᚋcur
 		return graphql.Null
 	}
 	return ec._TaskAggregate(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskDurationStats) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TaskDurationStats(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v []*model.TaskHistory) graphql.Marshaler {

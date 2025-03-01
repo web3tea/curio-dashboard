@@ -56,6 +56,20 @@ export const taskSimpleFragment = gql`
   }
 `
 
+export const taskDurationStatsFragment = gql`
+  fragment TaskDurationStats on TaskDurationStats {
+    name
+    totalTasks
+    maxDurationSeconds
+    minDurationSeconds
+    avgDurationSeconds
+    medianDurationSeconds
+    p90DurationSeconds
+    p95DurationSeconds
+    p99DurationSeconds
+  }
+  `
+
 export const SubscribeCompletedTask = gql`
   subscription SubscribeCompletedTask($host: String, $last: Int!) {
     completedTask(machine: $host, last: $last) {
@@ -151,3 +165,21 @@ export const GetTaskNames = gql`
         taskNames
     }
 `
+
+export const GetTasksDurationStats = gql`
+  query GetTasksDurationStats($start: Time!, $end: Time!) {
+    tasksDurationStats(start: $start, end: $end) {
+      ...TaskDurationStats
+    }
+  }
+  ${taskDurationStatsFragment}
+  `
+
+export const GetTaskDurationStats = gql`
+  query GetTaskDurationStats($name: String!, $start: Time!, $end: Time!) {
+    taskDurationStats(name: $name, start: $start, end: $end) {
+      ...TaskDurationStats
+    }
+  }
+  ${taskDurationStatsFragment}
+  `

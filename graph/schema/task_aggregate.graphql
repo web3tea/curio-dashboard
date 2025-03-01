@@ -18,3 +18,20 @@ type TaskStats {
     success: Int!
     failure: Int!
 }
+
+type TaskDurationStats {
+  name: String!
+  totalTasks: Int!
+  minDurationSeconds: Float!
+  maxDurationSeconds: Float!
+  avgDurationSeconds: Float!
+  medianDurationSeconds: Float!
+  p90DurationSeconds: Float!
+  p95DurationSeconds: Float!
+  p99DurationSeconds: Float!
+}
+
+extend type Query {
+  taskDurationStats(name: String!, start: Time!, end: Time!): TaskDurationStats
+  tasksDurationStats(start: Time!, end: Time!): [TaskDurationStats!]!
+}

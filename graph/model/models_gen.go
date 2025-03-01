@@ -420,6 +420,18 @@ type StorageUsage struct {
 type Subscription struct {
 }
 
+type TaskDurationStats struct {
+	Name                  string  `json:"name"`
+	TotalTasks            int     `json:"totalTasks"`
+	MinDurationSeconds    float64 `json:"minDurationSeconds"`
+	MaxDurationSeconds    float64 `json:"maxDurationSeconds"`
+	AvgDurationSeconds    float64 `json:"avgDurationSeconds"`
+	MedianDurationSeconds float64 `json:"medianDurationSeconds"`
+	P90DurationSeconds    float64 `json:"p90DurationSeconds"`
+	P95DurationSeconds    float64 `json:"p95DurationSeconds"`
+	P99DurationSeconds    float64 `json:"p99DurationSeconds"`
+}
+
 type TaskNameAggregate struct {
 	Name    string `json:"name"`
 	Total   int    `json:"total"`

@@ -3,8 +3,6 @@
     "Home": "Home",
     "Dashboard": "Dashboard",
     "Overview": "Overview",
-    "Analytics": "Analytics",
-    "Sealing": "Sealing",
     "Cluster": "Cluster",
     "Miners": "Miners",
     "PoRep": "PoRep",
@@ -18,9 +16,7 @@
     "Wins": "Wins",
     "Mining": "Mining",
     "Blocks": "Blocks",
-    "Running": "Running",
     "Task History": "Task History",
-    "History": "History",
     "Messages": "Messages",
     "Sends": "Sends",
     "Market": "Market",
@@ -34,7 +30,14 @@
     "MK12 Deals": "MK12 Deals",
     "StorageAsks": "StorageAsks",
     "MK12Deals": "MK12Deals",
-    "PendingPieces": "PendingPieces"
+    "PendingPieces": "PendingPieces",
+    "Storage Processing": "Storage Processing",
+    "Active Tasks": "Active Tasks",
+    "Task Metrics": "Task Metrics",
+    "Sectors Overview": "Sectors Overview",
+    "SDR Pipeline": "SDR Pipeline",
+    "Metrics": "Metrics",
+    "Market && Deals": "Market && Deals"
   },
   "fields": {
     "Total Power": "Total Power",
@@ -96,7 +99,8 @@
     "Login": "Login",
     "Username": "Username",
     "Password": "Password",
-    "Search": "Search"
+    "Search": "Search",
+    "Task Duration Stats": "Task Duration Stats"
   },
   "msgs": {
     "weekBlock": "This Week Total Mined",
