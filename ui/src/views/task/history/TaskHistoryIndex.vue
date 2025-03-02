@@ -32,8 +32,13 @@ defineProps({
 
 const breadcrumbs = ref([
   {
-    title: t('nav.Task History'),
+    title: t('nav.Tasks'),
     disabled: false,
+    to: { name: 'TaskOverview' }
+  },
+  {
+    title: t('nav.Task History'),
+    disabled: true,
     to: { name: 'TaskHistory' }
   }
 ])

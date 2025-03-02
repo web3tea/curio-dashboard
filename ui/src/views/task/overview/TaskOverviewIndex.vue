@@ -10,11 +10,6 @@ const breadcrumbs = ref([
     title: t('nav.Tasks'),
     disabled: true,
     to: '#'
-  },
-  {
-    title: t('nav.Metrics'),
-    disabled: true,
-    to: '#'
   }
 ])
 

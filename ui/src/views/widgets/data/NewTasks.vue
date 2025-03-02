@@ -59,7 +59,7 @@ const headers = [
       />
     </template>
     <template #subtitle>
-      <router-link :to="{name: 'RunningTasks'}">
+      <router-link :to="{name: 'ActiveTasks'}">
         {{ t('fields.View All') }}
       </router-link>
     </template>

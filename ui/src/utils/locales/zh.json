@@ -33,11 +33,10 @@
     "PendingPieces": "PendingPieces",
     "Storage Processing": "扇区处理",
     "Active Tasks": "活跃任务",
-    "Task Metrics": "任务指标",
     "Sectors Overview": "扇区概览",
     "SDR Pipeline": "SDR 管道",
-    "Metrics": "指标",
-    "Market && Deals": "市场 && 订单"
+    "Market && Deals": "市场 && 订单",
+    "Task Overview": "任务概览"
   },
   "fields": {
     "Total Power": "总算力",

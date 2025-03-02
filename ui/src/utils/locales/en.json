@@ -33,11 +33,10 @@
     "PendingPieces": "PendingPieces",
     "Storage Processing": "Storage Processing",
     "Active Tasks": "Active Tasks",
-    "Task Metrics": "Task Metrics",
     "Sectors Overview": "Sectors Overview",
     "SDR Pipeline": "SDR Pipeline",
-    "Metrics": "Metrics",
-    "Market && Deals": "Market && Deals"
+    "Market && Deals": "Market && Deals",
+    "Task Overview": "Task Overview"
   },
   "fields": {
     "Total Power": "Total Power",

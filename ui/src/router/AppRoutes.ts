@@ -64,17 +64,17 @@ const AppRoutes = {
       },
     },
     {
-      name: 'RunningTasks',
-      path: '/running-tasks',
-      component: () => import('@/views/task/TaskIndex.vue'),
+      name: 'ActiveTasks',
+      path: '/tasks/active',
+      component: () => import('@/views/task/active/ActiveTaskIndex.vue'),
       meta: {
-        title: 'Running',
-        description: 'List of all running tasks in the cluster',
+        title: 'Active Tasks',
+        description: 'List of all active tasks in the cluster',
       },
     },
     {
       name: 'TaskHistory',
-      path: '/task-history',
+      path: '/tasks/history',
       component: () => import('@/views/task/history/TaskHistoryIndex.vue'),
       props: (route: RouteLocationNormalizedLoaded) => ({
         start: Number(route.query.start),
@@ -84,17 +84,17 @@ const AppRoutes = {
         success: route.query.success,
       }),
       meta: {
-        title: 'History',
+        title: 'Task History',
         description: 'List of all task history in the cluster',
       },
     },
     {
-      name: 'TaskMetrics',
-      path: '/task-metrics',
-      component: () => import('@/views/task/metrics/TaskMetricsIndex.vue'),
+      name: 'TaskOverview',
+      path: '/tasks/overview',
+      component: () => import('@/views/task/overview/TaskOverviewIndex.vue'),
       meta: {
-        title: 'Task Metrics',
-        description: 'Task metrics in the cluster',
+        title: 'Task Overview',
+        description: 'Overview of the tasks in the cluster',
       },
     },
     {

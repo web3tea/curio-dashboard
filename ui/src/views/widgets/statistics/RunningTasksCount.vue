@@ -41,7 +41,7 @@ onResult(() => {
               :icon="IconBrandAsana"
               rounded="md"
               size="small"
-              :to="{ name: 'RunningTasks' }"
+              :to="{ name: 'ActiveTasks' }"
               variant="flat"
             />
           </span>

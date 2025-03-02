@@ -49,16 +49,16 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconBrandAsana,
       children: [
         {
+          title: t('nav.Task Overview'),
+          to: { name: "TaskOverview" },
+        },
+        {
           title: t('nav.Active Tasks'),
-          to: { name: 'RunningTasks' }
+          to: { name: 'ActiveTasks' }
         },
         {
           title: t('nav.Task History'),
           to: { name: "TaskHistory" },
-        },
-        {
-          title: t('nav.Task Metrics'),
-          to: { name: "TaskMetrics" },
         }
       ],
     },
