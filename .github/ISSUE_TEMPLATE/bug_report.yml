@@ -1,0 +1,20 @@
+name: Bug report
+description: File a bug to help us improve
+labels: ["bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The version of the curio dashboard you are using
+      placeholder: ex. v0.1.0-4-g0538221+curio-1.24.5
+    validations:
+      required: true
+  - type: textarea
+    id: bug
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: Ex. I'm always frustrated when [...]
+    validations:
+      required: true
