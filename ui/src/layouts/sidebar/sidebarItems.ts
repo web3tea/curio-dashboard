@@ -1,7 +1,6 @@
 import {
   IconBox,
   IconBrandAsana,
-  IconBuildingStore,
   IconContract,
   IconCurrency,
   IconDatabase,
@@ -11,6 +10,9 @@ import {
   IconSettings,
   IconUsers,
   IconVector,
+  IconCertificate,
+  IconSearch,
+  IconShoppingCart
 } from '@tabler/icons-vue'
 import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -43,7 +45,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconHome,
       to: { name: "Overview" },
     },
-    { header: t('nav.Storage Processing'), icon: IconBrandAsana },
+    { header: t('nav.Sector Processing'), icon: IconBrandAsana },
     {
       title: t('nav.Tasks'),
       icon: IconBrandAsana,
@@ -73,6 +75,42 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         {
           title: t('nav.SDR Pipeline'),
           to: { name: "PoRep" },
+        },
+        {
+          title: t('nav.Snap Deals'),
+          to: 'Snap Deals',
+          disabled: true // todo: add Snap Deals page
+        },
+        {
+          title: t('nav.Unsealing'),
+          to: 'Unsealing',
+          disabled: true // todo: add Unsealing page
+        },
+        {
+          title: t('nav.Sectors Events'),
+          to: 'Sectors Events',
+          disabled: true // todo: add Sectors Events page
+        }
+      ]
+    },
+    {
+      title: t('nav.Proofs'),
+      icon: IconCertificate,
+      children: [
+        {
+          title: t('nav.WindowPoSt'),
+          to: 'WindowPoSt',
+          disabled: true // todo: add WindowPoSt page
+        },
+        {
+          title: t('nav.Partition Tasks'),
+          to: 'Partition Tasks',
+          disabled: true // todo: add Partition Tasks page
+        },
+        {
+          title: t('nav.Recovery Tasks'),
+          to: 'Recovery Tasks',
+          disabled: true // todo: add Recovery Tasks page
         }
       ]
     },
@@ -81,27 +119,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconVector,
       to: { name: "MessageSends" },
     },
-    { header: t('nav.Mining'), icon: IconUsers },
-    {
-      title: t('nav.Miners'),
-      icon: IconUsers,
-      to: { name: "Miners" },
-    },
-    {
-      title: t('nav.Wins'),
-      icon: IconCurrency,
-      children: [
-        {
-          title: t('nav.Overview'),
-          to: { name: "MiningOverview" },
-        },
-        {
-          title: t('nav.Blocks'),
-          to: { name: "MiningTaskList" },
-        },
-      ],
-    },
-    { header: t('nav.Market && Deals'), icon: IconBuildingStore },
+    { header: t('nav.Market & Deals'), icon: IconShoppingCart },
     {
       title: t('nav.Deals'),
       icon: IconContract,
@@ -113,11 +131,42 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         {
           title: t('nav.MK12 Deals'),
           to: { name: "MarketMk12Deals" }
+        },
+        {
+          title: t('nav.Legacy Deals'),
+          to: 'Legacy Deals',
+          disabled: true // todo: add Legacy Deals page
+        },
+        {
+          title: t('nav.Deal Pipeline'),
+          to: 'Deal Pipeline',
+          disabled: true // todo: add Deal Pipeline page
         }
       ]
     },
     {
-      title: t('nav.Settings'),
+      title: t('nav.IPNI'),
+      icon: IconSearch,
+      children: [
+        {
+          title: t('nav.Index Status'),
+          to: 'Index Status',
+          disabled: true // todo: add Index Status page
+        },
+        {
+          title: t('nav.Piece Metadata'),
+          to: 'Piece Metadata',
+          disabled: true // todo: add Piece Metadata page
+        },
+        {
+          title: t('nav.IPNI Summary'),
+          to: 'IPNI Summary',
+          disabled: true // todo: add IPNI Summary page
+        }
+      ]
+    },
+    {
+      title: t('nav.Market Settings'),
       icon: IconFilterCog,
       children: [
         {
@@ -142,11 +191,41 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         }
       ],
     },
-    { header: t('nav.Cluster'), icon: IconServer },
+    { header: t('nav.Mining & Network'), icon: IconUsers },
+    {
+      title: t('nav.Miners'),
+      icon: IconUsers,
+      to: { name: "Miners" },
+    },
+    {
+      title: t('nav.Wins'),
+      icon: IconCurrency,
+      children: [
+        {
+          title: t('nav.Overview'),
+          to: { name: "MiningOverview" },
+        },
+        {
+          title: t('nav.Blocks'),
+          to: { name: "MiningTaskList" },
+        },
+      ],
+    },
+    { header: t('nav.System & Management'), icon: IconServer },
     {
       title: t('nav.Machines'),
       icon: IconServer,
-      to: { name: "Machines" },
+      children: [
+        {
+          title: t('nav.Machine List'),
+          to: { name: "Machines" },
+        },
+        {
+          title: t('nav.Resource Usage'),
+          to: 'Resource Usage',
+          disabled: true // todo: add Resource Usage page
+        }
+      ]
     },
     {
       title: t('nav.Storages'),
@@ -156,7 +235,12 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     {
       title: t('nav.Configurations'),
       icon: IconSettings,
-      to: { name: "Configurations" },
+      children: [
+        {
+          title: t('nav.Curio Config'),
+          to: { name: "Configurations" },
+        }
+      ]
     },
   ])
   return sidebarItems
