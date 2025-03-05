@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useClipboard from 'vue-clipboard3'
 import { IconCopy } from '@tabler/icons-vue'
-import { useUIStore } from '@/stores/ui'
+import { useNotificationStore } from '@/stores/notification'
 
 const props = defineProps({
   value: {
@@ -10,21 +10,15 @@ const props = defineProps({
   },
 })
 
+const notificationStore = useNotificationStore()
 const { toClipboard } = useClipboard()
-const uiStore = useUIStore()
 
 const copy = async () => {
   try {
     await toClipboard(props.value)
-    uiStore.appendMsg({
-      type: 'success',
-      msg: 'Copied to clipboard',
-    })
+    notificationStore.success('Copied to clipboard')
   } catch (e: unknown) {
-    uiStore.appendMsg({
-      type: 'error',
-      msg: e instanceof Error ? e.message : String(e),
-    })
+    notificationStore.error(e instanceof Error ? e.message : String(e))
   }
 }
 </script>

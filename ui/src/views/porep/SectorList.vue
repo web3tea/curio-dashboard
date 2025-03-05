@@ -7,11 +7,11 @@ import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useLocaleTimeAgo } from '@/utils/helpers/timeAgo'
 import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
 import { RestartAllFailedSector } from '@/gql/sector'
-import { useUIStore } from '@/stores/ui'
 import SectorRestart from '@/views/sectors/SectorRestart.vue'
 import { useI18n } from 'vue-i18n'
+import { useNotificationStore } from '@/stores/notification'
 
-const uiStore = useUIStore()
+const notificationStore = useNotificationStore()
 const { d, t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
@@ -55,17 +55,11 @@ function stateColor (state: string) {
 const { mutate: restartAll, loading: restartLoading, onError, onDone } = useMutation(RestartAllFailedSector)
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 onDone(() => {
-  uiStore.appendMsg({
-    type: 'success',
-    msg: `Restarting all failed sectors`,
-  })
+  notificationStore.success('Restarting all failed sectors')
 })
 
 </script>

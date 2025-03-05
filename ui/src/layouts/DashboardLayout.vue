@@ -4,15 +4,14 @@ import LoaderWrapper from '@/layouts/LoaderWrapper.vue'
 import VerticalHeader from '@/layouts/header/AppHeader.vue'
 import FooterPanel from '@/layouts/footer/FooterPanel.vue'
 import { useCustomizerStore } from '@/stores/customizer'
-import { useUIStore } from '@/stores/ui'
+import { useNotificationStore } from '@/stores/notification'
 import { storeToRefs } from 'pinia'
-import { IconX } from '@tabler/icons-vue'
 import DashboardSidebar from './sidebar/DashboardSidebar.vue'
 
-const uiStore = useUIStore()
+const notificationStore =  useNotificationStore()
 const customizer = useCustomizerStore()
 const route = useRoute()
-const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
+const { queue } = storeToRefs(notificationStore)
 
 </script>
 
@@ -27,26 +26,10 @@ const { showSnackbar, snackbarMsg } = storeToRefs(uiStore)
     >
       <VerticalHeader />
       <DashboardSidebar :mode="customizer.horizontalLayout ? 'horizontal' : 'vertical'" />
-      <v-snackbar
-        v-model="showSnackbar"
-        :color="snackbarMsg?.type"
+      <v-snackbar-queue
+        v-model="queue"
         location="top"
-        rounded="md"
-      >
-        <v-icon
-          class="mr-1"
-          icon="$checkboxMarkedCircleOutline"
-        />
-        {{ snackbarMsg?.msg }}
-        <template #actions>
-          <v-btn
-            color="white"
-            :icon="IconX"
-            variant="text"
-            @click="showSnackbar = false"
-          />
-        </template>
-      </v-snackbar>
+      />
       <v-main class="page-wrapper">
         <v-container fluid>
           <div>

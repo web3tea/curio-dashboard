@@ -3,6 +3,7 @@ import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
 import { createClient } from 'graphql-ws'
 import { router } from '@/router'
 import { useUIStore } from '@/stores/ui'
+import { useNotificationStore } from '@/stores/notification'
 import { storeToRefs } from 'pinia'
 
 const authMiddleware = new ApolloLink((operation, forward) => {
@@ -43,22 +44,20 @@ const wsLink = new GraphQLWsLink(
       closed: (event: unknown) => {
         const uiStore = useUIStore()
         const { isOnline } = storeToRefs(uiStore)
+
+        const notificationStore = useNotificationStore()
+
         isOnline.value = false
         if (event instanceof CloseEvent) {
+
           if (event.code === 1000 && event.reason === 'terminated') {
-            uiStore.appendMsg({
-              type: 'error',
-              msg: 'Auth token expired or invalid',
-            })
+            notificationStore.error('Auth token expired or invalid')
             router.push('/auth/login').then()
             setTimeout(() => {
               window.location.reload()
             }, 1000)
           } else {
-            uiStore.appendMsg({
-              type: 'error',
-              msg: 'Connection closed: ' + event.reason,
-            })
+            notificationStore.error('Connection closed: ' + event.reason)
           }
         }
       },

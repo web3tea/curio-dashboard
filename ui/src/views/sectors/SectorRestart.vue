@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { PropType, ref } from 'vue'
-import { useUIStore } from '@/stores/ui'
 import { useMutation } from '@vue/apollo-composable'
 import { RestartSector } from '@/gql/sector'
 import { IconRotateDot } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { useNotificationStore } from '@/stores/notification'
+
+const notificationStore = useNotificationStore()
 
 interface Sector {
   spId: string,
@@ -32,7 +34,6 @@ const props = defineProps({
   },
 })
 
-const uiStore = useUIStore()
 const { mutate, loading } = useMutation(RestartSector)
 
 async function doRestart () {
@@ -43,10 +44,7 @@ async function doRestart () {
   }).then(() => {
     success.value++
   })))
-  uiStore.appendMsg({
-    type: 'success',
-    msg: `Restarting ${success.value} sectors`,
-  })
+  notificationStore.success(`Restarted ${success.value} sectors`)
 }
 
 </script>

@@ -4,10 +4,11 @@ import { ref, computed, PropType } from 'vue'
 import { AddMarketPriceFilter, GetMarketPriceFilters, CheckMarketPriceFilter, UpdateMarketPriceFilter } from '@/gql/market'
 import { IconAlertCircle,IconPlus } from '@tabler/icons-vue'
 import { refDebounced } from '@vueuse/core'
-import { useUIStore } from '@/stores/ui'
 import { PriceFilter } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { useNotificationStore } from '@/stores/notification'
 
+const notificationStore = useNotificationStore()
 const props = defineProps({
   action: {
     type: String,
@@ -20,7 +21,6 @@ const props = defineProps({
   }
 })
 
-const uiStore = useUIStore()
 const dialog = ref(false)
 
 const name = ref<string>(props.item ? props.item.name : '')
@@ -53,17 +53,11 @@ const { mutate, loading, onDone, onError } = useMutation(props.action === 'add' 
 onDone(() => {
   dialog.value = false
   name.value = ''
-  uiStore.appendMsg({
-    type: 'success',
-    msg: props.action === 'add' ? 'Price filter added successfully' : 'Price filter updated successfully',
-  })
+  notificationStore.success(props.action === 'add' ? 'Price filter added successfully' : 'Price filter updated successfully')
 })
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 const form = ref()

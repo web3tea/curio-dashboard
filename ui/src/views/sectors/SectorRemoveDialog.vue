@@ -3,8 +3,10 @@ import { computed, PropType, ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { RemoveSector } from '@/gql/sector'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
-import { useUIStore } from '@/stores/ui'
 import { useI18n } from 'vue-i18n'
+import { useNotificationStore } from '@/stores/notification'
+
+const notificationStore = useNotificationStore()
 
 interface Sector {
   spId: string,
@@ -32,7 +34,6 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
-const uiStore = useUIStore()
 
 const success = ref(0)
 const dialog = ref(false)
@@ -49,17 +50,11 @@ const canRemove = computed(() => {
 const { mutate, loading, onError, onDone } = useMutation(RemoveSector)
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 onDone(() => {
-  uiStore.appendMsg({
-    type: 'success',
-    msg: `Sector removed successfully`,
-  })
+  notificationStore.success(`Sector removed successfully`)
   dialog.value = false
 })
 

@@ -10,11 +10,11 @@ import { CreateConfig, GetConfigs } from '@/gql/config'
 import { useCustomizerStore } from '@/stores/customizer'
 import { useRouter } from 'vue-router'
 import { IconDeviceFloppy } from '@tabler/icons-vue'
-import { useUIStore } from '@/stores/ui'
 import { useI18n } from 'vue-i18n'
+import { useNotificationStore } from '@/stores/notification'
 
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
-const uiStore = useUIStore()
 const router = useRouter()
 
 const editConfig = ref('')
@@ -32,10 +32,7 @@ const { mutate: createConfig, loading, onDone, error } = useMutation(CreateConfi
 }))
 
 onDone(() => {
-  uiStore.appendMsg({
-    type: 'success',
-    msg: 'Configuration created successfully',
-  })
+  notificationStore.success('Configuration created successfully')
   router.push({ name: 'Configurations' })
 })
 

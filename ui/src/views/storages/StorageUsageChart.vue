@@ -3,22 +3,19 @@ import { computed, ComputedRef } from 'vue'
 import { CaretUpFilled } from '@ant-design/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetStorageStats } from '@/gql/storage'
-import { useUIStore } from '@/stores/ui'
 import { StorageStats } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { getColorByType } from '@/utils/helpers/storageTypeColor'
+import { useNotificationStore } from '@/stores/notification'
 
-const uiStore = useUIStore()
+const notificationStore = useNotificationStore()
 
 const { result, onError } = useQuery(GetStorageStats, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
 onError(error => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: error.message,
-  })
+  notificationStore.error(error.message)
 })
 
 const items: ComputedRef<[StorageStats]> = computed(() => result.value?.storageStats || [])

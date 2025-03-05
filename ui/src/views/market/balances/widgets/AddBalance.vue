@@ -3,8 +3,9 @@ import { useMutation } from '@vue/apollo-composable'
 import { ref, computed } from 'vue'
 import { AddMarketBalance } from '@/gql/market'
 import { IconAlertCircle } from '@tabler/icons-vue'
-import { useUIStore } from '@/stores/ui'
+import { useNotificationStore } from '@/stores/notification'
 
+const notificationStore = useNotificationStore()
 const props = defineProps({
   miner: {
     type: String,
@@ -12,7 +13,6 @@ const props = defineProps({
   },
 })
 
-const uiStore = useUIStore()
 const dialog = ref(false)
 const localMiner = ref<string>(props.miner)
 const minerInit = computed(() => props.miner ? true : false)
@@ -29,17 +29,11 @@ const { mutate, loading, onDone, onError } = useMutation(AddMarketBalance, () =>
 
 onDone(() => {
   dialog.value = false
-  uiStore.appendMsg({
-    type: 'success',
-    msg: 'Balance added successfully',
-  })
+  notificationStore.success('Balance added successfully')
 })
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 const form = ref()

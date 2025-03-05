@@ -4,9 +4,10 @@ import { ref, computed, PropType } from 'vue'
 import { SetMarketClientAllow, GetMarketClientAllowList, GetMarketClientAllow } from '@/gql/market'
 import { IconAlertCircle,IconPlus } from '@tabler/icons-vue'
 import { refDebounced } from '@vueuse/core'
-import { useUIStore } from '@/stores/ui'
 import { MarketAllowFilter } from '@/typed-graph'
+import { useNotificationStore } from '@/stores/notification'
 
+const notificationStore = useNotificationStore()
 const props = defineProps({
   action: {
     type: String,
@@ -19,7 +20,6 @@ const props = defineProps({
   }
 })
 
-const uiStore = useUIStore()
 const dialog = ref(false)
 
 const wallet = ref<string>(props.item ? props.item.wallet : '')
@@ -39,17 +39,11 @@ const { mutate, loading, onDone, onError } = useMutation(SetMarketClientAllow, (
 
 onDone(() => {
   dialog.value = false
-  uiStore.appendMsg({
-    type: 'success',
-    msg: props.action === 'add' ? 'Client Allow added successfully' : 'Client Allow updated successfully',
-  })
+  notificationStore.success(props.action === 'add' ? 'Client Allow added successfully' : 'Client Allow updated successfully')
 })
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 const form = ref()

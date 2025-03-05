@@ -3,10 +3,11 @@ import { ref,  watch } from 'vue'
 import { IconAlertCircle, IconPlus } from '@tabler/icons-vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { UpdateMarketMk12StorageAsk, GetMarketMk12StorageAsks, GetMarketMk12StorageAsk } from '@/gql/market'
-import { useUIStore } from '@/stores/ui'
 import { MarketMk12StorageAsk } from '@/typed-graph'
 import { pieceSizeOptions } from '@/utils/helpers/pieceSize'
+import { useNotificationStore } from '@/stores/notification'
 
+const notificationStore = useNotificationStore()
 const props = defineProps({
   miner: {
     type: String,
@@ -19,7 +20,6 @@ const props = defineProps({
   },
 })
 
-const uiStore = useUIStore()
 const dialog = ref(false)
 const localMiner = ref(props.miner)
 
@@ -64,17 +64,11 @@ const { mutate, loading: updateLoading, onDone, onError } = useMutation(UpdateMa
 
 onDone(() => {
   dialog.value = false
-  uiStore.appendMsg({
-    type: 'success',
-    msg: `Ask for ${localMiner.value} successfully ${props.action === 'add' ? 'created' : 'updated'}`,
-  })
+  notificationStore.success(`Ask for ${localMiner.value} successfully ${props.action === 'add' ? 'created' : 'updated'}`)
 })
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 const form = ref()

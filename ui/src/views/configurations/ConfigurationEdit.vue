@@ -11,9 +11,9 @@ import { useCustomizerStore } from '@/stores/customizer'
 import { Config } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
 import { IconDeviceFloppy, IconPencil } from '@tabler/icons-vue'
-import { useUIStore } from '@/stores/ui'
+import { useNotificationStore } from '@/stores/notification'
 
-const uiStore = useUIStore()
+const notificationStore = useNotificationStore()
 const { t } = useI18n()
 
 const props = defineProps({
@@ -52,10 +52,7 @@ function saveEdit () {
 
 onDone(() => {
   enableEdit.value = false
-  uiStore.appendMsg({
-    type: 'success',
-    msg: `Configuration ${editTitle.value} updated successfully`,
-  })
+  notificationStore.success(`Configuration updated successfully`)
 })
 
 const breadcrumbs = ref([

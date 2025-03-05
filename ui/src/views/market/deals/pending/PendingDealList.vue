@@ -6,10 +6,10 @@ import { OpenSectorPiece } from '@/typed-graph'
 import { DealSealNow, GetPendingDeals } from '@/gql/deal'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
-import { useUIStore } from '@/stores/ui'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { useNotificationStore } from '@/stores/notification'
 
-const uiStore = useUIStore()
+const notificationStore = useNotificationStore()
 const { d } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetPendingDeals, null, () => ({
@@ -26,17 +26,11 @@ const { mutate: dealSealNow, loading: dealSealNowLoading, onDone, onError } = us
 }))
 
 onDone(() => {
-  uiStore.appendMsg({
-    type: 'success',
-    msg: `Deal has started sealing`,
-  })
+  notificationStore.success('Deal sealed successfully')
 })
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 const headers = [

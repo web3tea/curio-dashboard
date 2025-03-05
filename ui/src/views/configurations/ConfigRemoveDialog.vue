@@ -3,8 +3,10 @@ import { ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { GetConfigs, RemoveConfig } from '@/gql/config'
 import { IconAlertOctagon, IconTrash } from '@tabler/icons-vue'
-import { useUIStore } from '@/stores/ui'
 import { useI18n } from 'vue-i18n'
+import { useNotificationStore } from '@/stores/notification'
+
+const notificationStore = useNotificationStore()
 
 const props = defineProps({
   title: {
@@ -24,7 +26,6 @@ const props = defineProps({
     default: undefined,
   },
 })
-const uiStore = useUIStore()
 const { t } = useI18n()
 
 const dialog = ref(false)
@@ -41,17 +42,11 @@ const { mutate: removeConfig, loading, onDone, onError } = useMutation(RemoveCon
 
 onDone(() => {
   dialog.value = false
-  uiStore.appendMsg({
-    type: 'success',
-    msg: `Configuration ${props.title} successfully removed`,
-  })
+  notificationStore.success(`Configuration successfully removed`)
 })
 
 onError(e => {
-  uiStore.appendMsg({
-    type: 'error',
-    msg: e.message,
-  })
+  notificationStore.error(e.message)
 })
 
 </script>
