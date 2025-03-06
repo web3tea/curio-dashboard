@@ -21,6 +21,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     StoragePathTable: typeof import('./components/app/StoragePathTable.vue')['default']
     TaskNameSelectInput: typeof import('./components/app/TaskNameSelectInput.vue')['default']
+    TomlEditor: typeof import('./components/app/TomlEditor.vue')['default']
     TruncatedChip: typeof import('./components/shared/TruncatedChip.vue')['default']
     UiChildCard: typeof import('./components/shared/UiChildCard.vue')['default']
     UiParentCard: typeof import('./components/shared/UiParentCard.vue')['default']

@@ -1,13 +1,8 @@
 <script setup lang="ts">
 
-import { Codemirror } from 'vue-codemirror'
-import { computed, ref } from 'vue'
-import { StreamLanguage } from '@codemirror/language'
-import { toml } from '@codemirror/legacy-modes/mode/toml'
-import { oneDark } from '@codemirror/theme-one-dark'
+import {  ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { CreateConfig, GetConfigs } from '@/gql/config'
-import { useCustomizerStore } from '@/stores/customizer'
 import { useRouter } from 'vue-router'
 import { IconDeviceFloppy } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
@@ -44,14 +39,6 @@ const breadcrumbs = ref([
   }
 ])
 
-const customizer = useCustomizerStore()
-
-const extensions = computed(() => {
-  if (customizer.dark) {
-    return [StreamLanguage.define(toml), oneDark]
-  }
-  return [StreamLanguage.define(toml)]
-})
 </script>
 
 <template>
@@ -84,13 +71,8 @@ const extensions = computed(() => {
     <v-label class="mb-1 mt-5">
       {{ t('fields.Config') }}
     </v-label>
-    <Codemirror
+    <TomlEditor
       v-model="editConfig"
-      :autofocus="true"
-      :extensions="extensions"
-      :indent-with-tab="true"
-      :style="{ height: '700px' }"
-      :tab-size="2"
     />
   </uiparentcard>
 </template>
