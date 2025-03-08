@@ -20,7 +20,6 @@
     "@fontsource/poppins": "^5.0.14",
     "@fontsource/public-sans": "^5.0.18",
     "@fontsource/roboto": "^5.0.13",
-    "@mdi/font": "7.4.47",
     "@tabler/icons-vue": "^3.19.0",
     "@vue/apollo-composable": "^4.0.2",
     "@vueuse/core": "^10.11.0",

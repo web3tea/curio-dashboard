@@ -45,6 +45,7 @@ const extensions = computed(() => {
     tab
     allow-multiple-selections
     :readonly="readonly"
+    :disabled="readonly"
     placeholder="Input your config here"
   />
 </template>

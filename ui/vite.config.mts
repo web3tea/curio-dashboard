@@ -36,7 +36,7 @@ export default defineConfig({
     visualizer() as PluginOption,
   ],
   build: {
-    chunkSizeWarningLimit: 1024 * 7,
+    chunkSizeWarningLimit: 1024 * 3,
   },
   define: { 'process.env': {} },
   resolve: {
