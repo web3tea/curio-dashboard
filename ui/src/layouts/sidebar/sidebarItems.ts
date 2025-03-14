@@ -235,12 +235,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     {
       title: t('nav.Configurations'),
       icon: IconSettings,
-      children: [
-        {
-          title: t('nav.Curio Config'),
-          to: { name: "Configurations" },
-        }
-      ]
+      to: { name: "Configurations" },
     },
   ])
   return sidebarItems

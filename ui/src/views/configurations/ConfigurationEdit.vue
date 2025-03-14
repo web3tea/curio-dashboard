@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import { GetConfig, UpdateConfig } from '@/gql/config'
 import { Config } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
-import { IconDeviceFloppy, IconPencil } from '@tabler/icons-vue'
+import { IconDeviceFloppy,  IconPencil, IconSettingsCheck } from '@tabler/icons-vue'
 import { useNotificationStore } from '@/stores/notification'
 
 const notificationStore = useNotificationStore()
@@ -30,6 +30,7 @@ const config: ComputedRef<Config> = computed(() => result.value?.config)
 
 const editConfig = ref(config.value?.config)
 const editTitle = ref(config.value?.title)
+const isValid = ref(false)
 
 watch(result, () => {
   editConfig.value = config.value?.config
@@ -57,6 +58,12 @@ const breadcrumbs = ref([
     to: { name: 'Configurations' }
   }
 ])
+
+function handleIsValid(v: boolean) {
+  console.log('Config is valid:', v)
+  isValid.value = v
+}
+
 </script>
 
 <template>
@@ -70,6 +77,7 @@ const breadcrumbs = ref([
         v-if="enableEdit"
         color="primary"
         :loading="updateLoading"
+        :disabled="!isValid"
         @click="saveEdit"
       >
         <template #prepend>
@@ -102,12 +110,24 @@ const breadcrumbs = ref([
       required
       variant="outlined"
     />
-    <v-label class="mb-1 mt-5">
-      {{ t('fields.Config') }}
+    <v-label class="mb-1 mt-5 mr-5">
+      {{ t('fields.Content') }}
     </v-label>
-    <TomlEditor
+    <a
+      href="https://docs.curiostorage.org/configuration/default-curio-configuration"
+      target="_blank"
+      class="text-decoration-none"
+    >
+      <v-icon
+        :icon="IconSettingsCheck"
+        size="small"
+      />
+      Check the default configuration
+    </a>
+    <ConfigEditor
       v-model="editConfig"
       :readonly="!enableEdit"
+      @is-valid="handleIsValid"
     />
   </uiparentcard>
 </template>

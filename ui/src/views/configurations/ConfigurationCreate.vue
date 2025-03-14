@@ -4,7 +4,7 @@ import {  ref } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { CreateConfig, GetConfigs } from '@/gql/config'
 import { useRouter } from 'vue-router'
-import { IconDeviceFloppy } from '@tabler/icons-vue'
+import { IconDeviceFloppy, IconSettingsCheck } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { useNotificationStore } from '@/stores/notification'
 
@@ -14,6 +14,7 @@ const router = useRouter()
 
 const editConfig = ref('')
 const editTitle = ref('')
+const isValid = ref(false)
 
 const { mutate: createConfig, loading, onDone, error } = useMutation(CreateConfig, () => ({
   variables: {
@@ -39,6 +40,11 @@ const breadcrumbs = ref([
   }
 ])
 
+function handleIsValid(v: boolean) {
+  console.log('Config is valid:', v)
+  isValid.value = v
+}
+
 </script>
 
 <template>
@@ -48,6 +54,7 @@ const breadcrumbs = ref([
       <v-btn
         color="primary"
         :loading="loading"
+        :disabled="!isValid"
         @click="createConfig"
       >
         <template #prepend>
@@ -68,11 +75,23 @@ const breadcrumbs = ref([
       placeholder="Enter config layer"
       variant="outlined"
     />
-    <v-label class="mb-1 mt-5">
-      {{ t('fields.Config') }}
+    <v-label class="mb-1 mt-5 mr-5">
+      {{ t('fields.Content') }}
     </v-label>
-    <TomlEditor
+    <a
+      href="https://docs.curiostorage.org/configuration/default-curio-configuration"
+      target="_blank"
+      class="text-decoration-none"
+    >
+      <v-icon
+        :icon="IconSettingsCheck"
+        size="small"
+      />
+      Check the default configuration
+    </a>
+    <ConfigEditor
       v-model="editConfig"
+      @is-valid="handleIsValid"
     />
   </uiparentcard>
 </template>

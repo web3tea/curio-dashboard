@@ -53,7 +53,6 @@
     "System & Management": "System & Management",
     "Machine List": "Machine List",
     "Resource Usage": "Resource Usage",
-    "Curio Config": "Curio Config",
     "Dashboard": "Dashboard"
   },
   "fields": {
@@ -107,7 +106,6 @@
     "Deal Details": "Deal Details",
     "Create Configuration": "Create Configuration",
     "Layer": "Layer",
-    "Config": "Config",
     "Today": "Today",
     "Last 7 days": "Last 7 days",
     "Last 30 days": "Last 30 days",
@@ -117,7 +115,8 @@
     "Username": "Username",
     "Password": "Password",
     "Search": "Search",
-    "Task Duration Stats": "Task Duration Stats"
+    "Task Duration Stats": "Task Duration Stats",
+    "Content": "Content"
   },
   "msgs": {
     "weekBlock": "This Week Total Mined",

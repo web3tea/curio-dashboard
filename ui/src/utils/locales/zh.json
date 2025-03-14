@@ -53,7 +53,6 @@
     "System & Management": "系统 & 管理",
     "Machine List": "主机列表",
     "Resource Usage": "资源使用情况",
-    "Curio Config": "节点配置",
     "Dashboard": "仪表盘"
   },
   "fields": {
@@ -109,7 +108,6 @@
     "Password": "密码",
     "Create Configuration": "创建配置",
     "Layer": "层",
-    "Config": "配置",
     "Search": "搜索",
     "Deal Details": "订单详情",
     "Today": "今天",
@@ -117,7 +115,8 @@
     "Last 30 days": "过去30天",
     "Basic": "基本",
     "Data": "数据",
-    "Task Duration Stats": "任务耗时统计"
+    "Task Duration Stats": "任务耗时统计",
+    "Content": "内容"
   },
   "actions": {
     "Create": "创建",
