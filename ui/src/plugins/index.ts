@@ -9,7 +9,6 @@ import vuetify from './vuetify'
 import pinia from '../stores'
 import router from '../router'
 import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar'
-import Antd from 'ant-design-vue'
 import { vMaska } from 'maska/vue'
 
 // Types
@@ -26,7 +25,6 @@ export function registerPlugins (app: App) {
     .use(pinia)
     .use(i18n)
     .use(PerfectScrollbarPlugin)
-    .use(Antd)
     .use(VueApexCharts)
     .directive('maska', vMaska)
     .provide(DefaultApolloClient, apolloClient)
