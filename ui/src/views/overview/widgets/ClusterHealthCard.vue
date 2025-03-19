@@ -8,16 +8,10 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 withDefaults(defineProps<{
-  title?: string;
-  tooltip?: string;
   detailsLink?: string;
-  detailsText?: string;
   timeRange?: string;
 }>(), {
-  title: 'Cluster Health',
-  tooltip: 'Cluster health percentage calculated based on node online status',
   detailsLink: '#',
-  detailsText: 'View Details',
   timeRange: '24h',
 })
 
@@ -49,10 +43,10 @@ defineExpose({
 
 <template>
   <DashboardCard
-    :title="t('clusterHealth.title', title)"
-    :tooltip="t('clusterHealth.tooltip', tooltip)"
+    :title="t('clusterHealth.title')"
+    :tooltip="t('clusterHealth.tooltip')"
     :details-link="detailsLink"
-    :details-text="t('common.viewDetails', detailsText)"
+    :details-text="t('common.viewDetails')"
     :trend="item.trend"
     :trend-value="item.trendValue"
     @click="handleClick"
@@ -76,7 +70,7 @@ defineExpose({
             inline
           />
           <div class="text-caption text-grey">
-            {{ t('clusterHealth.onlineNodes', 'Online') }}
+            {{ t('clusterHealth.online') }}
           </div>
         </v-col>
         <v-col
@@ -88,7 +82,7 @@ defineExpose({
             inline
           />
           <div class="text-caption text-grey">
-            {{ t('clusterHealth.unscheduledNodes', 'Cordoned') }}
+            {{ t('clusterHealth.unscheduled') }}
           </div>
         </v-col>
         <v-col
@@ -101,7 +95,7 @@ defineExpose({
             inline
           />
           <div class="text-caption text-grey">
-            {{ t('clusterHealth.warningNodes', "Warning") }}
+            {{ t('clusterHealth.warning') }}
           </div>
         </v-col>
 
@@ -115,7 +109,7 @@ defineExpose({
             inline
           />
           <div class="text-caption text-grey">
-            {{ t('clusterHealth.offlineNodes', 'Offline') }}
+            {{ t('clusterHealth.offline') }}
           </div>
         </v-col>
       </v-row>
@@ -129,7 +123,7 @@ defineExpose({
         color="primary"
       />
       <div class="mt-2 text-caption">
-        {{ t('common.loading', 'Loading') }}
+        {{ t('common.loading') }}
       </div>
     </div>
   </dashboardcard>

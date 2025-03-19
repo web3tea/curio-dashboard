@@ -155,15 +155,15 @@
       "minute": "分钟 | 分钟",
       "second": "秒 | 秒"
     },
-    "viewDetails": "",
-    "loading": ""
+    "viewDetails": "查看详情",
+    "loading": "加载中"
   },
   "clusterHealth": {
-    "title": "",
-    "tooltip": "",
-    "onlineNodes": "",
-    "unscheduledNodes": "",
-    "warningNodes": "",
-    "offlineNodes": ""
+    "title": "集群健康度",
+    "tooltip": "基于节点在线状态计算的集群健康度百分比",
+    "online": "在线",
+    "unscheduled": "维护",
+    "warning": "告警",
+    "offline": "离线"
   }
 }

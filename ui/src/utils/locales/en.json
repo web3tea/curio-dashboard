@@ -155,15 +155,15 @@
       "minute": "minute | minutes",
       "second": "second | seconds"
     },
-    "viewDetails": "",
-    "loading": ""
+    "viewDetails": "View Details",
+    "loading": "Loading"
   },
   "clusterHealth": {
-    "title": "",
-    "tooltip": "",
-    "onlineNodes": "",
-    "unscheduledNodes": "",
-    "warningNodes": "",
-    "offlineNodes": ""
+    "title": "Cluster Health",
+    "tooltip": "Cluster health percentage calculated based on node online status",
+    "online": "Online",
+    "unscheduled": "Cordoned",
+    "warning": "Warning",
+    "offline": "Offline"
   }
 }

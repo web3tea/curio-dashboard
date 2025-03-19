@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { TrendType } from '@/typed-graph'
 import { Icon, IconArrowDown, IconArrowsExchange, IconArrowUp } from '@tabler/icons-vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(defineProps<{
   title: string;
@@ -18,6 +19,7 @@ const props = withDefaults(defineProps<{
   trendValue: undefined
 })
 
+const { t } = useI18n()
 const emit = defineEmits<(e: 'click', event: MouseEvent) => void>()
 
 const hover = ref<boolean>(false)
@@ -97,7 +99,7 @@ const trendColor = computed<string>(() => {
         color="primary"
         :to="detailsLink"
       >
-        {{ detailsText }}
+        {{ t('common.viewDetails', detailsText) }}
       </v-btn>
 
       <v-chip
