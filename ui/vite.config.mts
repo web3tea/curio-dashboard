@@ -26,12 +26,6 @@ export default defineConfig({
       },
     }),
     Fonts({
-      // google: {
-      //   families: [{
-      //     name: 'Roboto',
-      //     styles: 'wght@100;300;400;500;700;900',
-      //   }],
-      // },
     }),
     visualizer() as PluginOption,
   ],
@@ -44,13 +38,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
     extensions: [
+      '.ts',
+      '.vue',
       '.js',
       '.json',
       '.jsx',
       '.mjs',
-      '.ts',
       '.tsx',
-      '.vue',
     ],
   },
   server: {

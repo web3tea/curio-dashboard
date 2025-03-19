@@ -9,10 +9,18 @@ import StorageOverview from '@/views/widgets/statistics/StorageOverview.vue'
 import CompletedTaskOverviewChart from '@/views/widgets/chart/CompletedTaskOverviewChart.vue'
 import BlocksMined from '@/views/widgets/statistics/BlocksMined.vue'
 import RunningTasksCount from '@/views/widgets/statistics/RunningTasksCount.vue'
+import ClusterHealthCard from './widgets/ClusterHealthCard.vue'
 </script>
 
 <template>
   <v-row class="my-0">
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+    >
+      <ClusterHealthCard />
+    </v-col>
     <v-col
       cols="12"
       md="3"

@@ -269,6 +269,15 @@ type MiningTask struct {
 type Mutation struct {
 }
 
+type NodeHealthSummary struct {
+	OnlineNodes      int       `json:"onlineNodes"`
+	WarningNodes     int       `json:"warningNodes"`
+	UnscheduledNodes int       `json:"unscheduledNodes"`
+	OfflineNodes     int       `json:"offlineNodes"`
+	Trend            TrendType `json:"trend"`
+	TrendValue       string    `json:"trendValue"`
+}
+
 type NodeInfo struct {
 	ID        string   `json:"id"`
 	Address   string   `json:"address"`
@@ -660,5 +669,50 @@ func (e *TaskHistoriesAggregateInterval) UnmarshalGQL(v interface{}) error {
 }
 
 func (e TaskHistoriesAggregateInterval) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type TrendType string
+
+const (
+	TrendTypeUp      TrendType = "UP"
+	TrendTypeDown    TrendType = "DOWN"
+	TrendTypeWarning TrendType = "WARNING"
+	TrendTypeNormal  TrendType = "NORMAL"
+)
+
+var AllTrendType = []TrendType{
+	TrendTypeUp,
+	TrendTypeDown,
+	TrendTypeWarning,
+	TrendTypeNormal,
+}
+
+func (e TrendType) IsValid() bool {
+	switch e {
+	case TrendTypeUp, TrendTypeDown, TrendTypeWarning, TrendTypeNormal:
+		return true
+	}
+	return false
+}
+
+func (e TrendType) String() string {
+	return string(e)
+}
+
+func (e *TrendType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TrendType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TrendType", str)
+	}
+	return nil
+}
+
+func (e TrendType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

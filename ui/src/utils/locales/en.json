@@ -154,6 +154,16 @@
       "hour": "hour | hours",
       "minute": "minute | minutes",
       "second": "second | seconds"
-    }
+    },
+    "viewDetails": "",
+    "loading": ""
+  },
+  "clusterHealth": {
+    "title": "",
+    "tooltip": "",
+    "onlineNodes": "",
+    "unscheduledNodes": "",
+    "warningNodes": "",
+    "offlineNodes": ""
   }
 }

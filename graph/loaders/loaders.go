@@ -29,6 +29,7 @@ type Loader struct {
 	SectorLoader
 	StorageLoader
 	TaskLoader
+	NodeLoader
 }
 
 func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
@@ -48,6 +49,7 @@ func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
 	loader.SectorLoader = NewSectorLoader(loader)
 	loader.StorageLoader = NewStorageLoader(loader)
 	loader.TaskLoader = NewTaskLoader(loader)
+	loader.NodeLoader = NewNodeLoader(loader)
 
 	return loader
 }

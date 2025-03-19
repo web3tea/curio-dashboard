@@ -13,6 +13,7 @@ const config: CodegenConfig = {
       config: {
         apolloClientVersion: 3,
         useExplicitTyping: true,
+        enumsAsTypes: true
       },
     },
   },

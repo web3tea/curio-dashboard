@@ -392,10 +392,9 @@ export type MiningTask = {
   won: Scalars['Boolean']['output'];
 };
 
-export enum MiningTaskAggregateInterval {
-  Day = 'day',
-  Hour = 'hour'
-}
+export type MiningTaskAggregateInterval =
+  | 'day'
+  | 'hour';
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -518,6 +517,16 @@ export type MutationUpdateMarketMk12StorageAskArgs = {
   input: MarketMk12StorageAskInput;
 };
 
+export type NodeHealthSummary = {
+  __typename?: 'NodeHealthSummary';
+  offlineNodes: Scalars['Int']['output'];
+  onlineNodes: Scalars['Int']['output'];
+  trend: TrendType;
+  trendValue: Scalars['String']['output'];
+  unscheduledNodes: Scalars['Int']['output'];
+  warningNodes: Scalars['Int']['output'];
+};
+
 export type NodeInfo = {
   __typename?: 'NodeInfo';
   address: Scalars['String']['output'];
@@ -613,25 +622,24 @@ export type Porep = {
   userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
 };
 
-export enum PorepStatus {
-  Active = 'Active',
-  ClearCache = 'ClearCache',
-  CommitMsg = 'CommitMsg',
-  CommitMsgWait = 'CommitMsgWait',
-  Failed = 'Failed',
-  MoveStorage = 'MoveStorage',
-  OnChain = 'OnChain',
-  PoRep = 'PoRep',
-  PreCommitMsg = 'PreCommitMsg',
-  PreCommitMsgWait = 'PreCommitMsgWait',
-  Sdr = 'SDR',
-  Success = 'Success',
-  Synthetic = 'Synthetic',
-  TreeD = 'TreeD',
-  TreeRc = 'TreeRC',
-  Unknown = 'Unknown',
-  WaitSeed = 'WaitSeed'
-}
+export type PorepStatus =
+  | 'Active'
+  | 'ClearCache'
+  | 'CommitMsg'
+  | 'CommitMsgWait'
+  | 'Failed'
+  | 'MoveStorage'
+  | 'OnChain'
+  | 'PoRep'
+  | 'PreCommitMsg'
+  | 'PreCommitMsgWait'
+  | 'SDR'
+  | 'Success'
+  | 'Synthetic'
+  | 'TreeD'
+  | 'TreeRC'
+  | 'Unknown'
+  | 'WaitSeed';
 
 export type PowerClaim = {
   __typename?: 'PowerClaim';
@@ -701,6 +709,7 @@ export type Query = {
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   miningWins?: Maybe<Array<Maybe<MiningTask>>>;
   miningWinsCount: Scalars['Int']['output'];
+  nodeHealthSummary?: Maybe<NodeHealthSummary>;
   nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
   pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
   porep?: Maybe<Porep>;
@@ -1071,12 +1080,11 @@ export type StorageStats = {
   type: StorageType;
 };
 
-export enum StorageType {
-  Hybrid = 'Hybrid',
-  Readonly = 'Readonly',
-  Seal = 'Seal',
-  Store = 'Store'
-}
+export type StorageType =
+  | 'Hybrid'
+  | 'Readonly'
+  | 'Seal'
+  | 'Store';
 
 export type StorageUsage = {
   __typename?: 'StorageUsage';
@@ -1149,10 +1157,9 @@ export type TaskDurationStats = {
   totalTasks: Scalars['Int']['output'];
 };
 
-export enum TaskHistoriesAggregateInterval {
-  Day = 'day',
-  Hour = 'hour'
-}
+export type TaskHistoriesAggregateInterval =
+  | 'day'
+  | 'hour';
 
 export type TaskHistory = {
   __typename?: 'TaskHistory';
@@ -1199,6 +1206,12 @@ export type TaskSummaryDay = {
   totalCount: Scalars['Int']['output'];
   trueCount: Scalars['Int']['output'];
 };
+
+export type TrendType =
+  | 'DOWN'
+  | 'NORMAL'
+  | 'UP'
+  | 'WARNING';
 
 export type WalletBalance = {
   __typename?: 'WalletBalance';

@@ -392,6 +392,15 @@ type ComplexityRoot struct {
 		UpdateMarketMk12StorageAsk func(childComplexity int, input model.MarketMk12StorageAskInput) int
 	}
 
+	NodeHealthSummary struct {
+		OfflineNodes     func(childComplexity int) int
+		OnlineNodes      func(childComplexity int) int
+		Trend            func(childComplexity int) int
+		TrendValue       func(childComplexity int) int
+		UnscheduledNodes func(childComplexity int) int
+		WarningNodes     func(childComplexity int) int
+	}
+
 	NodeInfo struct {
 		Address   func(childComplexity int) int
 		ID        func(childComplexity int) int
@@ -538,6 +547,7 @@ type ComplexityRoot struct {
 		MiningSummaryByDay         func(childComplexity int, start time.Time, end time.Time) int
 		MiningWins                 func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) int
 		MiningWinsCount            func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool) int
+		NodeHealthSummary          func(childComplexity int) int
 		NodesInfo                  func(childComplexity int) int
 		PipelinesSummary           func(childComplexity int) int
 		Porep                      func(childComplexity int, sp types.Address, sectorNumber int) int
@@ -910,6 +920,7 @@ type QueryResolver interface {
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
+	NodeHealthSummary(ctx context.Context) (*model.NodeHealthSummary, error)
 	TaskDurationStats(ctx context.Context, name string, start time.Time, end time.Time) (*model.TaskDurationStats, error)
 	TasksDurationStats(ctx context.Context, start time.Time, end time.Time) ([]*model.TaskDurationStats, error)
 }
@@ -2722,6 +2733,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateMarketMk12StorageAsk(childComplexity, args["input"].(model.MarketMk12StorageAskInput)), true
 
+	case "NodeHealthSummary.offlineNodes":
+		if e.complexity.NodeHealthSummary.OfflineNodes == nil {
+			break
+		}
+
+		return e.complexity.NodeHealthSummary.OfflineNodes(childComplexity), true
+
+	case "NodeHealthSummary.onlineNodes":
+		if e.complexity.NodeHealthSummary.OnlineNodes == nil {
+			break
+		}
+
+		return e.complexity.NodeHealthSummary.OnlineNodes(childComplexity), true
+
+	case "NodeHealthSummary.trend":
+		if e.complexity.NodeHealthSummary.Trend == nil {
+			break
+		}
+
+		return e.complexity.NodeHealthSummary.Trend(childComplexity), true
+
+	case "NodeHealthSummary.trendValue":
+		if e.complexity.NodeHealthSummary.TrendValue == nil {
+			break
+		}
+
+		return e.complexity.NodeHealthSummary.TrendValue(childComplexity), true
+
+	case "NodeHealthSummary.unscheduledNodes":
+		if e.complexity.NodeHealthSummary.UnscheduledNodes == nil {
+			break
+		}
+
+		return e.complexity.NodeHealthSummary.UnscheduledNodes(childComplexity), true
+
+	case "NodeHealthSummary.warningNodes":
+		if e.complexity.NodeHealthSummary.WarningNodes == nil {
+			break
+		}
+
+		return e.complexity.NodeHealthSummary.WarningNodes(childComplexity), true
+
 	case "NodeInfo.address":
 		if e.complexity.NodeInfo.Address == nil {
 			break
@@ -3735,6 +3788,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.MiningWinsCount(childComplexity, args["start"].(*time.Time), args["end"].(*time.Time), args["actor"].(*types.Address), args["include"].(*bool)), true
+
+	case "Query.nodeHealthSummary":
+		if e.complexity.Query.NodeHealthSummary == nil {
+			break
+		}
+
+		return e.complexity.Query.NodeHealthSummary(childComplexity), true
 
 	case "Query.nodesInfo":
 		if e.complexity.Query.NodesInfo == nil {
@@ -19451,6 +19511,270 @@ func (ec *executionContext) fieldContext_Mutation_marketToggleAllowFilter(ctx co
 	return fc, nil
 }
 
+func (ec *executionContext) _NodeHealthSummary_onlineNodes(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeHealthSummary_onlineNodes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OnlineNodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NodeHealthSummary_onlineNodes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NodeHealthSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NodeHealthSummary_warningNodes(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeHealthSummary_warningNodes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.WarningNodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NodeHealthSummary_warningNodes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NodeHealthSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NodeHealthSummary_unscheduledNodes(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeHealthSummary_unscheduledNodes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UnscheduledNodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NodeHealthSummary_unscheduledNodes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NodeHealthSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NodeHealthSummary_offlineNodes(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeHealthSummary_offlineNodes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OfflineNodes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NodeHealthSummary_offlineNodes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NodeHealthSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NodeHealthSummary_trend(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeHealthSummary_trend(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Trend, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.TrendType)
+	fc.Result = res
+	return ec.marshalNTrendType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTrendType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NodeHealthSummary_trend(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NodeHealthSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type TrendType does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _NodeHealthSummary_trendValue(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_NodeHealthSummary_trendValue(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TrendValue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_NodeHealthSummary_trendValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "NodeHealthSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _NodeInfo_id(ctx context.Context, field graphql.CollectedField, obj *model.NodeInfo) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_NodeInfo_id(ctx, field)
 	if err != nil {
@@ -26984,6 +27308,61 @@ func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, 
 	if fc.Args, err = ec.field_Query_messageSend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_nodeHealthSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_nodeHealthSummary(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().NodeHealthSummary(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.NodeHealthSummary)
+	fc.Result = res
+	return ec.marshalONodeHealthSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_nodeHealthSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "onlineNodes":
+				return ec.fieldContext_NodeHealthSummary_onlineNodes(ctx, field)
+			case "warningNodes":
+				return ec.fieldContext_NodeHealthSummary_warningNodes(ctx, field)
+			case "unscheduledNodes":
+				return ec.fieldContext_NodeHealthSummary_unscheduledNodes(ctx, field)
+			case "offlineNodes":
+				return ec.fieldContext_NodeHealthSummary_offlineNodes(ctx, field)
+			case "trend":
+				return ec.fieldContext_NodeHealthSummary_trend(ctx, field)
+			case "trendValue":
+				return ec.fieldContext_NodeHealthSummary_trendValue(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type NodeHealthSummary", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -39362,6 +39741,70 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	return out
 }
 
+var nodeHealthSummaryImplementors = []string{"NodeHealthSummary"}
+
+func (ec *executionContext) _NodeHealthSummary(ctx context.Context, sel ast.SelectionSet, obj *model.NodeHealthSummary) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, nodeHealthSummaryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("NodeHealthSummary")
+		case "onlineNodes":
+			out.Values[i] = ec._NodeHealthSummary_onlineNodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "warningNodes":
+			out.Values[i] = ec._NodeHealthSummary_warningNodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "unscheduledNodes":
+			out.Values[i] = ec._NodeHealthSummary_unscheduledNodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "offlineNodes":
+			out.Values[i] = ec._NodeHealthSummary_offlineNodes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "trend":
+			out.Values[i] = ec._NodeHealthSummary_trend(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "trendValue":
+			out.Values[i] = ec._NodeHealthSummary_trendValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var nodeInfoImplementors = []string{"NodeInfo"}
 
 func (ec *executionContext) _NodeInfo(ctx context.Context, sel ast.SelectionSet, obj *model.NodeInfo) graphql.Marshaler {
@@ -41377,6 +41820,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_messageSend(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "nodeHealthSummary":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_nodeHealthSummary(ctx, field)
 				return res
 			}
 
@@ -44826,6 +45288,16 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) unmarshalNTrendType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTrendType(ctx context.Context, v interface{}) (model.TrendType, error) {
+	var res model.TrendType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTrendType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTrendType(ctx context.Context, sel ast.SelectionSet, v model.TrendType) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNUint642uint64(ctx context.Context, v interface{}) (uint64, error) {
 	res, err := graphql.UnmarshalUint64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46090,6 +46562,13 @@ func (ec *executionContext) marshalOMiningTask2ᚖgithubᚗcomᚋstraheᚋcurio�
 		return graphql.Null
 	}
 	return ec._MiningTask(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalONodeHealthSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx context.Context, sel ast.SelectionSet, v *model.NodeHealthSummary) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._NodeHealthSummary(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalONodeInfo2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx context.Context, sel ast.SelectionSet, v []*model.NodeInfo) graphql.Marshaler {
