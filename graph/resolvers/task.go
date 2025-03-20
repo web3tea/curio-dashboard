@@ -6,10 +6,18 @@ package resolvers
 
 import (
 	"context"
+	"time"
 
 	"github.com/strahe/curio-dashboard/graph"
+	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
 )
+
+// TaskSuccessRate is the resolver for the taskSuccessRate field.
+func (r *queryResolver) TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
+	return r.loader.TaskSuccessRate(ctx, name, start, end)
+}
 
 // InitiatedBy is the resolver for the initiatedBy field.
 func (r *taskResolver) InitiatedBy(ctx context.Context, obj *model.Task) (*model.Machine, error) {
@@ -30,14 +38,14 @@ func (r *taskResolver) Owner(ctx context.Context, obj *model.Task) (*model.Machi
 		return nil, nil
 	}
 	var out model.Machine
-	if err := r.db.QueryRow(ctx, `SELECT 
+	if err := r.db.QueryRow(ctx, `SELECT
     id,
     last_contact,
     host_and_port,
     cpu,
     gpu,
-    ram 
-FROM harmony_machines 
+    ram
+FROM harmony_machines
 WHERE id = $1`, obj.OwnerID).
 		Scan(&out.ID, &out.LastContact, &out.HostAndPort, &out.CPU, &out.Gpu, &out.RAM); err != nil {
 		return nil, err
@@ -48,14 +56,14 @@ WHERE id = $1`, obj.OwnerID).
 // AddedBy is the resolver for the addedBy field.
 func (r *taskResolver) AddedBy(ctx context.Context, obj *model.Task) (*model.Machine, error) {
 	var out model.Machine
-	if err := r.db.QueryRow(ctx, `SELECT 
+	if err := r.db.QueryRow(ctx, `SELECT
     id,
     last_contact,
     host_and_port,
     cpu,
     gpu,
-    ram 
-FROM harmony_machines 
+    ram
+FROM harmony_machines
 WHERE id = $1`, obj.AddedByID).
 		Scan(&out.ID, &out.LastContact, &out.HostAndPort, &out.CPU, &out.Gpu, &out.RAM); err != nil {
 		return nil, err

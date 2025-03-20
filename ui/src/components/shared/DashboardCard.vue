@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { TrendType } from '@/typed-graph'
-import { Icon, IconArrowDown, IconArrowsExchange, IconArrowUp } from '@tabler/icons-vue'
+import { Icon, IconAlertTriangle, IconArrowDown, IconArrowsExchange, IconArrowUp, IconCircleCheck, IconInfoCircle } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(defineProps<{
@@ -36,7 +36,9 @@ const trendIcon = computed<Icon>(() => {
   case "DOWN":
     return IconArrowDown
   case "WARNING":
-    return IconArrowsExchange
+    return IconAlertTriangle
+  case "GOOD":
+    return IconCircleCheck
   default:
     return IconArrowsExchange
   }
@@ -50,6 +52,8 @@ const trendColor = computed<string>(() => {
     return 'error'
   case "WARNING":
     return 'warning'
+  case "GOOD":
+    return 'success'
   default:
     return 'grey'
   }
@@ -73,13 +77,10 @@ const trendColor = computed<string>(() => {
           location="top"
         >
           <template #activator="{ props:pp }">
-            <v-icon
+            <IconInfoCircle
               v-bind="pp"
-              size="small"
-              color="grey"
-            >
-              mdi-information-outline
-            </v-icon>
+              size="16"
+            />
           </template>
           <span>{{ tooltip }}</span>
         </v-tooltip>
@@ -101,9 +102,8 @@ const trendColor = computed<string>(() => {
       >
         {{ t('common.viewDetails', detailsText) }}
       </v-btn>
-
       <v-chip
-        v-if="trendValue"
+        v-if="trendValue !== undefined"
         :color="trendColor"
         size="small"
         class="ml-2"
@@ -115,6 +115,12 @@ const trendColor = computed<string>(() => {
         />
         {{ trendValue }}
       </v-chip>
+      <v-icon
+        v-else
+        size="small"
+        :color="trendColor"
+        :icon="trendIcon"
+      />
     </v-card-actions>
   </v-card>
 </template>
@@ -125,5 +131,12 @@ const trendColor = computed<string>(() => {
 }
 .dashboard-card.on-hover {
   transform: translateY(-5px);
+}
+
+.dashboard-card .v-card-text {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

@@ -156,14 +156,24 @@
       "second": "秒 | 秒"
     },
     "viewDetails": "查看详情",
-    "loading": "加载中"
+    "loading": "加载中",
+    "stable": "稳定"
   },
   "clusterHealth": {
     "title": "集群健康度",
     "tooltip": "基于节点在线状态计算的集群健康度百分比",
     "online": "在线",
     "unscheduled": "维护",
-    "warning": "告警",
     "offline": "离线"
+  },
+  "taskSuccessRate": {
+    "title": "任务成功率",
+    "tooltip": "最近24小时内任务执行的成功比率",
+    "success": "成功",
+    "failed": "失败"
+  },
+  "storageUsedCard": {
+    "title": "存储空间",
+    "tooltip": "当前持久存储的空间使用情况"
   }
 }

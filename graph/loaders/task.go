@@ -2,6 +2,7 @@ package loaders
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/strahe/curio-dashboard/graph/model"
@@ -20,6 +21,7 @@ type TaskLoader interface {
 	TasksStats(ctx context.Context, start, end time.Time, machine *string) ([]*model.TaskStats, error)
 	TaskDurationStats(ctx context.Context, name string, start, end time.Time) (*model.TaskDurationStats, error)
 	TasksDurationStats(ctx context.Context, start, end time.Time) ([]*model.TaskDurationStats, error)
+	TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error)
 }
 
 type TaskLoaderImpl struct {
@@ -412,4 +414,35 @@ ORDER BY
 		return nil, err
 	}
 	return stats, nil
+}
+
+func (l *TaskLoaderImpl) TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error) {
+	query := `
+        SELECT
+            COUNT(*) as total_count,
+            SUM(CASE WHEN result = true THEN 1 ELSE 0 END) as success_count
+        FROM curio.harmony_task_history
+        WHERE work_end >= $1
+          AND work_end <= $2
+          AND ($3::varchar IS NULL OR name = $3)
+    `
+	var totalCount int
+	var successCount int
+
+	err := l.loader.db.QueryRow(ctx, query, start, end, name).Scan(&totalCount, &successCount)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query task success rate: %w", err)
+	}
+
+	var successRate float64
+	if totalCount > 0 {
+		successRate = float64(successCount) / float64(totalCount) * 100.0
+	} else {
+		successRate = 0
+	}
+	return &model.TaskSuccessRate{
+		Total:       totalCount,
+		Success:     successCount,
+		SuccessRate: successRate,
+	}, nil
 }

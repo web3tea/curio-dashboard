@@ -521,10 +521,7 @@ export type NodeHealthSummary = {
   __typename?: 'NodeHealthSummary';
   offlineNodes: Scalars['Int']['output'];
   onlineNodes: Scalars['Int']['output'];
-  trend: TrendType;
-  trendValue: Scalars['String']['output'];
   unscheduledNodes: Scalars['Int']['output'];
-  warningNodes: Scalars['Int']['output'];
 };
 
 export type NodeInfo = {
@@ -726,6 +723,7 @@ export type Query = {
   taskHistoriesAggregate?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistoriesCount: Scalars['Int']['output'];
   taskNames?: Maybe<Array<Scalars['String']['output']>>;
+  taskSuccessRate?: Maybe<TaskSuccessRate>;
   tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
   tasksDurationStats: Array<TaskDurationStats>;
@@ -948,6 +946,13 @@ export type QueryTaskHistoriesCountArgs = {
   name?: InputMaybe<Scalars['String']['input']>;
   result?: InputMaybe<Scalars['Boolean']['input']>;
   start?: InputMaybe<Scalars['Time']['input']>;
+};
+
+
+export type QueryTaskSuccessRateArgs = {
+  end: Scalars['Time']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  start: Scalars['Time']['input'];
 };
 
 
@@ -1191,6 +1196,14 @@ export type TaskStats = {
   total: Scalars['Int']['output'];
 };
 
+export type TaskSuccessRate = {
+  __typename?: 'TaskSuccessRate';
+  failure: Scalars['Int']['output'];
+  success: Scalars['Int']['output'];
+  successRate: Scalars['Float']['output'];
+  total: Scalars['Int']['output'];
+};
+
 export type TaskSummary = {
   __typename?: 'TaskSummary';
   falseCount: Scalars['Int']['output'];
@@ -1209,6 +1222,7 @@ export type TaskSummaryDay = {
 
 export type TrendType =
   | 'DOWN'
+  | 'GOOD'
   | 'NORMAL'
   | 'UP'
   | 'WARNING';

@@ -7,21 +7,10 @@ type NodeInfo {
     version: String!
 }
 
-# 'up' | 'down' | 'warning' | 'normal'
-enum TrendType {
-    UP
-    DOWN
-    WARNING
-    NORMAL
-}
-
 type NodeHealthSummary {
     onlineNodes: Int!
-    warningNodes: Int!
     unscheduledNodes: Int!
     offlineNodes: Int!
-    trend: TrendType!
-    trendValue: String!
 }
 
 extend type Query {

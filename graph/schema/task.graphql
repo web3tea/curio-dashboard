@@ -13,3 +13,14 @@ type Task {
     name: String!
     histories: [TaskHistory]
 }
+
+type TaskSuccessRate {
+    total: Int!
+    success: Int!
+    failure: Int!
+    successRate: Float!
+}
+
+extend type Query {
+    taskSuccessRate(name: String, start: Time!, end: Time!): TaskSuccessRate
+}

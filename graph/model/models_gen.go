@@ -270,12 +270,9 @@ type Mutation struct {
 }
 
 type NodeHealthSummary struct {
-	OnlineNodes      int       `json:"onlineNodes"`
-	WarningNodes     int       `json:"warningNodes"`
-	UnscheduledNodes int       `json:"unscheduledNodes"`
-	OfflineNodes     int       `json:"offlineNodes"`
-	Trend            TrendType `json:"trend"`
-	TrendValue       string    `json:"trendValue"`
+	OnlineNodes      int `json:"onlineNodes"`
+	UnscheduledNodes int `json:"unscheduledNodes"`
+	OfflineNodes     int `json:"offlineNodes"`
 }
 
 type NodeInfo struct {
@@ -453,6 +450,13 @@ type TaskStats struct {
 	Total   int    `json:"total"`
 	Success int    `json:"success"`
 	Failure int    `json:"failure"`
+}
+
+type TaskSuccessRate struct {
+	Total       int     `json:"total"`
+	Success     int     `json:"success"`
+	Failure     int     `json:"failure"`
+	SuccessRate float64 `json:"successRate"`
 }
 
 type TaskSummary struct {
@@ -679,6 +683,7 @@ const (
 	TrendTypeDown    TrendType = "DOWN"
 	TrendTypeWarning TrendType = "WARNING"
 	TrendTypeNormal  TrendType = "NORMAL"
+	TrendTypeGood    TrendType = "GOOD"
 )
 
 var AllTrendType = []TrendType{
@@ -686,11 +691,12 @@ var AllTrendType = []TrendType{
 	TrendTypeDown,
 	TrendTypeWarning,
 	TrendTypeNormal,
+	TrendTypeGood,
 }
 
 func (e TrendType) IsValid() bool {
 	switch e {
-	case TrendTypeUp, TrendTypeDown, TrendTypeWarning, TrendTypeNormal:
+	case TrendTypeUp, TrendTypeDown, TrendTypeWarning, TrendTypeNormal, TrendTypeGood:
 		return true
 	}
 	return false

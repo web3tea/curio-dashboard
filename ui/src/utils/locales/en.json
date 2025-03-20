@@ -156,14 +156,24 @@
       "second": "second | seconds"
     },
     "viewDetails": "View Details",
-    "loading": "Loading"
+    "loading": "Loading",
+    "stable": "Stable"
   },
   "clusterHealth": {
     "title": "Cluster Health",
     "tooltip": "Cluster health percentage calculated based on node online status",
     "online": "Online",
     "unscheduled": "Cordoned",
-    "warning": "Warning",
     "offline": "Offline"
+  },
+  "taskSuccessRate": {
+    "title": "Task Success Rate",
+    "tooltip": "Recent 24-hour task execution success rate",
+    "success": "Success",
+    "failed": "Failed"
+  },
+  "storageUsedCard": {
+    "title": "Storage Used",
+    "tooltip": "Current long-term storage space usage status"
   }
 }

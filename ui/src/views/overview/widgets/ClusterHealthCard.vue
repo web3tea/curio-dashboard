@@ -19,11 +19,8 @@ const { result, loading, refetch } = useQuery(gql`
   query NodeHealth {
     nodeHealthSummary {
       onlineNodes
-      warningNodes
       unscheduledNodes
       offlineNodes
-      trend
-      trendValue
     }
   }
   `, null, {})
@@ -47,8 +44,8 @@ defineExpose({
     :tooltip="t('clusterHealth.tooltip')"
     :details-link="detailsLink"
     :details-text="t('common.viewDetails')"
-    :trend="item.trend"
-    :trend-value="item.trendValue"
+    trend="NORMAL"
+    :trend-value="t('common.stable')"
     @click="handleClick"
   >
     <div
@@ -56,12 +53,12 @@ defineExpose({
       class="text-center"
     >
       <div class="text-h2 font-weight-bold">
-        {{ item.onlineNodes / (item.onlineNodes + item.warningNodes + item.unscheduledNodes + item.offlineNodes) * 100 }}%
+        {{ item.onlineNodes / (item.onlineNodes + item.unscheduledNodes + item.offlineNodes) * 100 }}%
       </div>
 
       <v-row class="mt-4">
         <v-col
-          cols="3"
+          cols="4"
           class="text-center"
         >
           <v-badge
@@ -74,7 +71,7 @@ defineExpose({
           </div>
         </v-col>
         <v-col
-          cols="3"
+          cols="4"
           class="text-center"
         >
           <v-badge
@@ -86,21 +83,7 @@ defineExpose({
           </div>
         </v-col>
         <v-col
-          cols="3"
-          class="text-center"
-        >
-          <v-badge
-            :content="item.warningNodes.toString()"
-            color="warning"
-            inline
-          />
-          <div class="text-caption text-grey">
-            {{ t('clusterHealth.warning') }}
-          </div>
-        </v-col>
-
-        <v-col
-          cols="3"
+          cols="4"
           class="text-center"
         >
           <v-badge

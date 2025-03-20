@@ -10,6 +10,8 @@ import CompletedTaskOverviewChart from '@/views/widgets/chart/CompletedTaskOverv
 import BlocksMined from '@/views/widgets/statistics/BlocksMined.vue'
 import RunningTasksCount from '@/views/widgets/statistics/RunningTasksCount.vue'
 import ClusterHealthCard from './widgets/ClusterHealthCard.vue'
+import TaskSuccessRateCard from './widgets/TaskSuccessRateCard.vue'
+import StorageUsedCard from './widgets/StorageUsedCard.vue'
 </script>
 
 <template>
@@ -20,6 +22,20 @@ import ClusterHealthCard from './widgets/ClusterHealthCard.vue'
       sm="6"
     >
       <ClusterHealthCard />
+    </v-col>
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+    >
+      <TaskSuccessRateCard />
+    </v-col>
+    <v-col
+      cols="12"
+      md="3"
+      sm="6"
+    >
+      <StorageUsedCard />
     </v-col>
     <v-col
       cols="12"

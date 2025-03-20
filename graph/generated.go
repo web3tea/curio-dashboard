@@ -395,10 +395,7 @@ type ComplexityRoot struct {
 	NodeHealthSummary struct {
 		OfflineNodes     func(childComplexity int) int
 		OnlineNodes      func(childComplexity int) int
-		Trend            func(childComplexity int) int
-		TrendValue       func(childComplexity int) int
 		UnscheduledNodes func(childComplexity int) int
-		WarningNodes     func(childComplexity int) int
 	}
 
 	NodeInfo struct {
@@ -564,6 +561,7 @@ type ComplexityRoot struct {
 		TaskHistoriesAggregate     func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
 		TaskHistoriesCount         func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) int
 		TaskNames                  func(childComplexity int) int
+		TaskSuccessRate            func(childComplexity int, name *string, start time.Time, end time.Time) int
 		Tasks                      func(childComplexity int) int
 		TasksCount                 func(childComplexity int) int
 		TasksDurationStats         func(childComplexity int, start time.Time, end time.Time) int
@@ -755,6 +753,13 @@ type ComplexityRoot struct {
 		Total   func(childComplexity int) int
 	}
 
+	TaskSuccessRate struct {
+		Failure     func(childComplexity int) int
+		Success     func(childComplexity int) int
+		SuccessRate func(childComplexity int) int
+		Total       func(childComplexity int) int
+	}
+
 	TaskSummary struct {
 		FalseCount func(childComplexity int) int
 		Name       func(childComplexity int) int
@@ -921,6 +926,7 @@ type QueryResolver interface {
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
 	NodeHealthSummary(ctx context.Context) (*model.NodeHealthSummary, error)
+	TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error)
 	TaskDurationStats(ctx context.Context, name string, start time.Time, end time.Time) (*model.TaskDurationStats, error)
 	TasksDurationStats(ctx context.Context, start time.Time, end time.Time) ([]*model.TaskDurationStats, error)
 }
@@ -2747,33 +2753,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.NodeHealthSummary.OnlineNodes(childComplexity), true
 
-	case "NodeHealthSummary.trend":
-		if e.complexity.NodeHealthSummary.Trend == nil {
-			break
-		}
-
-		return e.complexity.NodeHealthSummary.Trend(childComplexity), true
-
-	case "NodeHealthSummary.trendValue":
-		if e.complexity.NodeHealthSummary.TrendValue == nil {
-			break
-		}
-
-		return e.complexity.NodeHealthSummary.TrendValue(childComplexity), true
-
 	case "NodeHealthSummary.unscheduledNodes":
 		if e.complexity.NodeHealthSummary.UnscheduledNodes == nil {
 			break
 		}
 
 		return e.complexity.NodeHealthSummary.UnscheduledNodes(childComplexity), true
-
-	case "NodeHealthSummary.warningNodes":
-		if e.complexity.NodeHealthSummary.WarningNodes == nil {
-			break
-		}
-
-		return e.complexity.NodeHealthSummary.WarningNodes(childComplexity), true
 
 	case "NodeInfo.address":
 		if e.complexity.NodeInfo.Address == nil {
@@ -3958,6 +3943,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.TaskNames(childComplexity), true
 
+	case "Query.taskSuccessRate":
+		if e.complexity.Query.TaskSuccessRate == nil {
+			break
+		}
+
+		args, err := ec.field_Query_taskSuccessRate_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TaskSuccessRate(childComplexity, args["name"].(*string), args["start"].(time.Time), args["end"].(time.Time)), true
+
 	case "Query.tasks":
 		if e.complexity.Query.Tasks == nil {
 			break
@@ -4970,6 +4967,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TaskStats.Total(childComplexity), true
 
+	case "TaskSuccessRate.failure":
+		if e.complexity.TaskSuccessRate.Failure == nil {
+			break
+		}
+
+		return e.complexity.TaskSuccessRate.Failure(childComplexity), true
+
+	case "TaskSuccessRate.success":
+		if e.complexity.TaskSuccessRate.Success == nil {
+			break
+		}
+
+		return e.complexity.TaskSuccessRate.Success(childComplexity), true
+
+	case "TaskSuccessRate.successRate":
+		if e.complexity.TaskSuccessRate.SuccessRate == nil {
+			break
+		}
+
+		return e.complexity.TaskSuccessRate.SuccessRate(childComplexity), true
+
+	case "TaskSuccessRate.total":
+		if e.complexity.TaskSuccessRate.Total == nil {
+			break
+		}
+
+		return e.complexity.TaskSuccessRate.Total(childComplexity), true
+
 	case "TaskSummary.falseCount":
 		if e.complexity.TaskSummary.FalseCount == nil {
 			break
@@ -5165,7 +5190,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_balance.graphql" "schema/market_deal.graphql" "schema/market_setting.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql"
+//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_balance.graphql" "schema/market_deal.graphql" "schema/market_setting.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql" "schema/trend_type.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -5206,6 +5231,7 @@ var sources = []*ast.Source{
 	{Name: "schema/task_aggregate.graphql", Input: sourceData("schema/task_aggregate.graphql"), BuiltIn: false},
 	{Name: "schema/task_history.graphql", Input: sourceData("schema/task_history.graphql"), BuiltIn: false},
 	{Name: "schema/task_summary.graphql", Input: sourceData("schema/task_summary.graphql"), BuiltIn: false},
+	{Name: "schema/trend_type.graphql", Input: sourceData("schema/trend_type.graphql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -8315,6 +8341,92 @@ func (ec *executionContext) field_Query_taskHistories_argsLimit(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskSuccessRate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	arg0, err := ec.field_Query_taskSuccessRate_argsName(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["name"] = arg0
+	arg1, err := ec.field_Query_taskSuccessRate_argsStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["start"] = arg1
+	arg2, err := ec.field_Query_taskSuccessRate_argsEnd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["end"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_taskSuccessRate_argsName(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (*string, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["name"]
+	if !ok {
+		var zeroVal *string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+	if tmp, ok := rawArgs["name"]; ok {
+		return ec.unmarshalOString2ᚖstring(ctx, tmp)
+	}
+
+	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskSuccessRate_argsStart(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["start"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_taskSuccessRate_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]interface{},
+) (time.Time, error) {
+	// We won't call the directive if the argument is null.
+	// Set call_argument_directives_with_null to true to call directives
+	// even if the argument is null.
+	_, ok := rawArgs["end"]
+	if !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
 	return zeroVal, nil
 }
 
@@ -19555,50 +19667,6 @@ func (ec *executionContext) fieldContext_NodeHealthSummary_onlineNodes(_ context
 	return fc, nil
 }
 
-func (ec *executionContext) _NodeHealthSummary_warningNodes(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeHealthSummary_warningNodes(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.WarningNodes, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_NodeHealthSummary_warningNodes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NodeHealthSummary",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _NodeHealthSummary_unscheduledNodes(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_NodeHealthSummary_unscheduledNodes(ctx, field)
 	if err != nil {
@@ -19682,94 +19750,6 @@ func (ec *executionContext) fieldContext_NodeHealthSummary_offlineNodes(_ contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _NodeHealthSummary_trend(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeHealthSummary_trend(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Trend, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(model.TrendType)
-	fc.Result = res
-	return ec.marshalNTrendType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTrendType(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_NodeHealthSummary_trend(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NodeHealthSummary",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type TrendType does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _NodeHealthSummary_trendValue(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_NodeHealthSummary_trendValue(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TrendValue, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_NodeHealthSummary_trendValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "NodeHealthSummary",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -27350,19 +27330,75 @@ func (ec *executionContext) fieldContext_Query_nodeHealthSummary(_ context.Conte
 			switch field.Name {
 			case "onlineNodes":
 				return ec.fieldContext_NodeHealthSummary_onlineNodes(ctx, field)
-			case "warningNodes":
-				return ec.fieldContext_NodeHealthSummary_warningNodes(ctx, field)
 			case "unscheduledNodes":
 				return ec.fieldContext_NodeHealthSummary_unscheduledNodes(ctx, field)
 			case "offlineNodes":
 				return ec.fieldContext_NodeHealthSummary_offlineNodes(ctx, field)
-			case "trend":
-				return ec.fieldContext_NodeHealthSummary_trend(ctx, field)
-			case "trendValue":
-				return ec.fieldContext_NodeHealthSummary_trendValue(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type NodeHealthSummary", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_taskSuccessRate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskSuccessRate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TaskSuccessRate(rctx, fc.Args["name"].(*string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.TaskSuccessRate)
+	fc.Result = res
+	return ec.marshalOTaskSuccessRate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskSuccessRate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_taskSuccessRate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "total":
+				return ec.fieldContext_TaskSuccessRate_total(ctx, field)
+			case "success":
+				return ec.fieldContext_TaskSuccessRate_success(ctx, field)
+			case "failure":
+				return ec.fieldContext_TaskSuccessRate_failure(ctx, field)
+			case "successRate":
+				return ec.fieldContext_TaskSuccessRate_successRate(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TaskSuccessRate", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_taskSuccessRate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -34122,6 +34158,182 @@ func (ec *executionContext) fieldContext_TaskStats_failure(_ context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _TaskSuccessRate_total(ctx context.Context, field graphql.CollectedField, obj *model.TaskSuccessRate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskSuccessRate_total(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Total, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskSuccessRate_total(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskSuccessRate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskSuccessRate_success(ctx context.Context, field graphql.CollectedField, obj *model.TaskSuccessRate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskSuccessRate_success(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Success, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskSuccessRate_success(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskSuccessRate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskSuccessRate_failure(ctx context.Context, field graphql.CollectedField, obj *model.TaskSuccessRate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskSuccessRate_failure(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Failure, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskSuccessRate_failure(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskSuccessRate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskSuccessRate_successRate(ctx context.Context, field graphql.CollectedField, obj *model.TaskSuccessRate) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskSuccessRate_successRate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SuccessRate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskSuccessRate_successRate(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskSuccessRate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _TaskSummary_name(ctx context.Context, field graphql.CollectedField, obj *model.TaskSummary) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_TaskSummary_name(ctx, field)
 	if err != nil {
@@ -39757,11 +39969,6 @@ func (ec *executionContext) _NodeHealthSummary(ctx context.Context, sel ast.Sele
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "warningNodes":
-			out.Values[i] = ec._NodeHealthSummary_warningNodes(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "unscheduledNodes":
 			out.Values[i] = ec._NodeHealthSummary_unscheduledNodes(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -39769,16 +39976,6 @@ func (ec *executionContext) _NodeHealthSummary(ctx context.Context, sel ast.Sele
 			}
 		case "offlineNodes":
 			out.Values[i] = ec._NodeHealthSummary_offlineNodes(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "trend":
-			out.Values[i] = ec._NodeHealthSummary_trend(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "trendValue":
-			out.Values[i] = ec._NodeHealthSummary_trendValue(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -41848,6 +42045,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "taskSuccessRate":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_taskSuccessRate(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "taskDurationStats":
 			field := field
 
@@ -43878,6 +44094,60 @@ func (ec *executionContext) _TaskStats(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
+var taskSuccessRateImplementors = []string{"TaskSuccessRate"}
+
+func (ec *executionContext) _TaskSuccessRate(ctx context.Context, sel ast.SelectionSet, obj *model.TaskSuccessRate) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, taskSuccessRateImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TaskSuccessRate")
+		case "total":
+			out.Values[i] = ec._TaskSuccessRate_total(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "success":
+			out.Values[i] = ec._TaskSuccessRate_success(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "failure":
+			out.Values[i] = ec._TaskSuccessRate_failure(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "successRate":
+			out.Values[i] = ec._TaskSuccessRate_successRate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var taskSummaryImplementors = []string{"TaskSummary"}
 
 func (ec *executionContext) _TaskSummary(ctx context.Context, sel ast.SelectionSet, obj *model.TaskSummary) graphql.Marshaler {
@@ -45286,16 +45556,6 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNTrendType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTrendType(ctx context.Context, v interface{}) (model.TrendType, error) {
-	var res model.TrendType
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNTrendType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTrendType(ctx context.Context, sel ast.SelectionSet, v model.TrendType) graphql.Marshaler {
-	return v
 }
 
 func (ec *executionContext) unmarshalNUint642uint64(ctx context.Context, v interface{}) (uint64, error) {
@@ -47247,6 +47507,13 @@ func (ec *executionContext) marshalOTaskStats2ᚖgithubᚗcomᚋstraheᚋcurio�
 		return graphql.Null
 	}
 	return ec._TaskStats(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOTaskSuccessRate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskSuccessRate(ctx context.Context, sel ast.SelectionSet, v *model.TaskSuccessRate) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._TaskSuccessRate(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
