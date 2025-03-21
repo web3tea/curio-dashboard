@@ -70,7 +70,7 @@ const trendColor = computed<string>(() => {
     @click="handleClick"
   >
     <v-card-item>
-      <v-card-title class="d-flex align-center justify-space-between">
+      <v-card-title class="d-flex align-center justify-space-between text-subtitle-1">
         <span>{{ title }}</span>
         <v-tooltip
           v-if="tooltip"
@@ -78,6 +78,7 @@ const trendColor = computed<string>(() => {
         >
           <template #activator="{ props:pp }">
             <IconInfoCircle
+              color="grey"
               v-bind="pp"
               size="16"
             />

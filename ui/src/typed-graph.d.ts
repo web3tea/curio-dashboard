@@ -88,6 +88,13 @@ export type Config = {
   usedBy: Array<Maybe<MachineDetail>>;
 };
 
+export type DealCountSummary = {
+  __typename?: 'DealCountSummary';
+  boost: Scalars['Int']['output'];
+  direct: Scalars['Int']['output'];
+  legacy: Scalars['Int']['output'];
+};
+
 export type DealInfo = {
   __typename?: 'DealInfo';
   announceToIpni: Scalars['Boolean']['output'];
@@ -369,6 +376,15 @@ export type MiningCountSummary = {
   start: Scalars['Time']['output'];
   total: Scalars['Int']['output'];
   won: Scalars['Int']['output'];
+};
+
+export type MiningStatusSummay = {
+  __typename?: 'MiningStatusSummay';
+  included: Scalars['Int']['output'];
+  lastMinedAt: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  won: Scalars['Int']['output'];
+  wonChangeRate: Scalars['Float']['output'];
 };
 
 export type MiningSummaryDay = {
@@ -687,6 +703,7 @@ export type Query = {
   marketCheckPriceFilter: Scalars['Boolean']['output'];
   marketClientFilter?: Maybe<ClientFilter>;
   marketClientFilters?: Maybe<Array<ClientFilter>>;
+  marketDealCountSummary?: Maybe<DealCountSummary>;
   marketDealInfo?: Maybe<DealInfo>;
   marketMk12Deals: Array<MarketMk12Deal>;
   marketMk12DealsCount: Scalars['Int']['output'];
@@ -703,6 +720,7 @@ export type Query = {
   miningCount: MiningCount;
   miningCountAggregate?: Maybe<Array<Maybe<MiningCountAggregated>>>;
   miningCountSummary?: Maybe<MiningCountSummary>;
+  miningStatusSummay?: Maybe<MiningStatusSummay>;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   miningWins?: Maybe<Array<Maybe<MiningTask>>>;
   miningWinsCount: Scalars['Int']['output'];
@@ -712,6 +730,7 @@ export type Query = {
   porep?: Maybe<Porep>;
   poreps?: Maybe<Array<Maybe<Porep>>>;
   sector?: Maybe<Sector>;
+  sectorSummary?: Maybe<SectorSummary>;
   sectors?: Maybe<Array<Maybe<Sector>>>;
   sectorsCount: Scalars['Int']['output'];
   storage?: Maybe<Storage>;
@@ -852,6 +871,13 @@ export type QueryMiningCountAggregateArgs = {
 export type QueryMiningCountSummaryArgs = {
   actor?: InputMaybe<Scalars['Address']['input']>;
   end: Scalars['Time']['input'];
+  start: Scalars['Time']['input'];
+};
+
+
+export type QueryMiningStatusSummayArgs = {
+  end: Scalars['Time']['input'];
+  spID?: InputMaybe<Scalars['ActorID']['input']>;
   start: Scalars['Time']['input'];
 };
 
@@ -1031,6 +1057,13 @@ export type SectorMetaPiece = {
   sectorNum: Scalars['Int']['output'];
   spID: Scalars['Address']['output'];
   startEpoch?: Maybe<Scalars['Int']['output']>;
+};
+
+export type SectorSummary = {
+  __typename?: 'SectorSummary';
+  active: Scalars['Int']['output'];
+  failed: Scalars['Int']['output'];
+  sealing: Scalars['Int']['output'];
 };
 
 export type Storage = {
@@ -1219,6 +1252,15 @@ export type TaskSummaryDay = {
   totalCount: Scalars['Int']['output'];
   trueCount: Scalars['Int']['output'];
 };
+
+export type TimeRangeType =
+  | 'DAY_7'
+  | 'DAY_30'
+  | 'DAY_90'
+  | 'DAY_180'
+  | 'DAY_365'
+  | 'HOUR_1'
+  | 'HOUR_24';
 
 export type TrendType =
   | 'DOWN'

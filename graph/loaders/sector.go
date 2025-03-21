@@ -2,6 +2,7 @@ package loaders
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/types"
@@ -19,6 +20,7 @@ type SectorLoader interface {
 	SectorEvents(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.TaskHistory, error)
 	SectorTasks(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.Task, error)
 	OpenSectorPieces(ctx context.Context) ([]*model.OpenSectorPiece, error)
+	SectorSummary(ctx context.Context) (*model.SectorSummary, error)
 }
 
 type SectorLoaderImpl struct {
@@ -202,4 +204,43 @@ ORDER BY
 		return nil, err
 	}
 	return deals, nil
+}
+
+func (l *SectorLoaderImpl) SectorSummary(ctx context.Context) (*model.SectorSummary, error) {
+	summary := &model.SectorSummary{
+		Active:  0,
+		Sealing: 0,
+		Failed:  0,
+	}
+	err := l.loader.db.QueryRow(ctx, `
+        SELECT COUNT(*) FROM curio.sectors_meta`).Scan(&summary.Active)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get active sectors count: %w", err)
+	}
+
+	var sdrSealing, sdrFailed int
+	err = l.loader.db.QueryRow(ctx, `
+        SELECT
+            COUNT(*) FILTER (WHERE failed = false) as sealing,
+            COUNT(*) FILTER (WHERE failed = true) as failed
+        FROM curio.sectors_sdr_pipeline
+    `).Scan(&sdrSealing, &sdrFailed)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get SDR pipeline counts: %w", err)
+	}
+
+	var snapSealing, snapFailed int
+	err = l.loader.db.QueryRow(ctx, `
+        SELECT
+            COUNT(*) FILTER (WHERE failed = false) as sealing,
+            COUNT(*) FILTER (WHERE failed = true) as failed
+        FROM curio.sectors_snap_pipeline
+    `).Scan(&snapSealing, &snapFailed)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get SNAP pipeline counts: %w", err)
+	}
+
+	summary.Sealing = sdrSealing + snapSealing
+	summary.Failed = sdrFailed + snapFailed
+	return summary, nil
 }

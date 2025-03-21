@@ -38,3 +38,13 @@ type SectorMetaPiece {
     ddoPam: JSONB
     f05DealProposal: JSONB
 }
+
+type SectorSummary {
+    active: Int!
+    sealing: Int!
+    failed: Int!
+}
+
+extend type Query {
+    sectorSummary: SectorSummary
+}

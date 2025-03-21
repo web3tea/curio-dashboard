@@ -7,9 +7,13 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/graph"
+	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/strahe/curio-dashboard/types"
 )
 
 // Previous is the resolver for the previous field.
@@ -23,6 +27,48 @@ func (r *miningCountSummaryResolver) Previous(ctx context.Context, obj *model.Mi
 	}
 
 	return previousSummary, nil
+}
+
+// MiningSummaryByDay is the resolver for the miningSummaryByDay field.
+func (r *queryResolver) MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Hour)
+	return r.loader.MiningSummaryByDay(ctx, start, end)
+}
+
+// MiningCount is the resolver for the miningCount field.
+func (r *queryResolver) MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCount, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.MiningCount(ctx, start, end, actor)
+}
+
+// MiningWins is the resolver for the miningWins field.
+func (r *queryResolver) MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) ([]*model.MiningTask, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MiningTasks(ctx, start, end, actor, lo.ToPtr(true), include, offset, limit)
+}
+
+// MiningWinsCount is the resolver for the miningWinsCount field.
+func (r *queryResolver) MiningWinsCount(ctx context.Context, start *time.Time, end *time.Time, actor *types.Address, include *bool) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MiningTasksCount(ctx, start, end, actor, lo.ToPtr(true), include)
+}
+
+// MiningCountSummary is the resolver for the miningCountSummary field.
+func (r *queryResolver) MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCountSummary, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
+	return r.loader.MiningCountSummary(ctx, start, end, actor)
+}
+
+// MiningCountAggregate is the resolver for the miningCountAggregate field.
+func (r *queryResolver) MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
+	return r.loader.MiningCountAggregate(ctx, start, end, actor, interval)
+}
+
+// MiningStatusSummay is the resolver for the miningStatusSummay field.
+func (r *queryResolver) MiningStatusSummay(ctx context.Context, spID *types.ActorID, start time.Time, end time.Time) (*model.MiningStatusSummay, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MiningStatusSummay(ctx, spID, start, end)
 }
 
 // MiningCountSummary returns graph.MiningCountSummaryResolver implementation.

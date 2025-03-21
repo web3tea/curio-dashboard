@@ -37,3 +37,21 @@ type MiningCountAggregated {
     won: Int!
     included: Int!
 }
+
+type MiningStatusSummay {
+    total: Int!
+    won: Int!
+    included: Int!
+    wonChangeRate: Float!
+    lastMinedAt: Int!
+}
+
+extend type Query {
+    miningSummaryByDay(start: Time!, end: Time!): [MiningSummaryDay]
+    miningCount(start: Time!, end: Time!, actor: Address): MiningCount!
+    miningWins(start: Time, end: Time, actor: Address, include: Boolean, offset: Int!, limit: Int!): [MiningTask]
+    miningWinsCount(start: Time, end: Time, actor: Address, include: Boolean): Int!
+    miningCountSummary(start: Time!, end: Time!, actor: Address): MiningCountSummary
+    miningCountAggregate(start: Time!, end: Time!, actor: Address, interval: MiningTaskAggregateInterval!): [MiningCountAggregated]
+    miningStatusSummay(spID: ActorID, start: Time!, end: Time!): MiningStatusSummay
+}

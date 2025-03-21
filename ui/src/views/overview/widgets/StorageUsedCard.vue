@@ -85,7 +85,7 @@ defineExpose({
         >
           <div class="text-caption">
             <span>{{ formatBytes(item.total - item.available).combined }} </span> /
-            {{ formatBytes(item.total).combined }}
+            <span class="text-grey">{{ formatBytes(item.total).combined }}</span>
           </div>
         </v-col>
       </v-row>

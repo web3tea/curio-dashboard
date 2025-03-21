@@ -59,3 +59,9 @@ func (r *queryResolver) MarketDealInfo(ctx context.Context, id string) (*model.D
 		IsDdo:             deal.IsDDO,
 	}, nil
 }
+
+// MarketDealCountSummary is the resolver for the marketDealCountSummary field.
+func (r *queryResolver) MarketDealCountSummary(ctx context.Context) (*model.DealCountSummary, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
+	return r.loader.MarketDealCountSummary(ctx)
+}

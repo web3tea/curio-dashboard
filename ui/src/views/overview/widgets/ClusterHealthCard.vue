@@ -56,42 +56,51 @@ defineExpose({
         {{ item.onlineNodes / (item.onlineNodes + item.unscheduledNodes + item.offlineNodes) * 100 }}%
       </div>
 
-      <v-row class="mt-4">
+      <v-row class="mt-2 w-100">
         <v-col
           cols="4"
           class="text-center"
         >
-          <v-badge
-            :content="item.onlineNodes.toString()"
+          <v-chip
+            size="small"
             color="success"
-            inline
-          />
-          <div class="text-caption text-grey">
+            class="font-weight-medium"
+          >
+            {{ item.onlineNodes }}
+          </v-chip>
+          <div class="text-caption text-medium-emphasis mt-1">
             {{ t('clusterHealth.online') }}
           </div>
         </v-col>
+
         <v-col
           cols="4"
           class="text-center"
         >
-          <v-badge
-            :content="item.unscheduledNodes.toString()"
-            inline
-          />
-          <div class="text-caption text-grey">
+          <v-chip
+            size="small"
+            color="warning"
+            class="font-weight-medium"
+          >
+            {{ item.unscheduledNodes }}
+          </v-chip>
+          <div class="text-caption text-medium-emphasis mt-1">
             {{ t('clusterHealth.unscheduled') }}
           </div>
         </v-col>
+
         <v-col
           cols="4"
           class="text-center"
         >
-          <v-badge
-            :content="item.offlineNodes.toString()"
+          <v-chip
+            size="small"
             color="error"
-            inline
-          />
-          <div class="text-caption text-grey">
+            class="font-weight-medium"
+          >
+            {{ item.offlineNodes }}
+          </v-chip>
+          <div class="text-caption text-medium-emphasis mt-1">
             {{ t('clusterHealth.offline') }}
           </div>
         </v-col>

@@ -157,7 +157,9 @@
     },
     "viewDetails": "View Details",
     "loading": "Loading",
-    "stable": "Stable"
+    "stable": "Stable",
+    "sector": "Sector | Sectors",
+    "deal": "Deal | Deals"
   },
   "clusterHealth": {
     "title": "Cluster Health",
@@ -175,5 +177,27 @@
   "storageUsedCard": {
     "title": "Storage Used",
     "tooltip": "Current long-term storage space usage status"
+  },
+  "sectorSummary": {
+    "title": "Sector Status",
+    "tooltip": "Current sector status distribution",
+    "active": "Active",
+    "sealing": "Sealing",
+    "failed": "Failed"
+  },
+  "dealCountSummary": {
+    "title": "Active Deals",
+    "tooltip": "Current active storage deals",
+    "boost": "Boost",
+    "direct": "Direct",
+    "lagacy": "Lagacy"
+  },
+  "miningStatusCard": {
+    "title": "Mining Status",
+    "tooltip": "Last 24 hours mining statistics",
+    "blocked": "Blocked",
+    "included": "On Chain",
+    "lastWon": "Last Won",
+    "orphan": "Orphan Blocks"
   }
 }

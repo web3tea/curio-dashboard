@@ -47,6 +47,12 @@ type ClientFilterInput struct {
 	Info               string           `json:"info"`
 }
 
+type DealCountSummary struct {
+	Boost  int `json:"boost"`
+	Direct int `json:"direct"`
+	Legacy int `json:"legacy"`
+}
+
 type DealInfo struct {
 	ID                string           `json:"id"`
 	SpID              types.ActorID    `json:"spId"`
@@ -247,6 +253,14 @@ type MiningCountAggregated struct {
 	Included int       `json:"included"`
 }
 
+type MiningStatusSummay struct {
+	Total         int     `json:"total"`
+	Won           int     `json:"won"`
+	Included      int     `json:"included"`
+	WonChangeRate float64 `json:"wonChangeRate"`
+	LastMinedAt   int     `json:"lastMinedAt"`
+}
+
 type MiningSummaryDay struct {
 	Day      time.Time     `json:"day"`
 	Miner    types.Address `json:"miner"`
@@ -395,6 +409,12 @@ type SectorMetaPiece struct {
 	F05DealID         *int          `json:"f05DealID"`
 	DdoPam            *types.JSONB  `json:"ddoPam"`
 	F05DealProposal   *types.JSONB  `json:"f05DealProposal"`
+}
+
+type SectorSummary struct {
+	Active  int `json:"active"`
+	Sealing int `json:"sealing"`
+	Failed  int `json:"failed"`
 }
 
 type StorageLiveness struct {
@@ -673,6 +693,57 @@ func (e *TaskHistoriesAggregateInterval) UnmarshalGQL(v interface{}) error {
 }
 
 func (e TaskHistoriesAggregateInterval) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type TimeRangeType string
+
+const (
+	TimeRangeTypeHour1  TimeRangeType = "HOUR_1"
+	TimeRangeTypeHour24 TimeRangeType = "HOUR_24"
+	TimeRangeTypeDay7   TimeRangeType = "DAY_7"
+	TimeRangeTypeDay30  TimeRangeType = "DAY_30"
+	TimeRangeTypeDay90  TimeRangeType = "DAY_90"
+	TimeRangeTypeDay180 TimeRangeType = "DAY_180"
+	TimeRangeTypeDay365 TimeRangeType = "DAY_365"
+)
+
+var AllTimeRangeType = []TimeRangeType{
+	TimeRangeTypeHour1,
+	TimeRangeTypeHour24,
+	TimeRangeTypeDay7,
+	TimeRangeTypeDay30,
+	TimeRangeTypeDay90,
+	TimeRangeTypeDay180,
+	TimeRangeTypeDay365,
+}
+
+func (e TimeRangeType) IsValid() bool {
+	switch e {
+	case TimeRangeTypeHour1, TimeRangeTypeHour24, TimeRangeTypeDay7, TimeRangeTypeDay30, TimeRangeTypeDay90, TimeRangeTypeDay180, TimeRangeTypeDay365:
+		return true
+	}
+	return false
+}
+
+func (e TimeRangeType) String() string {
+	return string(e)
+}
+
+func (e *TimeRangeType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TimeRangeType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TimeRangeType", str)
+	}
+	return nil
+}
+
+func (e TimeRangeType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

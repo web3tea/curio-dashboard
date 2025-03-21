@@ -1,8 +1,0 @@
-# 'up' | 'down' | 'warning' | 'normal' | 'good'
-enum TrendType {
-    UP
-    DOWN
-    WARNING
-    NORMAL
-    GOOD
-}

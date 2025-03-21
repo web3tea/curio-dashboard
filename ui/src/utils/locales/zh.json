@@ -157,7 +157,9 @@
     },
     "viewDetails": "查看详情",
     "loading": "加载中",
-    "stable": "稳定"
+    "stable": "稳定",
+    "sector": "扇区",
+    "deal": "订单"
   },
   "clusterHealth": {
     "title": "集群健康度",
@@ -175,5 +177,27 @@
   "storageUsedCard": {
     "title": "存储空间",
     "tooltip": "当前持久存储的空间使用情况"
+  },
+  "sectorSummary": {
+    "title": "扇区状态",
+    "tooltip": "当前扇区状态分布",
+    "active": "有效",
+    "sealing": "封存中",
+    "failed": "失败"
+  },
+  "dealCountSummary": {
+    "title": "活跃订单",
+    "tooltip": "当前有效的存储交易订单",
+    "boost": "Boost",
+    "direct": "Direct",
+    "lagacy": "Lagacy"
+  },
+  "miningStatusCard": {
+    "title": "挖矿状态",
+    "tooltip": "最近24小时的挖矿统计",
+    "blocked": "已出块",
+    "included": "已上链",
+    "lastWon": "最新出块",
+    "orphan": "孤块"
   }
 }

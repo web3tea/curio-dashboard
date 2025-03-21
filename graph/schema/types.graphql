@@ -1,0 +1,17 @@
+enum TrendType {
+    UP
+    DOWN
+    WARNING
+    NORMAL
+    GOOD
+}
+
+enum TimeRangeType {
+    HOUR_1
+    HOUR_24
+    DAY_7
+    DAY_30
+    DAY_90
+    DAY_180
+    DAY_365
+}
