@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
 import { TrendType } from '@/typed-graph'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { GetDealCountSummary } from '@/gql/deal'
 
 withDefaults(defineProps<{
   detailsLink?: string;
@@ -24,15 +24,9 @@ interface DealCountSummaryData {
   trendValue?: string;
 }
 
-const { result, loading, refetch } = useQuery(gql`
-  query DealCountSummary {
-    marketDealCountSummary {
-      boost
-      direct
-      legacy
-    }
-  }
-  `, null, {})
+const { result, loading, refetch } = useQuery(GetDealCountSummary, null, {
+  pollInterval: 60000,
+})
 
 const item = computed<DealCountSummaryData>(() => {
   if (!result.value?.marketDealCountSummary) {

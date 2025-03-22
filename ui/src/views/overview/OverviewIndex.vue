@@ -1,20 +1,18 @@
 <script setup lang="ts">
-import MinerPower from '@/views/widgets/statistics/MinerPower.vue'
-import CompletedTasks from '@/views/widgets/statistics/CompletedTasks.vue'
 import MiningOverviewChart from '@/views/widgets/chart/MiningOverviewChart.vue'
 import RecentTasksTable from '@/views/widgets/data/RecentTasksTable.vue'
 import NewTasks from '@/views/widgets/data/NewTasks.vue'
 import ChainConnectivity from '@/views/widgets/data/ChainConnectivity.vue'
 import StorageOverview from '@/views/widgets/statistics/StorageOverview.vue'
 import CompletedTaskOverviewChart from '@/views/widgets/chart/CompletedTaskOverviewChart.vue'
-import BlocksMined from '@/views/widgets/statistics/BlocksMined.vue'
-import RunningTasksCount from '@/views/widgets/statistics/RunningTasksCount.vue'
 import ClusterHealthCard from './widgets/ClusterHealthCard.vue'
 import TaskSuccessRateCard from './widgets/TaskSuccessRateCard.vue'
 import StorageUsedCard from './widgets/StorageUsedCard.vue'
 import SectorSummaryCard from './widgets/SectorSummaryCard.vue'
 import DealCountSummaryCard from './widgets/DealCountSummaryCard.vue'
 import MiningStatusCard from './widgets/MiningStatusCard.vue'
+import MinerPowerCard from './widgets/MinerPowerCard.vue'
+import RunningTaskCard from './widgets/RunningTaskCard.vue'
 
 const smallCards = [
   { component: ClusterHealthCard },
@@ -23,10 +21,8 @@ const smallCards = [
   { component: SectorSummaryCard },
   { component: DealCountSummaryCard },
   { component: MiningStatusCard },
-  { component: MinerPower },
-  { component: CompletedTasks },
-  { component: BlocksMined },
-  { component: RunningTasksCount }
+  { component: MinerPowerCard },
+  { component: RunningTaskCard }
 ]
 
 const middleRowData = [

@@ -24,7 +24,9 @@ interface StorageUsedData {
   trendValue?: string;
 }
 
-const { result, loading, refetch } = useQuery(GetStorageStats, null, {})
+const { result, loading, refetch } = useQuery(GetStorageStats, null, {
+  pollInterval: 60000,
+})
 
 const items: ComputedRef<[StorageStats]> = computed(() => result.value?.storageStats || [])
 

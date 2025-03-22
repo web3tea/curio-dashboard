@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
 import { useI18n } from 'vue-i18n'
-import gql from 'graphql-tag'
 import { TrendType } from '@/typed-graph'
 import { computed } from 'vue'
+import { GetSectorSummary } from '@/gql/sector'
 
 withDefaults(defineProps<{
   detailsLink?: string;
@@ -24,15 +24,9 @@ interface SectorSummaryData {
   trendValue?: string;
 }
 
-const { result, loading, refetch } = useQuery(gql`
-  query SectorSummary {
-    sectorSummary {
-      active
-      sealing
-      failed
-    }
-  }
-  `, null, {})
+const { result, loading, refetch } = useQuery(GetSectorSummary, null, {
+  pollInterval: 60000,
+})
 
 const item = computed<SectorSummaryData>(() => {
   if (!result.value?.sectorSummary) {

@@ -729,6 +729,7 @@ export type Query = {
   pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
   porep?: Maybe<Porep>;
   poreps?: Maybe<Array<Maybe<Porep>>>;
+  runningTaskSummary?: Maybe<RunningTaskSummary>;
   sector?: Maybe<Sector>;
   sectorSummary?: Maybe<SectorSummary>;
   sectors?: Maybe<Array<Maybe<Sector>>>;
@@ -992,6 +993,13 @@ export type QueryTasksStatsArgs = {
   end: Scalars['Time']['input'];
   machine?: InputMaybe<Scalars['String']['input']>;
   start: Scalars['Time']['input'];
+};
+
+export type RunningTaskSummary = {
+  __typename?: 'RunningTaskSummary';
+  averageWaitTime: Scalars['Float']['output'];
+  queued: Scalars['Int']['output'];
+  running: Scalars['Int']['output'];
 };
 
 export type Sector = {

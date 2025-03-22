@@ -396,6 +396,12 @@ type PriceFilterInput struct {
 type Query struct {
 }
 
+type RunningTaskSummary struct {
+	Running         int     `json:"running"`
+	Queued          int     `json:"queued"`
+	AverageWaitTime float64 `json:"averageWaitTime"`
+}
+
 type SectorMetaPiece struct {
 	SpID              types.Address `json:"spID"`
 	SectorNum         int           `json:"sectorNum"`

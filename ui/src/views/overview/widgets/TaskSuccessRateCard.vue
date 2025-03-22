@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { TaskSuccessRate, TrendType } from '@/typed-graph'
+import { GetTaskSuccessRate } from '@/gql/task'
 
 const { t } = useI18n()
 
@@ -15,18 +15,12 @@ withDefaults(defineProps<{
   timeRange: '24h',
 })
 
-const { result, loading, refetch } = useQuery(gql`
-  query TaskSuccessRate($name: String, $start: Time!, $end: Time!) {
-    taskSuccessRate(name: $name, start: $start, end: $end) {
-      total
-      success
-      successRate
-    }
-  }
-  `, {
-    start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
-    end: new Date()
-}, {})
+const { result, loading, refetch } = useQuery(GetTaskSuccessRate, {
+  start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+  end: new Date()
+}, {
+  pollInterval: 600000,
+})
 
 interface TaskSuccessRateData {
   total: number;

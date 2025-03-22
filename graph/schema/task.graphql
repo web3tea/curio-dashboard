@@ -21,6 +21,13 @@ type TaskSuccessRate {
     successRate: Float!
 }
 
+type RunningTaskSummary {
+    running: Int!
+    queued: Int!
+    averageWaitTime: Float!
+}
+
 extend type Query {
     taskSuccessRate(name: String, start: Time!, end: Time!): TaskSuccessRate
+    runningTaskSummary: RunningTaskSummary
 }

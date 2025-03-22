@@ -167,3 +167,13 @@ export const RestartAllFailedSector = gql`
     restartAllFailedSectors
   }
 `
+
+export const GetSectorSummary = gql`
+  query SectorSummary {
+    sectorSummary {
+      active
+      sealing
+      failed
+    }
+  }
+  `

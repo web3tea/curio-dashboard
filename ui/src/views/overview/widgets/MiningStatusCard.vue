@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import gql from 'graphql-tag'
-import { TrendType, TimeRangeType } from '@/typed-graph'
+import { TrendType, TimeRangeType, MiningStatusSummay } from '@/typed-graph'
 import { computed,  } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { calculateStartTime } from '@/utils/helpers/startTime'
+import { GetMiningStatusSummary } from '@/gql/mining'
+import { useLocaleTimeAgo } from '@/utils/helpers/timeAgo'
 
 const { t } = useI18n()
 
@@ -26,28 +27,20 @@ interface MiningStatusData {
   won: number;
   included: number;
   orphan: number;
-  lastWon: Date;
+  lastWon: string;
   trend?: TrendType;
   trendValue?: string;
 }
 
-const { result, loading, refetch } = useQuery(gql`
-  query MiningStatusSummary($start: Time!, $end: Time!) {
-    miningStatusSummay(spID: null, start: $start, end: $end) {
-      total
-      won
-      included
-      lastMinedAt
-      wonChangeRate
-    }
-  }
-  `, {
-    start: start.value,
-    end: end.value
-}, {})
+const { result, loading, refetch } = useQuery(GetMiningStatusSummary, {
+  start: start.value,
+  end: end.value
+}, {
+  pollInterval: 60000,
+})
 
 const item = computed<MiningStatusData>(() => {
-  const sourceData = result.value?.miningStatusSummay || {}
+  const sourceData: MiningStatusSummay = result.value?.miningStatusSummay || {}
   const wonChangeRate: number = sourceData.wonChangeRate != null
     ? (sourceData.wonChangeRate !== 0 && sourceData.wonChangeRate !== 100
       ? Number(sourceData.wonChangeRate.toFixed(2))
@@ -59,11 +52,12 @@ const item = computed<MiningStatusData>(() => {
     won: sourceData.won || 0,
     included: sourceData.included || 0,
     orphan:(sourceData.won || 0) - (sourceData.included || 0),
-    lastWon: new Date(sourceData.lastMinedAt),
+    lastWon: sourceData.lastMinedAt ? useLocaleTimeAgo(new Date(sourceData.lastMinedAt)).value : "N/A",
     trend: wonChangeRate > 0 ? "UP" : "DOWN",
     trendValue: `${wonChangeRate}%` ,
   }
 })
+
 defineExpose({
   refetch
 })

@@ -60,7 +60,6 @@
     "Quality Adjusted Power": "Quality Adjusted Power",
     "Raw Byte Power": "Raw Byte Power",
     "Tasks Completed": "Tasks Completed",
-    "Blocks Mined": "Blocks Mined",
     "Mining Overview": "Mining Overview",
     "Chain Connectivity": "Chain Connectivity",
     "Storage Usages": "Storage Usages",
@@ -199,5 +198,18 @@
     "included": "On Chain",
     "lastWon": "Last Won",
     "orphan": "Orphan Blocks"
+  },
+  "minerpowerCard": {
+    "title": "Power Info",
+    "tooltip": "Power information of all miners in the cluster",
+    "totalPower": "Network QA Power",
+    "minerRawPower": "Raw Power",
+    "totalRawPower": "Network Raw Power"
+  },
+  "runningTaskCard": {
+    "title": "Running Tasks",
+    "tooltip": "Current running tasks",
+    "queued": "Queued Tasks",
+    "averageWaitTime": "Average Wait Time"
   }
 }

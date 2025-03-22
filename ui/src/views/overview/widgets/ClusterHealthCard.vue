@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {  ComputedRef, computed } from 'vue'
-import gql from 'graphql-tag'
 import { useQuery } from '@vue/apollo-composable'
 import { NodeHealthSummary } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
+import { GetNodeHealth } from '@/gql/machine'
 
 const { t } = useI18n()
 
@@ -15,15 +15,9 @@ withDefaults(defineProps<{
   timeRange: '24h',
 })
 
-const { result, loading, refetch } = useQuery(gql`
-  query NodeHealth {
-    nodeHealthSummary {
-      onlineNodes
-      unscheduledNodes
-      offlineNodes
-    }
-  }
-  `, null, {})
+const { result, loading, refetch } = useQuery(GetNodeHealth, null, {
+  pollInterval: 60000
+})
 const item: ComputedRef<NodeHealthSummary> = computed(() => result.value?.nodeHealthSummary || {})
 
 const emit = defineEmits<(e: 'click', event?: MouseEvent) => void>()
@@ -44,8 +38,7 @@ defineExpose({
     :tooltip="t('clusterHealth.tooltip')"
     :details-link="detailsLink"
     :details-text="t('common.viewDetails')"
-    trend="NORMAL"
-    :trend-value="t('common.stable')"
+    trend="GOOD"
     @click="handleClick"
   >
     <div

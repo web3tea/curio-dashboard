@@ -183,3 +183,22 @@ export const GetTaskDurationStats = gql`
   }
   ${taskDurationStatsFragment}
   `
+
+export const GetRunningTaskSummary = gql`
+  query GetRunningTaskSummary {
+    runningTaskSummary {
+      running
+      queued
+      averageWaitTime
+    }
+  }`
+
+export const GetTaskSuccessRate = gql`
+  query TaskSuccessRate($name: String, $start: Time!, $end: Time!) {
+    taskSuccessRate(name: $name, start: $start, end: $end) {
+      total
+      success
+      successRate
+    }
+  }
+  `

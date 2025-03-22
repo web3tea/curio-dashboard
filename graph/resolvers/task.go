@@ -19,6 +19,28 @@ func (r *queryResolver) TaskSuccessRate(ctx context.Context, name *string, start
 	return r.loader.TaskSuccessRate(ctx, name, start, end)
 }
 
+// RunningTaskSummary is the resolver for the runningTaskSummary field.
+func (r *queryResolver) RunningTaskSummary(ctx context.Context) (*model.RunningTaskSummary, error) {
+	var res model.RunningTaskSummary
+	end := time.Now()
+	start := end.Add(-time.Hour * 24)
+	var err error
+	res.Running, err = r.loader.TaskRunningCount(ctx)
+	if err != nil {
+		return nil, err
+	}
+	res.Queued, err = r.loader.TaskQueuedCount(ctx)
+	if err != nil {
+		return nil, err
+	}
+	avg, err := r.loader.TaskAvgWaitTime(ctx, start, end, nil)
+	if err != nil {
+		return nil, err
+	}
+	res.AverageWaitTime = avg.Seconds()
+	return &res, nil
+}
+
 // InitiatedBy is the resolver for the initiatedBy field.
 func (r *taskResolver) InitiatedBy(ctx context.Context, obj *model.Task) (*model.Machine, error) {
 	if obj.InitiatedByID == nil {

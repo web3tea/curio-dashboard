@@ -60,7 +60,6 @@
     "Quality Adjusted Power": "有效算力",
     "Raw Byte Power": "原值算力",
     "Tasks Completed": "完成任务数",
-    "Blocks Mined": "出块数",
     "Mining Overview": "出块概览",
     "Chain Connectivity": "节点列表",
     "Storage Usages": "存储用量",
@@ -199,5 +198,18 @@
     "included": "已上链",
     "lastWon": "最新出块",
     "orphan": "孤块"
+  },
+  "minerpowerCard": {
+    "title": "存力信息",
+    "tooltip": "集群内所有Miner的存力信息",
+    "totalPower": "全网存力",
+    "minerRawPower": "原值存力",
+    "totalRawPower": "全网原值存力"
+  },
+  "runningTaskCard": {
+    "title": "运行的任务",
+    "tooltip": "当前正在运行的任务",
+    "queued": "队列的任务",
+    "averageWaitTime": "任务平均等待时间"
   }
 }

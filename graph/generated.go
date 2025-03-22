@@ -565,6 +565,7 @@ type ComplexityRoot struct {
 		PipelinesSummary           func(childComplexity int) int
 		Porep                      func(childComplexity int, sp types.Address, sectorNumber int) int
 		Poreps                     func(childComplexity int) int
+		RunningTaskSummary         func(childComplexity int) int
 		Sector                     func(childComplexity int, actor types.Address, sectorNumber int) int
 		SectorSummary              func(childComplexity int) int
 		Sectors                    func(childComplexity int, actor *types.Address, sectorNumber *int, offset int, limit int) int
@@ -583,6 +584,12 @@ type ComplexityRoot struct {
 		TasksCount                 func(childComplexity int) int
 		TasksDurationStats         func(childComplexity int, start time.Time, end time.Time) int
 		TasksStats                 func(childComplexity int, start time.Time, end time.Time, machine *string) int
+	}
+
+	RunningTaskSummary struct {
+		AverageWaitTime func(childComplexity int) int
+		Queued          func(childComplexity int) int
+		Running         func(childComplexity int) int
 	}
 
 	Sector struct {
@@ -953,6 +960,7 @@ type QueryResolver interface {
 	NodeHealthSummary(ctx context.Context) (*model.NodeHealthSummary, error)
 	SectorSummary(ctx context.Context) (*model.SectorSummary, error)
 	TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error)
+	RunningTaskSummary(ctx context.Context) (*model.RunningTaskSummary, error)
 	TaskDurationStats(ctx context.Context, name string, start time.Time, end time.Time) (*model.TaskDurationStats, error)
 	TasksDurationStats(ctx context.Context, start time.Time, end time.Time) ([]*model.TaskDurationStats, error)
 }
@@ -3915,6 +3923,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Poreps(childComplexity), true
 
+	case "Query.runningTaskSummary":
+		if e.complexity.Query.RunningTaskSummary == nil {
+			break
+		}
+
+		return e.complexity.Query.RunningTaskSummary(childComplexity), true
+
 	case "Query.sector":
 		if e.complexity.Query.Sector == nil {
 			break
@@ -4100,6 +4115,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.TasksStats(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["machine"].(*string)), true
+
+	case "RunningTaskSummary.averageWaitTime":
+		if e.complexity.RunningTaskSummary.AverageWaitTime == nil {
+			break
+		}
+
+		return e.complexity.RunningTaskSummary.AverageWaitTime(childComplexity), true
+
+	case "RunningTaskSummary.queued":
+		if e.complexity.RunningTaskSummary.Queued == nil {
+			break
+		}
+
+		return e.complexity.RunningTaskSummary.Queued(childComplexity), true
+
+	case "RunningTaskSummary.running":
+		if e.complexity.RunningTaskSummary.Running == nil {
+			break
+		}
+
+		return e.complexity.RunningTaskSummary.Running(childComplexity), true
 
 	case "Sector.events":
 		if e.complexity.Sector.Events == nil {
@@ -28132,6 +28168,55 @@ func (ec *executionContext) fieldContext_Query_taskSuccessRate(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_runningTaskSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_runningTaskSummary(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().RunningTaskSummary(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.RunningTaskSummary)
+	fc.Result = res
+	return ec.marshalORunningTaskSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐRunningTaskSummary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_runningTaskSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "running":
+				return ec.fieldContext_RunningTaskSummary_running(ctx, field)
+			case "queued":
+				return ec.fieldContext_RunningTaskSummary_queued(ctx, field)
+			case "averageWaitTime":
+				return ec.fieldContext_RunningTaskSummary_averageWaitTime(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type RunningTaskSummary", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_taskDurationStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_taskDurationStats(ctx, field)
 	if err != nil {
@@ -28403,6 +28488,138 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RunningTaskSummary_running(ctx context.Context, field graphql.CollectedField, obj *model.RunningTaskSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RunningTaskSummary_running(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Running, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RunningTaskSummary_running(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RunningTaskSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RunningTaskSummary_queued(ctx context.Context, field graphql.CollectedField, obj *model.RunningTaskSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RunningTaskSummary_queued(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Queued, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RunningTaskSummary_queued(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RunningTaskSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RunningTaskSummary_averageWaitTime(ctx context.Context, field graphql.CollectedField, obj *model.RunningTaskSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_RunningTaskSummary_averageWaitTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AverageWaitTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_RunningTaskSummary_averageWaitTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RunningTaskSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
 		},
 	}
 	return fc, nil
@@ -43090,6 +43307,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "runningTaskSummary":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_runningTaskSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "taskDurationStats":
 			field := field
 
@@ -43139,6 +43375,55 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___schema(ctx, field)
 			})
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var runningTaskSummaryImplementors = []string{"RunningTaskSummary"}
+
+func (ec *executionContext) _RunningTaskSummary(ctx context.Context, sel ast.SelectionSet, obj *model.RunningTaskSummary) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, runningTaskSummaryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RunningTaskSummary")
+		case "running":
+			out.Values[i] = ec._RunningTaskSummary_running(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "queued":
+			out.Values[i] = ec._RunningTaskSummary_queued(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "averageWaitTime":
+			out.Values[i] = ec._RunningTaskSummary_averageWaitTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -48164,6 +48449,13 @@ func (ec *executionContext) marshalOPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurio
 		return graphql.Null
 	}
 	return ec._PriceFilter(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalORunningTaskSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐRunningTaskSummary(ctx context.Context, sel ast.SelectionSet, v *model.RunningTaskSummary) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._RunningTaskSummary(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx context.Context, sel ast.SelectionSet, v []*model.Sector) graphql.Marshaler {
