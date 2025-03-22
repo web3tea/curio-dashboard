@@ -19,6 +19,7 @@ type MiningLoader interface {
 	MiningTasksCount(ctx context.Context, start, end *time.Time, actorid *types.Address, won *bool, include *bool) (int, error)
 	MiningCountSummary(ctx context.Context, start, end time.Time, actor *types.Address) (*model.MiningCountSummary, error)
 	MiningCountAggregate(ctx context.Context, start, end time.Time, actor *types.Address, unit model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error)
+	MiningStatusSummay(ctx context.Context, spID *types.ActorID, start time.Time, end time.Time) (*model.MiningStatusSummay, error)
 }
 
 type MiningLoaderImpl struct {
@@ -224,5 +225,78 @@ func (l *MiningLoaderImpl) MiningCountAggregate(ctx context.Context, start, end 
 	if err != nil {
 		return nil, err
 	}
+	return result, nil
+}
+
+func (l *MiningLoaderImpl) MiningStatusSummay(ctx context.Context, spID *types.ActorID, start time.Time, end time.Time) (*model.MiningStatusSummay, error) {
+	if end.IsZero() {
+		end = time.Now()
+	}
+	if end.Before(start) {
+		return nil, fmt.Errorf("end time is before start time")
+	}
+
+	result := &model.MiningStatusSummay{}
+
+	// current time range
+	query := `
+		WITH params AS (
+			SELECT
+				$1::timestamptz as start_time,
+				$2::timestamptz as end_time,
+				$3::int8 as sp_id
+		)
+		SELECT
+			COUNT(*) as total,
+			COUNT(CASE WHEN won = true THEN 1 END) as won,
+			COUNT(CASE WHEN included = true THEN 1 END) as included,
+			EXTRACT(EPOCH FROM MAX(mined_at))::int as last_mined_at
+		FROM mining_tasks
+		WHERE base_compute_time BETWEEN (SELECT start_time FROM params) AND (SELECT end_time FROM params)
+		AND (
+			(SELECT sp_id FROM params) IS NULL
+			OR sp_id = (SELECT sp_id FROM params)
+		)
+	`
+	err := l.loader.db.QueryRow(ctx, query, start, end, spID).Scan(&result.Total, &result.Won, &result.Included, &result.LastMinedAt)
+	if err != nil {
+		return nil, err
+	}
+
+	// previous time range
+	duration := end.Sub(start)
+	prevStart := start.Add(-duration)
+	prevEnd := start
+
+	var prevWon int
+	prevQuery := `
+		WITH params AS (
+			SELECT
+				$1::timestamptz as start_time,
+				$2::timestamptz as end_time,
+				$3::int8 as sp_id
+		)
+		SELECT
+			COUNT(CASE WHEN won = true THEN 1 END) as prev_won
+		FROM mining_tasks
+		WHERE base_compute_time BETWEEN (SELECT start_time FROM params) AND (SELECT end_time FROM params)
+		AND (
+			(SELECT sp_id FROM params) IS NULL
+			OR sp_id = (SELECT sp_id FROM params)
+		)
+	`
+	err = l.loader.db.QueryRow(ctx, prevQuery, prevStart, prevEnd, spID).Scan(&prevWon)
+	if err != nil {
+		return nil, err
+	}
+
+	if prevWon > 0 {
+		result.WonChangeRate = float64(result.Won-prevWon) / float64(prevWon) * 100.0
+	} else if result.Won > 0 {
+		result.WonChangeRate = 100.0
+	} else {
+		result.WonChangeRate = 0.0
+	}
+
 	return result, nil
 }

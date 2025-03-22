@@ -58,8 +58,15 @@ input MarketMk12DealFilterInput {
   pieceCid: String
 }
 
+type DealCountSummary {
+    boost: Int!
+    direct: Int!
+    legacy: Int!
+}
+
 extend type Query {
   marketMk12Deals(filter: MarketMk12DealFilterInput!, limit: Int!, offset: Int!): [MarketMk12Deal!]!
   marketMk12DealsCount(filter: MarketMk12DealFilterInput!): Int!
   marketDealInfo(id: String!): DealInfo
+  marketDealCountSummary: DealCountSummary
 }

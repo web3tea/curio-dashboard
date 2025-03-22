@@ -17,6 +17,7 @@ type MarketLoader interface {
 	MarketAllowFilter(ctx context.Context, wallet types.Address) (*model.MarketAllowFilter, error)
 	MarketMk12Deals(ctx context.Context, filter model.MarketMk12DealFilterInput, limit int, offset int) ([]*model.MarketMk12Deal, error)
 	MarketMk12DealsCount(ctx context.Context, filter model.MarketMk12DealFilterInput) (int, error)
+	MarketDealCountSummary(ctx context.Context) (*model.DealCountSummary, error)
 }
 
 type MarketLoaderImpl struct {
@@ -202,4 +203,31 @@ func (l *MarketLoaderImpl) MarketMk12DealsCount(ctx context.Context, filter mode
 		filter.PieceCid,
 	).Scan(&result)
 	return result, err
+}
+
+func (l *MarketLoaderImpl) MarketDealCountSummary(ctx context.Context) (*model.DealCountSummary, error) {
+	summary := &model.DealCountSummary{}
+
+	var boostCount int
+	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM market_mk12_deals`).Scan(&boostCount)
+	if err != nil {
+		return nil, err
+	}
+	summary.Boost = boostCount
+
+	var directCount int
+	err = l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM market_direct_deals`).Scan(&directCount)
+	if err != nil {
+		return nil, err
+	}
+	summary.Direct = directCount
+
+	var legacyCount int
+	err = l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM market_legacy_deals`).Scan(&legacyCount)
+	if err != nil {
+		return nil, err
+	}
+	summary.Legacy = legacyCount
+
+	return summary, nil
 }

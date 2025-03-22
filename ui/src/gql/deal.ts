@@ -76,3 +76,13 @@ export const GetDealInfo = gql`
   }
   ${dealInfoFragment}
   `
+
+export const GetDealCountSummary = gql`
+  query DealCountSummary {
+    marketDealCountSummary {
+      boost
+      direct
+      legacy
+    }
+  }
+  `

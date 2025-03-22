@@ -89,3 +89,15 @@ export const GetMiningCountAggregation = gql`
     }
     ${miningCountAggregateFragment}
 `
+
+export const GetMiningStatusSummary = gql`
+  query MiningStatusSummary($spID: ActorID, $start: Time!, $end: Time!) {
+    miningStatusSummay(spID: $spID, start: $start, end: $end) {
+      total
+      won
+      included
+      lastMinedAt
+      wonChangeRate
+    }
+  }
+  `

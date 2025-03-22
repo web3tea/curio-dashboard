@@ -88,6 +88,13 @@ export type Config = {
   usedBy: Array<Maybe<MachineDetail>>;
 };
 
+export type DealCountSummary = {
+  __typename?: 'DealCountSummary';
+  boost: Scalars['Int']['output'];
+  direct: Scalars['Int']['output'];
+  legacy: Scalars['Int']['output'];
+};
+
 export type DealInfo = {
   __typename?: 'DealInfo';
   announceToIpni: Scalars['Boolean']['output'];
@@ -371,6 +378,15 @@ export type MiningCountSummary = {
   won: Scalars['Int']['output'];
 };
 
+export type MiningStatusSummay = {
+  __typename?: 'MiningStatusSummay';
+  included: Scalars['Int']['output'];
+  lastMinedAt: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  won: Scalars['Int']['output'];
+  wonChangeRate: Scalars['Float']['output'];
+};
+
 export type MiningSummaryDay = {
   __typename?: 'MiningSummaryDay';
   day: Scalars['Time']['output'];
@@ -392,10 +408,9 @@ export type MiningTask = {
   won: Scalars['Boolean']['output'];
 };
 
-export enum MiningTaskAggregateInterval {
-  Day = 'day',
-  Hour = 'hour'
-}
+export type MiningTaskAggregateInterval =
+  | 'day'
+  | 'hour';
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -518,6 +533,13 @@ export type MutationUpdateMarketMk12StorageAskArgs = {
   input: MarketMk12StorageAskInput;
 };
 
+export type NodeHealthSummary = {
+  __typename?: 'NodeHealthSummary';
+  offlineNodes: Scalars['Int']['output'];
+  onlineNodes: Scalars['Int']['output'];
+  unscheduledNodes: Scalars['Int']['output'];
+};
+
 export type NodeInfo = {
   __typename?: 'NodeInfo';
   address: Scalars['String']['output'];
@@ -613,25 +635,24 @@ export type Porep = {
   userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
 };
 
-export enum PorepStatus {
-  Active = 'Active',
-  ClearCache = 'ClearCache',
-  CommitMsg = 'CommitMsg',
-  CommitMsgWait = 'CommitMsgWait',
-  Failed = 'Failed',
-  MoveStorage = 'MoveStorage',
-  OnChain = 'OnChain',
-  PoRep = 'PoRep',
-  PreCommitMsg = 'PreCommitMsg',
-  PreCommitMsgWait = 'PreCommitMsgWait',
-  Sdr = 'SDR',
-  Success = 'Success',
-  Synthetic = 'Synthetic',
-  TreeD = 'TreeD',
-  TreeRc = 'TreeRC',
-  Unknown = 'Unknown',
-  WaitSeed = 'WaitSeed'
-}
+export type PorepStatus =
+  | 'Active'
+  | 'ClearCache'
+  | 'CommitMsg'
+  | 'CommitMsgWait'
+  | 'Failed'
+  | 'MoveStorage'
+  | 'OnChain'
+  | 'PoRep'
+  | 'PreCommitMsg'
+  | 'PreCommitMsgWait'
+  | 'SDR'
+  | 'Success'
+  | 'Synthetic'
+  | 'TreeD'
+  | 'TreeRC'
+  | 'Unknown'
+  | 'WaitSeed';
 
 export type PowerClaim = {
   __typename?: 'PowerClaim';
@@ -682,6 +703,7 @@ export type Query = {
   marketCheckPriceFilter: Scalars['Boolean']['output'];
   marketClientFilter?: Maybe<ClientFilter>;
   marketClientFilters?: Maybe<Array<ClientFilter>>;
+  marketDealCountSummary?: Maybe<DealCountSummary>;
   marketDealInfo?: Maybe<DealInfo>;
   marketMk12Deals: Array<MarketMk12Deal>;
   marketMk12DealsCount: Scalars['Int']['output'];
@@ -698,14 +720,18 @@ export type Query = {
   miningCount: MiningCount;
   miningCountAggregate?: Maybe<Array<Maybe<MiningCountAggregated>>>;
   miningCountSummary?: Maybe<MiningCountSummary>;
+  miningStatusSummay?: Maybe<MiningStatusSummay>;
   miningSummaryByDay?: Maybe<Array<Maybe<MiningSummaryDay>>>;
   miningWins?: Maybe<Array<Maybe<MiningTask>>>;
   miningWinsCount: Scalars['Int']['output'];
+  nodeHealthSummary?: Maybe<NodeHealthSummary>;
   nodesInfo?: Maybe<Array<Maybe<NodeInfo>>>;
   pipelinesSummary?: Maybe<Array<Maybe<PipelineSummary>>>;
   porep?: Maybe<Porep>;
   poreps?: Maybe<Array<Maybe<Porep>>>;
+  runningTaskSummary?: Maybe<RunningTaskSummary>;
   sector?: Maybe<Sector>;
+  sectorSummary?: Maybe<SectorSummary>;
   sectors?: Maybe<Array<Maybe<Sector>>>;
   sectorsCount: Scalars['Int']['output'];
   storage?: Maybe<Storage>;
@@ -717,6 +743,7 @@ export type Query = {
   taskHistoriesAggregate?: Maybe<Array<Maybe<TaskAggregate>>>;
   taskHistoriesCount: Scalars['Int']['output'];
   taskNames?: Maybe<Array<Scalars['String']['output']>>;
+  taskSuccessRate?: Maybe<TaskSuccessRate>;
   tasks?: Maybe<Array<Maybe<Task>>>;
   tasksCount: Scalars['Int']['output'];
   tasksDurationStats: Array<TaskDurationStats>;
@@ -849,6 +876,13 @@ export type QueryMiningCountSummaryArgs = {
 };
 
 
+export type QueryMiningStatusSummayArgs = {
+  end: Scalars['Time']['input'];
+  spID?: InputMaybe<Scalars['ActorID']['input']>;
+  start: Scalars['Time']['input'];
+};
+
+
 export type QueryMiningSummaryByDayArgs = {
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
@@ -942,6 +976,13 @@ export type QueryTaskHistoriesCountArgs = {
 };
 
 
+export type QueryTaskSuccessRateArgs = {
+  end: Scalars['Time']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  start: Scalars['Time']['input'];
+};
+
+
 export type QueryTasksDurationStatsArgs = {
   end: Scalars['Time']['input'];
   start: Scalars['Time']['input'];
@@ -952,6 +993,13 @@ export type QueryTasksStatsArgs = {
   end: Scalars['Time']['input'];
   machine?: InputMaybe<Scalars['String']['input']>;
   start: Scalars['Time']['input'];
+};
+
+export type RunningTaskSummary = {
+  __typename?: 'RunningTaskSummary';
+  averageWaitTime: Scalars['Float']['output'];
+  queued: Scalars['Int']['output'];
+  running: Scalars['Int']['output'];
 };
 
 export type Sector = {
@@ -1019,6 +1067,13 @@ export type SectorMetaPiece = {
   startEpoch?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SectorSummary = {
+  __typename?: 'SectorSummary';
+  active: Scalars['Int']['output'];
+  failed: Scalars['Int']['output'];
+  sealing: Scalars['Int']['output'];
+};
+
 export type Storage = {
   __typename?: 'Storage';
   id: Scalars['String']['output'];
@@ -1071,12 +1126,11 @@ export type StorageStats = {
   type: StorageType;
 };
 
-export enum StorageType {
-  Hybrid = 'Hybrid',
-  Readonly = 'Readonly',
-  Seal = 'Seal',
-  Store = 'Store'
-}
+export type StorageType =
+  | 'Hybrid'
+  | 'Readonly'
+  | 'Seal'
+  | 'Store';
 
 export type StorageUsage = {
   __typename?: 'StorageUsage';
@@ -1149,10 +1203,9 @@ export type TaskDurationStats = {
   totalTasks: Scalars['Int']['output'];
 };
 
-export enum TaskHistoriesAggregateInterval {
-  Day = 'day',
-  Hour = 'hour'
-}
+export type TaskHistoriesAggregateInterval =
+  | 'day'
+  | 'hour';
 
 export type TaskHistory = {
   __typename?: 'TaskHistory';
@@ -1184,6 +1237,14 @@ export type TaskStats = {
   total: Scalars['Int']['output'];
 };
 
+export type TaskSuccessRate = {
+  __typename?: 'TaskSuccessRate';
+  failure: Scalars['Int']['output'];
+  success: Scalars['Int']['output'];
+  successRate: Scalars['Float']['output'];
+  total: Scalars['Int']['output'];
+};
+
 export type TaskSummary = {
   __typename?: 'TaskSummary';
   falseCount: Scalars['Int']['output'];
@@ -1199,6 +1260,22 @@ export type TaskSummaryDay = {
   totalCount: Scalars['Int']['output'];
   trueCount: Scalars['Int']['output'];
 };
+
+export type TimeRangeType =
+  | 'DAY_7'
+  | 'DAY_30'
+  | 'DAY_90'
+  | 'DAY_180'
+  | 'DAY_365'
+  | 'HOUR_1'
+  | 'HOUR_24';
+
+export type TrendType =
+  | 'DOWN'
+  | 'GOOD'
+  | 'NORMAL'
+  | 'UP'
+  | 'WARNING';
 
 export type WalletBalance = {
   __typename?: 'WalletBalance';

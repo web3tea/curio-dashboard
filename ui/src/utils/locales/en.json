@@ -60,7 +60,6 @@
     "Quality Adjusted Power": "Quality Adjusted Power",
     "Raw Byte Power": "Raw Byte Power",
     "Tasks Completed": "Tasks Completed",
-    "Blocks Mined": "Blocks Mined",
     "Mining Overview": "Mining Overview",
     "Chain Connectivity": "Chain Connectivity",
     "Storage Usages": "Storage Usages",
@@ -154,6 +153,63 @@
       "hour": "hour | hours",
       "minute": "minute | minutes",
       "second": "second | seconds"
-    }
+    },
+    "viewDetails": "View Details",
+    "loading": "Loading",
+    "stable": "Stable",
+    "sector": "Sector | Sectors",
+    "deal": "Deal | Deals"
+  },
+  "clusterHealth": {
+    "title": "Cluster Health",
+    "tooltip": "Cluster health percentage calculated based on node online status",
+    "online": "Online",
+    "unscheduled": "Cordoned",
+    "offline": "Offline"
+  },
+  "taskSuccessRate": {
+    "title": "Task Success Rate",
+    "tooltip": "Recent 24-hour task execution success rate",
+    "success": "Success",
+    "failed": "Failed"
+  },
+  "storageUsedCard": {
+    "title": "Storage Used",
+    "tooltip": "Current long-term storage space usage status"
+  },
+  "sectorSummary": {
+    "title": "Sector Status",
+    "tooltip": "Current sector status distribution",
+    "active": "Active",
+    "sealing": "Sealing",
+    "failed": "Failed"
+  },
+  "dealCountSummary": {
+    "title": "Active Deals",
+    "tooltip": "Current active storage deals",
+    "boost": "Boost",
+    "direct": "Direct",
+    "lagacy": "Lagacy"
+  },
+  "miningStatusCard": {
+    "title": "Mining Status",
+    "tooltip": "Last 24 hours mining statistics",
+    "blocked": "Blocked",
+    "included": "On Chain",
+    "lastWon": "Last Won",
+    "orphan": "Orphan Blocks"
+  },
+  "minerpowerCard": {
+    "title": "Power Info",
+    "tooltip": "Power information of all miners in the cluster",
+    "totalPower": "Network QA Power",
+    "minerRawPower": "Raw Power",
+    "totalRawPower": "Network Raw Power"
+  },
+  "runningTaskCard": {
+    "title": "Running Tasks",
+    "tooltip": "Current running tasks",
+    "queued": "Queued Tasks",
+    "averageWaitTime": "Average Wait Time"
   }
 }

@@ -7,7 +7,7 @@
     "preview": "vite preview",
     "lint": "vue-tsc --noEmit && eslint . --fix",
     "type-gen": "graphql-codegen",
-    "i18n:extract": "vue-i18n-extract report --vueFiles './src/**/*.?(ts|vue)' --languageFiles './src/utils/locales/*.?(json|yml|yaml)' --add --noEmptyTranslation * --remove",
+    "i18n:extract": "vue-i18n-extract report --vueFiles './src/**/*.?(ts|vue)' --languageFiles './src/utils/locales/*.?(json|yml|yaml)' --add --noEmptyTranslation *  --noEmptyTranslation null --remove",
     "i18n:check": "vue-i18n-extract report --vueFiles './src/**/*.?(ts|vue)' --languageFiles './src/utils/locales/*.?(json|yml|yaml)' --ci"
   },
   "dependencies": {

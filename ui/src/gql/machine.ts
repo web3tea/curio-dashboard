@@ -143,3 +143,13 @@ export const GetMachinesBase = gql`
     }
     ${machineBaseFragment}
 `
+
+export const GetNodeHealth = gql`
+  query NodeHealth {
+    nodeHealthSummary {
+      onlineNodes
+      unscheduledNodes
+      offlineNodes
+    }
+  }
+  `

@@ -6,3 +6,13 @@ type NodeInfo {
     syncState: String!
     version: String!
 }
+
+type NodeHealthSummary {
+    onlineNodes: Int!
+    unscheduledNodes: Int!
+    offlineNodes: Int!
+}
+
+extend type Query {
+    nodeHealthSummary: NodeHealthSummary
+}

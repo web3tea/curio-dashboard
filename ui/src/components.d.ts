@@ -13,6 +13,7 @@ declare module 'vue' {
     CardHeader: typeof import('./components/shared/CardHeader.vue')['default']
     ConfigEditor: typeof import('./components/app/ConfigEditor.vue')['default']
     CopyIcon: typeof import('./components/shared/CopyIcon.vue')['default']
+    DashboardCard: typeof import('./components/shared/DashboardCard.vue')['default']
     DateRangeSelectInput: typeof import('./components/app/DateRangeSelectInput.vue')['default']
     EpochField: typeof import('./components/app/EpochField.vue')['default']
     HostPortSelectInput: typeof import('./components/app/HostPortSelectInput.vue')['default']

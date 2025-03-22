@@ -56,15 +56,6 @@ type Query {
     # chain
     nodesInfo: [NodeInfo]
 
-    # mining
-#    miningSummaryByDay(lastDays: Int!): [MiningSummaryDay]
-    miningSummaryByDay(start: Time!, end: Time!): [MiningSummaryDay]
-    miningCount(start: Time!, end: Time!, actor: Address): MiningCount!
-    miningWins(start: Time, end: Time, actor: Address, include: Boolean, offset: Int!, limit: Int!): [MiningTask]
-    miningWinsCount(start: Time, end: Time, actor: Address, include: Boolean): Int!
-    miningCountSummary(start: Time!, end: Time!, actor: Address): MiningCountSummary
-    miningCountAggregate(start: Time!, end: Time!, actor: Address, interval: MiningTaskAggregateInterval!): [MiningCountAggregated]
-
     dealsPending: [OpenSectorPiece]
 
     alerts: [Alert]

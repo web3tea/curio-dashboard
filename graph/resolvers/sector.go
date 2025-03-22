@@ -15,6 +15,12 @@ import (
 	"github.com/strahe/curio-dashboard/graph/model"
 )
 
+// SectorSummary is the resolver for the sectorSummary field.
+func (r *queryResolver) SectorSummary(ctx context.Context) (*model.SectorSummary, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	return r.loader.SectorSummary(ctx)
+}
+
 // ID is the resolver for the id field.
 func (r *sectorResolver) ID(ctx context.Context, obj *model.Sector) (string, error) {
 	return fmt.Sprintf("%s:%d", obj.SpID, obj.SectorNum), nil

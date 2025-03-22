@@ -2,6 +2,7 @@ package loaders
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/strahe/curio-dashboard/graph/model"
@@ -20,6 +21,11 @@ type TaskLoader interface {
 	TasksStats(ctx context.Context, start, end time.Time, machine *string) ([]*model.TaskStats, error)
 	TaskDurationStats(ctx context.Context, name string, start, end time.Time) (*model.TaskDurationStats, error)
 	TasksDurationStats(ctx context.Context, start, end time.Time) ([]*model.TaskDurationStats, error)
+	TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error)
+	TaskRunningCount(ctx context.Context) (int, error)
+	TaskQueuedCount(ctx context.Context) (int, error)
+	TaskAvgWaitTime(ctx context.Context, start, end time.Time, taskName *string) (time.Duration, error)
+	TaskCompletedCount(ctx context.Context, start, end time.Time, taskName *string) (int, error)
 }
 
 type TaskLoaderImpl struct {
@@ -412,4 +418,76 @@ ORDER BY
 		return nil, err
 	}
 	return stats, nil
+}
+
+func (l *TaskLoaderImpl) TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error) {
+	query := `
+        SELECT
+            COUNT(*) as total_count,
+            SUM(CASE WHEN result = true THEN 1 ELSE 0 END) as success_count
+        FROM curio.harmony_task_history
+        WHERE work_end >= $1
+          AND work_end <= $2
+          AND ($3::varchar IS NULL OR name = $3)
+    `
+	var totalCount int
+	var successCount int
+
+	err := l.loader.db.QueryRow(ctx, query, start, end, name).Scan(&totalCount, &successCount)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query task success rate: %w", err)
+	}
+
+	var successRate float64
+	if totalCount > 0 {
+		successRate = float64(successCount) / float64(totalCount) * 100.0
+	} else {
+		successRate = 0
+	}
+	return &model.TaskSuccessRate{
+		Total:       totalCount,
+		Success:     successCount,
+		SuccessRate: successRate,
+	}, nil
+}
+
+// TaskRunningCount returns the number of running tasks in the database.
+func (l *TaskLoaderImpl) TaskRunningCount(ctx context.Context) (int, error) {
+	var count int
+	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM harmony_task WHERE owner_id IS NOT NULL`).Scan(&count)
+	return count, err
+}
+
+// TaskQueuedCount returns the number of queued tasks in the database.
+func (l *TaskLoaderImpl) TaskQueuedCount(ctx context.Context) (int, error) {
+	var count int
+	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM harmony_task WHERE owner_id IS NULL`).Scan(&count)
+	return count, err
+}
+
+// TaskAvgWaitTime returns the average wait time for tasks.
+func (l *TaskLoaderImpl) TaskAvgWaitTime(ctx context.Context, start, end time.Time, taskName *string) (time.Duration, error) {
+	var avgWaitSeconds float64
+	query := `
+		SELECT AVG(EXTRACT(EPOCH FROM (work_start - posted))) as avg_wait_seconds
+		FROM harmony_task_history
+		WHERE work_end BETWEEN $1 AND $2
+		AND ($3::varchar IS NULL OR name = $3)
+		`
+	err := l.loader.db.QueryRow(ctx, query, start, end, taskName).Scan(&avgWaitSeconds) // work_start not indexed
+	if err != nil {
+		return 0, err
+	}
+	return time.Duration(avgWaitSeconds) * time.Second, nil
+}
+
+// TaskCompletedCount returns the number of completed tasks
+func (l *TaskLoaderImpl) TaskCompletedCount(ctx context.Context, start, end time.Time, taskName *string) (int, error) {
+	var count int
+	err := l.loader.db.QueryRow(ctx, `
+		SELECT COUNT(*) FROM harmony_task_history
+		WHERE work_end BETWEEN $1 AND $2
+		AND ($3::varchar IS NULL OR name = $3)
+		`, start, end, taskName).Scan(&count)
+	return count, err
 }
