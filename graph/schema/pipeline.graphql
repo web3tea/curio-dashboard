@@ -1,3 +1,15 @@
+type PipelineSummary {
+    id: Address!
+    sdr: Int!
+    trees: Int!
+    precommitMsg: Int!
+    waitSeed: Int!
+    porep: Int!
+    commitMsg: Int!
+    done: Int!
+    failed: Int!
+}
+
 type Porep {
     id: ID!
     spId: Address!
@@ -65,4 +77,10 @@ enum PorepStatus {
     OnChain
     Active
     Unknown
+}
+
+extend type Query {
+    poreps: [Porep]
+    porep(sp: Address!, sectorNumber: Int!): Porep
+    pipelinesSummary: [PipelineSummary]
 }

@@ -69,4 +69,9 @@ extend type Query {
   marketMk12DealsCount(filter: MarketMk12DealFilterInput!): Int!
   marketDealInfo(id: String!): DealInfo
   marketDealCountSummary: DealCountSummary
+  dealsPending: [OpenSectorPiece]
+}
+
+extend type Mutation {
+    dealSealNow(miner: Address!, sectorNumber: Uint64!): Boolean!
 }

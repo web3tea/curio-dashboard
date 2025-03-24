@@ -62,3 +62,8 @@ type MinerBalance {
     vesting: BigInt!
     preCommitDeposits: BigInt!
 }
+
+extend type Query {
+    miner(address: Address!): Miner
+    minerPower(address: Address): MinerPower
+}

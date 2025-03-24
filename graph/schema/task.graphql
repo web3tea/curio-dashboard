@@ -27,7 +27,92 @@ type RunningTaskSummary {
     averageWaitTime: Float!
 }
 
+enum TaskHistoriesAggregateInterval {
+    day
+    hour
+}
+
+enum MiningTaskAggregateInterval {
+    day
+    hour
+}
+
+type TaskNameAggregate {
+    name: String!
+    total: Int!
+    success: Int!
+    failure: Int!
+}
+
+type TaskAggregate {
+    time: Time!
+    total: Int!
+    success: Int!
+    failure: Int!
+}
+
+type TaskStats {
+    name: String!
+    total: Int!
+    success: Int!
+    failure: Int!
+}
+
+type TaskDurationStats {
+  name: String!
+  totalTasks: Int!
+  minDurationSeconds: Float!
+  maxDurationSeconds: Float!
+  avgDurationSeconds: Float!
+  medianDurationSeconds: Float!
+  p90DurationSeconds: Float!
+  p95DurationSeconds: Float!
+  p99DurationSeconds: Float!
+}
+
+type TaskHistory {
+    id: Int!
+    taskId: Int!
+    name: String!
+    posted: Time!
+    workStart: Time!
+    workEnd: Time!
+    result: Boolean!
+    err: String
+    completedByHostAndPort: String!
+    completedBy: Machine
+}
+
+type TaskSummary {
+    name: String!
+    trueCount: Int!
+    falseCount: Int!
+    totalCount: Int!
+}
+
+type TaskSummaryDay {
+    day: Time!
+    trueCount: Int!
+    falseCount: Int!
+    totalCount: Int!
+}
+
 extend type Query {
+    task(id: Int!): Task
+    tasks: [Task]
+    tasksCount: Int!
+    taskHistories(start: Time, end: Time, hostPort: String, name: String, result: Boolean, offset: Int!, limit: Int!): [TaskHistory]
+    taskHistoriesCount(start: Time, end: Time, hostPort: String, name: String, result: Boolean): Int!
+    taskHistoriesAggregate(start: Time!, end: Time!, interval: TaskHistoriesAggregateInterval!): [TaskAggregate]
+    tasksStats(start: Time!, end: Time!, machine: String): [TaskStats]
+    taskNames: [String!]
     taskSuccessRate(name: String, start: Time!, end: Time!): TaskSuccessRate
     runningTaskSummary: RunningTaskSummary
+    taskDurationStats(name: String!, start: Time!, end: Time!): TaskDurationStats
+    tasksDurationStats(start: Time!, end: Time!): [TaskDurationStats!]!
+}
+
+extend type Subscription {
+    completedTask(machine: String, last: Int!): TaskHistory!
+    newTask(machineID: Int, last: Int!): Task!
 }

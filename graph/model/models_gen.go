@@ -528,7 +528,7 @@ func (e MiningTaskAggregateInterval) String() string {
 	return string(e)
 }
 
-func (e *MiningTaskAggregateInterval) UnmarshalGQL(v interface{}) error {
+func (e *MiningTaskAggregateInterval) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -599,7 +599,7 @@ func (e PorepStatus) String() string {
 	return string(e)
 }
 
-func (e *PorepStatus) UnmarshalGQL(v interface{}) error {
+func (e *PorepStatus) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -644,7 +644,7 @@ func (e StorageType) String() string {
 	return string(e)
 }
 
-func (e *StorageType) UnmarshalGQL(v interface{}) error {
+func (e *StorageType) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -685,7 +685,7 @@ func (e TaskHistoriesAggregateInterval) String() string {
 	return string(e)
 }
 
-func (e *TaskHistoriesAggregateInterval) UnmarshalGQL(v interface{}) error {
+func (e *TaskHistoriesAggregateInterval) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -736,7 +736,7 @@ func (e TimeRangeType) String() string {
 	return string(e)
 }
 
-func (e *TimeRangeType) UnmarshalGQL(v interface{}) error {
+func (e *TimeRangeType) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -783,7 +783,7 @@ func (e TrendType) String() string {
 	return string(e)
 }
 
-func (e *TrendType) UnmarshalGQL(v interface{}) error {
+func (e *TrendType) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")

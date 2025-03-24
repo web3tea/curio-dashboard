@@ -12,6 +12,20 @@ type Machine {
     metrics: MachineMetrics
 }
 
+type MachineDetail {
+    id: Int!
+    machineName: String!
+    tasks: String!
+    tasksArray: [String!]
+    layers: String!
+    layersArray: [String!]
+    startupTime: Time!
+    miners: String!
+    minersArray: [String!]
+    machineId: Int!
+}
+
+
 type GaugeCountValue {
     key: String!
     value: Int!
@@ -34,4 +48,22 @@ type MachineMetrics {
     processResidentMemoryBytes: Int!
     processOpenFds: Int!
     processMaxFds: Int!
+}
+
+type MachineSummary {
+    total: Int!
+    totalUp: Int!
+    totalDown: Int!
+    uniqueHostsTotal: Int!
+    uniqueHostsUp: Int!
+    uniqueHostsDown: Int!
+    totalRam: Int!
+    totalCpu: Int!
+    totalGpu: Float!
+}
+
+extend type Query {
+    machine(id: Int!): Machine
+    machines: [Machine]
+    machineSummary: MachineSummary
 }

@@ -1,5 +1,1 @@
-type Subscription {
-    alerts(offset: Int!): Alert!
-    completedTask(machine: String, last: Int!): TaskHistory!
-    newTask(machineID: Int, last: Int!): Task!
-}
+type Subscription

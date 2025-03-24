@@ -2,3 +2,7 @@ type Global {
     networkName: String!
     genesisTimestamp: Int!
 }
+
+extend type Query {
+    global: Global!
+}
