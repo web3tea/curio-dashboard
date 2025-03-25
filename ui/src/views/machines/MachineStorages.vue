@@ -4,7 +4,7 @@ import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { StoragePath } from '@/typed-graph'
-import { GetMachineStorages } from '@/gql/machine'
+import { GetMachineStorages } from '@/gql/storage'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 

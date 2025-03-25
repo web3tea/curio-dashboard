@@ -202,3 +202,15 @@ export const GetTaskSuccessRate = gql`
     }
   }
   `
+
+export const GetMachineTasks = gql`
+    query GetMachineTasks($id: Int!) {
+      machine(id: $id) {
+        id
+        tasks {
+          ...TaskAll
+        }
+      }
+    }
+    ${taskFragment}
+`
