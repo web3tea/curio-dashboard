@@ -1,3 +1,18 @@
+scalar Address
+scalar BigInt
+scalar Time
+scalar Uint64
+scalar Int64
+scalar JSONB
+scalar Bytes
+scalar JSON
+scalar FIL
+scalar PeerID
+scalar ActorID
+scalar NullString
+scalar NullInt64
+scalar NullBool
+
 enum TrendType {
     UP
     DOWN

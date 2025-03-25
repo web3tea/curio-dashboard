@@ -1,0 +1,110 @@
+type MarketBalance {
+    miner: Address!
+    balance: FIL!
+    balances: [WalletBalance!]
+}
+
+type WalletBalance {
+    address: Address!
+    balance: FIL!
+}
+
+type MarketMk12StorageAsk {
+  spId: Address!
+  price: Int!
+  verifiedPrice: Int!
+  minSize: Int!
+  maxSize: Int!
+  createdAt: Int!
+  expiry: Int!
+  sequence: Int!
+}
+
+input MarketMk12StorageAskInput {
+  spId: Address!
+  price: Int!
+  verifiedPrice: Int!
+  minSize: Int!
+  maxSize: Int!
+  expiry: Int!
+}
+
+type PriceFilter {
+  name: String!
+  minDurationDays: Int!
+  maxDurationDays: Int!
+  minimumSize: Int!
+  maximumSize: Int!
+  price: Int!
+  verified: Boolean!
+}
+
+type ClientFilter {
+  name: String!
+  active: Boolean!
+  wallets: [Address!]!
+  peers: [PeerID!]!
+  pricingFilters: [String!]!
+  maxDealsPerHour: Int!
+  maxDealSizePerHour: Int!
+  info: String!
+}
+
+input PriceFilterInput {
+  name: String!
+  minDurationDays: Int!
+  maxDurationDays: Int!
+  minimumSize: Int!
+  maximumSize: Int!
+  price: Int!
+  verified: Boolean!
+}
+
+input ClientFilterInput {
+  name: String!
+  active: Boolean!
+  wallets: [Address!]!
+  peers: [PeerID!]!
+  pricingFilters: [String!]!
+  maxDealsPerHour: Int!
+  maxDealSizePerHour: Int!
+  info: String!
+}
+
+type MarketAllowFilter {
+    wallet: Address!
+    status: Boolean!
+}
+
+
+extend type Query {
+    marketBalance(miner: Address!): MarketBalance
+    marketBalances: [MarketBalance!]
+    marketMk12StorageAsks: [MarketMk12StorageAsk]
+    marketMk12StorageAsk(spId: Address!): MarketMk12StorageAsk
+    marketMk12StorageAsksCount: Int!
+    makretPriceFilters: [PriceFilter!]
+    marketPriceFilter(name: String!): PriceFilter
+    marketCheckPriceFilter(name: String!): Boolean!
+    marketClientFilters: [ClientFilter!]
+    marketClientFilter(name: String!): ClientFilter
+    marketCheckClientFilter(name: String!): Boolean!
+    marketAllowFilters: [MarketAllowFilter!]
+    marketAllowFilter(wallet: Address!): MarketAllowFilter
+    marketAllowDefault: Boolean!
+}
+
+extend type Mutation {
+    marketAddBalance(miner: Address!, wallet: Address!, amount: FIL!): MarketBalance
+    updateMarketMk12StorageAsk(input: MarketMk12StorageAskInput!): MarketMk12StorageAsk
+    marketAddPriceFilter(input: PriceFilterInput!): Boolean!
+    marketUpdatePriceFilter(input: PriceFilterInput!): PriceFilter
+    marketDeletePriceFilter(name: String!): Boolean!
+    marketAddClientFilter(input: ClientFilterInput!): Boolean!
+    marketUpdateClientFilter(input: ClientFilterInput!): ClientFilter
+    marketDeleteClientFilter(name: String!): Boolean!
+    marketToggleClientFilter(name: String!): Boolean!
+    marketSetAllowFilter(wallet: Address!, status: Boolean!): MarketAllowFilter
+    marketDeleteAllowFilter(wallet: Address!): Boolean!
+    marketToggleAllowFilter(wallet: Address!): Boolean!
+}

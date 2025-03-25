@@ -11,6 +11,48 @@ type Sector {
     events: [TaskHistory]!
 }
 
+type SectorMeta {
+    id: String!
+    spId: Address!
+    sectorNum: Int!
+    regSealProof: Int!
+    ticketEpoch: Int!
+    ticketValue: Bytes
+    origSealedCid: String!
+    origUnsealedCid: String!
+    curSealedCid: String!
+    curUnsealedCid: String!
+    msgCidPrecommit: String
+    msgCidCommit: String
+    msgCidUpdate: String
+    seedEpoch: Int!
+    seedValue: Bytes
+    expirationEpoch: Int
+    isCC: Boolean!
+}
+
+type OpenSectorPiece {
+    spID: Address!
+    sectorNumber: Int!
+    pieceIndex: Int!
+    pieceCID: String!
+    pieceSize: Int!
+    dataURL: String!
+    dataHeaders: JSON!
+    dataRawSize: Int!
+    dataDeleteOnFinalize: Boolean!
+    f05PublishCID: String
+    f05DealID: Int
+    f05DealProposal: JSON
+    f05DealStartEpoch: Int
+    f05DealEndEpoch: Int
+    directStartEpoch: Int
+    directEndEpoch: Int
+    directPieceActivationManifest: JSON
+    createdAt: Time!
+    isSnap: Boolean!
+}
+
 type SectorLocation {
     minerId: Address!
     sectorNum: Int!
@@ -46,5 +88,14 @@ type SectorSummary {
 }
 
 extend type Query {
+    sectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [Sector]
+    sectorsCount(actor: Address): Int!
+    sector(actor: Address!, sectorNumber: Int!): Sector
     sectorSummary: SectorSummary
+}
+
+extend type Mutation {
+    removeSector(miner: Address!, sectorNumber: Int!): Boolean!
+    restartSector(miner: Address!, sectorNumber: Int!): Boolean!
+    restartAllFailedSectors: Boolean!
 }

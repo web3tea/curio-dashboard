@@ -4,3 +4,14 @@ type Config {
     config: String!
     usedBy: [MachineDetail]!
 }
+
+extend type Query {
+    config(layer: String!): Config
+    configs: [Config]
+}
+
+extend type Mutation {
+    createConfig(title: String!, config: String!): Config
+    updateConfig(title: String!, config: String!): Config
+    removeConfig(title: String!): Config
+}

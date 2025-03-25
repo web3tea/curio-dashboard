@@ -3,7 +3,7 @@ import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { Task } from '@/typed-graph'
-import { GetMachineTasks } from '@/gql/machine'
+import { GetMachineTasks } from '@/gql/task'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 

@@ -864,9 +864,6 @@ type MutationResolver interface {
 	CreateConfig(ctx context.Context, title string, config string) (*model.Config, error)
 	UpdateConfig(ctx context.Context, title string, config string) (*model.Config, error)
 	RemoveConfig(ctx context.Context, title string) (*model.Config, error)
-	RemoveSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error)
-	RestartSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error)
-	RestartAllFailedSectors(ctx context.Context) (bool, error)
 	DealSealNow(ctx context.Context, miner types.Address, sectorNumber uint64) (bool, error)
 	MarketAddBalance(ctx context.Context, miner types.Address, wallet types.Address, amount types.FIL) (*model.MarketBalance, error)
 	UpdateMarketMk12StorageAsk(ctx context.Context, input model.MarketMk12StorageAskInput) (*model.MarketMk12StorageAsk, error)
@@ -880,6 +877,9 @@ type MutationResolver interface {
 	MarketSetAllowFilter(ctx context.Context, wallet types.Address, status bool) (*model.MarketAllowFilter, error)
 	MarketDeleteAllowFilter(ctx context.Context, wallet types.Address) (bool, error)
 	MarketToggleAllowFilter(ctx context.Context, wallet types.Address) (bool, error)
+	RemoveSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error)
+	RestartSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error)
+	RestartAllFailedSectors(ctx context.Context) (bool, error)
 }
 type PipelineSummaryResolver interface {
 	Sdr(ctx context.Context, obj *model.PipelineSummary) (int, error)
@@ -898,43 +898,21 @@ type PorepResolver interface {
 	CurrentTask(ctx context.Context, obj *model.Porep) (*model.Task, error)
 }
 type QueryResolver interface {
-	Global(ctx context.Context) (*model.Global, error)
-	Config(ctx context.Context, layer string) (*model.Config, error)
-	Configs(ctx context.Context) ([]*model.Config, error)
-	Machine(ctx context.Context, id int) (*model.Machine, error)
-	Machines(ctx context.Context) ([]*model.Machine, error)
-	MachineSummary(ctx context.Context) (*model.MachineSummary, error)
-	Task(ctx context.Context, id int) (*model.Task, error)
-	Tasks(ctx context.Context) ([]*model.Task, error)
-	TasksCount(ctx context.Context) (int, error)
-	TaskHistories(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) ([]*model.TaskHistory, error)
-	TaskHistoriesCount(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) (int, error)
-	TaskHistoriesAggregate(ctx context.Context, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error)
-	TasksStats(ctx context.Context, start time.Time, end time.Time, machine *string) ([]*model.TaskStats, error)
-	TaskNames(ctx context.Context) ([]string, error)
-	Storage(ctx context.Context, id string) (*model.Storage, error)
-	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
-	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
-	Sectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.Sector, error)
-	SectorsCount(ctx context.Context, actor *types.Address) (int, error)
-	Sector(ctx context.Context, actor types.Address, sectorNumber int) (*model.Sector, error)
 	Actors(ctx context.Context) ([]*model.Actor, error)
 	Actor(ctx context.Context, address types.Address) (*model.Actor, error)
-	Poreps(ctx context.Context) ([]*model.Porep, error)
-	Porep(ctx context.Context, sp types.Address, sectorNumber int) (*model.Porep, error)
-	PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error)
-	NodesInfo(ctx context.Context) ([]*model.NodeInfo, error)
-	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	Alerts(ctx context.Context) ([]*model.Alert, error)
-	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
-	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
-	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
-	MarketBalance(ctx context.Context, miner types.Address) (*model.MarketBalance, error)
-	MarketBalances(ctx context.Context) ([]*model.MarketBalance, error)
+	Config(ctx context.Context, layer string) (*model.Config, error)
+	Configs(ctx context.Context) ([]*model.Config, error)
 	MarketMk12Deals(ctx context.Context, filter model.MarketMk12DealFilterInput, limit int, offset int) ([]*model.MarketMk12Deal, error)
 	MarketMk12DealsCount(ctx context.Context, filter model.MarketMk12DealFilterInput) (int, error)
 	MarketDealInfo(ctx context.Context, id string) (*model.DealInfo, error)
 	MarketDealCountSummary(ctx context.Context) (*model.DealCountSummary, error)
+	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
+	Machine(ctx context.Context, id int) (*model.Machine, error)
+	Machines(ctx context.Context) ([]*model.Machine, error)
+	MachineSummary(ctx context.Context) (*model.MachineSummary, error)
+	MarketBalance(ctx context.Context, miner types.Address) (*model.MarketBalance, error)
+	MarketBalances(ctx context.Context) ([]*model.MarketBalance, error)
 	MarketMk12StorageAsks(ctx context.Context) ([]*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error)
 	MarketMk12StorageAsksCount(ctx context.Context) (int, error)
@@ -950,6 +928,9 @@ type QueryResolver interface {
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
+	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
+	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
+	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
 	MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error)
 	MiningCount(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCount, error)
 	MiningWins(ctx context.Context, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) ([]*model.MiningTask, error)
@@ -957,8 +938,27 @@ type QueryResolver interface {
 	MiningCountSummary(ctx context.Context, start time.Time, end time.Time, actor *types.Address) (*model.MiningCountSummary, error)
 	MiningCountAggregate(ctx context.Context, start time.Time, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) ([]*model.MiningCountAggregated, error)
 	MiningStatusSummay(ctx context.Context, spID *types.ActorID, start time.Time, end time.Time) (*model.MiningStatusSummay, error)
+	NodesInfo(ctx context.Context) ([]*model.NodeInfo, error)
 	NodeHealthSummary(ctx context.Context) (*model.NodeHealthSummary, error)
+	Poreps(ctx context.Context) ([]*model.Porep, error)
+	Porep(ctx context.Context, sp types.Address, sectorNumber int) (*model.Porep, error)
+	PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error)
+	Sectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.Sector, error)
+	SectorsCount(ctx context.Context, actor *types.Address) (int, error)
+	Sector(ctx context.Context, actor types.Address, sectorNumber int) (*model.Sector, error)
 	SectorSummary(ctx context.Context) (*model.SectorSummary, error)
+	Global(ctx context.Context) (*model.Global, error)
+	Storage(ctx context.Context, id string) (*model.Storage, error)
+	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
+	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
+	Task(ctx context.Context, id int) (*model.Task, error)
+	Tasks(ctx context.Context) ([]*model.Task, error)
+	TasksCount(ctx context.Context) (int, error)
+	TaskHistories(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) ([]*model.TaskHistory, error)
+	TaskHistoriesCount(ctx context.Context, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) (int, error)
+	TaskHistoriesAggregate(ctx context.Context, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) ([]*model.TaskAggregate, error)
+	TasksStats(ctx context.Context, start time.Time, end time.Time, machine *string) ([]*model.TaskStats, error)
+	TaskNames(ctx context.Context) ([]string, error)
 	TaskSuccessRate(ctx context.Context, name *string, start time.Time, end time.Time) (*model.TaskSuccessRate, error)
 	RunningTaskSummary(ctx context.Context) (*model.RunningTaskSummary, error)
 	TaskDurationStats(ctx context.Context, name string, start time.Time, end time.Time) (*model.TaskDurationStats, error)
@@ -1035,7 +1035,7 @@ func (e *executableSchema) Schema() *ast.Schema {
 	return parsedSchema
 }
 
-func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]interface{}) (int, bool) {
+func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]any) (int, bool) {
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
@@ -5235,8 +5235,8 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 }
 
 func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
-	rc := graphql.GetOperationContext(ctx)
-	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
+	opCtx := graphql.GetOperationContext(ctx)
+	ec := executionContext{opCtx, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputClientFilterInput,
 		ec.unmarshalInputMarketMk12DealFilterInput,
@@ -5245,7 +5245,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	)
 	first := true
 
-	switch rc.Operation.Operation {
+	switch opCtx.Operation.Operation {
 	case ast.Query:
 		return func(ctx context.Context) *graphql.Response {
 			var response graphql.Response
@@ -5253,7 +5253,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			if first {
 				first = false
 				ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-				data = ec._Query(ctx, rc.Operation.SelectionSet)
+				data = ec._Query(ctx, opCtx.Operation.SelectionSet)
 			} else {
 				if atomic.LoadInt32(&ec.pendingDeferred) > 0 {
 					result := <-ec.deferredResults
@@ -5283,7 +5283,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 			first = false
 			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
-			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
+			data := ec._Mutation(ctx, opCtx.Operation.SelectionSet)
 			var buf bytes.Buffer
 			data.MarshalGQL(&buf)
 
@@ -5292,7 +5292,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 		}
 	case ast.Subscription:
-		next := ec._Subscription(ctx, rc.Operation.SelectionSet)
+		next := ec._Subscription(ctx, opCtx.Operation.SelectionSet)
 
 		var buf bytes.Buffer
 		return func(ctx context.Context) *graphql.Response {
@@ -5355,7 +5355,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/actor_deadline.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/global.graphql" "schema/machine.graphql" "schema/machine_detail.graphql" "schema/machine_summary.graphql" "schema/market_balance.graphql" "schema/market_deal.graphql" "schema/market_setting.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline_summary.graphql" "schema/porep.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/sector_meta.graphql" "schema/sector_open.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/task_aggregate.graphql" "schema/task_history.graphql" "schema/task_summary.graphql" "schema/types.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/setting.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -5368,34 +5368,24 @@ func sourceData(filename string) string {
 
 var sources = []*ast.Source{
 	{Name: "schema/actor.graphql", Input: sourceData("schema/actor.graphql"), BuiltIn: false},
-	{Name: "schema/actor_deadline.graphql", Input: sourceData("schema/actor_deadline.graphql"), BuiltIn: false},
 	{Name: "schema/alert.graphql", Input: sourceData("schema/alert.graphql"), BuiltIn: false},
 	{Name: "schema/config.graphql", Input: sourceData("schema/config.graphql"), BuiltIn: false},
-	{Name: "schema/global.graphql", Input: sourceData("schema/global.graphql"), BuiltIn: false},
+	{Name: "schema/deal.graphql", Input: sourceData("schema/deal.graphql"), BuiltIn: false},
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
-	{Name: "schema/machine_detail.graphql", Input: sourceData("schema/machine_detail.graphql"), BuiltIn: false},
-	{Name: "schema/machine_summary.graphql", Input: sourceData("schema/machine_summary.graphql"), BuiltIn: false},
-	{Name: "schema/market_balance.graphql", Input: sourceData("schema/market_balance.graphql"), BuiltIn: false},
-	{Name: "schema/market_deal.graphql", Input: sourceData("schema/market_deal.graphql"), BuiltIn: false},
-	{Name: "schema/market_setting.graphql", Input: sourceData("schema/market_setting.graphql"), BuiltIn: false},
+	{Name: "schema/market.graphql", Input: sourceData("schema/market.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
 	{Name: "schema/metrics.graphql", Input: sourceData("schema/metrics.graphql"), BuiltIn: false},
 	{Name: "schema/miner.graphql", Input: sourceData("schema/miner.graphql"), BuiltIn: false},
 	{Name: "schema/mining.graphql", Input: sourceData("schema/mining.graphql"), BuiltIn: false},
 	{Name: "schema/mutation.graphql", Input: sourceData("schema/mutation.graphql"), BuiltIn: false},
 	{Name: "schema/node.graphql", Input: sourceData("schema/node.graphql"), BuiltIn: false},
-	{Name: "schema/pipeline_summary.graphql", Input: sourceData("schema/pipeline_summary.graphql"), BuiltIn: false},
-	{Name: "schema/porep.graphql", Input: sourceData("schema/porep.graphql"), BuiltIn: false},
+	{Name: "schema/pipeline.graphql", Input: sourceData("schema/pipeline.graphql"), BuiltIn: false},
 	{Name: "schema/query.graphql", Input: sourceData("schema/query.graphql"), BuiltIn: false},
 	{Name: "schema/sector.graphql", Input: sourceData("schema/sector.graphql"), BuiltIn: false},
-	{Name: "schema/sector_meta.graphql", Input: sourceData("schema/sector_meta.graphql"), BuiltIn: false},
-	{Name: "schema/sector_open.graphql", Input: sourceData("schema/sector_open.graphql"), BuiltIn: false},
+	{Name: "schema/setting.graphql", Input: sourceData("schema/setting.graphql"), BuiltIn: false},
 	{Name: "schema/storage.graphql", Input: sourceData("schema/storage.graphql"), BuiltIn: false},
 	{Name: "schema/subscription.graphql", Input: sourceData("schema/subscription.graphql"), BuiltIn: false},
 	{Name: "schema/task.graphql", Input: sourceData("schema/task.graphql"), BuiltIn: false},
-	{Name: "schema/task_aggregate.graphql", Input: sourceData("schema/task_aggregate.graphql"), BuiltIn: false},
-	{Name: "schema/task_history.graphql", Input: sourceData("schema/task_history.graphql"), BuiltIn: false},
-	{Name: "schema/task_summary.graphql", Input: sourceData("schema/task_summary.graphql"), BuiltIn: false},
 	{Name: "schema/types.graphql", Input: sourceData("schema/types.graphql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -5404,9 +5394,9 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Machine_taskHistories_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Machine_taskHistories_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Machine_taskHistories_argsLast(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5416,13 +5406,9 @@ func (ec *executionContext) field_Machine_taskHistories_args(ctx context.Context
 }
 func (ec *executionContext) field_Machine_taskHistories_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -5436,9 +5422,9 @@ func (ec *executionContext) field_Machine_taskHistories_argsLast(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_createConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_createConfig_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_createConfig_argsTitle(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5453,13 +5439,9 @@ func (ec *executionContext) field_Mutation_createConfig_args(ctx context.Context
 }
 func (ec *executionContext) field_Mutation_createConfig_argsTitle(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["title"]
-	if !ok {
+	if _, ok := rawArgs["title"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -5475,13 +5457,9 @@ func (ec *executionContext) field_Mutation_createConfig_argsTitle(
 
 func (ec *executionContext) field_Mutation_createConfig_argsConfig(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["config"]
-	if !ok {
+	if _, ok := rawArgs["config"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -5495,9 +5473,9 @@ func (ec *executionContext) field_Mutation_createConfig_argsConfig(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_dealSealNow_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_dealSealNow_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_dealSealNow_argsMiner(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5512,13 +5490,9 @@ func (ec *executionContext) field_Mutation_dealSealNow_args(ctx context.Context,
 }
 func (ec *executionContext) field_Mutation_dealSealNow_argsMiner(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["miner"]
-	if !ok {
+	if _, ok := rawArgs["miner"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -5534,13 +5508,9 @@ func (ec *executionContext) field_Mutation_dealSealNow_argsMiner(
 
 func (ec *executionContext) field_Mutation_dealSealNow_argsSectorNumber(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (uint64, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sectorNumber"]
-	if !ok {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
 		var zeroVal uint64
 		return zeroVal, nil
 	}
@@ -5554,9 +5524,9 @@ func (ec *executionContext) field_Mutation_dealSealNow_argsSectorNumber(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketAddBalance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketAddBalance_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketAddBalance_argsMiner(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5576,13 +5546,9 @@ func (ec *executionContext) field_Mutation_marketAddBalance_args(ctx context.Con
 }
 func (ec *executionContext) field_Mutation_marketAddBalance_argsMiner(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["miner"]
-	if !ok {
+	if _, ok := rawArgs["miner"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -5598,13 +5564,9 @@ func (ec *executionContext) field_Mutation_marketAddBalance_argsMiner(
 
 func (ec *executionContext) field_Mutation_marketAddBalance_argsWallet(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["wallet"]
-	if !ok {
+	if _, ok := rawArgs["wallet"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -5620,13 +5582,9 @@ func (ec *executionContext) field_Mutation_marketAddBalance_argsWallet(
 
 func (ec *executionContext) field_Mutation_marketAddBalance_argsAmount(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.FIL, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["amount"]
-	if !ok {
+	if _, ok := rawArgs["amount"]; !ok {
 		var zeroVal types.FIL
 		return zeroVal, nil
 	}
@@ -5640,9 +5598,9 @@ func (ec *executionContext) field_Mutation_marketAddBalance_argsAmount(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketAddClientFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketAddClientFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketAddClientFilter_argsInput(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5652,13 +5610,9 @@ func (ec *executionContext) field_Mutation_marketAddClientFilter_args(ctx contex
 }
 func (ec *executionContext) field_Mutation_marketAddClientFilter_argsInput(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.ClientFilterInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["input"]
-	if !ok {
+	if _, ok := rawArgs["input"]; !ok {
 		var zeroVal model.ClientFilterInput
 		return zeroVal, nil
 	}
@@ -5672,9 +5626,9 @@ func (ec *executionContext) field_Mutation_marketAddClientFilter_argsInput(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketAddPriceFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketAddPriceFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketAddPriceFilter_argsInput(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5684,13 +5638,9 @@ func (ec *executionContext) field_Mutation_marketAddPriceFilter_args(ctx context
 }
 func (ec *executionContext) field_Mutation_marketAddPriceFilter_argsInput(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.PriceFilterInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["input"]
-	if !ok {
+	if _, ok := rawArgs["input"]; !ok {
 		var zeroVal model.PriceFilterInput
 		return zeroVal, nil
 	}
@@ -5704,9 +5654,9 @@ func (ec *executionContext) field_Mutation_marketAddPriceFilter_argsInput(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketDeleteAllowFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketDeleteAllowFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketDeleteAllowFilter_argsWallet(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5716,13 +5666,9 @@ func (ec *executionContext) field_Mutation_marketDeleteAllowFilter_args(ctx cont
 }
 func (ec *executionContext) field_Mutation_marketDeleteAllowFilter_argsWallet(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["wallet"]
-	if !ok {
+	if _, ok := rawArgs["wallet"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -5736,9 +5682,9 @@ func (ec *executionContext) field_Mutation_marketDeleteAllowFilter_argsWallet(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketDeleteClientFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketDeleteClientFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketDeleteClientFilter_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5748,13 +5694,9 @@ func (ec *executionContext) field_Mutation_marketDeleteClientFilter_args(ctx con
 }
 func (ec *executionContext) field_Mutation_marketDeleteClientFilter_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -5768,9 +5710,9 @@ func (ec *executionContext) field_Mutation_marketDeleteClientFilter_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketDeletePriceFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketDeletePriceFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketDeletePriceFilter_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5780,13 +5722,9 @@ func (ec *executionContext) field_Mutation_marketDeletePriceFilter_args(ctx cont
 }
 func (ec *executionContext) field_Mutation_marketDeletePriceFilter_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -5800,9 +5738,9 @@ func (ec *executionContext) field_Mutation_marketDeletePriceFilter_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketSetAllowFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketSetAllowFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketSetAllowFilter_argsWallet(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5817,13 +5755,9 @@ func (ec *executionContext) field_Mutation_marketSetAllowFilter_args(ctx context
 }
 func (ec *executionContext) field_Mutation_marketSetAllowFilter_argsWallet(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["wallet"]
-	if !ok {
+	if _, ok := rawArgs["wallet"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -5839,13 +5773,9 @@ func (ec *executionContext) field_Mutation_marketSetAllowFilter_argsWallet(
 
 func (ec *executionContext) field_Mutation_marketSetAllowFilter_argsStatus(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["status"]
-	if !ok {
+	if _, ok := rawArgs["status"]; !ok {
 		var zeroVal bool
 		return zeroVal, nil
 	}
@@ -5859,9 +5789,9 @@ func (ec *executionContext) field_Mutation_marketSetAllowFilter_argsStatus(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketToggleAllowFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketToggleAllowFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketToggleAllowFilter_argsWallet(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5871,13 +5801,9 @@ func (ec *executionContext) field_Mutation_marketToggleAllowFilter_args(ctx cont
 }
 func (ec *executionContext) field_Mutation_marketToggleAllowFilter_argsWallet(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["wallet"]
-	if !ok {
+	if _, ok := rawArgs["wallet"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -5891,9 +5817,9 @@ func (ec *executionContext) field_Mutation_marketToggleAllowFilter_argsWallet(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketToggleClientFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketToggleClientFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketToggleClientFilter_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5903,13 +5829,9 @@ func (ec *executionContext) field_Mutation_marketToggleClientFilter_args(ctx con
 }
 func (ec *executionContext) field_Mutation_marketToggleClientFilter_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -5923,9 +5845,9 @@ func (ec *executionContext) field_Mutation_marketToggleClientFilter_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketUpdateClientFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketUpdateClientFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketUpdateClientFilter_argsInput(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5935,13 +5857,9 @@ func (ec *executionContext) field_Mutation_marketUpdateClientFilter_args(ctx con
 }
 func (ec *executionContext) field_Mutation_marketUpdateClientFilter_argsInput(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.ClientFilterInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["input"]
-	if !ok {
+	if _, ok := rawArgs["input"]; !ok {
 		var zeroVal model.ClientFilterInput
 		return zeroVal, nil
 	}
@@ -5955,9 +5873,9 @@ func (ec *executionContext) field_Mutation_marketUpdateClientFilter_argsInput(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_marketUpdatePriceFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_marketUpdatePriceFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_marketUpdatePriceFilter_argsInput(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5967,13 +5885,9 @@ func (ec *executionContext) field_Mutation_marketUpdatePriceFilter_args(ctx cont
 }
 func (ec *executionContext) field_Mutation_marketUpdatePriceFilter_argsInput(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.PriceFilterInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["input"]
-	if !ok {
+	if _, ok := rawArgs["input"]; !ok {
 		var zeroVal model.PriceFilterInput
 		return zeroVal, nil
 	}
@@ -5987,9 +5901,9 @@ func (ec *executionContext) field_Mutation_marketUpdatePriceFilter_argsInput(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_removeConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_removeConfig_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_removeConfig_argsTitle(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -5999,13 +5913,9 @@ func (ec *executionContext) field_Mutation_removeConfig_args(ctx context.Context
 }
 func (ec *executionContext) field_Mutation_removeConfig_argsTitle(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["title"]
-	if !ok {
+	if _, ok := rawArgs["title"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6019,9 +5929,9 @@ func (ec *executionContext) field_Mutation_removeConfig_argsTitle(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_removeSector_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_removeSector_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_removeSector_argsMiner(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6036,13 +5946,9 @@ func (ec *executionContext) field_Mutation_removeSector_args(ctx context.Context
 }
 func (ec *executionContext) field_Mutation_removeSector_argsMiner(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["miner"]
-	if !ok {
+	if _, ok := rawArgs["miner"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -6058,13 +5964,9 @@ func (ec *executionContext) field_Mutation_removeSector_argsMiner(
 
 func (ec *executionContext) field_Mutation_removeSector_argsSectorNumber(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sectorNumber"]
-	if !ok {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -6078,9 +5980,9 @@ func (ec *executionContext) field_Mutation_removeSector_argsSectorNumber(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_restartSector_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_restartSector_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_restartSector_argsMiner(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6095,13 +5997,9 @@ func (ec *executionContext) field_Mutation_restartSector_args(ctx context.Contex
 }
 func (ec *executionContext) field_Mutation_restartSector_argsMiner(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["miner"]
-	if !ok {
+	if _, ok := rawArgs["miner"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -6117,13 +6015,9 @@ func (ec *executionContext) field_Mutation_restartSector_argsMiner(
 
 func (ec *executionContext) field_Mutation_restartSector_argsSectorNumber(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sectorNumber"]
-	if !ok {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -6137,9 +6031,9 @@ func (ec *executionContext) field_Mutation_restartSector_argsSectorNumber(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_updateConfig_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_updateConfig_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_updateConfig_argsTitle(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6154,13 +6048,9 @@ func (ec *executionContext) field_Mutation_updateConfig_args(ctx context.Context
 }
 func (ec *executionContext) field_Mutation_updateConfig_argsTitle(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["title"]
-	if !ok {
+	if _, ok := rawArgs["title"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6176,13 +6066,9 @@ func (ec *executionContext) field_Mutation_updateConfig_argsTitle(
 
 func (ec *executionContext) field_Mutation_updateConfig_argsConfig(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["config"]
-	if !ok {
+	if _, ok := rawArgs["config"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6196,9 +6082,9 @@ func (ec *executionContext) field_Mutation_updateConfig_argsConfig(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Mutation_updateMarketMk12StorageAsk_argsInput(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6208,13 +6094,9 @@ func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_args(ctx c
 }
 func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_argsInput(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.MarketMk12StorageAskInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["input"]
-	if !ok {
+	if _, ok := rawArgs["input"]; !ok {
 		var zeroVal model.MarketMk12StorageAskInput
 		return zeroVal, nil
 	}
@@ -6228,9 +6110,9 @@ func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_argsInput(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query___type_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6240,13 +6122,9 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 }
 func (ec *executionContext) field_Query___type_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6260,9 +6138,9 @@ func (ec *executionContext) field_Query___type_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_actor_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_actor_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_actor_argsAddress(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6272,13 +6150,9 @@ func (ec *executionContext) field_Query_actor_args(ctx context.Context, rawArgs 
 }
 func (ec *executionContext) field_Query_actor_argsAddress(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["address"]
-	if !ok {
+	if _, ok := rawArgs["address"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -6292,9 +6166,9 @@ func (ec *executionContext) field_Query_actor_argsAddress(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_config_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_config_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_config_argsLayer(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6304,13 +6178,9 @@ func (ec *executionContext) field_Query_config_args(ctx context.Context, rawArgs
 }
 func (ec *executionContext) field_Query_config_argsLayer(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["layer"]
-	if !ok {
+	if _, ok := rawArgs["layer"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6324,9 +6194,9 @@ func (ec *executionContext) field_Query_config_argsLayer(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_machine_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_machine_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_machine_argsID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6336,13 +6206,9 @@ func (ec *executionContext) field_Query_machine_args(ctx context.Context, rawArg
 }
 func (ec *executionContext) field_Query_machine_argsID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["id"]
-	if !ok {
+	if _, ok := rawArgs["id"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -6356,9 +6222,9 @@ func (ec *executionContext) field_Query_machine_argsID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketAllowFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketAllowFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketAllowFilter_argsWallet(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6368,13 +6234,9 @@ func (ec *executionContext) field_Query_marketAllowFilter_args(ctx context.Conte
 }
 func (ec *executionContext) field_Query_marketAllowFilter_argsWallet(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["wallet"]
-	if !ok {
+	if _, ok := rawArgs["wallet"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -6388,9 +6250,9 @@ func (ec *executionContext) field_Query_marketAllowFilter_argsWallet(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketBalance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketBalance_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketBalance_argsMiner(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6400,13 +6262,9 @@ func (ec *executionContext) field_Query_marketBalance_args(ctx context.Context, 
 }
 func (ec *executionContext) field_Query_marketBalance_argsMiner(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["miner"]
-	if !ok {
+	if _, ok := rawArgs["miner"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -6420,9 +6278,9 @@ func (ec *executionContext) field_Query_marketBalance_argsMiner(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketCheckClientFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketCheckClientFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketCheckClientFilter_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6432,13 +6290,9 @@ func (ec *executionContext) field_Query_marketCheckClientFilter_args(ctx context
 }
 func (ec *executionContext) field_Query_marketCheckClientFilter_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6452,9 +6306,9 @@ func (ec *executionContext) field_Query_marketCheckClientFilter_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketCheckPriceFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketCheckPriceFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketCheckPriceFilter_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6464,13 +6318,9 @@ func (ec *executionContext) field_Query_marketCheckPriceFilter_args(ctx context.
 }
 func (ec *executionContext) field_Query_marketCheckPriceFilter_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6484,9 +6334,9 @@ func (ec *executionContext) field_Query_marketCheckPriceFilter_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketClientFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketClientFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketClientFilter_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6496,13 +6346,9 @@ func (ec *executionContext) field_Query_marketClientFilter_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_marketClientFilter_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6516,9 +6362,9 @@ func (ec *executionContext) field_Query_marketClientFilter_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketDealInfo_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketDealInfo_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketDealInfo_argsID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6528,13 +6374,9 @@ func (ec *executionContext) field_Query_marketDealInfo_args(ctx context.Context,
 }
 func (ec *executionContext) field_Query_marketDealInfo_argsID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["id"]
-	if !ok {
+	if _, ok := rawArgs["id"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6548,9 +6390,9 @@ func (ec *executionContext) field_Query_marketDealInfo_argsID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketMk12DealsCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketMk12DealsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketMk12DealsCount_argsFilter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6560,13 +6402,9 @@ func (ec *executionContext) field_Query_marketMk12DealsCount_args(ctx context.Co
 }
 func (ec *executionContext) field_Query_marketMk12DealsCount_argsFilter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.MarketMk12DealFilterInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["filter"]
-	if !ok {
+	if _, ok := rawArgs["filter"]; !ok {
 		var zeroVal model.MarketMk12DealFilterInput
 		return zeroVal, nil
 	}
@@ -6580,9 +6418,9 @@ func (ec *executionContext) field_Query_marketMk12DealsCount_argsFilter(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketMk12Deals_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketMk12Deals_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketMk12Deals_argsFilter(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6602,13 +6440,9 @@ func (ec *executionContext) field_Query_marketMk12Deals_args(ctx context.Context
 }
 func (ec *executionContext) field_Query_marketMk12Deals_argsFilter(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.MarketMk12DealFilterInput, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["filter"]
-	if !ok {
+	if _, ok := rawArgs["filter"]; !ok {
 		var zeroVal model.MarketMk12DealFilterInput
 		return zeroVal, nil
 	}
@@ -6624,13 +6458,9 @@ func (ec *executionContext) field_Query_marketMk12Deals_argsFilter(
 
 func (ec *executionContext) field_Query_marketMk12Deals_argsLimit(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["limit"]
-	if !ok {
+	if _, ok := rawArgs["limit"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -6646,13 +6476,9 @@ func (ec *executionContext) field_Query_marketMk12Deals_argsLimit(
 
 func (ec *executionContext) field_Query_marketMk12Deals_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -6666,9 +6492,9 @@ func (ec *executionContext) field_Query_marketMk12Deals_argsOffset(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketMk12StorageAsk_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketMk12StorageAsk_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketMk12StorageAsk_argsSpID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6678,13 +6504,9 @@ func (ec *executionContext) field_Query_marketMk12StorageAsk_args(ctx context.Co
 }
 func (ec *executionContext) field_Query_marketMk12StorageAsk_argsSpID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["spId"]
-	if !ok {
+	if _, ok := rawArgs["spId"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -6698,9 +6520,9 @@ func (ec *executionContext) field_Query_marketMk12StorageAsk_argsSpID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_marketPriceFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_marketPriceFilter_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_marketPriceFilter_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6710,13 +6532,9 @@ func (ec *executionContext) field_Query_marketPriceFilter_args(ctx context.Conte
 }
 func (ec *executionContext) field_Query_marketPriceFilter_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -6730,9 +6548,9 @@ func (ec *executionContext) field_Query_marketPriceFilter_argsName(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_messageSend_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_messageSend_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_messageSend_argsSendTaskID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6757,13 +6575,9 @@ func (ec *executionContext) field_Query_messageSend_args(ctx context.Context, ra
 }
 func (ec *executionContext) field_Query_messageSend_argsSendTaskID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sendTaskId"]
-	if !ok {
+	if _, ok := rawArgs["sendTaskId"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -6779,13 +6593,9 @@ func (ec *executionContext) field_Query_messageSend_argsSendTaskID(
 
 func (ec *executionContext) field_Query_messageSend_argsFromKey(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["fromKey"]
-	if !ok {
+	if _, ok := rawArgs["fromKey"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6801,13 +6611,9 @@ func (ec *executionContext) field_Query_messageSend_argsFromKey(
 
 func (ec *executionContext) field_Query_messageSend_argsNonce(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["nonce"]
-	if !ok {
+	if _, ok := rawArgs["nonce"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -6823,13 +6629,9 @@ func (ec *executionContext) field_Query_messageSend_argsNonce(
 
 func (ec *executionContext) field_Query_messageSend_argsSignedCid(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["signedCID"]
-	if !ok {
+	if _, ok := rawArgs["signedCID"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -6843,9 +6645,9 @@ func (ec *executionContext) field_Query_messageSend_argsSignedCid(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_messageSendsCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_messageSendsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_messageSendsCount_argsAccount(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6855,13 +6657,9 @@ func (ec *executionContext) field_Query_messageSendsCount_args(ctx context.Conte
 }
 func (ec *executionContext) field_Query_messageSendsCount_argsAccount(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["account"]
-	if !ok {
+	if _, ok := rawArgs["account"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -6875,9 +6673,9 @@ func (ec *executionContext) field_Query_messageSendsCount_argsAccount(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_messageSends_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_messageSends_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_messageSends_argsAccount(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6897,13 +6695,9 @@ func (ec *executionContext) field_Query_messageSends_args(ctx context.Context, r
 }
 func (ec *executionContext) field_Query_messageSends_argsAccount(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["account"]
-	if !ok {
+	if _, ok := rawArgs["account"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -6919,13 +6713,9 @@ func (ec *executionContext) field_Query_messageSends_argsAccount(
 
 func (ec *executionContext) field_Query_messageSends_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -6941,13 +6731,9 @@ func (ec *executionContext) field_Query_messageSends_argsOffset(
 
 func (ec *executionContext) field_Query_messageSends_argsLimit(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["limit"]
-	if !ok {
+	if _, ok := rawArgs["limit"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -6961,9 +6747,9 @@ func (ec *executionContext) field_Query_messageSends_argsLimit(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_metricsActiveTasks_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_metricsActiveTasks_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_metricsActiveTasks_argsLastDays(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -6978,13 +6764,9 @@ func (ec *executionContext) field_Query_metricsActiveTasks_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_metricsActiveTasks_argsLastDays(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["lastDays"]
-	if !ok {
+	if _, ok := rawArgs["lastDays"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -7000,13 +6782,9 @@ func (ec *executionContext) field_Query_metricsActiveTasks_argsLastDays(
 
 func (ec *executionContext) field_Query_metricsActiveTasks_argsMachine(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["machine"]
-	if !ok {
+	if _, ok := rawArgs["machine"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -7020,9 +6798,9 @@ func (ec *executionContext) field_Query_metricsActiveTasks_argsMachine(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_minerPower_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_minerPower_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_minerPower_argsAddress(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7032,13 +6810,9 @@ func (ec *executionContext) field_Query_minerPower_args(ctx context.Context, raw
 }
 func (ec *executionContext) field_Query_minerPower_argsAddress(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["address"]
-	if !ok {
+	if _, ok := rawArgs["address"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7052,9 +6826,9 @@ func (ec *executionContext) field_Query_minerPower_argsAddress(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miner_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miner_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miner_argsAddress(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7064,13 +6838,9 @@ func (ec *executionContext) field_Query_miner_args(ctx context.Context, rawArgs 
 }
 func (ec *executionContext) field_Query_miner_argsAddress(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["address"]
-	if !ok {
+	if _, ok := rawArgs["address"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -7084,9 +6854,9 @@ func (ec *executionContext) field_Query_miner_argsAddress(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miningCountAggregate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miningCountAggregate_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miningCountAggregate_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7111,13 +6881,9 @@ func (ec *executionContext) field_Query_miningCountAggregate_args(ctx context.Co
 }
 func (ec *executionContext) field_Query_miningCountAggregate_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7133,13 +6899,9 @@ func (ec *executionContext) field_Query_miningCountAggregate_argsStart(
 
 func (ec *executionContext) field_Query_miningCountAggregate_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7155,13 +6917,9 @@ func (ec *executionContext) field_Query_miningCountAggregate_argsEnd(
 
 func (ec *executionContext) field_Query_miningCountAggregate_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7177,13 +6935,9 @@ func (ec *executionContext) field_Query_miningCountAggregate_argsActor(
 
 func (ec *executionContext) field_Query_miningCountAggregate_argsInterval(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.MiningTaskAggregateInterval, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["interval"]
-	if !ok {
+	if _, ok := rawArgs["interval"]; !ok {
 		var zeroVal model.MiningTaskAggregateInterval
 		return zeroVal, nil
 	}
@@ -7197,9 +6951,9 @@ func (ec *executionContext) field_Query_miningCountAggregate_argsInterval(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miningCountSummary_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miningCountSummary_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miningCountSummary_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7219,13 +6973,9 @@ func (ec *executionContext) field_Query_miningCountSummary_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_miningCountSummary_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7241,13 +6991,9 @@ func (ec *executionContext) field_Query_miningCountSummary_argsStart(
 
 func (ec *executionContext) field_Query_miningCountSummary_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7263,13 +7009,9 @@ func (ec *executionContext) field_Query_miningCountSummary_argsEnd(
 
 func (ec *executionContext) field_Query_miningCountSummary_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7283,9 +7025,9 @@ func (ec *executionContext) field_Query_miningCountSummary_argsActor(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miningCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miningCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miningCount_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7305,13 +7047,9 @@ func (ec *executionContext) field_Query_miningCount_args(ctx context.Context, ra
 }
 func (ec *executionContext) field_Query_miningCount_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7327,13 +7065,9 @@ func (ec *executionContext) field_Query_miningCount_argsStart(
 
 func (ec *executionContext) field_Query_miningCount_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7349,13 +7083,9 @@ func (ec *executionContext) field_Query_miningCount_argsEnd(
 
 func (ec *executionContext) field_Query_miningCount_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7369,9 +7099,9 @@ func (ec *executionContext) field_Query_miningCount_argsActor(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miningStatusSummay_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miningStatusSummay_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miningStatusSummay_argsSpID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7391,13 +7121,9 @@ func (ec *executionContext) field_Query_miningStatusSummay_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_miningStatusSummay_argsSpID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.ActorID, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["spID"]
-	if !ok {
+	if _, ok := rawArgs["spID"]; !ok {
 		var zeroVal *types.ActorID
 		return zeroVal, nil
 	}
@@ -7413,13 +7139,9 @@ func (ec *executionContext) field_Query_miningStatusSummay_argsSpID(
 
 func (ec *executionContext) field_Query_miningStatusSummay_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7435,13 +7157,9 @@ func (ec *executionContext) field_Query_miningStatusSummay_argsStart(
 
 func (ec *executionContext) field_Query_miningStatusSummay_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7455,9 +7173,9 @@ func (ec *executionContext) field_Query_miningStatusSummay_argsEnd(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miningSummaryByDay_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miningSummaryByDay_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miningSummaryByDay_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7472,13 +7190,9 @@ func (ec *executionContext) field_Query_miningSummaryByDay_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_miningSummaryByDay_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7494,13 +7208,9 @@ func (ec *executionContext) field_Query_miningSummaryByDay_argsStart(
 
 func (ec *executionContext) field_Query_miningSummaryByDay_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -7514,9 +7224,9 @@ func (ec *executionContext) field_Query_miningSummaryByDay_argsEnd(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miningWinsCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miningWinsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miningWinsCount_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7541,13 +7251,9 @@ func (ec *executionContext) field_Query_miningWinsCount_args(ctx context.Context
 }
 func (ec *executionContext) field_Query_miningWinsCount_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -7563,13 +7269,9 @@ func (ec *executionContext) field_Query_miningWinsCount_argsStart(
 
 func (ec *executionContext) field_Query_miningWinsCount_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -7585,13 +7287,9 @@ func (ec *executionContext) field_Query_miningWinsCount_argsEnd(
 
 func (ec *executionContext) field_Query_miningWinsCount_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7607,13 +7305,9 @@ func (ec *executionContext) field_Query_miningWinsCount_argsActor(
 
 func (ec *executionContext) field_Query_miningWinsCount_argsInclude(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["include"]
-	if !ok {
+	if _, ok := rawArgs["include"]; !ok {
 		var zeroVal *bool
 		return zeroVal, nil
 	}
@@ -7627,9 +7321,9 @@ func (ec *executionContext) field_Query_miningWinsCount_argsInclude(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_miningWins_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_miningWins_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_miningWins_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7664,13 +7358,9 @@ func (ec *executionContext) field_Query_miningWins_args(ctx context.Context, raw
 }
 func (ec *executionContext) field_Query_miningWins_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -7686,13 +7376,9 @@ func (ec *executionContext) field_Query_miningWins_argsStart(
 
 func (ec *executionContext) field_Query_miningWins_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -7708,13 +7394,9 @@ func (ec *executionContext) field_Query_miningWins_argsEnd(
 
 func (ec *executionContext) field_Query_miningWins_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7730,13 +7412,9 @@ func (ec *executionContext) field_Query_miningWins_argsActor(
 
 func (ec *executionContext) field_Query_miningWins_argsInclude(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["include"]
-	if !ok {
+	if _, ok := rawArgs["include"]; !ok {
 		var zeroVal *bool
 		return zeroVal, nil
 	}
@@ -7752,13 +7430,9 @@ func (ec *executionContext) field_Query_miningWins_argsInclude(
 
 func (ec *executionContext) field_Query_miningWins_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -7774,13 +7448,9 @@ func (ec *executionContext) field_Query_miningWins_argsOffset(
 
 func (ec *executionContext) field_Query_miningWins_argsLimit(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["limit"]
-	if !ok {
+	if _, ok := rawArgs["limit"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -7794,9 +7464,9 @@ func (ec *executionContext) field_Query_miningWins_argsLimit(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_porep_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_porep_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_porep_argsSp(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7811,13 +7481,9 @@ func (ec *executionContext) field_Query_porep_args(ctx context.Context, rawArgs 
 }
 func (ec *executionContext) field_Query_porep_argsSp(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sp"]
-	if !ok {
+	if _, ok := rawArgs["sp"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -7833,13 +7499,9 @@ func (ec *executionContext) field_Query_porep_argsSp(
 
 func (ec *executionContext) field_Query_porep_argsSectorNumber(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sectorNumber"]
-	if !ok {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -7853,9 +7515,9 @@ func (ec *executionContext) field_Query_porep_argsSectorNumber(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_sector_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_sector_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_sector_argsActor(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7870,13 +7532,9 @@ func (ec *executionContext) field_Query_sector_args(ctx context.Context, rawArgs
 }
 func (ec *executionContext) field_Query_sector_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal types.Address
 		return zeroVal, nil
 	}
@@ -7892,13 +7550,9 @@ func (ec *executionContext) field_Query_sector_argsActor(
 
 func (ec *executionContext) field_Query_sector_argsSectorNumber(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sectorNumber"]
-	if !ok {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -7912,9 +7566,9 @@ func (ec *executionContext) field_Query_sector_argsSectorNumber(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_sectorsCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_sectorsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_sectorsCount_argsActor(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7924,13 +7578,9 @@ func (ec *executionContext) field_Query_sectorsCount_args(ctx context.Context, r
 }
 func (ec *executionContext) field_Query_sectorsCount_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7944,9 +7594,9 @@ func (ec *executionContext) field_Query_sectorsCount_argsActor(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_sectors_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_sectors_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_sectors_argsActor(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -7971,13 +7621,9 @@ func (ec *executionContext) field_Query_sectors_args(ctx context.Context, rawArg
 }
 func (ec *executionContext) field_Query_sectors_argsActor(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*types.Address, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["actor"]
-	if !ok {
+	if _, ok := rawArgs["actor"]; !ok {
 		var zeroVal *types.Address
 		return zeroVal, nil
 	}
@@ -7993,13 +7639,9 @@ func (ec *executionContext) field_Query_sectors_argsActor(
 
 func (ec *executionContext) field_Query_sectors_argsSectorNumber(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["sectorNumber"]
-	if !ok {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -8015,13 +7657,9 @@ func (ec *executionContext) field_Query_sectors_argsSectorNumber(
 
 func (ec *executionContext) field_Query_sectors_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -8037,13 +7675,9 @@ func (ec *executionContext) field_Query_sectors_argsOffset(
 
 func (ec *executionContext) field_Query_sectors_argsLimit(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["limit"]
-	if !ok {
+	if _, ok := rawArgs["limit"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -8057,9 +7691,9 @@ func (ec *executionContext) field_Query_sectors_argsLimit(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_storage_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_storage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_storage_argsID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8069,13 +7703,9 @@ func (ec *executionContext) field_Query_storage_args(ctx context.Context, rawArg
 }
 func (ec *executionContext) field_Query_storage_argsID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["id"]
-	if !ok {
+	if _, ok := rawArgs["id"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -8089,9 +7719,9 @@ func (ec *executionContext) field_Query_storage_argsID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_taskDurationStats_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_taskDurationStats_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_taskDurationStats_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8111,13 +7741,9 @@ func (ec *executionContext) field_Query_taskDurationStats_args(ctx context.Conte
 }
 func (ec *executionContext) field_Query_taskDurationStats_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal string
 		return zeroVal, nil
 	}
@@ -8133,13 +7759,9 @@ func (ec *executionContext) field_Query_taskDurationStats_argsName(
 
 func (ec *executionContext) field_Query_taskDurationStats_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8155,13 +7777,9 @@ func (ec *executionContext) field_Query_taskDurationStats_argsStart(
 
 func (ec *executionContext) field_Query_taskDurationStats_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8175,9 +7793,9 @@ func (ec *executionContext) field_Query_taskDurationStats_argsEnd(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_taskHistoriesAggregate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_taskHistoriesAggregate_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_taskHistoriesAggregate_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8197,13 +7815,9 @@ func (ec *executionContext) field_Query_taskHistoriesAggregate_args(ctx context.
 }
 func (ec *executionContext) field_Query_taskHistoriesAggregate_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8219,13 +7833,9 @@ func (ec *executionContext) field_Query_taskHistoriesAggregate_argsStart(
 
 func (ec *executionContext) field_Query_taskHistoriesAggregate_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8241,13 +7851,9 @@ func (ec *executionContext) field_Query_taskHistoriesAggregate_argsEnd(
 
 func (ec *executionContext) field_Query_taskHistoriesAggregate_argsInterval(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (model.TaskHistoriesAggregateInterval, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["interval"]
-	if !ok {
+	if _, ok := rawArgs["interval"]; !ok {
 		var zeroVal model.TaskHistoriesAggregateInterval
 		return zeroVal, nil
 	}
@@ -8261,9 +7867,9 @@ func (ec *executionContext) field_Query_taskHistoriesAggregate_argsInterval(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_taskHistoriesCount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_taskHistoriesCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_taskHistoriesCount_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8293,13 +7899,9 @@ func (ec *executionContext) field_Query_taskHistoriesCount_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_taskHistoriesCount_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -8315,13 +7917,9 @@ func (ec *executionContext) field_Query_taskHistoriesCount_argsStart(
 
 func (ec *executionContext) field_Query_taskHistoriesCount_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -8337,13 +7935,9 @@ func (ec *executionContext) field_Query_taskHistoriesCount_argsEnd(
 
 func (ec *executionContext) field_Query_taskHistoriesCount_argsHostPort(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["hostPort"]
-	if !ok {
+	if _, ok := rawArgs["hostPort"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -8359,13 +7953,9 @@ func (ec *executionContext) field_Query_taskHistoriesCount_argsHostPort(
 
 func (ec *executionContext) field_Query_taskHistoriesCount_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -8381,13 +7971,9 @@ func (ec *executionContext) field_Query_taskHistoriesCount_argsName(
 
 func (ec *executionContext) field_Query_taskHistoriesCount_argsResult(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["result"]
-	if !ok {
+	if _, ok := rawArgs["result"]; !ok {
 		var zeroVal *bool
 		return zeroVal, nil
 	}
@@ -8401,9 +7987,9 @@ func (ec *executionContext) field_Query_taskHistoriesCount_argsResult(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_taskHistories_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_taskHistories_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_taskHistories_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8443,13 +8029,9 @@ func (ec *executionContext) field_Query_taskHistories_args(ctx context.Context, 
 }
 func (ec *executionContext) field_Query_taskHistories_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -8465,13 +8047,9 @@ func (ec *executionContext) field_Query_taskHistories_argsStart(
 
 func (ec *executionContext) field_Query_taskHistories_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal *time.Time
 		return zeroVal, nil
 	}
@@ -8487,13 +8065,9 @@ func (ec *executionContext) field_Query_taskHistories_argsEnd(
 
 func (ec *executionContext) field_Query_taskHistories_argsHostPort(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["hostPort"]
-	if !ok {
+	if _, ok := rawArgs["hostPort"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -8509,13 +8083,9 @@ func (ec *executionContext) field_Query_taskHistories_argsHostPort(
 
 func (ec *executionContext) field_Query_taskHistories_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -8531,13 +8101,9 @@ func (ec *executionContext) field_Query_taskHistories_argsName(
 
 func (ec *executionContext) field_Query_taskHistories_argsResult(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["result"]
-	if !ok {
+	if _, ok := rawArgs["result"]; !ok {
 		var zeroVal *bool
 		return zeroVal, nil
 	}
@@ -8553,13 +8119,9 @@ func (ec *executionContext) field_Query_taskHistories_argsResult(
 
 func (ec *executionContext) field_Query_taskHistories_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -8575,13 +8137,9 @@ func (ec *executionContext) field_Query_taskHistories_argsOffset(
 
 func (ec *executionContext) field_Query_taskHistories_argsLimit(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["limit"]
-	if !ok {
+	if _, ok := rawArgs["limit"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -8595,9 +8153,9 @@ func (ec *executionContext) field_Query_taskHistories_argsLimit(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_taskSuccessRate_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_taskSuccessRate_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_taskSuccessRate_argsName(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8617,13 +8175,9 @@ func (ec *executionContext) field_Query_taskSuccessRate_args(ctx context.Context
 }
 func (ec *executionContext) field_Query_taskSuccessRate_argsName(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["name"]
-	if !ok {
+	if _, ok := rawArgs["name"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -8639,13 +8193,9 @@ func (ec *executionContext) field_Query_taskSuccessRate_argsName(
 
 func (ec *executionContext) field_Query_taskSuccessRate_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8661,13 +8211,9 @@ func (ec *executionContext) field_Query_taskSuccessRate_argsStart(
 
 func (ec *executionContext) field_Query_taskSuccessRate_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8681,9 +8227,9 @@ func (ec *executionContext) field_Query_taskSuccessRate_argsEnd(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_task_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_task_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_task_argsID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8693,13 +8239,9 @@ func (ec *executionContext) field_Query_task_args(ctx context.Context, rawArgs m
 }
 func (ec *executionContext) field_Query_task_argsID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["id"]
-	if !ok {
+	if _, ok := rawArgs["id"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -8713,9 +8255,9 @@ func (ec *executionContext) field_Query_task_argsID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_tasksDurationStats_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_tasksDurationStats_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_tasksDurationStats_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8730,13 +8272,9 @@ func (ec *executionContext) field_Query_tasksDurationStats_args(ctx context.Cont
 }
 func (ec *executionContext) field_Query_tasksDurationStats_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8752,13 +8290,9 @@ func (ec *executionContext) field_Query_tasksDurationStats_argsStart(
 
 func (ec *executionContext) field_Query_tasksDurationStats_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8772,9 +8306,9 @@ func (ec *executionContext) field_Query_tasksDurationStats_argsEnd(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_tasksStats_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_tasksStats_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Query_tasksStats_argsStart(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8794,13 +8328,9 @@ func (ec *executionContext) field_Query_tasksStats_args(ctx context.Context, raw
 }
 func (ec *executionContext) field_Query_tasksStats_argsStart(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["start"]
-	if !ok {
+	if _, ok := rawArgs["start"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8816,13 +8346,9 @@ func (ec *executionContext) field_Query_tasksStats_argsStart(
 
 func (ec *executionContext) field_Query_tasksStats_argsEnd(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (time.Time, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["end"]
-	if !ok {
+	if _, ok := rawArgs["end"]; !ok {
 		var zeroVal time.Time
 		return zeroVal, nil
 	}
@@ -8838,13 +8364,9 @@ func (ec *executionContext) field_Query_tasksStats_argsEnd(
 
 func (ec *executionContext) field_Query_tasksStats_argsMachine(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["machine"]
-	if !ok {
+	if _, ok := rawArgs["machine"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -8858,9 +8380,9 @@ func (ec *executionContext) field_Query_tasksStats_argsMachine(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Subscription_alerts_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Subscription_alerts_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Subscription_alerts_argsOffset(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8870,13 +8392,9 @@ func (ec *executionContext) field_Subscription_alerts_args(ctx context.Context, 
 }
 func (ec *executionContext) field_Subscription_alerts_argsOffset(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["offset"]
-	if !ok {
+	if _, ok := rawArgs["offset"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -8890,9 +8408,9 @@ func (ec *executionContext) field_Subscription_alerts_argsOffset(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Subscription_completedTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Subscription_completedTask_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Subscription_completedTask_argsMachine(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8907,13 +8425,9 @@ func (ec *executionContext) field_Subscription_completedTask_args(ctx context.Co
 }
 func (ec *executionContext) field_Subscription_completedTask_argsMachine(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*string, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["machine"]
-	if !ok {
+	if _, ok := rawArgs["machine"]; !ok {
 		var zeroVal *string
 		return zeroVal, nil
 	}
@@ -8929,13 +8443,9 @@ func (ec *executionContext) field_Subscription_completedTask_argsMachine(
 
 func (ec *executionContext) field_Subscription_completedTask_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -8949,9 +8459,9 @@ func (ec *executionContext) field_Subscription_completedTask_argsLast(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Subscription_newTask_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Subscription_newTask_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field_Subscription_newTask_argsMachineID(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -8966,13 +8476,9 @@ func (ec *executionContext) field_Subscription_newTask_args(ctx context.Context,
 }
 func (ec *executionContext) field_Subscription_newTask_argsMachineID(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (*int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["machineID"]
-	if !ok {
+	if _, ok := rawArgs["machineID"]; !ok {
 		var zeroVal *int
 		return zeroVal, nil
 	}
@@ -8988,13 +8494,9 @@ func (ec *executionContext) field_Subscription_newTask_argsMachineID(
 
 func (ec *executionContext) field_Subscription_newTask_argsLast(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (int, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["last"]
-	if !ok {
+	if _, ok := rawArgs["last"]; !ok {
 		var zeroVal int
 		return zeroVal, nil
 	}
@@ -9008,9 +8510,65 @@ func (ec *executionContext) field_Subscription_newTask_argsLast(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field___Directive_args_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
+	arg0, err := ec.field___Directive_args_argsIncludeDeprecated(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["includeDeprecated"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field___Directive_args_argsIncludeDeprecated(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*bool, error) {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
+	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field___Field_args_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field___Field_args_argsIncludeDeprecated(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["includeDeprecated"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field___Field_args_argsIncludeDeprecated(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*bool, error) {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("includeDeprecated"))
+	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
 	arg0, err := ec.field___Type_enumValues_argsIncludeDeprecated(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -9020,13 +8578,9 @@ func (ec *executionContext) field___Type_enumValues_args(ctx context.Context, ra
 }
 func (ec *executionContext) field___Type_enumValues_argsIncludeDeprecated(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["includeDeprecated"]
-	if !ok {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
 		var zeroVal bool
 		return zeroVal, nil
 	}
@@ -9040,9 +8594,9 @@ func (ec *executionContext) field___Type_enumValues_argsIncludeDeprecated(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
-	args := map[string]interface{}{}
+	args := map[string]any{}
 	arg0, err := ec.field___Type_fields_argsIncludeDeprecated(ctx, rawArgs)
 	if err != nil {
 		return nil, err
@@ -9052,13 +8606,9 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 }
 func (ec *executionContext) field___Type_fields_argsIncludeDeprecated(
 	ctx context.Context,
-	rawArgs map[string]interface{},
+	rawArgs map[string]any,
 ) (bool, error) {
-	// We won't call the directive if the argument is null.
-	// Set call_argument_directives_with_null to true to call directives
-	// even if the argument is null.
-	_, ok := rawArgs["includeDeprecated"]
-	if !ok {
+	if _, ok := rawArgs["includeDeprecated"]; !ok {
 		var zeroVal bool
 		return zeroVal, nil
 	}
@@ -9092,7 +8642,7 @@ func (ec *executionContext) _Actor_id(ctx context.Context, field graphql.Collect
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Actor().ID(rctx, obj)
 	})
@@ -9136,7 +8686,7 @@ func (ec *executionContext) _Actor_address(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Address, nil
 	})
@@ -9180,7 +8730,7 @@ func (ec *executionContext) _Actor_layers(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Layers, nil
 	})
@@ -9221,7 +8771,7 @@ func (ec *executionContext) _Actor_qualityAdjustedPower(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Actor().QualityAdjustedPower(rctx, obj)
 	})
@@ -9265,7 +8815,7 @@ func (ec *executionContext) _Actor_rawBytePower(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Actor().RawBytePower(rctx, obj)
 	})
@@ -9309,7 +8859,7 @@ func (ec *executionContext) _Actor_actorBalance(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Actor().ActorBalance(rctx, obj)
 	})
@@ -9353,7 +8903,7 @@ func (ec *executionContext) _Actor_actorAvailableBalance(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Actor().ActorAvailableBalance(rctx, obj)
 	})
@@ -9397,7 +8947,7 @@ func (ec *executionContext) _Actor_workerBalance(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Actor().WorkerBalance(rctx, obj)
 	})
@@ -9441,7 +8991,7 @@ func (ec *executionContext) _Actor_deadlines(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Actor().Deadlines(rctx, obj)
 	})
@@ -9494,7 +9044,7 @@ func (ec *executionContext) _ActorDeadline_empty(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Empty, nil
 	})
@@ -9538,7 +9088,7 @@ func (ec *executionContext) _ActorDeadline_current(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Current, nil
 	})
@@ -9582,7 +9132,7 @@ func (ec *executionContext) _ActorDeadline_proven(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Proven, nil
 	})
@@ -9626,7 +9176,7 @@ func (ec *executionContext) _ActorDeadline_partFaulty(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PartFaulty, nil
 	})
@@ -9670,7 +9220,7 @@ func (ec *executionContext) _ActorDeadline_faulty(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Faulty, nil
 	})
@@ -9714,7 +9264,7 @@ func (ec *executionContext) _Alert_id(ctx context.Context, field graphql.Collect
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -9758,7 +9308,7 @@ func (ec *executionContext) _Alert_machineName(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MachineName, nil
 	})
@@ -9802,7 +9352,7 @@ func (ec *executionContext) _Alert_message(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Message, nil
 	})
@@ -9846,7 +9396,7 @@ func (ec *executionContext) _ClientFilter_name(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -9890,7 +9440,7 @@ func (ec *executionContext) _ClientFilter_active(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Active, nil
 	})
@@ -9934,7 +9484,7 @@ func (ec *executionContext) _ClientFilter_wallets(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Wallets, nil
 	})
@@ -9978,7 +9528,7 @@ func (ec *executionContext) _ClientFilter_peers(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Peers, nil
 	})
@@ -10022,7 +9572,7 @@ func (ec *executionContext) _ClientFilter_pricingFilters(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PricingFilters, nil
 	})
@@ -10066,7 +9616,7 @@ func (ec *executionContext) _ClientFilter_maxDealsPerHour(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MaxDealsPerHour, nil
 	})
@@ -10110,7 +9660,7 @@ func (ec *executionContext) _ClientFilter_maxDealSizePerHour(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MaxDealSizePerHour, nil
 	})
@@ -10154,7 +9704,7 @@ func (ec *executionContext) _ClientFilter_info(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Info, nil
 	})
@@ -10198,7 +9748,7 @@ func (ec *executionContext) _Config_id(ctx context.Context, field graphql.Collec
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -10242,7 +9792,7 @@ func (ec *executionContext) _Config_title(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Title, nil
 	})
@@ -10286,7 +9836,7 @@ func (ec *executionContext) _Config_config(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Config, nil
 	})
@@ -10330,7 +9880,7 @@ func (ec *executionContext) _Config_usedBy(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Config().UsedBy(rctx, obj)
 	})
@@ -10396,7 +9946,7 @@ func (ec *executionContext) _DealCountSummary_boost(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Boost, nil
 	})
@@ -10440,7 +9990,7 @@ func (ec *executionContext) _DealCountSummary_direct(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Direct, nil
 	})
@@ -10484,7 +10034,7 @@ func (ec *executionContext) _DealCountSummary_legacy(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Legacy, nil
 	})
@@ -10528,7 +10078,7 @@ func (ec *executionContext) _DealInfo_id(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -10572,7 +10122,7 @@ func (ec *executionContext) _DealInfo_spId(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -10616,7 +10166,7 @@ func (ec *executionContext) _DealInfo_sector(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Sector, nil
 	})
@@ -10660,7 +10210,7 @@ func (ec *executionContext) _DealInfo_createdAt(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
@@ -10704,7 +10254,7 @@ func (ec *executionContext) _DealInfo_signedProposalCid(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SignedProposalCid, nil
 	})
@@ -10748,7 +10298,7 @@ func (ec *executionContext) _DealInfo_offline(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Offline, nil
 	})
@@ -10792,7 +10342,7 @@ func (ec *executionContext) _DealInfo_verified(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Verified, nil
 	})
@@ -10836,7 +10386,7 @@ func (ec *executionContext) _DealInfo_startEpoch(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartEpoch, nil
 	})
@@ -10880,7 +10430,7 @@ func (ec *executionContext) _DealInfo_endEpoch(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EndEpoch, nil
 	})
@@ -10924,7 +10474,7 @@ func (ec *executionContext) _DealInfo_clientPeerId(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ClientPeerID, nil
 	})
@@ -10968,7 +10518,7 @@ func (ec *executionContext) _DealInfo_chainDealId(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ChainDealID, nil
 	})
@@ -11012,7 +10562,7 @@ func (ec *executionContext) _DealInfo_publishCid(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PublishCid, nil
 	})
@@ -11056,7 +10606,7 @@ func (ec *executionContext) _DealInfo_pieceCid(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceCid, nil
 	})
@@ -11100,7 +10650,7 @@ func (ec *executionContext) _DealInfo_pieceSize(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceSize, nil
 	})
@@ -11144,7 +10694,7 @@ func (ec *executionContext) _DealInfo_fastRetrieval(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FastRetrieval, nil
 	})
@@ -11188,7 +10738,7 @@ func (ec *executionContext) _DealInfo_announceToIpni(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AnnounceToIpni, nil
 	})
@@ -11232,7 +10782,7 @@ func (ec *executionContext) _DealInfo_url(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URL, nil
 	})
@@ -11276,7 +10826,7 @@ func (ec *executionContext) _DealInfo_urls(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Urls, nil
 	})
@@ -11320,7 +10870,7 @@ func (ec *executionContext) _DealInfo_urlHeaders(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URLHeaders, nil
 	})
@@ -11364,7 +10914,7 @@ func (ec *executionContext) _DealInfo_error(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Error, nil
 	})
@@ -11408,7 +10958,7 @@ func (ec *executionContext) _DealInfo_miner(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Miner, nil
 	})
@@ -11452,7 +11002,7 @@ func (ec *executionContext) _DealInfo_isLegacy(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsLegacy, nil
 	})
@@ -11496,7 +11046,7 @@ func (ec *executionContext) _DealInfo_indexed(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Indexed, nil
 	})
@@ -11540,7 +11090,7 @@ func (ec *executionContext) _DealInfo_isDdo(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsDdo, nil
 	})
@@ -11584,7 +11134,7 @@ func (ec *executionContext) _GaugeCountValue_key(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Key, nil
 	})
@@ -11628,7 +11178,7 @@ func (ec *executionContext) _GaugeCountValue_value(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Value, nil
 	})
@@ -11672,7 +11222,7 @@ func (ec *executionContext) _Global_networkName(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Global().NetworkName(rctx, obj)
 	})
@@ -11716,7 +11266,7 @@ func (ec *executionContext) _Global_genesisTimestamp(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Global().GenesisTimestamp(rctx, obj)
 	})
@@ -11760,7 +11310,7 @@ func (ec *executionContext) _Machine_id(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -11804,7 +11354,7 @@ func (ec *executionContext) _Machine_lastContact(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastContact, nil
 	})
@@ -11848,7 +11398,7 @@ func (ec *executionContext) _Machine_hostAndPort(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.HostAndPort, nil
 	})
@@ -11892,7 +11442,7 @@ func (ec *executionContext) _Machine_cpu(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CPU, nil
 	})
@@ -11936,7 +11486,7 @@ func (ec *executionContext) _Machine_ram(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RAM, nil
 	})
@@ -11980,7 +11530,7 @@ func (ec *executionContext) _Machine_gpu(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Gpu, nil
 	})
@@ -12024,7 +11574,7 @@ func (ec *executionContext) _Machine_detail(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Machine().Detail(rctx, obj)
 	})
@@ -12087,7 +11637,7 @@ func (ec *executionContext) _Machine_tasks(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Machine().Tasks(rctx, obj)
 	})
@@ -12156,7 +11706,7 @@ func (ec *executionContext) _Machine_taskHistories(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Machine().TaskHistories(rctx, obj, fc.Args["last"].(int))
 	})
@@ -12230,7 +11780,7 @@ func (ec *executionContext) _Machine_storages(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Machine().Storages(rctx, obj)
 	})
@@ -12315,7 +11865,7 @@ func (ec *executionContext) _Machine_metrics(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Machine().Metrics(rctx, obj)
 	})
@@ -12390,7 +11940,7 @@ func (ec *executionContext) _MachineDetail_id(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -12434,7 +11984,7 @@ func (ec *executionContext) _MachineDetail_machineName(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MachineName, nil
 	})
@@ -12478,7 +12028,7 @@ func (ec *executionContext) _MachineDetail_tasks(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Tasks, nil
 	})
@@ -12522,7 +12072,7 @@ func (ec *executionContext) _MachineDetail_tasksArray(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TasksArray, nil
 	})
@@ -12563,7 +12113,7 @@ func (ec *executionContext) _MachineDetail_layers(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Layers, nil
 	})
@@ -12607,7 +12157,7 @@ func (ec *executionContext) _MachineDetail_layersArray(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LayersArray, nil
 	})
@@ -12648,7 +12198,7 @@ func (ec *executionContext) _MachineDetail_startupTime(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartupTime, nil
 	})
@@ -12692,7 +12242,7 @@ func (ec *executionContext) _MachineDetail_miners(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Miners, nil
 	})
@@ -12736,7 +12286,7 @@ func (ec *executionContext) _MachineDetail_minersArray(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinersArray, nil
 	})
@@ -12777,7 +12327,7 @@ func (ec *executionContext) _MachineDetail_machineId(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MachineID, nil
 	})
@@ -12821,7 +12371,7 @@ func (ec *executionContext) _MachineMetrics_cpuUsage(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CPUUsage, nil
 	})
@@ -12865,7 +12415,7 @@ func (ec *executionContext) _MachineMetrics_gpuUsage(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.GpuUsage, nil
 	})
@@ -12909,7 +12459,7 @@ func (ec *executionContext) _MachineMetrics_ramUsage(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RAMUsage, nil
 	})
@@ -12953,7 +12503,7 @@ func (ec *executionContext) _MachineMetrics_activeTasks(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ActiveTasks, nil
 	})
@@ -13003,7 +12553,7 @@ func (ec *executionContext) _MachineMetrics_addedTasks(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AddedTasks, nil
 	})
@@ -13053,7 +12603,7 @@ func (ec *executionContext) _MachineMetrics_tasksCompleted(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TasksCompleted, nil
 	})
@@ -13103,7 +12653,7 @@ func (ec *executionContext) _MachineMetrics_tasksStarted(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TasksStarted, nil
 	})
@@ -13153,7 +12703,7 @@ func (ec *executionContext) _MachineMetrics_goRoutines(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.GoRoutines, nil
 	})
@@ -13197,7 +12747,7 @@ func (ec *executionContext) _MachineMetrics_goVersion(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.GoVersion, nil
 	})
@@ -13241,7 +12791,7 @@ func (ec *executionContext) _MachineMetrics_goThreads(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.GoThreads, nil
 	})
@@ -13285,7 +12835,7 @@ func (ec *executionContext) _MachineMetrics_processCpuSecondsTotal(ctx context.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProcessCPUSecondsTotal, nil
 	})
@@ -13329,7 +12879,7 @@ func (ec *executionContext) _MachineMetrics_processStartTimeSeconds(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProcessStartTimeSeconds, nil
 	})
@@ -13373,7 +12923,7 @@ func (ec *executionContext) _MachineMetrics_processVirtualMemoryBytes(ctx contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProcessVirtualMemoryBytes, nil
 	})
@@ -13417,7 +12967,7 @@ func (ec *executionContext) _MachineMetrics_processResidentMemoryBytes(ctx conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProcessResidentMemoryBytes, nil
 	})
@@ -13461,7 +13011,7 @@ func (ec *executionContext) _MachineMetrics_processOpenFds(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProcessOpenFds, nil
 	})
@@ -13505,7 +13055,7 @@ func (ec *executionContext) _MachineMetrics_processMaxFds(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProcessMaxFds, nil
 	})
@@ -13549,7 +13099,7 @@ func (ec *executionContext) _MachineSummary_total(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().Total(rctx, obj)
 	})
@@ -13593,7 +13143,7 @@ func (ec *executionContext) _MachineSummary_totalUp(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().TotalUp(rctx, obj)
 	})
@@ -13637,7 +13187,7 @@ func (ec *executionContext) _MachineSummary_totalDown(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().TotalDown(rctx, obj)
 	})
@@ -13681,7 +13231,7 @@ func (ec *executionContext) _MachineSummary_uniqueHostsTotal(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().UniqueHostsTotal(rctx, obj)
 	})
@@ -13725,7 +13275,7 @@ func (ec *executionContext) _MachineSummary_uniqueHostsUp(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().UniqueHostsUp(rctx, obj)
 	})
@@ -13769,7 +13319,7 @@ func (ec *executionContext) _MachineSummary_uniqueHostsDown(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().UniqueHostsDown(rctx, obj)
 	})
@@ -13813,7 +13363,7 @@ func (ec *executionContext) _MachineSummary_totalRam(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().TotalRAM(rctx, obj)
 	})
@@ -13857,7 +13407,7 @@ func (ec *executionContext) _MachineSummary_totalCpu(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().TotalCPU(rctx, obj)
 	})
@@ -13901,7 +13451,7 @@ func (ec *executionContext) _MachineSummary_totalGpu(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MachineSummary().TotalGpu(rctx, obj)
 	})
@@ -13945,7 +13495,7 @@ func (ec *executionContext) _MarketAllowFilter_wallet(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Wallet, nil
 	})
@@ -13989,7 +13539,7 @@ func (ec *executionContext) _MarketAllowFilter_status(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
@@ -14033,7 +13583,7 @@ func (ec *executionContext) _MarketBalance_miner(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Miner, nil
 	})
@@ -14077,7 +13627,7 @@ func (ec *executionContext) _MarketBalance_balance(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Balance, nil
 	})
@@ -14121,7 +13671,7 @@ func (ec *executionContext) _MarketBalance_balances(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Balances, nil
 	})
@@ -14168,7 +13718,7 @@ func (ec *executionContext) _MarketMk12Deal_uuid(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UUID, nil
 	})
@@ -14212,7 +13762,7 @@ func (ec *executionContext) _MarketMk12Deal_spId(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -14256,7 +13806,7 @@ func (ec *executionContext) _MarketMk12Deal_createdAt(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
@@ -14300,7 +13850,7 @@ func (ec *executionContext) _MarketMk12Deal_signedProposalCid(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SignedProposalCid, nil
 	})
@@ -14344,7 +13894,7 @@ func (ec *executionContext) _MarketMk12Deal_proposalSignature(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProposalSignature, nil
 	})
@@ -14388,7 +13938,7 @@ func (ec *executionContext) _MarketMk12Deal_proposal(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Proposal, nil
 	})
@@ -14432,7 +13982,7 @@ func (ec *executionContext) _MarketMk12Deal_offline(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Offline, nil
 	})
@@ -14476,7 +14026,7 @@ func (ec *executionContext) _MarketMk12Deal_verified(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Verified, nil
 	})
@@ -14520,7 +14070,7 @@ func (ec *executionContext) _MarketMk12Deal_startEpoch(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartEpoch, nil
 	})
@@ -14564,7 +14114,7 @@ func (ec *executionContext) _MarketMk12Deal_endEpoch(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EndEpoch, nil
 	})
@@ -14608,7 +14158,7 @@ func (ec *executionContext) _MarketMk12Deal_clientPeerId(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ClientPeerID, nil
 	})
@@ -14652,7 +14202,7 @@ func (ec *executionContext) _MarketMk12Deal_chainDealId(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ChainDealID, nil
 	})
@@ -14696,7 +14246,7 @@ func (ec *executionContext) _MarketMk12Deal_publishCid(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PublishCid, nil
 	})
@@ -14740,7 +14290,7 @@ func (ec *executionContext) _MarketMk12Deal_pieceCid(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceCid, nil
 	})
@@ -14784,7 +14334,7 @@ func (ec *executionContext) _MarketMk12Deal_pieceSize(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceSize, nil
 	})
@@ -14828,7 +14378,7 @@ func (ec *executionContext) _MarketMk12Deal_fastRetrieval(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FastRetrieval, nil
 	})
@@ -14872,7 +14422,7 @@ func (ec *executionContext) _MarketMk12Deal_announceToIpni(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AnnounceToIpni, nil
 	})
@@ -14916,7 +14466,7 @@ func (ec *executionContext) _MarketMk12Deal_url(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URL, nil
 	})
@@ -14960,7 +14510,7 @@ func (ec *executionContext) _MarketMk12Deal_urlHeaders(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URLHeaders, nil
 	})
@@ -15004,7 +14554,7 @@ func (ec *executionContext) _MarketMk12Deal_error(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Error, nil
 	})
@@ -15048,7 +14598,7 @@ func (ec *executionContext) _MarketMk12Deal_label(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Label, nil
 	})
@@ -15089,7 +14639,7 @@ func (ec *executionContext) _MarketMk12Deal_proposalCid(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ProposalCid, nil
 	})
@@ -15133,7 +14683,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_spId(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -15177,7 +14727,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_price(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Price, nil
 	})
@@ -15221,7 +14771,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_verifiedPrice(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.VerifiedPrice, nil
 	})
@@ -15265,7 +14815,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_minSize(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinSize, nil
 	})
@@ -15309,7 +14859,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_maxSize(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MaxSize, nil
 	})
@@ -15353,7 +14903,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_createdAt(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
@@ -15397,7 +14947,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_expiry(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Expiry, nil
 	})
@@ -15441,7 +14991,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_sequence(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Sequence, nil
 	})
@@ -15485,7 +15035,7 @@ func (ec *executionContext) _MessageSend_fromKey(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FromKey, nil
 	})
@@ -15529,7 +15079,7 @@ func (ec *executionContext) _MessageSend_toAddr(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ToAddr, nil
 	})
@@ -15573,7 +15123,7 @@ func (ec *executionContext) _MessageSend_sendReason(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SendReason, nil
 	})
@@ -15617,7 +15167,7 @@ func (ec *executionContext) _MessageSend_sendTaskId(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SendTaskID, nil
 	})
@@ -15661,7 +15211,7 @@ func (ec *executionContext) _MessageSend_unsignedData(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UnsignedData, nil
 	})
@@ -15705,7 +15255,7 @@ func (ec *executionContext) _MessageSend_unsignedCid(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UnsignedCid, nil
 	})
@@ -15749,7 +15299,7 @@ func (ec *executionContext) _MessageSend_nonce(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Nonce, nil
 	})
@@ -15790,7 +15340,7 @@ func (ec *executionContext) _MessageSend_signedData(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SignedData, nil
 	})
@@ -15831,7 +15381,7 @@ func (ec *executionContext) _MessageSend_signedJson(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SignedJSON, nil
 	})
@@ -15872,7 +15422,7 @@ func (ec *executionContext) _MessageSend_signedCid(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SignedCid, nil
 	})
@@ -15913,7 +15463,7 @@ func (ec *executionContext) _MessageSend_sendTime(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SendTime, nil
 	})
@@ -15954,7 +15504,7 @@ func (ec *executionContext) _MessageSend_sendSuccess(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SendSuccess, nil
 	})
@@ -15995,7 +15545,7 @@ func (ec *executionContext) _MessageSend_sendError(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SendError, nil
 	})
@@ -16036,7 +15586,7 @@ func (ec *executionContext) _MetricsActiveTask_name(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -16080,7 +15630,7 @@ func (ec *executionContext) _MetricsActiveTask_series(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Series, nil
 	})
@@ -16121,7 +15671,7 @@ func (ec *executionContext) _Miner_id(ctx context.Context, field graphql.Collect
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -16165,7 +15715,7 @@ func (ec *executionContext) _Miner_info(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Miner().Info(rctx, obj)
 	})
@@ -16238,7 +15788,7 @@ func (ec *executionContext) _Miner_power(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Miner().Power(rctx, obj)
 	})
@@ -16289,7 +15839,7 @@ func (ec *executionContext) _Miner_balance(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Miner().Balance(rctx, obj)
 	})
@@ -16344,7 +15894,7 @@ func (ec *executionContext) _MinerBalance_id(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -16388,7 +15938,7 @@ func (ec *executionContext) _MinerBalance_balance(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MinerBalance().Balance(rctx, obj)
 	})
@@ -16432,7 +15982,7 @@ func (ec *executionContext) _MinerBalance_available(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MinerBalance().Available(rctx, obj)
 	})
@@ -16476,7 +16026,7 @@ func (ec *executionContext) _MinerBalance_initialPledge(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MinerBalance().InitialPledge(rctx, obj)
 	})
@@ -16520,7 +16070,7 @@ func (ec *executionContext) _MinerBalance_vesting(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MinerBalance().Vesting(rctx, obj)
 	})
@@ -16564,7 +16114,7 @@ func (ec *executionContext) _MinerBalance_preCommitDeposits(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MinerBalance().PreCommitDeposits(rctx, obj)
 	})
@@ -16608,7 +16158,7 @@ func (ec *executionContext) _MinerBeneficiaryTerm_quota(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Quota, nil
 	})
@@ -16652,7 +16202,7 @@ func (ec *executionContext) _MinerBeneficiaryTerm_usedQuota(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UsedQuota, nil
 	})
@@ -16696,7 +16246,7 @@ func (ec *executionContext) _MinerBeneficiaryTerm_expiration(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Expiration, nil
 	})
@@ -16740,7 +16290,7 @@ func (ec *executionContext) _MinerInfo_owner(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Owner, nil
 	})
@@ -16784,7 +16334,7 @@ func (ec *executionContext) _MinerInfo_worker(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Worker, nil
 	})
@@ -16828,7 +16378,7 @@ func (ec *executionContext) _MinerInfo_newWorker(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NewWorker, nil
 	})
@@ -16872,7 +16422,7 @@ func (ec *executionContext) _MinerInfo_controlAddresses(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ControlAddresses, nil
 	})
@@ -16913,7 +16463,7 @@ func (ec *executionContext) _MinerInfo_workerChangeEpoch(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WorkerChangeEpoch, nil
 	})
@@ -16957,7 +16507,7 @@ func (ec *executionContext) _MinerInfo_peerId(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PeerID, nil
 	})
@@ -17001,7 +16551,7 @@ func (ec *executionContext) _MinerInfo_multiAddrs(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MultiAddrs, nil
 	})
@@ -17042,7 +16592,7 @@ func (ec *executionContext) _MinerInfo_windowPoStProofType(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WindowPoStProofType, nil
 	})
@@ -17086,7 +16636,7 @@ func (ec *executionContext) _MinerInfo_sectorSize(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorSize, nil
 	})
@@ -17130,7 +16680,7 @@ func (ec *executionContext) _MinerInfo_windowPoStPartitionSectors(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WindowPoStPartitionSectors, nil
 	})
@@ -17174,7 +16724,7 @@ func (ec *executionContext) _MinerInfo_consensusFaultElapsed(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ConsensusFaultElapsed, nil
 	})
@@ -17218,7 +16768,7 @@ func (ec *executionContext) _MinerInfo_pendingOwnerAddress(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PendingOwnerAddress, nil
 	})
@@ -17262,7 +16812,7 @@ func (ec *executionContext) _MinerInfo_beneficiary(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Beneficiary, nil
 	})
@@ -17306,7 +16856,7 @@ func (ec *executionContext) _MinerInfo_beneficiaryTerm(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BeneficiaryTerm, nil
 	})
@@ -17355,7 +16905,7 @@ func (ec *executionContext) _MinerInfo_pendingBeneficiaryChange(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PendingBeneficiaryChange, nil
 	})
@@ -17408,7 +16958,7 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_newBeneficiary(ctx co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NewBeneficiary, nil
 	})
@@ -17452,7 +17002,7 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_newQuota(ctx context.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NewQuota, nil
 	})
@@ -17496,7 +17046,7 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_newExpiration(ctx con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.NewExpiration, nil
 	})
@@ -17540,7 +17090,7 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_approvedByBeneficiary
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ApprovedByBeneficiary, nil
 	})
@@ -17584,7 +17134,7 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_approvedByNominee(ctx
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ApprovedByNominee, nil
 	})
@@ -17628,7 +17178,7 @@ func (ec *executionContext) _MinerPower_id(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -17672,7 +17222,7 @@ func (ec *executionContext) _MinerPower_minerPower(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinerPower, nil
 	})
@@ -17722,7 +17272,7 @@ func (ec *executionContext) _MinerPower_totalPower(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalPower, nil
 	})
@@ -17772,7 +17322,7 @@ func (ec *executionContext) _MinerPower_hasMinPower(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.HasMinPower, nil
 	})
@@ -17816,7 +17366,7 @@ func (ec *executionContext) _MiningCount_include(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Include, nil
 	})
@@ -17860,7 +17410,7 @@ func (ec *executionContext) _MiningCount_exclude(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Exclude, nil
 	})
@@ -17904,7 +17454,7 @@ func (ec *executionContext) _MiningCountAggregated_time(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Time, nil
 	})
@@ -17948,7 +17498,7 @@ func (ec *executionContext) _MiningCountAggregated_total(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -17992,7 +17542,7 @@ func (ec *executionContext) _MiningCountAggregated_won(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Won, nil
 	})
@@ -18036,7 +17586,7 @@ func (ec *executionContext) _MiningCountAggregated_included(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Included, nil
 	})
@@ -18080,7 +17630,7 @@ func (ec *executionContext) _MiningCountSummary_start(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Start, nil
 	})
@@ -18124,7 +17674,7 @@ func (ec *executionContext) _MiningCountSummary_end(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.End, nil
 	})
@@ -18168,7 +17718,7 @@ func (ec *executionContext) _MiningCountSummary_total(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -18212,7 +17762,7 @@ func (ec *executionContext) _MiningCountSummary_won(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Won, nil
 	})
@@ -18256,7 +17806,7 @@ func (ec *executionContext) _MiningCountSummary_included(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Included, nil
 	})
@@ -18300,7 +17850,7 @@ func (ec *executionContext) _MiningCountSummary_previous(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.MiningCountSummary().Previous(rctx, obj)
 	})
@@ -18355,7 +17905,7 @@ func (ec *executionContext) _MiningStatusSummay_total(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -18399,7 +17949,7 @@ func (ec *executionContext) _MiningStatusSummay_won(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Won, nil
 	})
@@ -18443,7 +17993,7 @@ func (ec *executionContext) _MiningStatusSummay_included(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Included, nil
 	})
@@ -18487,7 +18037,7 @@ func (ec *executionContext) _MiningStatusSummay_wonChangeRate(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WonChangeRate, nil
 	})
@@ -18531,7 +18081,7 @@ func (ec *executionContext) _MiningStatusSummay_lastMinedAt(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastMinedAt, nil
 	})
@@ -18575,7 +18125,7 @@ func (ec *executionContext) _MiningSummaryDay_day(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Day, nil
 	})
@@ -18619,7 +18169,7 @@ func (ec *executionContext) _MiningSummaryDay_miner(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Miner, nil
 	})
@@ -18663,7 +18213,7 @@ func (ec *executionContext) _MiningSummaryDay_wonBlock(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WonBlock, nil
 	})
@@ -18707,7 +18257,7 @@ func (ec *executionContext) _MiningTask_taskId(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskID, nil
 	})
@@ -18751,7 +18301,7 @@ func (ec *executionContext) _MiningTask_spId(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -18795,7 +18345,7 @@ func (ec *executionContext) _MiningTask_epoch(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Epoch, nil
 	})
@@ -18839,7 +18389,7 @@ func (ec *executionContext) _MiningTask_baseComputeTime(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.BaseComputeTime, nil
 	})
@@ -18883,7 +18433,7 @@ func (ec *executionContext) _MiningTask_won(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Won, nil
 	})
@@ -18927,7 +18477,7 @@ func (ec *executionContext) _MiningTask_minedCid(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinedCid, nil
 	})
@@ -18968,7 +18518,7 @@ func (ec *executionContext) _MiningTask_minedHeader(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinedHeader, nil
 	})
@@ -19009,7 +18559,7 @@ func (ec *executionContext) _MiningTask_minedAt(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinedAt, nil
 	})
@@ -19050,7 +18600,7 @@ func (ec *executionContext) _MiningTask_submittedAt(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SubmittedAt, nil
 	})
@@ -19091,7 +18641,7 @@ func (ec *executionContext) _MiningTask_included(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Included, nil
 	})
@@ -19132,7 +18682,7 @@ func (ec *executionContext) _Mutation_createConfig(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().CreateConfig(rctx, fc.Args["title"].(string), fc.Args["config"].(string))
 	})
@@ -19194,7 +18744,7 @@ func (ec *executionContext) _Mutation_updateConfig(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().UpdateConfig(rctx, fc.Args["title"].(string), fc.Args["config"].(string))
 	})
@@ -19256,7 +18806,7 @@ func (ec *executionContext) _Mutation_removeConfig(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().RemoveConfig(rctx, fc.Args["title"].(string))
 	})
@@ -19306,160 +18856,6 @@ func (ec *executionContext) fieldContext_Mutation_removeConfig(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_removeSector(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_removeSector(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RemoveSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_removeSector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_removeSector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_restartSector(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_restartSector(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RestartSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_restartSector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_restartSector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_restartAllFailedSectors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_restartAllFailedSectors(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RestartAllFailedSectors(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_restartAllFailedSectors(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_dealSealNow(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_dealSealNow(ctx, field)
 	if err != nil {
@@ -19472,7 +18868,7 @@ func (ec *executionContext) _Mutation_dealSealNow(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DealSealNow(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(uint64))
 	})
@@ -19527,7 +18923,7 @@ func (ec *executionContext) _Mutation_marketAddBalance(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketAddBalance(rctx, fc.Args["miner"].(types.Address), fc.Args["wallet"].(types.Address), fc.Args["amount"].(types.FIL))
 	})
@@ -19587,7 +18983,7 @@ func (ec *executionContext) _Mutation_updateMarketMk12StorageAsk(ctx context.Con
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().UpdateMarketMk12StorageAsk(rctx, fc.Args["input"].(model.MarketMk12StorageAskInput))
 	})
@@ -19657,7 +19053,7 @@ func (ec *executionContext) _Mutation_marketAddPriceFilter(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketAddPriceFilter(rctx, fc.Args["input"].(model.PriceFilterInput))
 	})
@@ -19712,7 +19108,7 @@ func (ec *executionContext) _Mutation_marketUpdatePriceFilter(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketUpdatePriceFilter(rctx, fc.Args["input"].(model.PriceFilterInput))
 	})
@@ -19780,7 +19176,7 @@ func (ec *executionContext) _Mutation_marketDeletePriceFilter(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketDeletePriceFilter(rctx, fc.Args["name"].(string))
 	})
@@ -19835,7 +19231,7 @@ func (ec *executionContext) _Mutation_marketAddClientFilter(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketAddClientFilter(rctx, fc.Args["input"].(model.ClientFilterInput))
 	})
@@ -19890,7 +19286,7 @@ func (ec *executionContext) _Mutation_marketUpdateClientFilter(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketUpdateClientFilter(rctx, fc.Args["input"].(model.ClientFilterInput))
 	})
@@ -19960,7 +19356,7 @@ func (ec *executionContext) _Mutation_marketDeleteClientFilter(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketDeleteClientFilter(rctx, fc.Args["name"].(string))
 	})
@@ -20015,7 +19411,7 @@ func (ec *executionContext) _Mutation_marketToggleClientFilter(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketToggleClientFilter(rctx, fc.Args["name"].(string))
 	})
@@ -20070,7 +19466,7 @@ func (ec *executionContext) _Mutation_marketSetAllowFilter(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketSetAllowFilter(rctx, fc.Args["wallet"].(types.Address), fc.Args["status"].(bool))
 	})
@@ -20128,7 +19524,7 @@ func (ec *executionContext) _Mutation_marketDeleteAllowFilter(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketDeleteAllowFilter(rctx, fc.Args["wallet"].(types.Address))
 	})
@@ -20183,7 +19579,7 @@ func (ec *executionContext) _Mutation_marketToggleAllowFilter(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().MarketToggleAllowFilter(rctx, fc.Args["wallet"].(types.Address))
 	})
@@ -20226,6 +19622,160 @@ func (ec *executionContext) fieldContext_Mutation_marketToggleAllowFilter(ctx co
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_removeSector(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_removeSector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_removeSector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_removeSector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_restartSector(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_restartSector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RestartSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_restartSector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_restartSector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_restartAllFailedSectors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_restartAllFailedSectors(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RestartAllFailedSectors(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_restartAllFailedSectors(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _NodeHealthSummary_onlineNodes(ctx context.Context, field graphql.CollectedField, obj *model.NodeHealthSummary) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_NodeHealthSummary_onlineNodes(ctx, field)
 	if err != nil {
@@ -20238,7 +19788,7 @@ func (ec *executionContext) _NodeHealthSummary_onlineNodes(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OnlineNodes, nil
 	})
@@ -20282,7 +19832,7 @@ func (ec *executionContext) _NodeHealthSummary_unscheduledNodes(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UnscheduledNodes, nil
 	})
@@ -20326,7 +19876,7 @@ func (ec *executionContext) _NodeHealthSummary_offlineNodes(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OfflineNodes, nil
 	})
@@ -20370,7 +19920,7 @@ func (ec *executionContext) _NodeInfo_id(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -20414,7 +19964,7 @@ func (ec *executionContext) _NodeInfo_address(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Address, nil
 	})
@@ -20458,7 +20008,7 @@ func (ec *executionContext) _NodeInfo_layers(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Layers, nil
 	})
@@ -20502,7 +20052,7 @@ func (ec *executionContext) _NodeInfo_reachable(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Reachable, nil
 	})
@@ -20546,7 +20096,7 @@ func (ec *executionContext) _NodeInfo_syncState(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SyncState, nil
 	})
@@ -20590,7 +20140,7 @@ func (ec *executionContext) _NodeInfo_version(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Version, nil
 	})
@@ -20634,7 +20184,7 @@ func (ec *executionContext) _OpenSectorPiece_spID(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -20678,7 +20228,7 @@ func (ec *executionContext) _OpenSectorPiece_sectorNumber(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorNumber, nil
 	})
@@ -20722,7 +20272,7 @@ func (ec *executionContext) _OpenSectorPiece_pieceIndex(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceIndex, nil
 	})
@@ -20766,7 +20316,7 @@ func (ec *executionContext) _OpenSectorPiece_pieceCID(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceCid, nil
 	})
@@ -20810,7 +20360,7 @@ func (ec *executionContext) _OpenSectorPiece_pieceSize(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceSize, nil
 	})
@@ -20854,7 +20404,7 @@ func (ec *executionContext) _OpenSectorPiece_dataURL(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DataURL, nil
 	})
@@ -20898,7 +20448,7 @@ func (ec *executionContext) _OpenSectorPiece_dataHeaders(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DataHeaders, nil
 	})
@@ -20942,7 +20492,7 @@ func (ec *executionContext) _OpenSectorPiece_dataRawSize(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DataRawSize, nil
 	})
@@ -20986,7 +20536,7 @@ func (ec *executionContext) _OpenSectorPiece_dataDeleteOnFinalize(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DataDeleteOnFinalize, nil
 	})
@@ -21030,7 +20580,7 @@ func (ec *executionContext) _OpenSectorPiece_f05PublishCID(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.F05PublishCid, nil
 	})
@@ -21071,7 +20621,7 @@ func (ec *executionContext) _OpenSectorPiece_f05DealID(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.F05DealID, nil
 	})
@@ -21112,7 +20662,7 @@ func (ec *executionContext) _OpenSectorPiece_f05DealProposal(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.F05DealProposal, nil
 	})
@@ -21153,7 +20703,7 @@ func (ec *executionContext) _OpenSectorPiece_f05DealStartEpoch(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.F05DealStartEpoch, nil
 	})
@@ -21194,7 +20744,7 @@ func (ec *executionContext) _OpenSectorPiece_f05DealEndEpoch(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.F05DealEndEpoch, nil
 	})
@@ -21235,7 +20785,7 @@ func (ec *executionContext) _OpenSectorPiece_directStartEpoch(ctx context.Contex
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DirectStartEpoch, nil
 	})
@@ -21276,7 +20826,7 @@ func (ec *executionContext) _OpenSectorPiece_directEndEpoch(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DirectEndEpoch, nil
 	})
@@ -21317,7 +20867,7 @@ func (ec *executionContext) _OpenSectorPiece_directPieceActivationManifest(ctx c
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DirectPieceActivationManifest, nil
 	})
@@ -21358,7 +20908,7 @@ func (ec *executionContext) _OpenSectorPiece_createdAt(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
@@ -21402,7 +20952,7 @@ func (ec *executionContext) _OpenSectorPiece_isSnap(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsSnap, nil
 	})
@@ -21446,7 +20996,7 @@ func (ec *executionContext) _PipelineSummary_id(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -21490,7 +21040,7 @@ func (ec *executionContext) _PipelineSummary_sdr(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().Sdr(rctx, obj)
 	})
@@ -21534,7 +21084,7 @@ func (ec *executionContext) _PipelineSummary_trees(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().Trees(rctx, obj)
 	})
@@ -21578,7 +21128,7 @@ func (ec *executionContext) _PipelineSummary_precommitMsg(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().PrecommitMsg(rctx, obj)
 	})
@@ -21622,7 +21172,7 @@ func (ec *executionContext) _PipelineSummary_waitSeed(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().WaitSeed(rctx, obj)
 	})
@@ -21666,7 +21216,7 @@ func (ec *executionContext) _PipelineSummary_porep(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().Porep(rctx, obj)
 	})
@@ -21710,7 +21260,7 @@ func (ec *executionContext) _PipelineSummary_commitMsg(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().CommitMsg(rctx, obj)
 	})
@@ -21754,7 +21304,7 @@ func (ec *executionContext) _PipelineSummary_done(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().Done(rctx, obj)
 	})
@@ -21798,7 +21348,7 @@ func (ec *executionContext) _PipelineSummary_failed(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.PipelineSummary().Failed(rctx, obj)
 	})
@@ -21842,7 +21392,7 @@ func (ec *executionContext) _Porep_id(ctx context.Context, field graphql.Collect
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Porep().ID(rctx, obj)
 	})
@@ -21886,7 +21436,7 @@ func (ec *executionContext) _Porep_spId(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -21930,7 +21480,7 @@ func (ec *executionContext) _Porep_sectorNumber(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorNumber, nil
 	})
@@ -21974,7 +21524,7 @@ func (ec *executionContext) _Porep_createTime(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CreateTime, nil
 	})
@@ -22018,7 +21568,7 @@ func (ec *executionContext) _Porep_regSealProof(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RegSealProof, nil
 	})
@@ -22062,7 +21612,7 @@ func (ec *executionContext) _Porep_ticketEpoch(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TicketEpoch, nil
 	})
@@ -22103,7 +21653,7 @@ func (ec *executionContext) _Porep_ticketValue(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TicketValue, nil
 	})
@@ -22144,7 +21694,7 @@ func (ec *executionContext) _Porep_taskIdSdr(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDSdr, nil
 	})
@@ -22185,7 +21735,7 @@ func (ec *executionContext) _Porep_afterSdr(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterSdr, nil
 	})
@@ -22229,7 +21779,7 @@ func (ec *executionContext) _Porep_treeDCid(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TreeDCid, nil
 	})
@@ -22270,7 +21820,7 @@ func (ec *executionContext) _Porep_taskIdTreeD(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDTreeD, nil
 	})
@@ -22311,7 +21861,7 @@ func (ec *executionContext) _Porep_afterTreeD(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterTreeD, nil
 	})
@@ -22355,7 +21905,7 @@ func (ec *executionContext) _Porep_taskIdTreeC(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDTreeC, nil
 	})
@@ -22396,7 +21946,7 @@ func (ec *executionContext) _Porep_afterTreeC(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterTreeC, nil
 	})
@@ -22440,7 +21990,7 @@ func (ec *executionContext) _Porep_treeRCid(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TreeRCid, nil
 	})
@@ -22481,7 +22031,7 @@ func (ec *executionContext) _Porep_taskIdTreeR(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDTreeR, nil
 	})
@@ -22522,7 +22072,7 @@ func (ec *executionContext) _Porep_afterTreeR(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterTreeR, nil
 	})
@@ -22566,7 +22116,7 @@ func (ec *executionContext) _Porep_precommitMsgCid(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PrecommitMsgCid, nil
 	})
@@ -22607,7 +22157,7 @@ func (ec *executionContext) _Porep_taskIdPrecommitMsg(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDPrecommitMsg, nil
 	})
@@ -22648,7 +22198,7 @@ func (ec *executionContext) _Porep_afterPrecommitMsg(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterPrecommitMsg, nil
 	})
@@ -22692,7 +22242,7 @@ func (ec *executionContext) _Porep_seedEpoch(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SeedEpoch, nil
 	})
@@ -22733,7 +22283,7 @@ func (ec *executionContext) _Porep_precommitMsgTsk(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PrecommitMsgTsk, nil
 	})
@@ -22774,7 +22324,7 @@ func (ec *executionContext) _Porep_afterPrecommitMsgSuccess(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterPrecommitMsgSuccess, nil
 	})
@@ -22818,7 +22368,7 @@ func (ec *executionContext) _Porep_seedValue(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SeedValue, nil
 	})
@@ -22859,7 +22409,7 @@ func (ec *executionContext) _Porep_taskIdPorep(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDPorep, nil
 	})
@@ -22900,7 +22450,7 @@ func (ec *executionContext) _Porep_porepProof(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PorepProof, nil
 	})
@@ -22941,7 +22491,7 @@ func (ec *executionContext) _Porep_afterPorep(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterPorep, nil
 	})
@@ -22985,7 +22535,7 @@ func (ec *executionContext) _Porep_taskIdFinalize(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDFinalize, nil
 	})
@@ -23026,7 +22576,7 @@ func (ec *executionContext) _Porep_afterFinalize(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterFinalize, nil
 	})
@@ -23070,7 +22620,7 @@ func (ec *executionContext) _Porep_taskIdMoveStorage(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDMoveStorage, nil
 	})
@@ -23111,7 +22661,7 @@ func (ec *executionContext) _Porep_afterMoveStorage(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterMoveStorage, nil
 	})
@@ -23155,7 +22705,7 @@ func (ec *executionContext) _Porep_commitMsgCid(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CommitMsgCid, nil
 	})
@@ -23196,7 +22746,7 @@ func (ec *executionContext) _Porep_taskIdCommitMsg(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDCommitMsg, nil
 	})
@@ -23237,7 +22787,7 @@ func (ec *executionContext) _Porep_afterCommitMsg(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterCommitMsg, nil
 	})
@@ -23281,7 +22831,7 @@ func (ec *executionContext) _Porep_commitMsgTsk(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CommitMsgTsk, nil
 	})
@@ -23322,7 +22872,7 @@ func (ec *executionContext) _Porep_afterCommitMsgSuccess(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterCommitMsgSuccess, nil
 	})
@@ -23366,7 +22916,7 @@ func (ec *executionContext) _Porep_failed(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Failed, nil
 	})
@@ -23410,7 +22960,7 @@ func (ec *executionContext) _Porep_failedAt(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FailedAt, nil
 	})
@@ -23451,7 +23001,7 @@ func (ec *executionContext) _Porep_failedReason(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FailedReason, nil
 	})
@@ -23495,7 +23045,7 @@ func (ec *executionContext) _Porep_failedReasonMsg(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FailedReasonMsg, nil
 	})
@@ -23539,7 +23089,7 @@ func (ec *executionContext) _Porep_taskIdSynth(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskIDSynth, nil
 	})
@@ -23580,7 +23130,7 @@ func (ec *executionContext) _Porep_afterSynth(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AfterSynth, nil
 	})
@@ -23624,7 +23174,7 @@ func (ec *executionContext) _Porep_userSectorDurationEpochs(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UserSectorDurationEpochs, nil
 	})
@@ -23665,7 +23215,7 @@ func (ec *executionContext) _Porep_status(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Porep().Status(rctx, obj)
 	})
@@ -23709,7 +23259,7 @@ func (ec *executionContext) _Porep_currentTask(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Porep().CurrentTask(rctx, obj)
 	})
@@ -23778,7 +23328,7 @@ func (ec *executionContext) _PowerClaim_rawBytePower(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RawBytePower, nil
 	})
@@ -23819,7 +23369,7 @@ func (ec *executionContext) _PowerClaim_qualityAdjPower(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.QualityAdjPower, nil
 	})
@@ -23860,7 +23410,7 @@ func (ec *executionContext) _PriceFilter_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -23904,7 +23454,7 @@ func (ec *executionContext) _PriceFilter_minDurationDays(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinDurationDays, nil
 	})
@@ -23948,7 +23498,7 @@ func (ec *executionContext) _PriceFilter_maxDurationDays(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MaxDurationDays, nil
 	})
@@ -23992,7 +23542,7 @@ func (ec *executionContext) _PriceFilter_minimumSize(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinimumSize, nil
 	})
@@ -24036,7 +23586,7 @@ func (ec *executionContext) _PriceFilter_maximumSize(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MaximumSize, nil
 	})
@@ -24080,7 +23630,7 @@ func (ec *executionContext) _PriceFilter_price(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Price, nil
 	})
@@ -24124,7 +23674,7 @@ func (ec *executionContext) _PriceFilter_verified(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Verified, nil
 	})
@@ -24156,8 +23706,8 @@ func (ec *executionContext) fieldContext_PriceFilter_verified(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_global(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_global(ctx, field)
+func (ec *executionContext) _Query_actors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_actors(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24168,26 +23718,23 @@ func (ec *executionContext) _Query_global(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Global(rctx)
+		return ec.resolvers.Query().Actors(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Global)
+	res := resTmp.([]*model.Actor)
 	fc.Result = res
-	return ec.marshalNGlobal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGlobal(ctx, field.Selections, res)
+	return ec.marshalOActor2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_global(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_actors(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24195,12 +23742,147 @@ func (ec *executionContext) fieldContext_Query_global(_ context.Context, field g
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "networkName":
-				return ec.fieldContext_Global_networkName(ctx, field)
-			case "genesisTimestamp":
-				return ec.fieldContext_Global_genesisTimestamp(ctx, field)
+			case "id":
+				return ec.fieldContext_Actor_id(ctx, field)
+			case "address":
+				return ec.fieldContext_Actor_address(ctx, field)
+			case "layers":
+				return ec.fieldContext_Actor_layers(ctx, field)
+			case "qualityAdjustedPower":
+				return ec.fieldContext_Actor_qualityAdjustedPower(ctx, field)
+			case "rawBytePower":
+				return ec.fieldContext_Actor_rawBytePower(ctx, field)
+			case "actorBalance":
+				return ec.fieldContext_Actor_actorBalance(ctx, field)
+			case "actorAvailableBalance":
+				return ec.fieldContext_Actor_actorAvailableBalance(ctx, field)
+			case "workerBalance":
+				return ec.fieldContext_Actor_workerBalance(ctx, field)
+			case "deadlines":
+				return ec.fieldContext_Actor_deadlines(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Global", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Actor", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_actor(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_actor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Actor(rctx, fc.Args["address"].(types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Actor)
+	fc.Result = res
+	return ec.marshalOActor2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_actor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Actor_id(ctx, field)
+			case "address":
+				return ec.fieldContext_Actor_address(ctx, field)
+			case "layers":
+				return ec.fieldContext_Actor_layers(ctx, field)
+			case "qualityAdjustedPower":
+				return ec.fieldContext_Actor_qualityAdjustedPower(ctx, field)
+			case "rawBytePower":
+				return ec.fieldContext_Actor_rawBytePower(ctx, field)
+			case "actorBalance":
+				return ec.fieldContext_Actor_actorBalance(ctx, field)
+			case "actorAvailableBalance":
+				return ec.fieldContext_Actor_actorAvailableBalance(ctx, field)
+			case "workerBalance":
+				return ec.fieldContext_Actor_workerBalance(ctx, field)
+			case "deadlines":
+				return ec.fieldContext_Actor_deadlines(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Actor", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_actor_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_alerts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_alerts(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Alerts(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Alert)
+	fc.Result = res
+	return ec.marshalOAlert2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_alerts(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Alert_id(ctx, field)
+			case "machineName":
+				return ec.fieldContext_Alert_machineName(ctx, field)
+			case "message":
+				return ec.fieldContext_Alert_message(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Alert", field.Name)
 		},
 	}
 	return fc, nil
@@ -24218,7 +23900,7 @@ func (ec *executionContext) _Query_config(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Config(rctx, fc.Args["layer"].(string))
 	})
@@ -24280,7 +23962,7 @@ func (ec *executionContext) _Query_configs(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Configs(rctx)
 	})
@@ -24319,6 +24001,394 @@ func (ec *executionContext) fieldContext_Query_configs(_ context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_marketMk12Deals(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12Deals(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12Deals(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput), fc.Args["limit"].(int), fc.Args["offset"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MarketMk12Deal)
+	fc.Result = res
+	return ec.marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12Deals(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "uuid":
+				return ec.fieldContext_MarketMk12Deal_uuid(ctx, field)
+			case "spId":
+				return ec.fieldContext_MarketMk12Deal_spId(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MarketMk12Deal_createdAt(ctx, field)
+			case "signedProposalCid":
+				return ec.fieldContext_MarketMk12Deal_signedProposalCid(ctx, field)
+			case "proposalSignature":
+				return ec.fieldContext_MarketMk12Deal_proposalSignature(ctx, field)
+			case "proposal":
+				return ec.fieldContext_MarketMk12Deal_proposal(ctx, field)
+			case "offline":
+				return ec.fieldContext_MarketMk12Deal_offline(ctx, field)
+			case "verified":
+				return ec.fieldContext_MarketMk12Deal_verified(ctx, field)
+			case "startEpoch":
+				return ec.fieldContext_MarketMk12Deal_startEpoch(ctx, field)
+			case "endEpoch":
+				return ec.fieldContext_MarketMk12Deal_endEpoch(ctx, field)
+			case "clientPeerId":
+				return ec.fieldContext_MarketMk12Deal_clientPeerId(ctx, field)
+			case "chainDealId":
+				return ec.fieldContext_MarketMk12Deal_chainDealId(ctx, field)
+			case "publishCid":
+				return ec.fieldContext_MarketMk12Deal_publishCid(ctx, field)
+			case "pieceCid":
+				return ec.fieldContext_MarketMk12Deal_pieceCid(ctx, field)
+			case "pieceSize":
+				return ec.fieldContext_MarketMk12Deal_pieceSize(ctx, field)
+			case "fastRetrieval":
+				return ec.fieldContext_MarketMk12Deal_fastRetrieval(ctx, field)
+			case "announceToIpni":
+				return ec.fieldContext_MarketMk12Deal_announceToIpni(ctx, field)
+			case "url":
+				return ec.fieldContext_MarketMk12Deal_url(ctx, field)
+			case "urlHeaders":
+				return ec.fieldContext_MarketMk12Deal_urlHeaders(ctx, field)
+			case "error":
+				return ec.fieldContext_MarketMk12Deal_error(ctx, field)
+			case "label":
+				return ec.fieldContext_MarketMk12Deal_label(ctx, field)
+			case "proposalCid":
+				return ec.fieldContext_MarketMk12Deal_proposalCid(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketMk12Deal", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketMk12Deals_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketMk12DealsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12DealsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12DealsCount(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12DealsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketMk12DealsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketDealInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketDealInfo(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketDealInfo(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.DealInfo)
+	fc.Result = res
+	return ec.marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketDealInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_DealInfo_id(ctx, field)
+			case "spId":
+				return ec.fieldContext_DealInfo_spId(ctx, field)
+			case "sector":
+				return ec.fieldContext_DealInfo_sector(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_DealInfo_createdAt(ctx, field)
+			case "signedProposalCid":
+				return ec.fieldContext_DealInfo_signedProposalCid(ctx, field)
+			case "offline":
+				return ec.fieldContext_DealInfo_offline(ctx, field)
+			case "verified":
+				return ec.fieldContext_DealInfo_verified(ctx, field)
+			case "startEpoch":
+				return ec.fieldContext_DealInfo_startEpoch(ctx, field)
+			case "endEpoch":
+				return ec.fieldContext_DealInfo_endEpoch(ctx, field)
+			case "clientPeerId":
+				return ec.fieldContext_DealInfo_clientPeerId(ctx, field)
+			case "chainDealId":
+				return ec.fieldContext_DealInfo_chainDealId(ctx, field)
+			case "publishCid":
+				return ec.fieldContext_DealInfo_publishCid(ctx, field)
+			case "pieceCid":
+				return ec.fieldContext_DealInfo_pieceCid(ctx, field)
+			case "pieceSize":
+				return ec.fieldContext_DealInfo_pieceSize(ctx, field)
+			case "fastRetrieval":
+				return ec.fieldContext_DealInfo_fastRetrieval(ctx, field)
+			case "announceToIpni":
+				return ec.fieldContext_DealInfo_announceToIpni(ctx, field)
+			case "url":
+				return ec.fieldContext_DealInfo_url(ctx, field)
+			case "urls":
+				return ec.fieldContext_DealInfo_urls(ctx, field)
+			case "urlHeaders":
+				return ec.fieldContext_DealInfo_urlHeaders(ctx, field)
+			case "error":
+				return ec.fieldContext_DealInfo_error(ctx, field)
+			case "miner":
+				return ec.fieldContext_DealInfo_miner(ctx, field)
+			case "isLegacy":
+				return ec.fieldContext_DealInfo_isLegacy(ctx, field)
+			case "indexed":
+				return ec.fieldContext_DealInfo_indexed(ctx, field)
+			case "isDdo":
+				return ec.fieldContext_DealInfo_isDdo(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DealInfo", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketDealInfo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketDealCountSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketDealCountSummary(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketDealCountSummary(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.DealCountSummary)
+	fc.Result = res
+	return ec.marshalODealCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealCountSummary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketDealCountSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "boost":
+				return ec.fieldContext_DealCountSummary_boost(ctx, field)
+			case "direct":
+				return ec.fieldContext_DealCountSummary_direct(ctx, field)
+			case "legacy":
+				return ec.fieldContext_DealCountSummary_legacy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DealCountSummary", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_dealsPending(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_dealsPending(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().DealsPending(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.OpenSectorPiece)
+	fc.Result = res
+	return ec.marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_dealsPending(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spID":
+				return ec.fieldContext_OpenSectorPiece_spID(ctx, field)
+			case "sectorNumber":
+				return ec.fieldContext_OpenSectorPiece_sectorNumber(ctx, field)
+			case "pieceIndex":
+				return ec.fieldContext_OpenSectorPiece_pieceIndex(ctx, field)
+			case "pieceCID":
+				return ec.fieldContext_OpenSectorPiece_pieceCID(ctx, field)
+			case "pieceSize":
+				return ec.fieldContext_OpenSectorPiece_pieceSize(ctx, field)
+			case "dataURL":
+				return ec.fieldContext_OpenSectorPiece_dataURL(ctx, field)
+			case "dataHeaders":
+				return ec.fieldContext_OpenSectorPiece_dataHeaders(ctx, field)
+			case "dataRawSize":
+				return ec.fieldContext_OpenSectorPiece_dataRawSize(ctx, field)
+			case "dataDeleteOnFinalize":
+				return ec.fieldContext_OpenSectorPiece_dataDeleteOnFinalize(ctx, field)
+			case "f05PublishCID":
+				return ec.fieldContext_OpenSectorPiece_f05PublishCID(ctx, field)
+			case "f05DealID":
+				return ec.fieldContext_OpenSectorPiece_f05DealID(ctx, field)
+			case "f05DealProposal":
+				return ec.fieldContext_OpenSectorPiece_f05DealProposal(ctx, field)
+			case "f05DealStartEpoch":
+				return ec.fieldContext_OpenSectorPiece_f05DealStartEpoch(ctx, field)
+			case "f05DealEndEpoch":
+				return ec.fieldContext_OpenSectorPiece_f05DealEndEpoch(ctx, field)
+			case "directStartEpoch":
+				return ec.fieldContext_OpenSectorPiece_directStartEpoch(ctx, field)
+			case "directEndEpoch":
+				return ec.fieldContext_OpenSectorPiece_directEndEpoch(ctx, field)
+			case "directPieceActivationManifest":
+				return ec.fieldContext_OpenSectorPiece_directPieceActivationManifest(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_OpenSectorPiece_createdAt(ctx, field)
+			case "isSnap":
+				return ec.fieldContext_OpenSectorPiece_isSnap(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type OpenSectorPiece", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_machine(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_machine(ctx, field)
 	if err != nil {
@@ -24331,7 +24401,7 @@ func (ec *executionContext) _Query_machine(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Machine(rctx, fc.Args["id"].(int))
 	})
@@ -24407,7 +24477,7 @@ func (ec *executionContext) _Query_machines(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Machines(rctx)
 	})
@@ -24472,7 +24542,7 @@ func (ec *executionContext) _Query_machineSummary(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().MachineSummary(rctx)
 	})
@@ -24521,8 +24591,8 @@ func (ec *executionContext) fieldContext_Query_machineSummary(_ context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_task(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_task(ctx, field)
+func (ec *executionContext) _Query_marketBalance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketBalance(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24533,9 +24603,9 @@ func (ec *executionContext) _Query_task(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Task(rctx, fc.Args["id"].(int))
+		return ec.resolvers.Query().MarketBalance(rctx, fc.Args["miner"].(types.Address))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24544,12 +24614,12 @@ func (ec *executionContext) _Query_task(ctx context.Context, field graphql.Colle
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Task)
+	res := resTmp.(*model.MarketBalance)
 	fc.Result = res
-	return ec.marshalOTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_task(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_marketBalance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24557,34 +24627,14 @@ func (ec *executionContext) fieldContext_Query_task(ctx context.Context, field g
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Task_id(ctx, field)
-			case "initiatedByID":
-				return ec.fieldContext_Task_initiatedByID(ctx, field)
-			case "initiatedBy":
-				return ec.fieldContext_Task_initiatedBy(ctx, field)
-			case "updateTime":
-				return ec.fieldContext_Task_updateTime(ctx, field)
-			case "postedTime":
-				return ec.fieldContext_Task_postedTime(ctx, field)
-			case "ownerId":
-				return ec.fieldContext_Task_ownerId(ctx, field)
-			case "owner":
-				return ec.fieldContext_Task_owner(ctx, field)
-			case "addedByID":
-				return ec.fieldContext_Task_addedByID(ctx, field)
-			case "addedBy":
-				return ec.fieldContext_Task_addedBy(ctx, field)
-			case "previousTaskID":
-				return ec.fieldContext_Task_previousTaskID(ctx, field)
-			case "previousTask":
-				return ec.fieldContext_Task_previousTask(ctx, field)
-			case "name":
-				return ec.fieldContext_Task_name(ctx, field)
-			case "histories":
-				return ec.fieldContext_Task_histories(ctx, field)
+			case "miner":
+				return ec.fieldContext_MarketBalance_miner(ctx, field)
+			case "balance":
+				return ec.fieldContext_MarketBalance_balance(ctx, field)
+			case "balances":
+				return ec.fieldContext_MarketBalance_balances(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type MarketBalance", field.Name)
 		},
 	}
 	defer func() {
@@ -24594,15 +24644,15 @@ func (ec *executionContext) fieldContext_Query_task(ctx context.Context, field g
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_task_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_marketBalance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_tasks(ctx, field)
+func (ec *executionContext) _Query_marketBalances(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketBalances(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24613,9 +24663,9 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Tasks(rctx)
+		return ec.resolvers.Query().MarketBalances(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24624,12 +24674,12 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Task)
+	res := resTmp.([]*model.MarketBalance)
 	fc.Result = res
-	return ec.marshalOTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_marketBalances(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24637,41 +24687,21 @@ func (ec *executionContext) fieldContext_Query_tasks(_ context.Context, field gr
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Task_id(ctx, field)
-			case "initiatedByID":
-				return ec.fieldContext_Task_initiatedByID(ctx, field)
-			case "initiatedBy":
-				return ec.fieldContext_Task_initiatedBy(ctx, field)
-			case "updateTime":
-				return ec.fieldContext_Task_updateTime(ctx, field)
-			case "postedTime":
-				return ec.fieldContext_Task_postedTime(ctx, field)
-			case "ownerId":
-				return ec.fieldContext_Task_ownerId(ctx, field)
-			case "owner":
-				return ec.fieldContext_Task_owner(ctx, field)
-			case "addedByID":
-				return ec.fieldContext_Task_addedByID(ctx, field)
-			case "addedBy":
-				return ec.fieldContext_Task_addedBy(ctx, field)
-			case "previousTaskID":
-				return ec.fieldContext_Task_previousTaskID(ctx, field)
-			case "previousTask":
-				return ec.fieldContext_Task_previousTask(ctx, field)
-			case "name":
-				return ec.fieldContext_Task_name(ctx, field)
-			case "histories":
-				return ec.fieldContext_Task_histories(ctx, field)
+			case "miner":
+				return ec.fieldContext_MarketBalance_miner(ctx, field)
+			case "balance":
+				return ec.fieldContext_MarketBalance_balance(ctx, field)
+			case "balances":
+				return ec.fieldContext_MarketBalance_balances(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type MarketBalance", field.Name)
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_tasksCount(ctx, field)
+func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12StorageAsks(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24682,9 +24712,138 @@ func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TasksCount(rctx)
+		return ec.resolvers.Query().MarketMk12StorageAsks(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MarketMk12StorageAsk)
+	fc.Result = res
+	return ec.marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12StorageAsks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spId":
+				return ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
+			case "price":
+				return ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
+			case "verifiedPrice":
+				return ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
+			case "minSize":
+				return ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
+			case "maxSize":
+				return ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
+			case "expiry":
+				return ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
+			case "sequence":
+				return ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketMk12StorageAsk", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12StorageAsk(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12StorageAsk(rctx, fc.Args["spId"].(types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MarketMk12StorageAsk)
+	fc.Result = res
+	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spId":
+				return ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
+			case "price":
+				return ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
+			case "verifiedPrice":
+				return ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
+			case "minSize":
+				return ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
+			case "maxSize":
+				return ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
+			case "expiry":
+				return ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
+			case "sequence":
+				return ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketMk12StorageAsk", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketMk12StorageAsk_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketMk12StorageAsksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketMk12StorageAsksCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketMk12StorageAsksCount(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24701,7 +24860,7 @@ func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_tasksCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_marketMk12StorageAsksCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24714,8 +24873,8 @@ func (ec *executionContext) fieldContext_Query_tasksCount(_ context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_taskHistories(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_taskHistories(ctx, field)
+func (ec *executionContext) _Query_makretPriceFilters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_makretPriceFilters(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24726,9 +24885,9 @@ func (ec *executionContext) _Query_taskHistories(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistories(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		return ec.resolvers.Query().MakretPriceFilters(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24737,12 +24896,798 @@ func (ec *executionContext) _Query_taskHistories(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.TaskHistory)
+	res := resTmp.([]*model.PriceFilter)
 	fc.Result = res
-	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
+	return ec.marshalOPriceFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_taskHistories(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_makretPriceFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_PriceFilter_name(ctx, field)
+			case "minDurationDays":
+				return ec.fieldContext_PriceFilter_minDurationDays(ctx, field)
+			case "maxDurationDays":
+				return ec.fieldContext_PriceFilter_maxDurationDays(ctx, field)
+			case "minimumSize":
+				return ec.fieldContext_PriceFilter_minimumSize(ctx, field)
+			case "maximumSize":
+				return ec.fieldContext_PriceFilter_maximumSize(ctx, field)
+			case "price":
+				return ec.fieldContext_PriceFilter_price(ctx, field)
+			case "verified":
+				return ec.fieldContext_PriceFilter_verified(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PriceFilter", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketPriceFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketPriceFilter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketPriceFilter(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.PriceFilter)
+	fc.Result = res
+	return ec.marshalOPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketPriceFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_PriceFilter_name(ctx, field)
+			case "minDurationDays":
+				return ec.fieldContext_PriceFilter_minDurationDays(ctx, field)
+			case "maxDurationDays":
+				return ec.fieldContext_PriceFilter_maxDurationDays(ctx, field)
+			case "minimumSize":
+				return ec.fieldContext_PriceFilter_minimumSize(ctx, field)
+			case "maximumSize":
+				return ec.fieldContext_PriceFilter_maximumSize(ctx, field)
+			case "price":
+				return ec.fieldContext_PriceFilter_price(ctx, field)
+			case "verified":
+				return ec.fieldContext_PriceFilter_verified(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PriceFilter", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketPriceFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketCheckPriceFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketCheckPriceFilter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketCheckPriceFilter(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketCheckPriceFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketCheckPriceFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketClientFilters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketClientFilters(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketClientFilters(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.ClientFilter)
+	fc.Result = res
+	return ec.marshalOClientFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketClientFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_ClientFilter_name(ctx, field)
+			case "active":
+				return ec.fieldContext_ClientFilter_active(ctx, field)
+			case "wallets":
+				return ec.fieldContext_ClientFilter_wallets(ctx, field)
+			case "peers":
+				return ec.fieldContext_ClientFilter_peers(ctx, field)
+			case "pricingFilters":
+				return ec.fieldContext_ClientFilter_pricingFilters(ctx, field)
+			case "maxDealsPerHour":
+				return ec.fieldContext_ClientFilter_maxDealsPerHour(ctx, field)
+			case "maxDealSizePerHour":
+				return ec.fieldContext_ClientFilter_maxDealSizePerHour(ctx, field)
+			case "info":
+				return ec.fieldContext_ClientFilter_info(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ClientFilter", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketClientFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketClientFilter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketClientFilter(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.ClientFilter)
+	fc.Result = res
+	return ec.marshalOClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketClientFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_ClientFilter_name(ctx, field)
+			case "active":
+				return ec.fieldContext_ClientFilter_active(ctx, field)
+			case "wallets":
+				return ec.fieldContext_ClientFilter_wallets(ctx, field)
+			case "peers":
+				return ec.fieldContext_ClientFilter_peers(ctx, field)
+			case "pricingFilters":
+				return ec.fieldContext_ClientFilter_pricingFilters(ctx, field)
+			case "maxDealsPerHour":
+				return ec.fieldContext_ClientFilter_maxDealsPerHour(ctx, field)
+			case "maxDealSizePerHour":
+				return ec.fieldContext_ClientFilter_maxDealSizePerHour(ctx, field)
+			case "info":
+				return ec.fieldContext_ClientFilter_info(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ClientFilter", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketClientFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketCheckClientFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketCheckClientFilter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketCheckClientFilter(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketCheckClientFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketCheckClientFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketAllowFilters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketAllowFilters(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketAllowFilters(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MarketAllowFilter)
+	fc.Result = res
+	return ec.marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilterᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketAllowFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "wallet":
+				return ec.fieldContext_MarketAllowFilter_wallet(ctx, field)
+			case "status":
+				return ec.fieldContext_MarketAllowFilter_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketAllowFilter", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketAllowFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketAllowFilter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MarketAllowFilter)
+	fc.Result = res
+	return ec.marshalOMarketAllowFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketAllowFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "wallet":
+				return ec.fieldContext_MarketAllowFilter_wallet(ctx, field)
+			case "status":
+				return ec.fieldContext_MarketAllowFilter_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MarketAllowFilter", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_marketAllowFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_marketAllowDefault(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketAllowDefault(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MarketAllowDefault(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_marketAllowDefault(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageSends(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageSends(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MessageSends(rctx, fc.Args["account"].(*types.Address), fc.Args["offset"].(int), fc.Args["limit"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MessageSend)
+	fc.Result = res
+	return ec.marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageSends(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "fromKey":
+				return ec.fieldContext_MessageSend_fromKey(ctx, field)
+			case "toAddr":
+				return ec.fieldContext_MessageSend_toAddr(ctx, field)
+			case "sendReason":
+				return ec.fieldContext_MessageSend_sendReason(ctx, field)
+			case "sendTaskId":
+				return ec.fieldContext_MessageSend_sendTaskId(ctx, field)
+			case "unsignedData":
+				return ec.fieldContext_MessageSend_unsignedData(ctx, field)
+			case "unsignedCid":
+				return ec.fieldContext_MessageSend_unsignedCid(ctx, field)
+			case "nonce":
+				return ec.fieldContext_MessageSend_nonce(ctx, field)
+			case "signedData":
+				return ec.fieldContext_MessageSend_signedData(ctx, field)
+			case "signedJson":
+				return ec.fieldContext_MessageSend_signedJson(ctx, field)
+			case "signedCid":
+				return ec.fieldContext_MessageSend_signedCid(ctx, field)
+			case "sendTime":
+				return ec.fieldContext_MessageSend_sendTime(ctx, field)
+			case "sendSuccess":
+				return ec.fieldContext_MessageSend_sendSuccess(ctx, field)
+			case "sendError":
+				return ec.fieldContext_MessageSend_sendError(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MessageSend", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageSends_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageSendsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageSendsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MessageSendsCount(rctx, fc.Args["account"].(*types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageSendsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageSendsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageSend(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageSend(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MessageSend(rctx, fc.Args["sendTaskId"].(*int), fc.Args["fromKey"].(*string), fc.Args["nonce"].(*int), fc.Args["signedCID"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MessageSend)
+	fc.Result = res
+	return ec.marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "fromKey":
+				return ec.fieldContext_MessageSend_fromKey(ctx, field)
+			case "toAddr":
+				return ec.fieldContext_MessageSend_toAddr(ctx, field)
+			case "sendReason":
+				return ec.fieldContext_MessageSend_sendReason(ctx, field)
+			case "sendTaskId":
+				return ec.fieldContext_MessageSend_sendTaskId(ctx, field)
+			case "unsignedData":
+				return ec.fieldContext_MessageSend_unsignedData(ctx, field)
+			case "unsignedCid":
+				return ec.fieldContext_MessageSend_unsignedCid(ctx, field)
+			case "nonce":
+				return ec.fieldContext_MessageSend_nonce(ctx, field)
+			case "signedData":
+				return ec.fieldContext_MessageSend_signedData(ctx, field)
+			case "signedJson":
+				return ec.fieldContext_MessageSend_signedJson(ctx, field)
+			case "signedCid":
+				return ec.fieldContext_MessageSend_signedCid(ctx, field)
+			case "sendTime":
+				return ec.fieldContext_MessageSend_sendTime(ctx, field)
+			case "sendSuccess":
+				return ec.fieldContext_MessageSend_sendSuccess(ctx, field)
+			case "sendError":
+				return ec.fieldContext_MessageSend_sendError(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MessageSend", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageSend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_metricsActiveTasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_metricsActiveTasks(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MetricsActiveTasks(rctx, fc.Args["lastDays"].(int), fc.Args["machine"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MetricsActiveTask)
+	fc.Result = res
+	return ec.marshalOMetricsActiveTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetricsActiveTask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_metricsActiveTasks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_MetricsActiveTask_name(ctx, field)
+			case "series":
+				return ec.fieldContext_MetricsActiveTask_series(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MetricsActiveTask", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_metricsActiveTasks_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miner(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miner(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Miner(rctx, fc.Args["address"].(types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Miner)
+	fc.Result = res
+	return ec.marshalOMiner2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miner(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24751,27 +25696,272 @@ func (ec *executionContext) fieldContext_Query_taskHistories(ctx context.Context
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_TaskHistory_id(ctx, field)
+				return ec.fieldContext_Miner_id(ctx, field)
+			case "info":
+				return ec.fieldContext_Miner_info(ctx, field)
+			case "power":
+				return ec.fieldContext_Miner_power(ctx, field)
+			case "balance":
+				return ec.fieldContext_Miner_balance(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Miner", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_miner_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_minerPower(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_minerPower(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MinerPower(rctx, fc.Args["address"].(*types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MinerPower)
+	fc.Result = res
+	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_MinerPower_id(ctx, field)
+			case "minerPower":
+				return ec.fieldContext_MinerPower_minerPower(ctx, field)
+			case "totalPower":
+				return ec.fieldContext_MinerPower_totalPower(ctx, field)
+			case "hasMinPower":
+				return ec.fieldContext_MinerPower_hasMinPower(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MinerPower", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_minerPower_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miningSummaryByDay(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningSummaryByDay(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MiningSummaryByDay(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MiningSummaryDay)
+	fc.Result = res
+	return ec.marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miningSummaryByDay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "day":
+				return ec.fieldContext_MiningSummaryDay_day(ctx, field)
+			case "miner":
+				return ec.fieldContext_MiningSummaryDay_miner(ctx, field)
+			case "wonBlock":
+				return ec.fieldContext_MiningSummaryDay_wonBlock(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MiningSummaryDay", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_miningSummaryByDay_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miningCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MiningCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.MiningCount)
+	fc.Result = res
+	return ec.marshalNMiningCount2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miningCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "include":
+				return ec.fieldContext_MiningCount_include(ctx, field)
+			case "exclude":
+				return ec.fieldContext_MiningCount_exclude(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MiningCount", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_miningCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miningWins(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningWins(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MiningWins(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MiningTask)
+	fc.Result = res
+	return ec.marshalOMiningTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miningWins(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
 			case "taskId":
-				return ec.fieldContext_TaskHistory_taskId(ctx, field)
-			case "name":
-				return ec.fieldContext_TaskHistory_name(ctx, field)
-			case "posted":
-				return ec.fieldContext_TaskHistory_posted(ctx, field)
-			case "workStart":
-				return ec.fieldContext_TaskHistory_workStart(ctx, field)
-			case "workEnd":
-				return ec.fieldContext_TaskHistory_workEnd(ctx, field)
-			case "result":
-				return ec.fieldContext_TaskHistory_result(ctx, field)
-			case "err":
-				return ec.fieldContext_TaskHistory_err(ctx, field)
-			case "completedByHostAndPort":
-				return ec.fieldContext_TaskHistory_completedByHostAndPort(ctx, field)
-			case "completedBy":
-				return ec.fieldContext_TaskHistory_completedBy(ctx, field)
+				return ec.fieldContext_MiningTask_taskId(ctx, field)
+			case "spId":
+				return ec.fieldContext_MiningTask_spId(ctx, field)
+			case "epoch":
+				return ec.fieldContext_MiningTask_epoch(ctx, field)
+			case "baseComputeTime":
+				return ec.fieldContext_MiningTask_baseComputeTime(ctx, field)
+			case "won":
+				return ec.fieldContext_MiningTask_won(ctx, field)
+			case "minedCid":
+				return ec.fieldContext_MiningTask_minedCid(ctx, field)
+			case "minedHeader":
+				return ec.fieldContext_MiningTask_minedHeader(ctx, field)
+			case "minedAt":
+				return ec.fieldContext_MiningTask_minedAt(ctx, field)
+			case "submittedAt":
+				return ec.fieldContext_MiningTask_submittedAt(ctx, field)
+			case "included":
+				return ec.fieldContext_MiningTask_included(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type TaskHistory", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type MiningTask", field.Name)
 		},
 	}
 	defer func() {
@@ -24781,15 +25971,15 @@ func (ec *executionContext) fieldContext_Query_taskHistories(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_taskHistories_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_miningWins_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_taskHistoriesCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_taskHistoriesCount(ctx, field)
+func (ec *executionContext) _Query_miningWinsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningWinsCount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24800,9 +25990,9 @@ func (ec *executionContext) _Query_taskHistoriesCount(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistoriesCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool))
+		return ec.resolvers.Query().MiningWinsCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24819,7 +26009,7 @@ func (ec *executionContext) _Query_taskHistoriesCount(ctx context.Context, field
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_taskHistoriesCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_miningWinsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24836,15 +26026,15 @@ func (ec *executionContext) fieldContext_Query_taskHistoriesCount(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_taskHistoriesCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_miningWinsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_taskHistoriesAggregate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_taskHistoriesAggregate(ctx, field)
+func (ec *executionContext) _Query_miningCountSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningCountSummary(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24855,9 +26045,9 @@ func (ec *executionContext) _Query_taskHistoriesAggregate(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistoriesAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["interval"].(model.TaskHistoriesAggregateInterval))
+		return ec.resolvers.Query().MiningCountSummary(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24866,12 +26056,78 @@ func (ec *executionContext) _Query_taskHistoriesAggregate(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.TaskAggregate)
+	res := resTmp.(*model.MiningCountSummary)
 	fc.Result = res
-	return ec.marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, field.Selections, res)
+	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_taskHistoriesAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_miningCountSummary(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "start":
+				return ec.fieldContext_MiningCountSummary_start(ctx, field)
+			case "end":
+				return ec.fieldContext_MiningCountSummary_end(ctx, field)
+			case "total":
+				return ec.fieldContext_MiningCountSummary_total(ctx, field)
+			case "won":
+				return ec.fieldContext_MiningCountSummary_won(ctx, field)
+			case "included":
+				return ec.fieldContext_MiningCountSummary_included(ctx, field)
+			case "previous":
+				return ec.fieldContext_MiningCountSummary_previous(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MiningCountSummary", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_miningCountSummary_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_miningCountAggregate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningCountAggregate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MiningCountAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address), fc.Args["interval"].(model.MiningTaskAggregateInterval))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MiningCountAggregated)
+	fc.Result = res
+	return ec.marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_miningCountAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24880,15 +26136,15 @@ func (ec *executionContext) fieldContext_Query_taskHistoriesAggregate(ctx contex
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "time":
-				return ec.fieldContext_TaskAggregate_time(ctx, field)
+				return ec.fieldContext_MiningCountAggregated_time(ctx, field)
 			case "total":
-				return ec.fieldContext_TaskAggregate_total(ctx, field)
-			case "success":
-				return ec.fieldContext_TaskAggregate_success(ctx, field)
-			case "failure":
-				return ec.fieldContext_TaskAggregate_failure(ctx, field)
+				return ec.fieldContext_MiningCountAggregated_total(ctx, field)
+			case "won":
+				return ec.fieldContext_MiningCountAggregated_won(ctx, field)
+			case "included":
+				return ec.fieldContext_MiningCountAggregated_included(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type TaskAggregate", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type MiningCountAggregated", field.Name)
 		},
 	}
 	defer func() {
@@ -24898,15 +26154,15 @@ func (ec *executionContext) fieldContext_Query_taskHistoriesAggregate(ctx contex
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_taskHistoriesAggregate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_miningCountAggregate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_tasksStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_tasksStats(ctx, field)
+func (ec *executionContext) _Query_miningStatusSummay(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_miningStatusSummay(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24917,9 +26173,9 @@ func (ec *executionContext) _Query_tasksStats(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TasksStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["machine"].(*string))
+		return ec.resolvers.Query().MiningStatusSummay(rctx, fc.Args["spID"].(*types.ActorID), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24928,12 +26184,12 @@ func (ec *executionContext) _Query_tasksStats(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.TaskStats)
+	res := resTmp.(*model.MiningStatusSummay)
 	fc.Result = res
-	return ec.marshalOTaskStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx, field.Selections, res)
+	return ec.marshalOMiningStatusSummay2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningStatusSummay(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_tasksStats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_miningStatusSummay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -24941,16 +26197,18 @@ func (ec *executionContext) fieldContext_Query_tasksStats(ctx context.Context, f
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "name":
-				return ec.fieldContext_TaskStats_name(ctx, field)
 			case "total":
-				return ec.fieldContext_TaskStats_total(ctx, field)
-			case "success":
-				return ec.fieldContext_TaskStats_success(ctx, field)
-			case "failure":
-				return ec.fieldContext_TaskStats_failure(ctx, field)
+				return ec.fieldContext_MiningStatusSummay_total(ctx, field)
+			case "won":
+				return ec.fieldContext_MiningStatusSummay_won(ctx, field)
+			case "included":
+				return ec.fieldContext_MiningStatusSummay_included(ctx, field)
+			case "wonChangeRate":
+				return ec.fieldContext_MiningStatusSummay_wonChangeRate(ctx, field)
+			case "lastMinedAt":
+				return ec.fieldContext_MiningStatusSummay_lastMinedAt(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type TaskStats", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type MiningStatusSummay", field.Name)
 		},
 	}
 	defer func() {
@@ -24960,15 +26218,15 @@ func (ec *executionContext) fieldContext_Query_tasksStats(ctx context.Context, f
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_tasksStats_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_miningStatusSummay_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_taskNames(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_taskNames(ctx, field)
+func (ec *executionContext) _Query_nodesInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_nodesInfo(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -24979,9 +26237,9 @@ func (ec *executionContext) _Query_taskNames(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskNames(rctx)
+		return ec.resolvers.Query().NodesInfo(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -24990,53 +26248,12 @@ func (ec *executionContext) _Query_taskNames(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]string)
+	res := resTmp.([]*model.NodeInfo)
 	fc.Result = res
-	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
+	return ec.marshalONodeInfo2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_taskNames(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_storage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_storage(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Storage(rctx, fc.Args["id"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Storage)
-	fc.Result = res
-	return ec.marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_storage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_nodesInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -25045,435 +26262,26 @@ func (ec *executionContext) fieldContext_Query_storage(ctx context.Context, fiel
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_Storage_id(ctx, field)
-			case "path":
-				return ec.fieldContext_Storage_path(ctx, field)
-			case "liveness":
-				return ec.fieldContext_Storage_liveness(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Storage", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_storage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_storagePaths(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_storagePaths(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().StoragePaths(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.StoragePath)
-	fc.Result = res
-	return ec.marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_storagePaths(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_StoragePath_id(ctx, field)
-			case "storageId":
-				return ec.fieldContext_StoragePath_storageId(ctx, field)
-			case "type":
-				return ec.fieldContext_StoragePath_type(ctx, field)
-			case "urls":
-				return ec.fieldContext_StoragePath_urls(ctx, field)
-			case "weight":
-				return ec.fieldContext_StoragePath_weight(ctx, field)
-			case "maxStorage":
-				return ec.fieldContext_StoragePath_maxStorage(ctx, field)
-			case "canSeal":
-				return ec.fieldContext_StoragePath_canSeal(ctx, field)
-			case "canStore":
-				return ec.fieldContext_StoragePath_canStore(ctx, field)
-			case "groups":
-				return ec.fieldContext_StoragePath_groups(ctx, field)
-			case "allowTo":
-				return ec.fieldContext_StoragePath_allowTo(ctx, field)
-			case "allowTypes":
-				return ec.fieldContext_StoragePath_allowTypes(ctx, field)
-			case "denyTypes":
-				return ec.fieldContext_StoragePath_denyTypes(ctx, field)
-			case "capacity":
-				return ec.fieldContext_StoragePath_capacity(ctx, field)
-			case "available":
-				return ec.fieldContext_StoragePath_available(ctx, field)
-			case "fsAvailable":
-				return ec.fieldContext_StoragePath_fsAvailable(ctx, field)
-			case "reserved":
-				return ec.fieldContext_StoragePath_reserved(ctx, field)
-			case "used":
-				return ec.fieldContext_StoragePath_used(ctx, field)
-			case "lastHeartbeat":
-				return ec.fieldContext_StoragePath_lastHeartbeat(ctx, field)
-			case "heartbeatErr":
-				return ec.fieldContext_StoragePath_heartbeatErr(ctx, field)
-			case "allowMiners":
-				return ec.fieldContext_StoragePath_allowMiners(ctx, field)
-			case "denyMiners":
-				return ec.fieldContext_StoragePath_denyMiners(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type StoragePath", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_storageStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_storageStats(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().StorageStats(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.StorageStats)
-	fc.Result = res
-	return ec.marshalOStorageStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_storageStats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "type":
-				return ec.fieldContext_StorageStats_type(ctx, field)
-			case "totalCapacity":
-				return ec.fieldContext_StorageStats_totalCapacity(ctx, field)
-			case "totalAvailable":
-				return ec.fieldContext_StorageStats_totalAvailable(ctx, field)
-			case "totalUsed":
-				return ec.fieldContext_StorageStats_totalUsed(ctx, field)
-			case "totalReserved":
-				return ec.fieldContext_StorageStats_totalReserved(ctx, field)
-			case "totalFsAvailable":
-				return ec.fieldContext_StorageStats_totalFsAvailable(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type StorageStats", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_sectors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_sectors(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Sectors(rctx, fc.Args["actor"].(*types.Address), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Sector)
-	fc.Result = res
-	return ec.marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_sectors(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Sector_id(ctx, field)
-			case "spID":
-				return ec.fieldContext_Sector_spID(ctx, field)
-			case "sectorNum":
-				return ec.fieldContext_Sector_sectorNum(ctx, field)
-			case "status":
-				return ec.fieldContext_Sector_status(ctx, field)
-			case "meta":
-				return ec.fieldContext_Sector_meta(ctx, field)
-			case "porep":
-				return ec.fieldContext_Sector_porep(ctx, field)
-			case "locations":
-				return ec.fieldContext_Sector_locations(ctx, field)
-			case "pieces":
-				return ec.fieldContext_Sector_pieces(ctx, field)
-			case "tasks":
-				return ec.fieldContext_Sector_tasks(ctx, field)
-			case "events":
-				return ec.fieldContext_Sector_events(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Sector", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_sectors_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_sectorsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_sectorsCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SectorsCount(rctx, fc.Args["actor"].(*types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_sectorsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_sectorsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_sector(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_sector(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Sector(rctx, fc.Args["actor"].(types.Address), fc.Args["sectorNumber"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Sector)
-	fc.Result = res
-	return ec.marshalOSector2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_sector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Sector_id(ctx, field)
-			case "spID":
-				return ec.fieldContext_Sector_spID(ctx, field)
-			case "sectorNum":
-				return ec.fieldContext_Sector_sectorNum(ctx, field)
-			case "status":
-				return ec.fieldContext_Sector_status(ctx, field)
-			case "meta":
-				return ec.fieldContext_Sector_meta(ctx, field)
-			case "porep":
-				return ec.fieldContext_Sector_porep(ctx, field)
-			case "locations":
-				return ec.fieldContext_Sector_locations(ctx, field)
-			case "pieces":
-				return ec.fieldContext_Sector_pieces(ctx, field)
-			case "tasks":
-				return ec.fieldContext_Sector_tasks(ctx, field)
-			case "events":
-				return ec.fieldContext_Sector_events(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Sector", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_sector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_actors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_actors(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Actors(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Actor)
-	fc.Result = res
-	return ec.marshalOActor2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_actors(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Actor_id(ctx, field)
+				return ec.fieldContext_NodeInfo_id(ctx, field)
 			case "address":
-				return ec.fieldContext_Actor_address(ctx, field)
+				return ec.fieldContext_NodeInfo_address(ctx, field)
 			case "layers":
-				return ec.fieldContext_Actor_layers(ctx, field)
-			case "qualityAdjustedPower":
-				return ec.fieldContext_Actor_qualityAdjustedPower(ctx, field)
-			case "rawBytePower":
-				return ec.fieldContext_Actor_rawBytePower(ctx, field)
-			case "actorBalance":
-				return ec.fieldContext_Actor_actorBalance(ctx, field)
-			case "actorAvailableBalance":
-				return ec.fieldContext_Actor_actorAvailableBalance(ctx, field)
-			case "workerBalance":
-				return ec.fieldContext_Actor_workerBalance(ctx, field)
-			case "deadlines":
-				return ec.fieldContext_Actor_deadlines(ctx, field)
+				return ec.fieldContext_NodeInfo_layers(ctx, field)
+			case "reachable":
+				return ec.fieldContext_NodeInfo_reachable(ctx, field)
+			case "syncState":
+				return ec.fieldContext_NodeInfo_syncState(ctx, field)
+			case "version":
+				return ec.fieldContext_NodeInfo_version(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Actor", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type NodeInfo", field.Name)
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_actor(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_actor(ctx, field)
+func (ec *executionContext) _Query_nodeHealthSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_nodeHealthSummary(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -25484,9 +26292,9 @@ func (ec *executionContext) _Query_actor(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Actor(rctx, fc.Args["address"].(types.Address))
+		return ec.resolvers.Query().NodeHealthSummary(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -25495,12 +26303,12 @@ func (ec *executionContext) _Query_actor(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.Actor)
+	res := resTmp.(*model.NodeHealthSummary)
 	fc.Result = res
-	return ec.marshalOActor2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
+	return ec.marshalONodeHealthSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_actor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_nodeHealthSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -25508,38 +26316,15 @@ func (ec *executionContext) fieldContext_Query_actor(ctx context.Context, field 
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Actor_id(ctx, field)
-			case "address":
-				return ec.fieldContext_Actor_address(ctx, field)
-			case "layers":
-				return ec.fieldContext_Actor_layers(ctx, field)
-			case "qualityAdjustedPower":
-				return ec.fieldContext_Actor_qualityAdjustedPower(ctx, field)
-			case "rawBytePower":
-				return ec.fieldContext_Actor_rawBytePower(ctx, field)
-			case "actorBalance":
-				return ec.fieldContext_Actor_actorBalance(ctx, field)
-			case "actorAvailableBalance":
-				return ec.fieldContext_Actor_actorAvailableBalance(ctx, field)
-			case "workerBalance":
-				return ec.fieldContext_Actor_workerBalance(ctx, field)
-			case "deadlines":
-				return ec.fieldContext_Actor_deadlines(ctx, field)
+			case "onlineNodes":
+				return ec.fieldContext_NodeHealthSummary_onlineNodes(ctx, field)
+			case "unscheduledNodes":
+				return ec.fieldContext_NodeHealthSummary_unscheduledNodes(ctx, field)
+			case "offlineNodes":
+				return ec.fieldContext_NodeHealthSummary_offlineNodes(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Actor", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type NodeHealthSummary", field.Name)
 		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_actor_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -25556,7 +26341,7 @@ func (ec *executionContext) _Query_poreps(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Poreps(rctx)
 	})
@@ -25689,7 +26474,7 @@ func (ec *executionContext) _Query_porep(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().Porep(rctx, fc.Args["sp"].(types.Address), fc.Args["sectorNumber"].(int))
 	})
@@ -25833,7 +26618,7 @@ func (ec *executionContext) _Query_pipelinesSummary(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().PipelinesSummary(rctx)
 	})
@@ -25882,8 +26667,8 @@ func (ec *executionContext) fieldContext_Query_pipelinesSummary(_ context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_nodesInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_nodesInfo(ctx, field)
+func (ec *executionContext) _Query_sectors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_sectors(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -25894,9 +26679,9 @@ func (ec *executionContext) _Query_nodesInfo(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().NodesInfo(rctx)
+		return ec.resolvers.Query().Sectors(rctx, fc.Args["actor"].(*types.Address), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -25905,12 +26690,12 @@ func (ec *executionContext) _Query_nodesInfo(ctx context.Context, field graphql.
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.NodeInfo)
+	res := resTmp.([]*model.Sector)
 	fc.Result = res
-	return ec.marshalONodeInfo2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx, field.Selections, res)
+	return ec.marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_nodesInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_sectors(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -25919,1338 +26704,45 @@ func (ec *executionContext) fieldContext_Query_nodesInfo(_ context.Context, fiel
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_NodeInfo_id(ctx, field)
-			case "address":
-				return ec.fieldContext_NodeInfo_address(ctx, field)
-			case "layers":
-				return ec.fieldContext_NodeInfo_layers(ctx, field)
-			case "reachable":
-				return ec.fieldContext_NodeInfo_reachable(ctx, field)
-			case "syncState":
-				return ec.fieldContext_NodeInfo_syncState(ctx, field)
-			case "version":
-				return ec.fieldContext_NodeInfo_version(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type NodeInfo", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_dealsPending(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_dealsPending(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().DealsPending(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.OpenSectorPiece)
-	fc.Result = res
-	return ec.marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_dealsPending(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
+				return ec.fieldContext_Sector_id(ctx, field)
 			case "spID":
-				return ec.fieldContext_OpenSectorPiece_spID(ctx, field)
-			case "sectorNumber":
-				return ec.fieldContext_OpenSectorPiece_sectorNumber(ctx, field)
-			case "pieceIndex":
-				return ec.fieldContext_OpenSectorPiece_pieceIndex(ctx, field)
-			case "pieceCID":
-				return ec.fieldContext_OpenSectorPiece_pieceCID(ctx, field)
-			case "pieceSize":
-				return ec.fieldContext_OpenSectorPiece_pieceSize(ctx, field)
-			case "dataURL":
-				return ec.fieldContext_OpenSectorPiece_dataURL(ctx, field)
-			case "dataHeaders":
-				return ec.fieldContext_OpenSectorPiece_dataHeaders(ctx, field)
-			case "dataRawSize":
-				return ec.fieldContext_OpenSectorPiece_dataRawSize(ctx, field)
-			case "dataDeleteOnFinalize":
-				return ec.fieldContext_OpenSectorPiece_dataDeleteOnFinalize(ctx, field)
-			case "f05PublishCID":
-				return ec.fieldContext_OpenSectorPiece_f05PublishCID(ctx, field)
-			case "f05DealID":
-				return ec.fieldContext_OpenSectorPiece_f05DealID(ctx, field)
-			case "f05DealProposal":
-				return ec.fieldContext_OpenSectorPiece_f05DealProposal(ctx, field)
-			case "f05DealStartEpoch":
-				return ec.fieldContext_OpenSectorPiece_f05DealStartEpoch(ctx, field)
-			case "f05DealEndEpoch":
-				return ec.fieldContext_OpenSectorPiece_f05DealEndEpoch(ctx, field)
-			case "directStartEpoch":
-				return ec.fieldContext_OpenSectorPiece_directStartEpoch(ctx, field)
-			case "directEndEpoch":
-				return ec.fieldContext_OpenSectorPiece_directEndEpoch(ctx, field)
-			case "directPieceActivationManifest":
-				return ec.fieldContext_OpenSectorPiece_directPieceActivationManifest(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_OpenSectorPiece_createdAt(ctx, field)
-			case "isSnap":
-				return ec.fieldContext_OpenSectorPiece_isSnap(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type OpenSectorPiece", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_alerts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_alerts(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Alerts(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Alert)
-	fc.Result = res
-	return ec.marshalOAlert2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_alerts(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Alert_id(ctx, field)
-			case "machineName":
-				return ec.fieldContext_Alert_machineName(ctx, field)
-			case "message":
-				return ec.fieldContext_Alert_message(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Alert", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_metricsActiveTasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_metricsActiveTasks(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MetricsActiveTasks(rctx, fc.Args["lastDays"].(int), fc.Args["machine"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MetricsActiveTask)
-	fc.Result = res
-	return ec.marshalOMetricsActiveTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetricsActiveTask(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_metricsActiveTasks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "name":
-				return ec.fieldContext_MetricsActiveTask_name(ctx, field)
-			case "series":
-				return ec.fieldContext_MetricsActiveTask_series(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MetricsActiveTask", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_metricsActiveTasks_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miner(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miner(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Miner(rctx, fc.Args["address"].(types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Miner)
-	fc.Result = res
-	return ec.marshalOMiner2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miner(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Miner_id(ctx, field)
-			case "info":
-				return ec.fieldContext_Miner_info(ctx, field)
-			case "power":
-				return ec.fieldContext_Miner_power(ctx, field)
-			case "balance":
-				return ec.fieldContext_Miner_balance(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Miner", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miner_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_minerPower(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_minerPower(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MinerPower(rctx, fc.Args["address"].(*types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.MinerPower)
-	fc.Result = res
-	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_MinerPower_id(ctx, field)
-			case "minerPower":
-				return ec.fieldContext_MinerPower_minerPower(ctx, field)
-			case "totalPower":
-				return ec.fieldContext_MinerPower_totalPower(ctx, field)
-			case "hasMinPower":
-				return ec.fieldContext_MinerPower_hasMinPower(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MinerPower", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_minerPower_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketBalance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketBalance(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketBalance(rctx, fc.Args["miner"].(types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.MarketBalance)
-	fc.Result = res
-	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketBalance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "miner":
-				return ec.fieldContext_MarketBalance_miner(ctx, field)
-			case "balance":
-				return ec.fieldContext_MarketBalance_balance(ctx, field)
-			case "balances":
-				return ec.fieldContext_MarketBalance_balances(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MarketBalance", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketBalance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketBalances(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketBalances(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketBalances(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MarketBalance)
-	fc.Result = res
-	return ec.marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketBalances(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "miner":
-				return ec.fieldContext_MarketBalance_miner(ctx, field)
-			case "balance":
-				return ec.fieldContext_MarketBalance_balance(ctx, field)
-			case "balances":
-				return ec.fieldContext_MarketBalance_balances(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MarketBalance", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketMk12Deals(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketMk12Deals(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12Deals(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput), fc.Args["limit"].(int), fc.Args["offset"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MarketMk12Deal)
-	fc.Result = res
-	return ec.marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketMk12Deals(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "uuid":
-				return ec.fieldContext_MarketMk12Deal_uuid(ctx, field)
-			case "spId":
-				return ec.fieldContext_MarketMk12Deal_spId(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_MarketMk12Deal_createdAt(ctx, field)
-			case "signedProposalCid":
-				return ec.fieldContext_MarketMk12Deal_signedProposalCid(ctx, field)
-			case "proposalSignature":
-				return ec.fieldContext_MarketMk12Deal_proposalSignature(ctx, field)
-			case "proposal":
-				return ec.fieldContext_MarketMk12Deal_proposal(ctx, field)
-			case "offline":
-				return ec.fieldContext_MarketMk12Deal_offline(ctx, field)
-			case "verified":
-				return ec.fieldContext_MarketMk12Deal_verified(ctx, field)
-			case "startEpoch":
-				return ec.fieldContext_MarketMk12Deal_startEpoch(ctx, field)
-			case "endEpoch":
-				return ec.fieldContext_MarketMk12Deal_endEpoch(ctx, field)
-			case "clientPeerId":
-				return ec.fieldContext_MarketMk12Deal_clientPeerId(ctx, field)
-			case "chainDealId":
-				return ec.fieldContext_MarketMk12Deal_chainDealId(ctx, field)
-			case "publishCid":
-				return ec.fieldContext_MarketMk12Deal_publishCid(ctx, field)
-			case "pieceCid":
-				return ec.fieldContext_MarketMk12Deal_pieceCid(ctx, field)
-			case "pieceSize":
-				return ec.fieldContext_MarketMk12Deal_pieceSize(ctx, field)
-			case "fastRetrieval":
-				return ec.fieldContext_MarketMk12Deal_fastRetrieval(ctx, field)
-			case "announceToIpni":
-				return ec.fieldContext_MarketMk12Deal_announceToIpni(ctx, field)
-			case "url":
-				return ec.fieldContext_MarketMk12Deal_url(ctx, field)
-			case "urlHeaders":
-				return ec.fieldContext_MarketMk12Deal_urlHeaders(ctx, field)
-			case "error":
-				return ec.fieldContext_MarketMk12Deal_error(ctx, field)
-			case "label":
-				return ec.fieldContext_MarketMk12Deal_label(ctx, field)
-			case "proposalCid":
-				return ec.fieldContext_MarketMk12Deal_proposalCid(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MarketMk12Deal", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketMk12Deals_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketMk12DealsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketMk12DealsCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12DealsCount(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketMk12DealsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketMk12DealsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketDealInfo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketDealInfo(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketDealInfo(rctx, fc.Args["id"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.DealInfo)
-	fc.Result = res
-	return ec.marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketDealInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_DealInfo_id(ctx, field)
-			case "spId":
-				return ec.fieldContext_DealInfo_spId(ctx, field)
-			case "sector":
-				return ec.fieldContext_DealInfo_sector(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_DealInfo_createdAt(ctx, field)
-			case "signedProposalCid":
-				return ec.fieldContext_DealInfo_signedProposalCid(ctx, field)
-			case "offline":
-				return ec.fieldContext_DealInfo_offline(ctx, field)
-			case "verified":
-				return ec.fieldContext_DealInfo_verified(ctx, field)
-			case "startEpoch":
-				return ec.fieldContext_DealInfo_startEpoch(ctx, field)
-			case "endEpoch":
-				return ec.fieldContext_DealInfo_endEpoch(ctx, field)
-			case "clientPeerId":
-				return ec.fieldContext_DealInfo_clientPeerId(ctx, field)
-			case "chainDealId":
-				return ec.fieldContext_DealInfo_chainDealId(ctx, field)
-			case "publishCid":
-				return ec.fieldContext_DealInfo_publishCid(ctx, field)
-			case "pieceCid":
-				return ec.fieldContext_DealInfo_pieceCid(ctx, field)
-			case "pieceSize":
-				return ec.fieldContext_DealInfo_pieceSize(ctx, field)
-			case "fastRetrieval":
-				return ec.fieldContext_DealInfo_fastRetrieval(ctx, field)
-			case "announceToIpni":
-				return ec.fieldContext_DealInfo_announceToIpni(ctx, field)
-			case "url":
-				return ec.fieldContext_DealInfo_url(ctx, field)
-			case "urls":
-				return ec.fieldContext_DealInfo_urls(ctx, field)
-			case "urlHeaders":
-				return ec.fieldContext_DealInfo_urlHeaders(ctx, field)
-			case "error":
-				return ec.fieldContext_DealInfo_error(ctx, field)
-			case "miner":
-				return ec.fieldContext_DealInfo_miner(ctx, field)
-			case "isLegacy":
-				return ec.fieldContext_DealInfo_isLegacy(ctx, field)
-			case "indexed":
-				return ec.fieldContext_DealInfo_indexed(ctx, field)
-			case "isDdo":
-				return ec.fieldContext_DealInfo_isDdo(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type DealInfo", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketDealInfo_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketDealCountSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketDealCountSummary(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketDealCountSummary(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.DealCountSummary)
-	fc.Result = res
-	return ec.marshalODealCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealCountSummary(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketDealCountSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "boost":
-				return ec.fieldContext_DealCountSummary_boost(ctx, field)
-			case "direct":
-				return ec.fieldContext_DealCountSummary_direct(ctx, field)
-			case "legacy":
-				return ec.fieldContext_DealCountSummary_legacy(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type DealCountSummary", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketMk12StorageAsks(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12StorageAsks(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MarketMk12StorageAsk)
-	fc.Result = res
-	return ec.marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketMk12StorageAsks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "spId":
-				return ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
-			case "price":
-				return ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
-			case "verifiedPrice":
-				return ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
-			case "minSize":
-				return ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
-			case "maxSize":
-				return ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
-			case "expiry":
-				return ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
-			case "sequence":
-				return ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MarketMk12StorageAsk", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketMk12StorageAsk(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12StorageAsk(rctx, fc.Args["spId"].(types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.MarketMk12StorageAsk)
-	fc.Result = res
-	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "spId":
-				return ec.fieldContext_MarketMk12StorageAsk_spId(ctx, field)
-			case "price":
-				return ec.fieldContext_MarketMk12StorageAsk_price(ctx, field)
-			case "verifiedPrice":
-				return ec.fieldContext_MarketMk12StorageAsk_verifiedPrice(ctx, field)
-			case "minSize":
-				return ec.fieldContext_MarketMk12StorageAsk_minSize(ctx, field)
-			case "maxSize":
-				return ec.fieldContext_MarketMk12StorageAsk_maxSize(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_MarketMk12StorageAsk_createdAt(ctx, field)
-			case "expiry":
-				return ec.fieldContext_MarketMk12StorageAsk_expiry(ctx, field)
-			case "sequence":
-				return ec.fieldContext_MarketMk12StorageAsk_sequence(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MarketMk12StorageAsk", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketMk12StorageAsk_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketMk12StorageAsksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketMk12StorageAsksCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12StorageAsksCount(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketMk12StorageAsksCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_makretPriceFilters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_makretPriceFilters(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MakretPriceFilters(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.PriceFilter)
-	fc.Result = res
-	return ec.marshalOPriceFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_makretPriceFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "name":
-				return ec.fieldContext_PriceFilter_name(ctx, field)
-			case "minDurationDays":
-				return ec.fieldContext_PriceFilter_minDurationDays(ctx, field)
-			case "maxDurationDays":
-				return ec.fieldContext_PriceFilter_maxDurationDays(ctx, field)
-			case "minimumSize":
-				return ec.fieldContext_PriceFilter_minimumSize(ctx, field)
-			case "maximumSize":
-				return ec.fieldContext_PriceFilter_maximumSize(ctx, field)
-			case "price":
-				return ec.fieldContext_PriceFilter_price(ctx, field)
-			case "verified":
-				return ec.fieldContext_PriceFilter_verified(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PriceFilter", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketPriceFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketPriceFilter(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketPriceFilter(rctx, fc.Args["name"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.PriceFilter)
-	fc.Result = res
-	return ec.marshalOPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketPriceFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "name":
-				return ec.fieldContext_PriceFilter_name(ctx, field)
-			case "minDurationDays":
-				return ec.fieldContext_PriceFilter_minDurationDays(ctx, field)
-			case "maxDurationDays":
-				return ec.fieldContext_PriceFilter_maxDurationDays(ctx, field)
-			case "minimumSize":
-				return ec.fieldContext_PriceFilter_minimumSize(ctx, field)
-			case "maximumSize":
-				return ec.fieldContext_PriceFilter_maximumSize(ctx, field)
-			case "price":
-				return ec.fieldContext_PriceFilter_price(ctx, field)
-			case "verified":
-				return ec.fieldContext_PriceFilter_verified(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type PriceFilter", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketPriceFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketCheckPriceFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketCheckPriceFilter(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketCheckPriceFilter(rctx, fc.Args["name"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketCheckPriceFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketCheckPriceFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketClientFilters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketClientFilters(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketClientFilters(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.ClientFilter)
-	fc.Result = res
-	return ec.marshalOClientFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketClientFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "name":
-				return ec.fieldContext_ClientFilter_name(ctx, field)
-			case "active":
-				return ec.fieldContext_ClientFilter_active(ctx, field)
-			case "wallets":
-				return ec.fieldContext_ClientFilter_wallets(ctx, field)
-			case "peers":
-				return ec.fieldContext_ClientFilter_peers(ctx, field)
-			case "pricingFilters":
-				return ec.fieldContext_ClientFilter_pricingFilters(ctx, field)
-			case "maxDealsPerHour":
-				return ec.fieldContext_ClientFilter_maxDealsPerHour(ctx, field)
-			case "maxDealSizePerHour":
-				return ec.fieldContext_ClientFilter_maxDealSizePerHour(ctx, field)
-			case "info":
-				return ec.fieldContext_ClientFilter_info(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ClientFilter", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketClientFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketClientFilter(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketClientFilter(rctx, fc.Args["name"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.ClientFilter)
-	fc.Result = res
-	return ec.marshalOClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketClientFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "name":
-				return ec.fieldContext_ClientFilter_name(ctx, field)
-			case "active":
-				return ec.fieldContext_ClientFilter_active(ctx, field)
-			case "wallets":
-				return ec.fieldContext_ClientFilter_wallets(ctx, field)
-			case "peers":
-				return ec.fieldContext_ClientFilter_peers(ctx, field)
-			case "pricingFilters":
-				return ec.fieldContext_ClientFilter_pricingFilters(ctx, field)
-			case "maxDealsPerHour":
-				return ec.fieldContext_ClientFilter_maxDealsPerHour(ctx, field)
-			case "maxDealSizePerHour":
-				return ec.fieldContext_ClientFilter_maxDealSizePerHour(ctx, field)
-			case "info":
-				return ec.fieldContext_ClientFilter_info(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type ClientFilter", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketClientFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketCheckClientFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketCheckClientFilter(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketCheckClientFilter(rctx, fc.Args["name"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketCheckClientFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketCheckClientFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketAllowFilters(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketAllowFilters(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketAllowFilters(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MarketAllowFilter)
-	fc.Result = res
-	return ec.marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilterᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketAllowFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "wallet":
-				return ec.fieldContext_MarketAllowFilter_wallet(ctx, field)
+				return ec.fieldContext_Sector_spID(ctx, field)
+			case "sectorNum":
+				return ec.fieldContext_Sector_sectorNum(ctx, field)
 			case "status":
-				return ec.fieldContext_MarketAllowFilter_status(ctx, field)
+				return ec.fieldContext_Sector_status(ctx, field)
+			case "meta":
+				return ec.fieldContext_Sector_meta(ctx, field)
+			case "porep":
+				return ec.fieldContext_Sector_porep(ctx, field)
+			case "locations":
+				return ec.fieldContext_Sector_locations(ctx, field)
+			case "pieces":
+				return ec.fieldContext_Sector_pieces(ctx, field)
+			case "tasks":
+				return ec.fieldContext_Sector_tasks(ctx, field)
+			case "events":
+				return ec.fieldContext_Sector_events(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type MarketAllowFilter", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Sector", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_sectors_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_marketAllowFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketAllowFilter(ctx, field)
+func (ec *executionContext) _Query_sectorsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_sectorsCount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -27261,9 +26753,64 @@ func (ec *executionContext) _Query_marketAllowFilter(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+		return ec.resolvers.Query().SectorsCount(rctx, fc.Args["actor"].(*types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_sectorsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_sectorsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_sector(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_sector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Sector(rctx, fc.Args["actor"].(types.Address), fc.Args["sectorNumber"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27272,12 +26819,12 @@ func (ec *executionContext) _Query_marketAllowFilter(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.MarketAllowFilter)
+	res := resTmp.(*model.Sector)
 	fc.Result = res
-	return ec.marshalOMarketAllowFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, field.Selections, res)
+	return ec.marshalOSector2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_marketAllowFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_sector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -27285,12 +26832,28 @@ func (ec *executionContext) fieldContext_Query_marketAllowFilter(ctx context.Con
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "wallet":
-				return ec.fieldContext_MarketAllowFilter_wallet(ctx, field)
+			case "id":
+				return ec.fieldContext_Sector_id(ctx, field)
+			case "spID":
+				return ec.fieldContext_Sector_spID(ctx, field)
+			case "sectorNum":
+				return ec.fieldContext_Sector_sectorNum(ctx, field)
 			case "status":
-				return ec.fieldContext_MarketAllowFilter_status(ctx, field)
+				return ec.fieldContext_Sector_status(ctx, field)
+			case "meta":
+				return ec.fieldContext_Sector_meta(ctx, field)
+			case "porep":
+				return ec.fieldContext_Sector_porep(ctx, field)
+			case "locations":
+				return ec.fieldContext_Sector_locations(ctx, field)
+			case "pieces":
+				return ec.fieldContext_Sector_pieces(ctx, field)
+			case "tasks":
+				return ec.fieldContext_Sector_tasks(ctx, field)
+			case "events":
+				return ec.fieldContext_Sector_events(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type MarketAllowFilter", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Sector", field.Name)
 		},
 	}
 	defer func() {
@@ -27300,759 +26863,9 @@ func (ec *executionContext) fieldContext_Query_marketAllowFilter(ctx context.Con
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_marketAllowFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_sector_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_marketAllowDefault(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketAllowDefault(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketAllowDefault(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_marketAllowDefault(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_messageSends(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_messageSends(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MessageSends(rctx, fc.Args["account"].(*types.Address), fc.Args["offset"].(int), fc.Args["limit"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MessageSend)
-	fc.Result = res
-	return ec.marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_messageSends(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "fromKey":
-				return ec.fieldContext_MessageSend_fromKey(ctx, field)
-			case "toAddr":
-				return ec.fieldContext_MessageSend_toAddr(ctx, field)
-			case "sendReason":
-				return ec.fieldContext_MessageSend_sendReason(ctx, field)
-			case "sendTaskId":
-				return ec.fieldContext_MessageSend_sendTaskId(ctx, field)
-			case "unsignedData":
-				return ec.fieldContext_MessageSend_unsignedData(ctx, field)
-			case "unsignedCid":
-				return ec.fieldContext_MessageSend_unsignedCid(ctx, field)
-			case "nonce":
-				return ec.fieldContext_MessageSend_nonce(ctx, field)
-			case "signedData":
-				return ec.fieldContext_MessageSend_signedData(ctx, field)
-			case "signedJson":
-				return ec.fieldContext_MessageSend_signedJson(ctx, field)
-			case "signedCid":
-				return ec.fieldContext_MessageSend_signedCid(ctx, field)
-			case "sendTime":
-				return ec.fieldContext_MessageSend_sendTime(ctx, field)
-			case "sendSuccess":
-				return ec.fieldContext_MessageSend_sendSuccess(ctx, field)
-			case "sendError":
-				return ec.fieldContext_MessageSend_sendError(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MessageSend", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_messageSends_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_messageSendsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_messageSendsCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MessageSendsCount(rctx, fc.Args["account"].(*types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_messageSendsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_messageSendsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_messageSend(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_messageSend(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MessageSend(rctx, fc.Args["sendTaskId"].(*int), fc.Args["fromKey"].(*string), fc.Args["nonce"].(*int), fc.Args["signedCID"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.MessageSend)
-	fc.Result = res
-	return ec.marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "fromKey":
-				return ec.fieldContext_MessageSend_fromKey(ctx, field)
-			case "toAddr":
-				return ec.fieldContext_MessageSend_toAddr(ctx, field)
-			case "sendReason":
-				return ec.fieldContext_MessageSend_sendReason(ctx, field)
-			case "sendTaskId":
-				return ec.fieldContext_MessageSend_sendTaskId(ctx, field)
-			case "unsignedData":
-				return ec.fieldContext_MessageSend_unsignedData(ctx, field)
-			case "unsignedCid":
-				return ec.fieldContext_MessageSend_unsignedCid(ctx, field)
-			case "nonce":
-				return ec.fieldContext_MessageSend_nonce(ctx, field)
-			case "signedData":
-				return ec.fieldContext_MessageSend_signedData(ctx, field)
-			case "signedJson":
-				return ec.fieldContext_MessageSend_signedJson(ctx, field)
-			case "signedCid":
-				return ec.fieldContext_MessageSend_signedCid(ctx, field)
-			case "sendTime":
-				return ec.fieldContext_MessageSend_sendTime(ctx, field)
-			case "sendSuccess":
-				return ec.fieldContext_MessageSend_sendSuccess(ctx, field)
-			case "sendError":
-				return ec.fieldContext_MessageSend_sendError(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MessageSend", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_messageSend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miningSummaryByDay(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miningSummaryByDay(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningSummaryByDay(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MiningSummaryDay)
-	fc.Result = res
-	return ec.marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miningSummaryByDay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "day":
-				return ec.fieldContext_MiningSummaryDay_day(ctx, field)
-			case "miner":
-				return ec.fieldContext_MiningSummaryDay_miner(ctx, field)
-			case "wonBlock":
-				return ec.fieldContext_MiningSummaryDay_wonBlock(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MiningSummaryDay", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miningSummaryByDay_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miningCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miningCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.MiningCount)
-	fc.Result = res
-	return ec.marshalNMiningCount2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miningCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "include":
-				return ec.fieldContext_MiningCount_include(ctx, field)
-			case "exclude":
-				return ec.fieldContext_MiningCount_exclude(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MiningCount", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miningCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miningWins(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miningWins(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWins(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MiningTask)
-	fc.Result = res
-	return ec.marshalOMiningTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miningWins(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "taskId":
-				return ec.fieldContext_MiningTask_taskId(ctx, field)
-			case "spId":
-				return ec.fieldContext_MiningTask_spId(ctx, field)
-			case "epoch":
-				return ec.fieldContext_MiningTask_epoch(ctx, field)
-			case "baseComputeTime":
-				return ec.fieldContext_MiningTask_baseComputeTime(ctx, field)
-			case "won":
-				return ec.fieldContext_MiningTask_won(ctx, field)
-			case "minedCid":
-				return ec.fieldContext_MiningTask_minedCid(ctx, field)
-			case "minedHeader":
-				return ec.fieldContext_MiningTask_minedHeader(ctx, field)
-			case "minedAt":
-				return ec.fieldContext_MiningTask_minedAt(ctx, field)
-			case "submittedAt":
-				return ec.fieldContext_MiningTask_submittedAt(ctx, field)
-			case "included":
-				return ec.fieldContext_MiningTask_included(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MiningTask", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miningWins_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miningWinsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miningWinsCount(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWinsCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miningWinsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miningWinsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miningCountSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miningCountSummary(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCountSummary(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.MiningCountSummary)
-	fc.Result = res
-	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miningCountSummary(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "start":
-				return ec.fieldContext_MiningCountSummary_start(ctx, field)
-			case "end":
-				return ec.fieldContext_MiningCountSummary_end(ctx, field)
-			case "total":
-				return ec.fieldContext_MiningCountSummary_total(ctx, field)
-			case "won":
-				return ec.fieldContext_MiningCountSummary_won(ctx, field)
-			case "included":
-				return ec.fieldContext_MiningCountSummary_included(ctx, field)
-			case "previous":
-				return ec.fieldContext_MiningCountSummary_previous(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MiningCountSummary", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miningCountSummary_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miningCountAggregate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miningCountAggregate(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCountAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address), fc.Args["interval"].(model.MiningTaskAggregateInterval))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MiningCountAggregated)
-	fc.Result = res
-	return ec.marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miningCountAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "time":
-				return ec.fieldContext_MiningCountAggregated_time(ctx, field)
-			case "total":
-				return ec.fieldContext_MiningCountAggregated_total(ctx, field)
-			case "won":
-				return ec.fieldContext_MiningCountAggregated_won(ctx, field)
-			case "included":
-				return ec.fieldContext_MiningCountAggregated_included(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MiningCountAggregated", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miningCountAggregate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_miningStatusSummay(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_miningStatusSummay(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningStatusSummay(rctx, fc.Args["spID"].(*types.ActorID), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.MiningStatusSummay)
-	fc.Result = res
-	return ec.marshalOMiningStatusSummay2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningStatusSummay(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_miningStatusSummay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "total":
-				return ec.fieldContext_MiningStatusSummay_total(ctx, field)
-			case "won":
-				return ec.fieldContext_MiningStatusSummay_won(ctx, field)
-			case "included":
-				return ec.fieldContext_MiningStatusSummay_included(ctx, field)
-			case "wonChangeRate":
-				return ec.fieldContext_MiningStatusSummay_wonChangeRate(ctx, field)
-			case "lastMinedAt":
-				return ec.fieldContext_MiningStatusSummay_lastMinedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MiningStatusSummay", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_miningStatusSummay_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_nodeHealthSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_nodeHealthSummary(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().NodeHealthSummary(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.NodeHealthSummary)
-	fc.Result = res
-	return ec.marshalONodeHealthSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_nodeHealthSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "onlineNodes":
-				return ec.fieldContext_NodeHealthSummary_onlineNodes(ctx, field)
-			case "unscheduledNodes":
-				return ec.fieldContext_NodeHealthSummary_unscheduledNodes(ctx, field)
-			case "offlineNodes":
-				return ec.fieldContext_NodeHealthSummary_offlineNodes(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type NodeHealthSummary", field.Name)
-		},
 	}
 	return fc, nil
 }
@@ -28069,7 +26882,7 @@ func (ec *executionContext) _Query_sectorSummary(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().SectorSummary(rctx)
 	})
@@ -28106,6 +26919,743 @@ func (ec *executionContext) fieldContext_Query_sectorSummary(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_global(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_global(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Global(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Global)
+	fc.Result = res
+	return ec.marshalNGlobal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGlobal(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_global(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "networkName":
+				return ec.fieldContext_Global_networkName(ctx, field)
+			case "genesisTimestamp":
+				return ec.fieldContext_Global_genesisTimestamp(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Global", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_storage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_storage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Storage(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Storage)
+	fc.Result = res
+	return ec.marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_storage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Storage_id(ctx, field)
+			case "path":
+				return ec.fieldContext_Storage_path(ctx, field)
+			case "liveness":
+				return ec.fieldContext_Storage_liveness(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Storage", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_storage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_storagePaths(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_storagePaths(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().StoragePaths(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.StoragePath)
+	fc.Result = res
+	return ec.marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_storagePaths(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_StoragePath_id(ctx, field)
+			case "storageId":
+				return ec.fieldContext_StoragePath_storageId(ctx, field)
+			case "type":
+				return ec.fieldContext_StoragePath_type(ctx, field)
+			case "urls":
+				return ec.fieldContext_StoragePath_urls(ctx, field)
+			case "weight":
+				return ec.fieldContext_StoragePath_weight(ctx, field)
+			case "maxStorage":
+				return ec.fieldContext_StoragePath_maxStorage(ctx, field)
+			case "canSeal":
+				return ec.fieldContext_StoragePath_canSeal(ctx, field)
+			case "canStore":
+				return ec.fieldContext_StoragePath_canStore(ctx, field)
+			case "groups":
+				return ec.fieldContext_StoragePath_groups(ctx, field)
+			case "allowTo":
+				return ec.fieldContext_StoragePath_allowTo(ctx, field)
+			case "allowTypes":
+				return ec.fieldContext_StoragePath_allowTypes(ctx, field)
+			case "denyTypes":
+				return ec.fieldContext_StoragePath_denyTypes(ctx, field)
+			case "capacity":
+				return ec.fieldContext_StoragePath_capacity(ctx, field)
+			case "available":
+				return ec.fieldContext_StoragePath_available(ctx, field)
+			case "fsAvailable":
+				return ec.fieldContext_StoragePath_fsAvailable(ctx, field)
+			case "reserved":
+				return ec.fieldContext_StoragePath_reserved(ctx, field)
+			case "used":
+				return ec.fieldContext_StoragePath_used(ctx, field)
+			case "lastHeartbeat":
+				return ec.fieldContext_StoragePath_lastHeartbeat(ctx, field)
+			case "heartbeatErr":
+				return ec.fieldContext_StoragePath_heartbeatErr(ctx, field)
+			case "allowMiners":
+				return ec.fieldContext_StoragePath_allowMiners(ctx, field)
+			case "denyMiners":
+				return ec.fieldContext_StoragePath_denyMiners(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type StoragePath", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_storageStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_storageStats(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().StorageStats(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.StorageStats)
+	fc.Result = res
+	return ec.marshalOStorageStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_storageStats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "type":
+				return ec.fieldContext_StorageStats_type(ctx, field)
+			case "totalCapacity":
+				return ec.fieldContext_StorageStats_totalCapacity(ctx, field)
+			case "totalAvailable":
+				return ec.fieldContext_StorageStats_totalAvailable(ctx, field)
+			case "totalUsed":
+				return ec.fieldContext_StorageStats_totalUsed(ctx, field)
+			case "totalReserved":
+				return ec.fieldContext_StorageStats_totalReserved(ctx, field)
+			case "totalFsAvailable":
+				return ec.fieldContext_StorageStats_totalFsAvailable(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type StorageStats", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_task(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_task(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Task(rctx, fc.Args["id"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Task)
+	fc.Result = res
+	return ec.marshalOTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_task(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Task_id(ctx, field)
+			case "initiatedByID":
+				return ec.fieldContext_Task_initiatedByID(ctx, field)
+			case "initiatedBy":
+				return ec.fieldContext_Task_initiatedBy(ctx, field)
+			case "updateTime":
+				return ec.fieldContext_Task_updateTime(ctx, field)
+			case "postedTime":
+				return ec.fieldContext_Task_postedTime(ctx, field)
+			case "ownerId":
+				return ec.fieldContext_Task_ownerId(ctx, field)
+			case "owner":
+				return ec.fieldContext_Task_owner(ctx, field)
+			case "addedByID":
+				return ec.fieldContext_Task_addedByID(ctx, field)
+			case "addedBy":
+				return ec.fieldContext_Task_addedBy(ctx, field)
+			case "previousTaskID":
+				return ec.fieldContext_Task_previousTaskID(ctx, field)
+			case "previousTask":
+				return ec.fieldContext_Task_previousTask(ctx, field)
+			case "name":
+				return ec.fieldContext_Task_name(ctx, field)
+			case "histories":
+				return ec.fieldContext_Task_histories(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_task_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_tasks(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Tasks(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Task)
+	fc.Result = res
+	return ec.marshalOTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Task_id(ctx, field)
+			case "initiatedByID":
+				return ec.fieldContext_Task_initiatedByID(ctx, field)
+			case "initiatedBy":
+				return ec.fieldContext_Task_initiatedBy(ctx, field)
+			case "updateTime":
+				return ec.fieldContext_Task_updateTime(ctx, field)
+			case "postedTime":
+				return ec.fieldContext_Task_postedTime(ctx, field)
+			case "ownerId":
+				return ec.fieldContext_Task_ownerId(ctx, field)
+			case "owner":
+				return ec.fieldContext_Task_owner(ctx, field)
+			case "addedByID":
+				return ec.fieldContext_Task_addedByID(ctx, field)
+			case "addedBy":
+				return ec.fieldContext_Task_addedBy(ctx, field)
+			case "previousTaskID":
+				return ec.fieldContext_Task_previousTaskID(ctx, field)
+			case "previousTask":
+				return ec.fieldContext_Task_previousTask(ctx, field)
+			case "name":
+				return ec.fieldContext_Task_name(ctx, field)
+			case "histories":
+				return ec.fieldContext_Task_histories(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_tasksCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TasksCount(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_tasksCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_taskHistories(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskHistories(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TaskHistories(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TaskHistory)
+	fc.Result = res
+	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_taskHistories(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_TaskHistory_id(ctx, field)
+			case "taskId":
+				return ec.fieldContext_TaskHistory_taskId(ctx, field)
+			case "name":
+				return ec.fieldContext_TaskHistory_name(ctx, field)
+			case "posted":
+				return ec.fieldContext_TaskHistory_posted(ctx, field)
+			case "workStart":
+				return ec.fieldContext_TaskHistory_workStart(ctx, field)
+			case "workEnd":
+				return ec.fieldContext_TaskHistory_workEnd(ctx, field)
+			case "result":
+				return ec.fieldContext_TaskHistory_result(ctx, field)
+			case "err":
+				return ec.fieldContext_TaskHistory_err(ctx, field)
+			case "completedByHostAndPort":
+				return ec.fieldContext_TaskHistory_completedByHostAndPort(ctx, field)
+			case "completedBy":
+				return ec.fieldContext_TaskHistory_completedBy(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TaskHistory", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_taskHistories_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_taskHistoriesCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskHistoriesCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TaskHistoriesCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_taskHistoriesCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_taskHistoriesCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_taskHistoriesAggregate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskHistoriesAggregate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TaskHistoriesAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["interval"].(model.TaskHistoriesAggregateInterval))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TaskAggregate)
+	fc.Result = res
+	return ec.marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_taskHistoriesAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "time":
+				return ec.fieldContext_TaskAggregate_time(ctx, field)
+			case "total":
+				return ec.fieldContext_TaskAggregate_total(ctx, field)
+			case "success":
+				return ec.fieldContext_TaskAggregate_success(ctx, field)
+			case "failure":
+				return ec.fieldContext_TaskAggregate_failure(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TaskAggregate", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_taskHistoriesAggregate_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_tasksStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_tasksStats(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TasksStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["machine"].(*string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TaskStats)
+	fc.Result = res
+	return ec.marshalOTaskStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_tasksStats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_TaskStats_name(ctx, field)
+			case "total":
+				return ec.fieldContext_TaskStats_total(ctx, field)
+			case "success":
+				return ec.fieldContext_TaskStats_success(ctx, field)
+			case "failure":
+				return ec.fieldContext_TaskStats_failure(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TaskStats", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_tasksStats_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_taskNames(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_taskNames(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TaskNames(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_taskNames(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_taskSuccessRate(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_taskSuccessRate(ctx, field)
 	if err != nil {
@@ -28118,7 +27668,7 @@ func (ec *executionContext) _Query_taskSuccessRate(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().TaskSuccessRate(rctx, fc.Args["name"].(*string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
 	})
@@ -28180,7 +27730,7 @@ func (ec *executionContext) _Query_runningTaskSummary(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().RunningTaskSummary(rctx)
 	})
@@ -28229,7 +27779,7 @@ func (ec *executionContext) _Query_taskDurationStats(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().TaskDurationStats(rctx, fc.Args["name"].(string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
 	})
@@ -28301,7 +27851,7 @@ func (ec *executionContext) _Query_tasksDurationStats(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().TasksDurationStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
 	})
@@ -28376,7 +27926,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.introspectType(fc.Args["name"].(string))
 	})
@@ -28406,6 +27956,8 @@ func (ec *executionContext) fieldContext_Query___type(ctx context.Context, field
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -28418,8 +27970,8 @@ func (ec *executionContext) fieldContext_Query___type(ctx context.Context, field
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -28450,7 +28002,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.introspectSchema()
 	})
@@ -28505,7 +28057,7 @@ func (ec *executionContext) _RunningTaskSummary_running(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Running, nil
 	})
@@ -28549,7 +28101,7 @@ func (ec *executionContext) _RunningTaskSummary_queued(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Queued, nil
 	})
@@ -28593,7 +28145,7 @@ func (ec *executionContext) _RunningTaskSummary_averageWaitTime(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AverageWaitTime, nil
 	})
@@ -28637,7 +28189,7 @@ func (ec *executionContext) _Sector_id(ctx context.Context, field graphql.Collec
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().ID(rctx, obj)
 	})
@@ -28681,7 +28233,7 @@ func (ec *executionContext) _Sector_spID(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -28725,7 +28277,7 @@ func (ec *executionContext) _Sector_sectorNum(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorNum, nil
 	})
@@ -28769,7 +28321,7 @@ func (ec *executionContext) _Sector_status(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().Status(rctx, obj)
 	})
@@ -28813,7 +28365,7 @@ func (ec *executionContext) _Sector_meta(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().Meta(rctx, obj)
 	})
@@ -28890,7 +28442,7 @@ func (ec *executionContext) _Sector_porep(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().Porep(rctx, obj)
 	})
@@ -29023,7 +28575,7 @@ func (ec *executionContext) _Sector_locations(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().Locations(rctx, obj)
 	})
@@ -29089,7 +28641,7 @@ func (ec *executionContext) _Sector_pieces(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().Pieces(rctx, obj)
 	})
@@ -29159,7 +28711,7 @@ func (ec *executionContext) _Sector_tasks(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().Tasks(rctx, obj)
 	})
@@ -29231,7 +28783,7 @@ func (ec *executionContext) _Sector_events(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Sector().Events(rctx, obj)
 	})
@@ -29297,7 +28849,7 @@ func (ec *executionContext) _SectorLocation_minerId(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinerID, nil
 	})
@@ -29341,7 +28893,7 @@ func (ec *executionContext) _SectorLocation_sectorNum(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorNum, nil
 	})
@@ -29385,7 +28937,7 @@ func (ec *executionContext) _SectorLocation_sectorFiletype(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorFiletype, nil
 	})
@@ -29429,7 +28981,7 @@ func (ec *executionContext) _SectorLocation_storageId(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StorageID, nil
 	})
@@ -29473,7 +29025,7 @@ func (ec *executionContext) _SectorLocation_isPrimary(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorLocation().IsPrimary(rctx, obj)
 	})
@@ -29514,7 +29066,7 @@ func (ec *executionContext) _SectorLocation_readTs(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorLocation().ReadTs(rctx, obj)
 	})
@@ -29555,7 +29107,7 @@ func (ec *executionContext) _SectorLocation_readRefs(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ReadRefs, nil
 	})
@@ -29599,7 +29151,7 @@ func (ec *executionContext) _SectorLocation_writeTs(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorLocation().WriteTs(rctx, obj)
 	})
@@ -29640,7 +29192,7 @@ func (ec *executionContext) _SectorLocation_writeLockOwner(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorLocation().WriteLockOwner(rctx, obj)
 	})
@@ -29681,7 +29233,7 @@ func (ec *executionContext) _SectorLocation_storage(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorLocation().Storage(rctx, obj)
 	})
@@ -29730,7 +29282,7 @@ func (ec *executionContext) _SectorMeta_id(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorMeta().ID(rctx, obj)
 	})
@@ -29774,7 +29326,7 @@ func (ec *executionContext) _SectorMeta_spId(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -29818,7 +29370,7 @@ func (ec *executionContext) _SectorMeta_sectorNum(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorNum, nil
 	})
@@ -29862,7 +29414,7 @@ func (ec *executionContext) _SectorMeta_regSealProof(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RegSealProof, nil
 	})
@@ -29906,7 +29458,7 @@ func (ec *executionContext) _SectorMeta_ticketEpoch(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TicketEpoch, nil
 	})
@@ -29950,7 +29502,7 @@ func (ec *executionContext) _SectorMeta_ticketValue(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TicketValue, nil
 	})
@@ -29991,7 +29543,7 @@ func (ec *executionContext) _SectorMeta_origSealedCid(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OrigSealedCid, nil
 	})
@@ -30035,7 +29587,7 @@ func (ec *executionContext) _SectorMeta_origUnsealedCid(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OrigUnsealedCid, nil
 	})
@@ -30079,7 +29631,7 @@ func (ec *executionContext) _SectorMeta_curSealedCid(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CurSealedCid, nil
 	})
@@ -30123,7 +29675,7 @@ func (ec *executionContext) _SectorMeta_curUnsealedCid(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CurUnsealedCid, nil
 	})
@@ -30167,7 +29719,7 @@ func (ec *executionContext) _SectorMeta_msgCidPrecommit(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorMeta().MsgCidPrecommit(rctx, obj)
 	})
@@ -30208,7 +29760,7 @@ func (ec *executionContext) _SectorMeta_msgCidCommit(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorMeta().MsgCidCommit(rctx, obj)
 	})
@@ -30249,7 +29801,7 @@ func (ec *executionContext) _SectorMeta_msgCidUpdate(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorMeta().MsgCidUpdate(rctx, obj)
 	})
@@ -30290,7 +29842,7 @@ func (ec *executionContext) _SectorMeta_seedEpoch(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SeedEpoch, nil
 	})
@@ -30334,7 +29886,7 @@ func (ec *executionContext) _SectorMeta_seedValue(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SeedValue, nil
 	})
@@ -30375,7 +29927,7 @@ func (ec *executionContext) _SectorMeta_expirationEpoch(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.SectorMeta().ExpirationEpoch(rctx, obj)
 	})
@@ -30416,7 +29968,7 @@ func (ec *executionContext) _SectorMeta_isCC(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsCC, nil
 	})
@@ -30460,7 +30012,7 @@ func (ec *executionContext) _SectorMetaPiece_spID(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SpID, nil
 	})
@@ -30504,7 +30056,7 @@ func (ec *executionContext) _SectorMetaPiece_sectorNum(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SectorNum, nil
 	})
@@ -30548,7 +30100,7 @@ func (ec *executionContext) _SectorMetaPiece_pieceNum(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceNum, nil
 	})
@@ -30592,7 +30144,7 @@ func (ec *executionContext) _SectorMetaPiece_pieceCID(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceCid, nil
 	})
@@ -30636,7 +30188,7 @@ func (ec *executionContext) _SectorMetaPiece_pieceSize(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PieceSize, nil
 	})
@@ -30680,7 +30232,7 @@ func (ec *executionContext) _SectorMetaPiece_requestedKeepData(ctx context.Conte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RequestedKeepData, nil
 	})
@@ -30724,7 +30276,7 @@ func (ec *executionContext) _SectorMetaPiece_rawDataSize(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.RawDataSize, nil
 	})
@@ -30765,7 +30317,7 @@ func (ec *executionContext) _SectorMetaPiece_startEpoch(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StartEpoch, nil
 	})
@@ -30806,7 +30358,7 @@ func (ec *executionContext) _SectorMetaPiece_origEndEpoch(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OrigEndEpoch, nil
 	})
@@ -30847,7 +30399,7 @@ func (ec *executionContext) _SectorMetaPiece_f05DealID(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.F05DealID, nil
 	})
@@ -30888,7 +30440,7 @@ func (ec *executionContext) _SectorMetaPiece_ddoPam(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DdoPam, nil
 	})
@@ -30929,7 +30481,7 @@ func (ec *executionContext) _SectorMetaPiece_f05DealProposal(ctx context.Context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.F05DealProposal, nil
 	})
@@ -30970,7 +30522,7 @@ func (ec *executionContext) _SectorSummary_active(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Active, nil
 	})
@@ -31014,7 +30566,7 @@ func (ec *executionContext) _SectorSummary_sealing(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Sealing, nil
 	})
@@ -31058,7 +30610,7 @@ func (ec *executionContext) _SectorSummary_failed(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Failed, nil
 	})
@@ -31102,7 +30654,7 @@ func (ec *executionContext) _Storage_id(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -31146,7 +30698,7 @@ func (ec *executionContext) _Storage_path(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Storage().Path(rctx, obj)
 	})
@@ -31231,7 +30783,7 @@ func (ec *executionContext) _Storage_liveness(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Storage().Liveness(rctx, obj)
 	})
@@ -31286,7 +30838,7 @@ func (ec *executionContext) _StorageLiveness_storageId(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StorageID, nil
 	})
@@ -31330,7 +30882,7 @@ func (ec *executionContext) _StorageLiveness_url(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.URL, nil
 	})
@@ -31374,7 +30926,7 @@ func (ec *executionContext) _StorageLiveness_lastChecked(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastChecked, nil
 	})
@@ -31418,7 +30970,7 @@ func (ec *executionContext) _StorageLiveness_lastLive(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastLive, nil
 	})
@@ -31459,7 +31011,7 @@ func (ec *executionContext) _StorageLiveness_lastDead(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastDead, nil
 	})
@@ -31500,7 +31052,7 @@ func (ec *executionContext) _StorageLiveness_lastDeadReason(ctx context.Context,
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastDeadReason, nil
 	})
@@ -31541,7 +31093,7 @@ func (ec *executionContext) _StoragePath_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.StoragePath().ID(rctx, obj)
 	})
@@ -31585,7 +31137,7 @@ func (ec *executionContext) _StoragePath_storageId(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.StorageID, nil
 	})
@@ -31629,7 +31181,7 @@ func (ec *executionContext) _StoragePath_type(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.StoragePath().Type(rctx, obj)
 	})
@@ -31673,7 +31225,7 @@ func (ec *executionContext) _StoragePath_urls(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Urls, nil
 	})
@@ -31717,7 +31269,7 @@ func (ec *executionContext) _StoragePath_weight(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Weight, nil
 	})
@@ -31761,7 +31313,7 @@ func (ec *executionContext) _StoragePath_maxStorage(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MaxStorage, nil
 	})
@@ -31805,7 +31357,7 @@ func (ec *executionContext) _StoragePath_canSeal(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CanSeal, nil
 	})
@@ -31849,7 +31401,7 @@ func (ec *executionContext) _StoragePath_canStore(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CanStore, nil
 	})
@@ -31893,7 +31445,7 @@ func (ec *executionContext) _StoragePath_groups(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Groups, nil
 	})
@@ -31934,7 +31486,7 @@ func (ec *executionContext) _StoragePath_allowTo(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AllowTo, nil
 	})
@@ -31975,7 +31527,7 @@ func (ec *executionContext) _StoragePath_allowTypes(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AllowTypes, nil
 	})
@@ -32016,7 +31568,7 @@ func (ec *executionContext) _StoragePath_denyTypes(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DenyTypes, nil
 	})
@@ -32057,7 +31609,7 @@ func (ec *executionContext) _StoragePath_capacity(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Capacity, nil
 	})
@@ -32101,7 +31653,7 @@ func (ec *executionContext) _StoragePath_available(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Available, nil
 	})
@@ -32145,7 +31697,7 @@ func (ec *executionContext) _StoragePath_fsAvailable(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FsAvailable, nil
 	})
@@ -32189,7 +31741,7 @@ func (ec *executionContext) _StoragePath_reserved(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Reserved, nil
 	})
@@ -32233,7 +31785,7 @@ func (ec *executionContext) _StoragePath_used(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Used, nil
 	})
@@ -32277,7 +31829,7 @@ func (ec *executionContext) _StoragePath_lastHeartbeat(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.LastHeartbeat, nil
 	})
@@ -32321,7 +31873,7 @@ func (ec *executionContext) _StoragePath_heartbeatErr(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.HeartbeatErr, nil
 	})
@@ -32362,7 +31914,7 @@ func (ec *executionContext) _StoragePath_allowMiners(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AllowMiners, nil
 	})
@@ -32406,7 +31958,7 @@ func (ec *executionContext) _StoragePath_denyMiners(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DenyMiners, nil
 	})
@@ -32450,7 +32002,7 @@ func (ec *executionContext) _StorageStats_type(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
@@ -32494,7 +32046,7 @@ func (ec *executionContext) _StorageStats_totalCapacity(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCapacity, nil
 	})
@@ -32538,7 +32090,7 @@ func (ec *executionContext) _StorageStats_totalAvailable(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalAvailable, nil
 	})
@@ -32582,7 +32134,7 @@ func (ec *executionContext) _StorageStats_totalUsed(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalUsed, nil
 	})
@@ -32626,7 +32178,7 @@ func (ec *executionContext) _StorageStats_totalReserved(ctx context.Context, fie
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalReserved, nil
 	})
@@ -32670,7 +32222,7 @@ func (ec *executionContext) _StorageStats_totalFsAvailable(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalFsAvailable, nil
 	})
@@ -32714,7 +32266,7 @@ func (ec *executionContext) _StorageUsage_time(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Time, nil
 	})
@@ -32758,7 +32310,7 @@ func (ec *executionContext) _StorageUsage_available(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Available, nil
 	})
@@ -32802,7 +32354,7 @@ func (ec *executionContext) _StorageUsage_used(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Used, nil
 	})
@@ -32846,7 +32398,7 @@ func (ec *executionContext) _StorageUsage_reserved(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Reserved, nil
 	})
@@ -32890,7 +32442,7 @@ func (ec *executionContext) _StorageUsage_fsAvailable(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FsAvailable, nil
 	})
@@ -32934,7 +32486,7 @@ func (ec *executionContext) _Subscription_alerts(ctx context.Context, field grap
 			ret = nil
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Subscription().Alerts(rctx, fc.Args["offset"].(int))
 	})
@@ -33011,7 +32563,7 @@ func (ec *executionContext) _Subscription_completedTask(ctx context.Context, fie
 			ret = nil
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Subscription().CompletedTask(rctx, fc.Args["machine"].(*string), fc.Args["last"].(int))
 	})
@@ -33102,7 +32654,7 @@ func (ec *executionContext) _Subscription_newTask(ctx context.Context, field gra
 			ret = nil
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Subscription().NewTask(rctx, fc.Args["machineID"].(*int), fc.Args["last"].(int))
 	})
@@ -33199,7 +32751,7 @@ func (ec *executionContext) _Task_id(ctx context.Context, field graphql.Collecte
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -33243,7 +32795,7 @@ func (ec *executionContext) _Task_initiatedByID(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InitiatedByID, nil
 	})
@@ -33284,7 +32836,7 @@ func (ec *executionContext) _Task_initiatedBy(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Task().InitiatedBy(rctx, obj)
 	})
@@ -33349,7 +32901,7 @@ func (ec *executionContext) _Task_updateTime(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UpdateTime, nil
 	})
@@ -33393,7 +32945,7 @@ func (ec *executionContext) _Task_postedTime(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PostedTime, nil
 	})
@@ -33437,7 +32989,7 @@ func (ec *executionContext) _Task_ownerId(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OwnerID, nil
 	})
@@ -33478,7 +33030,7 @@ func (ec *executionContext) _Task_owner(ctx context.Context, field graphql.Colle
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Task().Owner(rctx, obj)
 	})
@@ -33543,7 +33095,7 @@ func (ec *executionContext) _Task_addedByID(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AddedByID, nil
 	})
@@ -33587,7 +33139,7 @@ func (ec *executionContext) _Task_addedBy(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Task().AddedBy(rctx, obj)
 	})
@@ -33655,7 +33207,7 @@ func (ec *executionContext) _Task_previousTaskID(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PreviousTaskID, nil
 	})
@@ -33696,7 +33248,7 @@ func (ec *executionContext) _Task_previousTask(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Task().PreviousTask(rctx, obj)
 	})
@@ -33759,7 +33311,7 @@ func (ec *executionContext) _Task_name(ctx context.Context, field graphql.Collec
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -33803,7 +33355,7 @@ func (ec *executionContext) _Task_histories(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Task().Histories(rctx, obj)
 	})
@@ -33866,7 +33418,7 @@ func (ec *executionContext) _TaskAggregate_time(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Time, nil
 	})
@@ -33910,7 +33462,7 @@ func (ec *executionContext) _TaskAggregate_total(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -33954,7 +33506,7 @@ func (ec *executionContext) _TaskAggregate_success(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Success, nil
 	})
@@ -33998,7 +33550,7 @@ func (ec *executionContext) _TaskAggregate_failure(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Failure, nil
 	})
@@ -34042,7 +33594,7 @@ func (ec *executionContext) _TaskDurationStats_name(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -34086,7 +33638,7 @@ func (ec *executionContext) _TaskDurationStats_totalTasks(ctx context.Context, f
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalTasks, nil
 	})
@@ -34130,7 +33682,7 @@ func (ec *executionContext) _TaskDurationStats_minDurationSeconds(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MinDurationSeconds, nil
 	})
@@ -34174,7 +33726,7 @@ func (ec *executionContext) _TaskDurationStats_maxDurationSeconds(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MaxDurationSeconds, nil
 	})
@@ -34218,7 +33770,7 @@ func (ec *executionContext) _TaskDurationStats_avgDurationSeconds(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.AvgDurationSeconds, nil
 	})
@@ -34262,7 +33814,7 @@ func (ec *executionContext) _TaskDurationStats_medianDurationSeconds(ctx context
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MedianDurationSeconds, nil
 	})
@@ -34306,7 +33858,7 @@ func (ec *executionContext) _TaskDurationStats_p90DurationSeconds(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.P90DurationSeconds, nil
 	})
@@ -34350,7 +33902,7 @@ func (ec *executionContext) _TaskDurationStats_p95DurationSeconds(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.P95DurationSeconds, nil
 	})
@@ -34394,7 +33946,7 @@ func (ec *executionContext) _TaskDurationStats_p99DurationSeconds(ctx context.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.P99DurationSeconds, nil
 	})
@@ -34438,7 +33990,7 @@ func (ec *executionContext) _TaskHistory_id(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
@@ -34482,7 +34034,7 @@ func (ec *executionContext) _TaskHistory_taskId(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TaskID, nil
 	})
@@ -34526,7 +34078,7 @@ func (ec *executionContext) _TaskHistory_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -34570,7 +34122,7 @@ func (ec *executionContext) _TaskHistory_posted(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Posted, nil
 	})
@@ -34614,7 +34166,7 @@ func (ec *executionContext) _TaskHistory_workStart(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WorkStart, nil
 	})
@@ -34658,7 +34210,7 @@ func (ec *executionContext) _TaskHistory_workEnd(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.WorkEnd, nil
 	})
@@ -34702,7 +34254,7 @@ func (ec *executionContext) _TaskHistory_result(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Result, nil
 	})
@@ -34746,7 +34298,7 @@ func (ec *executionContext) _TaskHistory_err(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Err, nil
 	})
@@ -34787,7 +34339,7 @@ func (ec *executionContext) _TaskHistory_completedByHostAndPort(ctx context.Cont
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CompletedByHostAndPort, nil
 	})
@@ -34831,7 +34383,7 @@ func (ec *executionContext) _TaskHistory_completedBy(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.TaskHistory().CompletedBy(rctx, obj)
 	})
@@ -34896,7 +34448,7 @@ func (ec *executionContext) _TaskNameAggregate_name(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -34940,7 +34492,7 @@ func (ec *executionContext) _TaskNameAggregate_total(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -34984,7 +34536,7 @@ func (ec *executionContext) _TaskNameAggregate_success(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Success, nil
 	})
@@ -35028,7 +34580,7 @@ func (ec *executionContext) _TaskNameAggregate_failure(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Failure, nil
 	})
@@ -35072,7 +34624,7 @@ func (ec *executionContext) _TaskStats_name(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -35116,7 +34668,7 @@ func (ec *executionContext) _TaskStats_total(ctx context.Context, field graphql.
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -35160,7 +34712,7 @@ func (ec *executionContext) _TaskStats_success(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Success, nil
 	})
@@ -35204,7 +34756,7 @@ func (ec *executionContext) _TaskStats_failure(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Failure, nil
 	})
@@ -35248,7 +34800,7 @@ func (ec *executionContext) _TaskSuccessRate_total(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Total, nil
 	})
@@ -35292,7 +34844,7 @@ func (ec *executionContext) _TaskSuccessRate_success(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Success, nil
 	})
@@ -35336,7 +34888,7 @@ func (ec *executionContext) _TaskSuccessRate_failure(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Failure, nil
 	})
@@ -35380,7 +34932,7 @@ func (ec *executionContext) _TaskSuccessRate_successRate(ctx context.Context, fi
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SuccessRate, nil
 	})
@@ -35424,7 +34976,7 @@ func (ec *executionContext) _TaskSummary_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -35468,7 +35020,7 @@ func (ec *executionContext) _TaskSummary_trueCount(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TrueCount, nil
 	})
@@ -35512,7 +35064,7 @@ func (ec *executionContext) _TaskSummary_falseCount(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FalseCount, nil
 	})
@@ -35556,7 +35108,7 @@ func (ec *executionContext) _TaskSummary_totalCount(ctx context.Context, field g
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -35600,7 +35152,7 @@ func (ec *executionContext) _TaskSummaryDay_day(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Day, nil
 	})
@@ -35644,7 +35196,7 @@ func (ec *executionContext) _TaskSummaryDay_trueCount(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TrueCount, nil
 	})
@@ -35688,7 +35240,7 @@ func (ec *executionContext) _TaskSummaryDay_falseCount(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.FalseCount, nil
 	})
@@ -35732,7 +35284,7 @@ func (ec *executionContext) _TaskSummaryDay_totalCount(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.TotalCount, nil
 	})
@@ -35776,7 +35328,7 @@ func (ec *executionContext) _WalletBalance_address(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Address, nil
 	})
@@ -35820,7 +35372,7 @@ func (ec *executionContext) _WalletBalance_balance(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Balance, nil
 	})
@@ -35864,7 +35416,7 @@ func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -35908,7 +35460,7 @@ func (ec *executionContext) ___Directive_description(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -35937,6 +35489,50 @@ func (ec *executionContext) fieldContext___Directive_description(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) ___Directive_isRepeatable(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___Directive_isRepeatable(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsRepeatable, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___Directive_isRepeatable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__Directive",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Directive_locations(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Directive_locations(ctx, field)
 	if err != nil {
@@ -35949,7 +35545,7 @@ func (ec *executionContext) ___Directive_locations(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Locations, nil
 	})
@@ -35993,7 +35589,7 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Args, nil
 	})
@@ -36012,7 +35608,7 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Directive_args(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Directive_args(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Directive",
 		Field:      field,
@@ -36028,53 +35624,24 @@ func (ec *executionContext) fieldContext___Directive_args(_ context.Context, fie
 				return ec.fieldContext___InputValue_type(ctx, field)
 			case "defaultValue":
 				return ec.fieldContext___InputValue_defaultValue(ctx, field)
+			case "isDeprecated":
+				return ec.fieldContext___InputValue_isDeprecated(ctx, field)
+			case "deprecationReason":
+				return ec.fieldContext___InputValue_deprecationReason(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __InputValue", field.Name)
 		},
 	}
-	return fc, nil
-}
-
-func (ec *executionContext) ___Directive_isRepeatable(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext___Directive_isRepeatable(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
 	defer func() {
 		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.IsRepeatable, nil
-	})
-	if err != nil {
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field___Directive_args_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext___Directive_isRepeatable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "__Directive",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
+		return fc, err
 	}
 	return fc, nil
 }
@@ -36091,7 +35658,7 @@ func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -36135,7 +35702,7 @@ func (ec *executionContext) ___EnumValue_description(ctx context.Context, field 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -36176,7 +35743,7 @@ func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsDeprecated(), nil
 	})
@@ -36220,7 +35787,7 @@ func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, 
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DeprecationReason(), nil
 	})
@@ -36261,7 +35828,7 @@ func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -36305,7 +35872,7 @@ func (ec *executionContext) ___Field_description(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -36346,7 +35913,7 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Args, nil
 	})
@@ -36365,7 +35932,7 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 	return ec.marshalN__InputValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐInputValueᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Field_args(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Field_args(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Field",
 		Field:      field,
@@ -36381,9 +35948,24 @@ func (ec *executionContext) fieldContext___Field_args(_ context.Context, field g
 				return ec.fieldContext___InputValue_type(ctx, field)
 			case "defaultValue":
 				return ec.fieldContext___InputValue_defaultValue(ctx, field)
+			case "isDeprecated":
+				return ec.fieldContext___InputValue_isDeprecated(ctx, field)
+			case "deprecationReason":
+				return ec.fieldContext___InputValue_deprecationReason(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __InputValue", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field___Field_args_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -36400,7 +35982,7 @@ func (ec *executionContext) ___Field_type(ctx context.Context, field graphql.Col
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
@@ -36433,6 +36015,8 @@ func (ec *executionContext) fieldContext___Field_type(_ context.Context, field g
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -36445,8 +36029,8 @@ func (ec *executionContext) fieldContext___Field_type(_ context.Context, field g
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -36466,7 +36050,7 @@ func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.IsDeprecated(), nil
 	})
@@ -36510,7 +36094,7 @@ func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DeprecationReason(), nil
 	})
@@ -36551,7 +36135,7 @@ func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
@@ -36595,7 +36179,7 @@ func (ec *executionContext) ___InputValue_description(ctx context.Context, field
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -36636,7 +36220,7 @@ func (ec *executionContext) ___InputValue_type(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
@@ -36669,6 +36253,8 @@ func (ec *executionContext) fieldContext___InputValue_type(_ context.Context, fi
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -36681,8 +36267,8 @@ func (ec *executionContext) fieldContext___InputValue_type(_ context.Context, fi
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -36702,7 +36288,7 @@ func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.DefaultValue, nil
 	})
@@ -36731,6 +36317,91 @@ func (ec *executionContext) fieldContext___InputValue_defaultValue(_ context.Con
 	return fc, nil
 }
 
+func (ec *executionContext) ___InputValue_isDeprecated(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___InputValue_isDeprecated(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDeprecated(), nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___InputValue_isDeprecated(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__InputValue",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) ___InputValue_deprecationReason(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___InputValue_deprecationReason(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeprecationReason(), nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___InputValue_deprecationReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__InputValue",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Schema_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Schema_description(ctx, field)
 	if err != nil {
@@ -36743,7 +36414,7 @@ func (ec *executionContext) ___Schema_description(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -36784,7 +36455,7 @@ func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.C
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Types(), nil
 	})
@@ -36817,6 +36488,8 @@ func (ec *executionContext) fieldContext___Schema_types(_ context.Context, field
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -36829,8 +36502,8 @@ func (ec *executionContext) fieldContext___Schema_types(_ context.Context, field
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -36850,7 +36523,7 @@ func (ec *executionContext) ___Schema_queryType(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.QueryType(), nil
 	})
@@ -36883,6 +36556,8 @@ func (ec *executionContext) fieldContext___Schema_queryType(_ context.Context, f
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -36895,8 +36570,8 @@ func (ec *executionContext) fieldContext___Schema_queryType(_ context.Context, f
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -36916,7 +36591,7 @@ func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.MutationType(), nil
 	})
@@ -36946,6 +36621,8 @@ func (ec *executionContext) fieldContext___Schema_mutationType(_ context.Context
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -36958,8 +36635,8 @@ func (ec *executionContext) fieldContext___Schema_mutationType(_ context.Context
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -36979,7 +36656,7 @@ func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, fiel
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.SubscriptionType(), nil
 	})
@@ -37009,6 +36686,8 @@ func (ec *executionContext) fieldContext___Schema_subscriptionType(_ context.Con
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -37021,8 +36700,8 @@ func (ec *executionContext) fieldContext___Schema_subscriptionType(_ context.Con
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -37042,7 +36721,7 @@ func (ec *executionContext) ___Schema_directives(ctx context.Context, field grap
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Directives(), nil
 	})
@@ -37073,12 +36752,12 @@ func (ec *executionContext) fieldContext___Schema_directives(_ context.Context, 
 				return ec.fieldContext___Directive_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Directive_description(ctx, field)
+			case "isRepeatable":
+				return ec.fieldContext___Directive_isRepeatable(ctx, field)
 			case "locations":
 				return ec.fieldContext___Directive_locations(ctx, field)
 			case "args":
 				return ec.fieldContext___Directive_args(ctx, field)
-			case "isRepeatable":
-				return ec.fieldContext___Directive_isRepeatable(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Directive", field.Name)
 		},
@@ -37098,7 +36777,7 @@ func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Kind(), nil
 	})
@@ -37142,7 +36821,7 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Name(), nil
 	})
@@ -37183,7 +36862,7 @@ func (ec *executionContext) ___Type_description(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
@@ -37212,6 +36891,47 @@ func (ec *executionContext) fieldContext___Type_description(_ context.Context, f
 	return fc, nil
 }
 
+func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___Type_specifiedByURL(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpecifiedByURL(), nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "__Type",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext___Type_fields(ctx, field)
 	if err != nil {
@@ -37224,7 +36944,7 @@ func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Fields(fc.Args["includeDeprecated"].(bool)), nil
 	})
@@ -37290,7 +37010,7 @@ func (ec *executionContext) ___Type_interfaces(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Interfaces(), nil
 	})
@@ -37320,6 +37040,8 @@ func (ec *executionContext) fieldContext___Type_interfaces(_ context.Context, fi
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -37332,8 +37054,8 @@ func (ec *executionContext) fieldContext___Type_interfaces(_ context.Context, fi
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -37353,7 +37075,7 @@ func (ec *executionContext) ___Type_possibleTypes(ctx context.Context, field gra
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PossibleTypes(), nil
 	})
@@ -37383,6 +37105,8 @@ func (ec *executionContext) fieldContext___Type_possibleTypes(_ context.Context,
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -37395,8 +37119,8 @@ func (ec *executionContext) fieldContext___Type_possibleTypes(_ context.Context,
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -37416,7 +37140,7 @@ func (ec *executionContext) ___Type_enumValues(ctx context.Context, field graphq
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.EnumValues(fc.Args["includeDeprecated"].(bool)), nil
 	})
@@ -37478,7 +37202,7 @@ func (ec *executionContext) ___Type_inputFields(ctx context.Context, field graph
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.InputFields(), nil
 	})
@@ -37510,6 +37234,10 @@ func (ec *executionContext) fieldContext___Type_inputFields(_ context.Context, f
 				return ec.fieldContext___InputValue_type(ctx, field)
 			case "defaultValue":
 				return ec.fieldContext___InputValue_defaultValue(ctx, field)
+			case "isDeprecated":
+				return ec.fieldContext___InputValue_isDeprecated(ctx, field)
+			case "deprecationReason":
+				return ec.fieldContext___InputValue_deprecationReason(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __InputValue", field.Name)
 		},
@@ -37529,7 +37257,7 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.OfType(), nil
 	})
@@ -37559,6 +37287,8 @@ func (ec *executionContext) fieldContext___Type_ofType(_ context.Context, field 
 				return ec.fieldContext___Type_name(ctx, field)
 			case "description":
 				return ec.fieldContext___Type_description(ctx, field)
+			case "specifiedByURL":
+				return ec.fieldContext___Type_specifiedByURL(ctx, field)
 			case "fields":
 				return ec.fieldContext___Type_fields(ctx, field)
 			case "interfaces":
@@ -37571,8 +37301,8 @@ func (ec *executionContext) fieldContext___Type_ofType(_ context.Context, field 
 				return ec.fieldContext___Type_inputFields(ctx, field)
 			case "ofType":
 				return ec.fieldContext___Type_ofType(ctx, field)
-			case "specifiedByURL":
-				return ec.fieldContext___Type_specifiedByURL(ctx, field)
+			case "isOneOf":
+				return ec.fieldContext___Type_isOneOf(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Type", field.Name)
 		},
@@ -37580,8 +37310,8 @@ func (ec *executionContext) fieldContext___Type_ofType(_ context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext___Type_specifiedByURL(ctx, field)
+func (ec *executionContext) ___Type_isOneOf(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext___Type_isOneOf(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -37592,9 +37322,9 @@ func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field gr
 			ret = graphql.Null
 		}
 	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.SpecifiedByURL(), nil
+		return obj.IsOneOf(), nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -37603,19 +37333,19 @@ func (ec *executionContext) ___Type_specifiedByURL(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext___Type_isOneOf(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "__Type",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -37625,10 +37355,10 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(_ context.Context
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputClientFilterInput(ctx context.Context, obj interface{}) (model.ClientFilterInput, error) {
+func (ec *executionContext) unmarshalInputClientFilterInput(ctx context.Context, obj any) (model.ClientFilterInput, error) {
 	var it model.ClientFilterInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -37701,10 +37431,10 @@ func (ec *executionContext) unmarshalInputClientFilterInput(ctx context.Context,
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMarketMk12DealFilterInput(ctx context.Context, obj interface{}) (model.MarketMk12DealFilterInput, error) {
+func (ec *executionContext) unmarshalInputMarketMk12DealFilterInput(ctx context.Context, obj any) (model.MarketMk12DealFilterInput, error) {
 	var it model.MarketMk12DealFilterInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -37756,10 +37486,10 @@ func (ec *executionContext) unmarshalInputMarketMk12DealFilterInput(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputMarketMk12StorageAskInput(ctx context.Context, obj interface{}) (model.MarketMk12StorageAskInput, error) {
+func (ec *executionContext) unmarshalInputMarketMk12StorageAskInput(ctx context.Context, obj any) (model.MarketMk12StorageAskInput, error) {
 	var it model.MarketMk12StorageAskInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -37818,10 +37548,10 @@ func (ec *executionContext) unmarshalInputMarketMk12StorageAskInput(ctx context.
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputPriceFilterInput(ctx context.Context, obj interface{}) (model.PriceFilterInput, error) {
+func (ec *executionContext) unmarshalInputPriceFilterInput(ctx context.Context, obj any) (model.PriceFilterInput, error) {
 	var it model.PriceFilterInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
+	asMap := map[string]any{}
+	for k, v := range obj.(map[string]any) {
 		asMap[k] = v
 	}
 
@@ -41019,27 +40749,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_removeConfig(ctx, field)
 			})
-		case "removeSector":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_removeSector(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "restartSector":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_restartSector(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "restartAllFailedSectors":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_restartAllFailedSectors(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "dealSealNow":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_dealSealNow(ctx, field)
@@ -41112,6 +40821,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "marketToggleAllowFilter":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_marketToggleAllowFilter(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "removeSector":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_removeSector(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "restartSector":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_restartSector(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "restartAllFailedSectors":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_restartAllFailedSectors(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -42090,398 +41820,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "global":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_global(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "config":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_config(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "configs":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_configs(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "machine":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_machine(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "machines":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_machines(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "machineSummary":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_machineSummary(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "task":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_task(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "tasks":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_tasks(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "tasksCount":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_tasksCount(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "taskHistories":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_taskHistories(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "taskHistoriesCount":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_taskHistoriesCount(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "taskHistoriesAggregate":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_taskHistoriesAggregate(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "tasksStats":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_tasksStats(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "taskNames":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_taskNames(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "storage":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_storage(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "storagePaths":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_storagePaths(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "storageStats":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_storageStats(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "sectors":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_sectors(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "sectorsCount":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_sectorsCount(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "sector":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_sector(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "actors":
 			field := field
 
@@ -42520,101 +41858,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "poreps":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_poreps(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "porep":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_porep(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "pipelinesSummary":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_pipelinesSummary(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "nodesInfo":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_nodesInfo(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "dealsPending":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_dealsPending(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "alerts":
 			field := field
 
@@ -42634,7 +41877,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "metricsActiveTasks":
+		case "config":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -42643,7 +41886,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_metricsActiveTasks(ctx, field)
+				res = ec._Query_config(ctx, field)
 				return res
 			}
 
@@ -42653,7 +41896,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "miner":
+		case "configs":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -42662,64 +41905,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_miner(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "minerPower":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_minerPower(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "marketBalance":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_marketBalance(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "marketBalances":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_marketBalances(ctx, field)
+				res = ec._Query_configs(ctx, field)
 				return res
 			}
 
@@ -42802,6 +41988,120 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_marketDealCountSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "dealsPending":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_dealsPending(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "machine":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_machine(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "machines":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_machines(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "machineSummary":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_machineSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketBalance":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketBalance(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "marketBalances":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_marketBalances(ctx, field)
 				return res
 			}
 
@@ -43111,6 +42411,63 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "metricsActiveTasks":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_metricsActiveTasks(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "miner":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_miner(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "minerPower":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_minerPower(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "miningSummaryByDay":
 			field := field
 
@@ -43250,6 +42607,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "nodesInfo":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_nodesInfo(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "nodeHealthSummary":
 			field := field
 
@@ -43269,6 +42645,123 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "poreps":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_poreps(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "porep":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_porep(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "pipelinesSummary":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_pipelinesSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "sectors":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_sectors(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "sectorsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_sectorsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "sector":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_sector(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "sectorSummary":
 			field := field
 
@@ -43279,6 +42772,243 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_sectorSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "global":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_global(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "storage":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_storage(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "storagePaths":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_storagePaths(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "storageStats":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_storageStats(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "task":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_task(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "tasks":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_tasks(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "tasksCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_tasksCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "taskHistories":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_taskHistories(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "taskHistoriesCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_taskHistoriesCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "taskHistoriesAggregate":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_taskHistoriesAggregate(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "tasksStats":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_tasksStats(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "taskNames":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_taskNames(ctx, field)
 				return res
 			}
 
@@ -45678,6 +45408,11 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			}
 		case "description":
 			out.Values[i] = ec.___Directive_description(ctx, field, obj)
+		case "isRepeatable":
+			out.Values[i] = ec.___Directive_isRepeatable(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "locations":
 			out.Values[i] = ec.___Directive_locations(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -45685,11 +45420,6 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			}
 		case "args":
 			out.Values[i] = ec.___Directive_args(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "isRepeatable":
-			out.Values[i] = ec.___Directive_isRepeatable(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -45847,6 +45577,13 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 			}
 		case "defaultValue":
 			out.Values[i] = ec.___InputValue_defaultValue(ctx, field, obj)
+		case "isDeprecated":
+			out.Values[i] = ec.___InputValue_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deprecationReason":
+			out.Values[i] = ec.___InputValue_deprecationReason(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -45945,6 +45682,8 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = ec.___Type_name(ctx, field, obj)
 		case "description":
 			out.Values[i] = ec.___Type_description(ctx, field, obj)
+		case "specifiedByURL":
+			out.Values[i] = ec.___Type_specifiedByURL(ctx, field, obj)
 		case "fields":
 			out.Values[i] = ec.___Type_fields(ctx, field, obj)
 		case "interfaces":
@@ -45957,8 +45696,8 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = ec.___Type_inputFields(ctx, field, obj)
 		case "ofType":
 			out.Values[i] = ec.___Type_ofType(ctx, field, obj)
-		case "specifiedByURL":
-			out.Values[i] = ec.___Type_specifiedByURL(ctx, field, obj)
+		case "isOneOf":
+			out.Values[i] = ec.___Type_isOneOf(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -45986,7 +45725,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v interface{}) (types.ActorID, error) {
+func (ec *executionContext) unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v any) (types.ActorID, error) {
 	var res types.ActorID
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -45996,7 +45735,7 @@ func (ec *executionContext) marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdash
 	return v
 }
 
-func (ec *executionContext) unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v interface{}) (types.Address, error) {
+func (ec *executionContext) unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (types.Address, error) {
 	var res types.Address
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46006,11 +45745,9 @@ func (ec *executionContext) marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdash
 	return v
 }
 
-func (ec *executionContext) unmarshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v interface{}) ([]*types.Address, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v any) ([]*types.Address, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*types.Address, len(vSlice))
 	for i := range vSlice {
@@ -46038,7 +45775,7 @@ func (ec *executionContext) marshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) unmarshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v interface{}) (*types.Address, error) {
+func (ec *executionContext) unmarshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (*types.Address, error) {
 	var res = new(types.Address)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46068,7 +45805,7 @@ func (ec *executionContext) marshalNAlert2ᚖgithubᚗcomᚋstraheᚋcurioᚑdas
 	return ec._Alert(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v interface{}) (types.BigInt, error) {
+func (ec *executionContext) unmarshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (types.BigInt, error) {
 	var res types.BigInt
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46078,7 +45815,7 @@ func (ec *executionContext) marshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashb
 	return v
 }
 
-func (ec *executionContext) unmarshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v interface{}) (*types.BigInt, error) {
+func (ec *executionContext) unmarshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (*types.BigInt, error) {
 	var res = new(types.BigInt)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46094,7 +45831,7 @@ func (ec *executionContext) marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return v
 }
 
-func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
+func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46109,7 +45846,7 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v interface{}) (types.Bytes, error) {
+func (ec *executionContext) unmarshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v any) (types.Bytes, error) {
 	var res types.Bytes
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46135,12 +45872,12 @@ func (ec *executionContext) marshalNClientFilter2ᚖgithubᚗcomᚋstraheᚋcuri
 	return ec._ClientFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNClientFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx context.Context, v interface{}) (model.ClientFilterInput, error) {
+func (ec *executionContext) unmarshalNClientFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx context.Context, v any) (model.ClientFilterInput, error) {
 	res, err := ec.unmarshalInputClientFilterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐFIL(ctx context.Context, v interface{}) (types.FIL, error) {
+func (ec *executionContext) unmarshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐFIL(ctx context.Context, v any) (types.FIL, error) {
 	var res types.FIL
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46150,7 +45887,7 @@ func (ec *executionContext) marshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboar
 	return v
 }
 
-func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v interface{}) (float64, error) {
+func (ec *executionContext) unmarshalNFloat2float64(ctx context.Context, v any) (float64, error) {
 	res, err := graphql.UnmarshalFloatContext(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46165,11 +45902,9 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) unmarshalNFloat2ᚕfloat64ᚄ(ctx context.Context, v interface{}) ([]float64, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalNFloat2ᚕfloat64ᚄ(ctx context.Context, v any) ([]float64, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]float64, len(vSlice))
 	for i := range vSlice {
@@ -46249,7 +45984,7 @@ func (ec *executionContext) marshalNGlobal2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return ec._Global(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46264,7 +45999,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v any) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46279,7 +46014,7 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) unmarshalNInt642int64(ctx context.Context, v interface{}) (int64, error) {
+func (ec *executionContext) unmarshalNInt642int64(ctx context.Context, v any) (int64, error) {
 	res, err := graphql.UnmarshalInt64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46294,7 +46029,7 @@ func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) unmarshalNJSON2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalNJSON2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46309,7 +46044,7 @@ func (ec *executionContext) marshalNJSON2string(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) unmarshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v interface{}) (types.JSONB, error) {
+func (ec *executionContext) unmarshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v any) (types.JSONB, error) {
 	var res types.JSONB
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46445,12 +46180,12 @@ func (ec *executionContext) marshalNMarketMk12Deal2ᚖgithubᚗcomᚋstraheᚋcu
 	return ec._MarketMk12Deal(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx context.Context, v interface{}) (model.MarketMk12DealFilterInput, error) {
+func (ec *executionContext) unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx context.Context, v any) (model.MarketMk12DealFilterInput, error) {
 	res, err := ec.unmarshalInputMarketMk12DealFilterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v interface{}) (model.MarketMk12StorageAskInput, error) {
+func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v any) (model.MarketMk12StorageAskInput, error) {
 	res, err := ec.unmarshalInputMarketMk12StorageAskInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46469,7 +46204,7 @@ func (ec *executionContext) marshalNMiningCount2ᚖgithubᚗcomᚋstraheᚋcurio
 	return ec._MiningCount(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, v interface{}) (model.MiningTaskAggregateInterval, error) {
+func (ec *executionContext) unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, v any) (model.MiningTaskAggregateInterval, error) {
 	var res model.MiningTaskAggregateInterval
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46479,7 +46214,7 @@ func (ec *executionContext) marshalNMiningTaskAggregateInterval2githubᚗcomᚋs
 	return v
 }
 
-func (ec *executionContext) unmarshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, v interface{}) (types.NullBool, error) {
+func (ec *executionContext) unmarshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, v any) (types.NullBool, error) {
 	var res types.NullBool
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46489,7 +46224,7 @@ func (ec *executionContext) marshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdas
 	return v
 }
 
-func (ec *executionContext) unmarshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, v interface{}) (types.NullInt64, error) {
+func (ec *executionContext) unmarshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, v any) (types.NullInt64, error) {
 	var res types.NullInt64
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46499,7 +46234,7 @@ func (ec *executionContext) marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑda
 	return v
 }
 
-func (ec *executionContext) unmarshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, v interface{}) (types.NullString, error) {
+func (ec *executionContext) unmarshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, v any) (types.NullString, error) {
 	var res types.NullString
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46509,7 +46244,7 @@ func (ec *executionContext) marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑd
 	return v
 }
 
-func (ec *executionContext) unmarshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v interface{}) (types.PeerID, error) {
+func (ec *executionContext) unmarshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v any) (types.PeerID, error) {
 	var res types.PeerID
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46519,11 +46254,9 @@ func (ec *executionContext) marshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashb
 	return v
 }
 
-func (ec *executionContext) unmarshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx context.Context, v interface{}) ([]*types.PeerID, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx context.Context, v any) ([]*types.PeerID, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*types.PeerID, len(vSlice))
 	for i := range vSlice {
@@ -46551,7 +46284,7 @@ func (ec *executionContext) marshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) unmarshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v interface{}) (*types.PeerID, error) {
+func (ec *executionContext) unmarshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v any) (*types.PeerID, error) {
 	var res = new(types.PeerID)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46567,7 +46300,7 @@ func (ec *executionContext) marshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return v
 }
 
-func (ec *executionContext) unmarshalNPorepStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStatus(ctx context.Context, v interface{}) (model.PorepStatus, error) {
+func (ec *executionContext) unmarshalNPorepStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStatus(ctx context.Context, v any) (model.PorepStatus, error) {
 	var res model.PorepStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46597,7 +46330,7 @@ func (ec *executionContext) marshalNPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurio
 	return ec._PriceFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNPriceFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx context.Context, v interface{}) (model.PriceFilterInput, error) {
+func (ec *executionContext) unmarshalNPriceFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx context.Context, v any) (model.PriceFilterInput, error) {
 	res, err := ec.unmarshalInputPriceFilterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46678,7 +46411,7 @@ func (ec *executionContext) marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋstrahe�
 	return ret
 }
 
-func (ec *executionContext) unmarshalNStorageType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx context.Context, v interface{}) (model.StorageType, error) {
+func (ec *executionContext) unmarshalNStorageType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx context.Context, v any) (model.StorageType, error) {
 	var res model.StorageType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46688,7 +46421,7 @@ func (ec *executionContext) marshalNStorageType2githubᚗcomᚋstraheᚋcurioᚑ
 	return v
 }
 
-func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalNString2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46703,11 +46436,9 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
@@ -46841,7 +46572,7 @@ func (ec *executionContext) marshalNTaskDurationStats2ᚖgithubᚗcomᚋstrahe�
 	return ec._TaskDurationStats(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, v interface{}) (model.TaskHistoriesAggregateInterval, error) {
+func (ec *executionContext) unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, v any) (model.TaskHistoriesAggregateInterval, error) {
 	var res model.TaskHistoriesAggregateInterval
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -46903,7 +46634,7 @@ func (ec *executionContext) marshalNTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurio
 	return ec._TaskHistory(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
+func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v any) (time.Time, error) {
 	res, err := graphql.UnmarshalTime(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46918,7 +46649,7 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNUint642uint64(ctx context.Context, v interface{}) (uint64, error) {
+func (ec *executionContext) unmarshalNUint642uint64(ctx context.Context, v any) (uint64, error) {
 	res, err := graphql.UnmarshalUint64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -46991,7 +46722,7 @@ func (ec *executionContext) marshalN__Directive2ᚕgithubᚗcomᚋ99designsᚋgq
 	return ret
 }
 
-func (ec *executionContext) unmarshalN__DirectiveLocation2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalN__DirectiveLocation2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -47006,11 +46737,9 @@ func (ec *executionContext) marshalN__DirectiveLocation2string(ctx context.Conte
 	return res
 }
 
-func (ec *executionContext) unmarshalN__DirectiveLocation2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+func (ec *executionContext) unmarshalN__DirectiveLocation2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
@@ -47181,7 +46910,7 @@ func (ec *executionContext) marshalN__Type2ᚖgithubᚗcomᚋ99designsᚋgqlgen�
 	return ec.___Type(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalN__TypeKind2string(ctx context.Context, v interface{}) (string, error) {
+func (ec *executionContext) unmarshalN__TypeKind2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -47292,7 +47021,7 @@ func (ec *executionContext) marshalOActorDeadline2ᚖgithubᚗcomᚋstraheᚋcur
 	return ec._ActorDeadline(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v interface{}) (*types.ActorID, error) {
+func (ec *executionContext) unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v any) (*types.ActorID, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -47308,14 +47037,12 @@ func (ec *executionContext) marshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑd
 	return v
 }
 
-func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v interface{}) ([]*types.Address, error) {
+func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v any) ([]*types.Address, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*types.Address, len(vSlice))
 	for i := range vSlice {
@@ -47346,7 +47073,7 @@ func (ec *executionContext) marshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v interface{}) (*types.Address, error) {
+func (ec *executionContext) unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (*types.Address, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -47410,7 +47137,7 @@ func (ec *executionContext) marshalOAlert2ᚖgithubᚗcomᚋstraheᚋcurioᚑdas
 	return ec._Alert(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v interface{}) (*types.BigInt, error) {
+func (ec *executionContext) unmarshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (*types.BigInt, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -47426,7 +47153,7 @@ func (ec *executionContext) marshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return v
 }
 
-func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
+func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v any) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -47436,7 +47163,7 @@ func (ec *executionContext) marshalOBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalOBoolean2ᚖbool(ctx context.Context, v interface{}) (*bool, error) {
+func (ec *executionContext) unmarshalOBoolean2ᚖbool(ctx context.Context, v any) (*bool, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -47452,7 +47179,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) unmarshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v interface{}) (types.Bytes, error) {
+func (ec *executionContext) unmarshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v any) (types.Bytes, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -47584,14 +47311,12 @@ func (ec *executionContext) marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑ
 	return ec._DealInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFloat2ᚕᚕfloat64ᚄ(ctx context.Context, v interface{}) ([][]float64, error) {
+func (ec *executionContext) unmarshalOFloat2ᚕᚕfloat64ᚄ(ctx context.Context, v any) ([][]float64, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([][]float64, len(vSlice))
 	for i := range vSlice {
@@ -47629,7 +47354,7 @@ func (ec *executionContext) marshalOGaugeCountValue2ᚖgithubᚗcomᚋstraheᚋc
 	return ec._GaugeCountValue(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {
+func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v any) (*int, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -47645,7 +47370,7 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalOJSON2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+func (ec *executionContext) unmarshalOJSON2ᚖstring(ctx context.Context, v any) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -47661,7 +47386,7 @@ func (ec *executionContext) marshalOJSON2ᚖstring(ctx context.Context, sel ast.
 	return res
 }
 
-func (ec *executionContext) unmarshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v interface{}) (*types.JSONB, error) {
+func (ec *executionContext) unmarshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v any) (*types.JSONB, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48644,14 +48369,12 @@ func (ec *executionContext) marshalOStorageStats2ᚖgithubᚗcomᚋstraheᚋcuri
 	return ec._StorageStats(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+func (ec *executionContext) unmarshalOString2ᚕstringᚄ(ctx context.Context, v any) ([]string, error) {
 	if v == nil {
 		return nil, nil
 	}
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
+	var vSlice []any
+	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]string, len(vSlice))
 	for i := range vSlice {
@@ -48682,7 +48405,7 @@ func (ec *executionContext) marshalOString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+func (ec *executionContext) unmarshalOString2ᚖstring(ctx context.Context, v any) (*string, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48904,7 +48627,7 @@ func (ec *executionContext) marshalOTaskSuccessRate2ᚖgithubᚗcomᚋstraheᚋc
 	return ec._TaskSuccessRate(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v any) (*time.Time, error) {
 	if v == nil {
 		return nil, nil
 	}

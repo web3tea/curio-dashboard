@@ -9,3 +9,17 @@ type Actor{
     workerBalance: BigInt!
     deadlines: [ActorDeadline]
 }
+
+type ActorDeadline {
+    empty: Boolean!
+    current: Boolean!
+    proven: Boolean!
+    partFaulty: Boolean!
+    faulty: Boolean!
+}
+
+
+extend type Query {
+    actors: [Actor]
+    actor(address: Address!): Actor
+}

@@ -1,6 +1,4 @@
 import gql from 'graphql-tag'
-import { taskFragment } from '@/gql/task'
-import { storagePathFragment } from '@/gql/storage'
 
 export const machineDetailFragment = gql`
   fragment MachineDetailAll on MachineDetail {
@@ -92,30 +90,6 @@ export const GetMachinesSummary = gql`
       totalRam
     }
   }
-`
-
-export const GetMachineTasks = gql`
-    query GetMachineTasks($id: Int!) {
-      machine(id: $id) {
-        id
-        tasks {
-          ...TaskAll
-        }
-      }
-    }
-    ${taskFragment}
-`
-
-export const GetMachineStorages = gql`
-    query GetMachineStorages($id: Int!) {
-      machine(id: $id) {
-        id
-        storages {
-          ...StoragePathAll
-        }
-      }
-    }
-    ${storagePathFragment}
 `
 
 export const GetMachineInfo = gql`

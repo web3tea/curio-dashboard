@@ -1,9 +1,1 @@
-type Mutation {
-    createConfig(title: String!, config: String!): Config
-    updateConfig(title: String!, config: String!): Config
-    removeConfig(title: String!): Config
-    removeSector(miner: Address!, sectorNumber: Int!): Boolean!
-    restartSector(miner: Address!, sectorNumber: Int!): Boolean!
-    restartAllFailedSectors: Boolean!
-    dealSealNow(miner: Address!, sectorNumber: Uint64!): Boolean!
-}
+type Mutation

@@ -1,7 +1,0 @@
-type ActorDeadline {
-    empty: Boolean!
-    current: Boolean!
-    proven: Boolean!
-    partFaulty: Boolean!
-    faulty: Boolean!
-}

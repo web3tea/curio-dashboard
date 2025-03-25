@@ -3,3 +3,11 @@ type Alert {
     machineName: String!
     message: String!
 }
+
+extend type Query {
+    alerts: [Alert]
+}
+
+extend type Subscription {
+    alerts(offset: Int!): Alert!
+}

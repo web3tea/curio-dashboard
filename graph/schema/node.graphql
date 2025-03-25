@@ -14,5 +14,6 @@ type NodeHealthSummary {
 }
 
 extend type Query {
+    nodesInfo: [NodeInfo]
     nodeHealthSummary: NodeHealthSummary
 }

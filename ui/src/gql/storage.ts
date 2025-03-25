@@ -71,3 +71,15 @@ export const GetStorage = gql`
   ${storagePathFragment}
   ${storageLivenessFragment}
 `
+
+export const GetMachineStorages = gql`
+    query GetMachineStorages($id: Int!) {
+      machine(id: $id) {
+        id
+        storages {
+          ...StoragePathAll
+        }
+      }
+    }
+    ${storagePathFragment}
+`

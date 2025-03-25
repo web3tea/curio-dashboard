@@ -61,3 +61,9 @@ enum StorageType {
     Store
     Readonly
 }
+
+extend type Query {
+    storage(id: String!): Storage
+    storagePaths: [StoragePath]
+    storageStats: [StorageStats]
+}
