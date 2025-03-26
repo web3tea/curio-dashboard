@@ -1,24 +1,34 @@
 import { TimeRangeType } from "@/typed-graph"
 
-export function calculateStartTime(timeRange: TimeRangeType, endTime: Date = new Date()): number {
+export function calculateStartTime(timeRange: TimeRangeType, endTime: Date = new Date()): Date {
   const endTimeMs = endTime.getTime()
+  let startTimeMs: number
 
   switch (timeRange) {
     case "HOUR_1":
-      return endTimeMs - 60 * 60 * 1000
+      startTimeMs = endTimeMs - 60 * 60 * 1000
+      break
     case "HOUR_24":
-      return endTimeMs - 24 * 60 * 60 * 1000
+      startTimeMs = endTimeMs - 24 * 60 * 60 * 1000
+      break
     case "DAY_7":
-      return endTimeMs - 7 * 24 * 60 * 60 * 1000
+      startTimeMs = endTimeMs - 7 * 24 * 60 * 60 * 1000
+      break
     case "DAY_30":
-      return endTimeMs - 30 * 24 * 60 * 60 * 1000
+      startTimeMs = endTimeMs - 30 * 24 * 60 * 60 * 1000
+      break
     case "DAY_90":
-      return endTimeMs - 90 * 24 * 60 * 60 * 1000
+      startTimeMs = endTimeMs - 90 * 24 * 60 * 60 * 1000
+      break
     case "DAY_180":
-      return endTimeMs - 180 * 24 * 60 * 60 * 1000
+      startTimeMs = endTimeMs - 180 * 24 * 60 * 60 * 1000
+      break
     case "DAY_365":
-      return endTimeMs - 365 * 24 * 60 * 60 * 1000
+      startTimeMs = endTimeMs - 365 * 24 * 60 * 60 * 1000
+      break
     default:
       throw new Error(`Unsupported time range: ${timeRange}`)
   }
+
+  return new Date(startTimeMs)
 }
