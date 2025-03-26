@@ -1,7 +1,6 @@
-import { ThemeTypes } from '@/types/themeTypes/ThemeType'
+import { type ThemeDefinition } from 'vuetify'
 
-const LightTheme: ThemeTypes = {
-  name: 'LightTheme',
+const LightTheme: ThemeDefinition = {
   dark: false,
   variables: {
     'border-color': '#f0f0f0',

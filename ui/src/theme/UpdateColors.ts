@@ -7,57 +7,57 @@ const cus = useCustomizerStore()
 
 const getPrimary = computed(() => {
   if (cus.dark) {
-    return DarkTheme.colors.primary
+    return DarkTheme.colors?.primary
   } else {
-    return LightTheme.colors.primary200
+    return LightTheme.colors?.primary200
   }
 })
 
 const getInfo = computed(() => {
   if (cus.dark) {
-    return DarkTheme.colors.info
+    return DarkTheme.colors?.info
   } else {
-    return LightTheme.colors.info
+    return LightTheme.colors?.info
   }
 })
 
 const getWarning = computed(() => {
   if (cus.dark) {
-    return DarkTheme.colors.warning
+    return DarkTheme.colors?.warning
   } else {
-    return LightTheme.colors.warning
+    return LightTheme.colors?.warning
   }
 })
 
 const getBorder = computed(() => {
   if (cus.dark) {
-    return DarkTheme.colors.borderLight
+    return DarkTheme.colors?.borderLight
   } else {
-    return LightTheme.colors.borderLight
+    return LightTheme.colors?.borderLight
   }
 })
 
 const getError = computed(() => {
   if (cus.dark) {
-    return DarkTheme.colors.error
+    return DarkTheme.colors?.error
   } else {
-    return LightTheme.colors.error
+    return LightTheme.colors?.error
   }
 })
 
 const getSuccess = computed(() => {
   if (cus.dark) {
-    return DarkTheme.colors.success
+    return DarkTheme.colors?.success
   } else {
-    return LightTheme.colors.success
+    return LightTheme.colors?.success
   }
 })
 
 const getSecondary = computed(() => {
   if (cus.dark) {
-    return DarkTheme.colors.secondary
+    return DarkTheme.colors?.secondary
   } else {
-    return LightTheme.colors.secondary200
+    return LightTheme.colors?.secondary200
   }
 })
 

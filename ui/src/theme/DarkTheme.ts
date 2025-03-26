@@ -1,7 +1,6 @@
-import { ThemeTypes } from '@/types/themeTypes/ThemeType'
+import { type ThemeDefinition } from 'vuetify'
 
-const DarkTheme: ThemeTypes = {
-  name: 'DarkTheme',
+const DarkTheme: ThemeDefinition = {
   dark: true,
   variables: {
     'border-color': '#595959',
