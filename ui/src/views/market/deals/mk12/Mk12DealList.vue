@@ -68,8 +68,15 @@ const itemsCount: ComputedRef<number> = computed(() => {
     >
       <template #item.uuid="{ value }">
         <RouterLink :to="{ name: 'MakretDealInfo', params: { id: value } }">
-          {{ value }}
+          <TruncatedText
+            :text="value"
+            :allow-copy="false"
+          />
         </RouterLink>
+        <CopyIcon
+          :value="value"
+          class="ms-1"
+        />
       </template>
       <template #item.spId="{ value }">
         <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
@@ -83,7 +90,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
         <EpochField :epoch="value" />
       </template>
       <template #item.pieceCid="{ value }">
-        <TruncatedChip :text="value" />
+        <TruncatedText :text="value" />
       </template>
       <template #item.createdAt="{ value }">
         {{ d(value, 'long') }}

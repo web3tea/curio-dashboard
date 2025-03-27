@@ -171,7 +171,7 @@ func (r *machineResolver) Metrics(ctx context.Context, obj *model.Machine) (*mod
 		}
 	}
 
-	//var result []metric
+	// var result []metric
 	for name, mf := range metrics {
 		for _, m := range mf.Metric {
 			parserFunc(name, m)
@@ -259,6 +259,11 @@ func (r *machineSummaryResolver) TotalGpu(ctx context.Context, obj *model.Machin
 // Machine is the resolver for the machine field.
 func (r *queryResolver) Machine(ctx context.Context, id int) (*model.Machine, error) {
 	return r.loader.Machine(ctx, id)
+}
+
+// MachineByHostAndPort is the resolver for the machineByHostAndPort field.
+func (r *queryResolver) MachineByHostAndPort(ctx context.Context, hostAndPort string) (*model.Machine, error) {
+	return r.loader.MachineByHostPort(ctx, hostAndPort)
 }
 
 // Machines is the resolver for the machines field.

@@ -691,6 +691,7 @@ export type Query = {
   dealsPending?: Maybe<Array<Maybe<OpenSectorPiece>>>;
   global: Global;
   machine?: Maybe<Machine>;
+  machineByHostAndPort?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
   makretPriceFilters?: Maybe<Array<PriceFilter>>;
@@ -763,6 +764,11 @@ export type QueryConfigArgs = {
 
 export type QueryMachineArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryMachineByHostAndPortArgs = {
+  hostAndPort: Scalars['String']['input'];
 };
 
 

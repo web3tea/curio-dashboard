@@ -137,11 +137,16 @@ const headers = [
         :loading="loading"
         :items-per-page-options="tableSettings.itemsPerPageOptions"
       >
+        <template #item.spId="{ value }">
+          <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
+            {{ value }}
+          </RouterLink>
+        </template>
         <template #item.epoch="{ value }">
           <EpochField :epoch="value" />
         </template>
         <template #item.minedCid="{ value }">
-          <TruncatedChip :text="value" />
+          <TruncatedText :text="value" />
         </template>
         <template #item.minedAt="{value}">
           {{ d(value, 'long') }}

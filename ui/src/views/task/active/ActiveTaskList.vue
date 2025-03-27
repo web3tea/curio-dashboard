@@ -86,9 +86,6 @@ const searchValue = ref('')
             :loading="loading"
             :search="searchValue"
           >
-            <template #item.name="{ value }">
-              <v-chip>{{ value }}</v-chip>
-            </template>
             <template #item.postedTime="{ value }">
               {{ d(value, 'short') }}
             </template>

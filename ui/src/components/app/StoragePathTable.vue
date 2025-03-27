@@ -63,14 +63,15 @@ const headers = [
       {{ moment(value).fromNow() }}
     </template>
     <template #item.storageId="{ value }">
-      <TruncatedChip :text="value" />
+      <TruncatedText :text="value" />
     </template>
     <template #item.urls="{ value }">
       <v-chip-group column>
-        <TruncatedChip
+        <TruncatedText
           v-for="url in value.split(',')"
           :key="url"
           :text="url"
+          :max-length="50"
         />
       </v-chip-group>
     </template>

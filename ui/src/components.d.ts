@@ -24,6 +24,7 @@ declare module 'vue' {
     StoragePathTable: typeof import('./components/app/StoragePathTable.vue')['default']
     TaskNameSelectInput: typeof import('./components/app/TaskNameSelectInput.vue')['default']
     TruncatedChip: typeof import('./components/shared/TruncatedChip.vue')['default']
+    TruncatedText: typeof import('./components/shared/TruncatedText.vue')['default']
     UiChildCard: typeof import('./components/shared/UiChildCard.vue')['default']
     UiParentCard: typeof import('./components/shared/UiParentCard.vue')['default']
     UiTableCard: typeof import('./components/shared/UiTableCard.vue')['default']

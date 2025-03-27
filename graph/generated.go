@@ -527,6 +527,7 @@ type ComplexityRoot struct {
 		DealsPending               func(childComplexity int) int
 		Global                     func(childComplexity int) int
 		Machine                    func(childComplexity int, id int) int
+		MachineByHostAndPort       func(childComplexity int, hostAndPort string) int
 		MachineSummary             func(childComplexity int) int
 		Machines                   func(childComplexity int) int
 		MakretPriceFilters         func(childComplexity int) int
@@ -909,6 +910,7 @@ type QueryResolver interface {
 	MarketDealCountSummary(ctx context.Context) (*model.DealCountSummary, error)
 	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	Machine(ctx context.Context, id int) (*model.Machine, error)
+	MachineByHostAndPort(ctx context.Context, hostAndPort string) (*model.Machine, error)
 	Machines(ctx context.Context) ([]*model.Machine, error)
 	MachineSummary(ctx context.Context) (*model.MachineSummary, error)
 	MarketBalance(ctx context.Context, miner types.Address) (*model.MarketBalance, error)
@@ -3536,6 +3538,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Machine(childComplexity, args["id"].(int)), true
+
+	case "Query.machineByHostAndPort":
+		if e.complexity.Query.MachineByHostAndPort == nil {
+			break
+		}
+
+		args, err := ec.field_Query_machineByHostAndPort_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MachineByHostAndPort(childComplexity, args["hostAndPort"].(string)), true
 
 	case "Query.machineSummary":
 		if e.complexity.Query.MachineSummary == nil {
@@ -6187,6 +6201,34 @@ func (ec *executionContext) field_Query_config_argsLayer(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("layer"))
 	if tmp, ok := rawArgs["layer"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_machineByHostAndPort_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_machineByHostAndPort_argsHostAndPort(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["hostAndPort"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_machineByHostAndPort_argsHostAndPort(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["hostAndPort"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("hostAndPort"))
+	if tmp, ok := rawArgs["hostAndPort"]; ok {
 		return ec.unmarshalNString2string(ctx, tmp)
 	}
 
@@ -24465,6 +24507,82 @@ func (ec *executionContext) fieldContext_Query_machine(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_machineByHostAndPort(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_machineByHostAndPort(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MachineByHostAndPort(rctx, fc.Args["hostAndPort"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Machine)
+	fc.Result = res
+	return ec.marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_machineByHostAndPort(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Machine_id(ctx, field)
+			case "lastContact":
+				return ec.fieldContext_Machine_lastContact(ctx, field)
+			case "hostAndPort":
+				return ec.fieldContext_Machine_hostAndPort(ctx, field)
+			case "cpu":
+				return ec.fieldContext_Machine_cpu(ctx, field)
+			case "ram":
+				return ec.fieldContext_Machine_ram(ctx, field)
+			case "gpu":
+				return ec.fieldContext_Machine_gpu(ctx, field)
+			case "detail":
+				return ec.fieldContext_Machine_detail(ctx, field)
+			case "tasks":
+				return ec.fieldContext_Machine_tasks(ctx, field)
+			case "taskHistories":
+				return ec.fieldContext_Machine_taskHistories(ctx, field)
+			case "storages":
+				return ec.fieldContext_Machine_storages(ctx, field)
+			case "metrics":
+				return ec.fieldContext_Machine_metrics(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Machine", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_machineByHostAndPort_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_machines(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_machines(ctx, field)
 	if err != nil {
@@ -42026,6 +42144,25 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_machine(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "machineByHostAndPort":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_machineByHostAndPort(ctx, field)
 				return res
 			}
 

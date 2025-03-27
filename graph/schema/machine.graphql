@@ -64,6 +64,7 @@ type MachineSummary {
 
 extend type Query {
     machine(id: Int!): Machine
+    machineByHostAndPort(hostAndPort: String!): Machine
     machines: [Machine]
     machineSummary: MachineSummary
 }

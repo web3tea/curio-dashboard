@@ -69,7 +69,7 @@ const headers = [
   { title: 'Work Start', key: 'workStart' },
   { title: 'Work End', key: 'workEnd' },
   { title: 'Success', key: 'result' },
-  { title: 'Error', key: 'err' },
+  { title: 'Error', key: 'err', maxWidth: '350px' },
 ]
 
 const selectDateRange = computed({
@@ -177,6 +177,20 @@ const selectDateRange = computed({
             :loading="loading"
             :items-per-page-options="tableSettings.itemsPerPageOptions"
           >
+            <template #item.completedByHostAndPort="{ value }">
+              <RouterLink
+                :to="{ name: 'MachineInfo', params: { id: value } }"
+              >
+                {{ value }}
+              </RouterLink>
+            </template>
+
+            <template #item.name="{ value }">
+              <RouterLink :to="{ name: 'TaskHistory', query: { name: value } }">
+                {{ value }}
+              </RouterLink>
+            </template>
+
             <template #item.posted="{ value }">
               {{ d(value, 'long') }}
             </template>

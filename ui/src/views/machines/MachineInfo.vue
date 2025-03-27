@@ -6,16 +6,19 @@ import MachineStorages from '@/views/machines/MachineStorages.vue'
 import RecentTasksTable from '@/views/widgets/data/RecentTasksTable.vue'
 import NewTasks from '@/views/widgets/data/NewTasks.vue'
 import { useQuery } from '@vue/apollo-composable'
-import { GetMachine } from '@/gql/machine'
+import { GetMachineById, GetMachineByHostAndPort } from '@/gql/machine'
 import { Machine } from '@/typed-graph'
 import MachineMetrics from '@/views/machines/MachineMetrics.vue'
 
 const props = defineProps({
-  id: {
+  id: { // This is the machine id or hostAndPort
     type: String,
     required: true,
   },
 })
+
+const query = isNaN(Number(props.id)) ? GetMachineByHostAndPort : GetMachineById
+const variables = isNaN(Number(props.id)) ? { hostAndPort: props.id } : { id: Number(props.id) }
 
 const breadcrumbs = ref([
   {
@@ -30,11 +33,7 @@ const breadcrumbs = ref([
   },
 ])
 
-const { result, loading } = useQuery(GetMachine, {
-  id: Number(props.id),
-}, () => ({
-  fetchPolicy: 'cache-first',
-}))
+const { result, loading } = useQuery(query, variables, {})
 const machine: ComputedRef<Machine> = computed(() => result.value?.machine || {})
 
 </script>

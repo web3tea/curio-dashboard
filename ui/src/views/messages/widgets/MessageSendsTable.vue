@@ -54,10 +54,10 @@ const headers = [
   { title: 'Success', key: 'sendSuccess' },
   { title: 'Send Time', key: 'sendTime' },
   { title: 'Signed CID', key: 'signedCid' },
-  { title: 'Signed JSON', key: 'signedJson' },
+  { title: 'Signed JSON', key: 'signedJson', align: 'center' },
   { title: 'Unsigned CID', key: 'unsignedCid' },
-  { title: 'Error', key: 'sendError' },
-]
+  { title: 'Error', key: 'sendError', maxWidth: '200px' },
+] as const
 
 </script>
 
@@ -118,19 +118,19 @@ const headers = [
         :items-per-page-options="tableSettings.itemsPerPageOptions"
       >
         <template #item.fromKey="{ value }">
-          <TruncatedChip :text="value" />
+          <TruncatedText :text="value" />
         </template>
         <template #item.toAddr="{ value }">
-          <TruncatedChip :text="value" />
+          <TruncatedText :text="value" />
         </template>
         <template #item.sendTime="{ value }">
           {{ value ? d(value, 'short') : '' }}
         </template>
         <template #item.signedCid="{ value }">
-          <TruncatedChip :text="value" />
+          <TruncatedText :text="value" />
         </template>
         <template #item.unsignedCid="{ value }">
-          <TruncatedChip :text="value" />
+          <TruncatedText :text="value" />
         </template>
         <template #item.signedJson="{ value }">
           <v-btn
@@ -139,7 +139,7 @@ const headers = [
             :rounded="true"
             size="x-small"
           >
-            <IconInfoCircle />
+            <IconInfoCircle size="18" />
             <v-dialog activator="parent">
               <v-card>
                 <v-card-text>

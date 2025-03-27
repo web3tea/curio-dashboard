@@ -66,9 +66,22 @@ export const GetMachines = gql`
   ${machineDetailFragment}
 `
 
-export const GetMachine = gql`
-    query GetMachine($id: Int!) {
+export const GetMachineById = gql`
+    query GetMachineById($id: Int!) {
       machine(id: $id) {
+        ...MachineBaseAll
+        detail {
+          ...MachineDetailAll
+        }
+      }
+    }
+    ${machineBaseFragment}
+    ${machineDetailFragment}
+`
+
+export const GetMachineByHostAndPort = gql`
+    query GetMachineByHostAndPort($hostAndPort: String!) {
+      machineByHostAndPort(hostAndPort: $hostAndPort) {
         ...MachineBaseAll
         detail {
           ...MachineDetailAll
