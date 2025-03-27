@@ -32,6 +32,12 @@ var runCmd = &cli.Command{
 	Usage: "run the Curio dashboard server",
 	Flags: []cli.Flag{
 		cliutil.FlagVeryVerbose,
+		&cli.BoolFlag{
+			Name:    "ignore-version-mismatch",
+			Aliases: []string{"ivm"},
+			Usage:   "ignore version mismatch between curio and dashboard build",
+			Value:   false,
+		},
 	},
 	Action: func(cctx *cli.Context) error {
 		cfg, err := config.NewFromFile(cctx.String("config"))
@@ -57,7 +63,12 @@ var runCmd = &cli.Command{
 		}
 
 		if !compareVersion(curioVersion, build.BuildVersion) {
-			return fmt.Errorf("curio version mismatch: %s != %s", curioVersion, build.BuildVersion)
+			if !cctx.Bool("ignore-version-mismatch") {
+				return fmt.Errorf("curio version mismatch: %s != %s, use --ignore-version-mismatch flag to continue anyway", curioVersion, build.BuildVersion)
+			}
+			fmt.Printf("\n\033[41m\033[33;1m ⚠️  WARNING: CURIO VERSION MISMATCH ⚠️  \033[0m\n")
+			fmt.Printf("\033[33;1m Dashboard version: %s | Curio version: %s \033[0m\n", build.BuildVersion, curioVersion)
+			fmt.Printf("\033[33;1m The dashboard may not work correctly. Continuing as requested with --ignore-version-mismatch flag. \033[0m\n\n")
 		}
 
 		chainAPI, closer, err := getChainAPI(cctx, cfg.Chain, curioVersion)
