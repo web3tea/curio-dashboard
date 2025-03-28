@@ -77,8 +77,8 @@ const headers = [
   { title: 'MinedCid', key: 'minedCid', sortable: false },
   { title: 'MinedAt', key: 'minedAt', sortable: false },
   { title: 'SubmittedAt', key: 'submittedAt', sortable: false },
-  { title: 'Included', key: 'included', sortable: false },
-  { title: 'MinedHeader', key: 'minedHeader', sortable: false },
+  { title: 'Included', key: 'included', sortable: false, align: 'center' },
+  { title: 'MinedHeader', key: 'minedHeader', sortable: false, align: 'center' },
 ]
 
 </script>
@@ -158,20 +158,16 @@ const headers = [
           <v-dialog>
             <template #activator="{ props:p1 }">
               <v-icon
-                color="primary"
                 v-bind="p1"
               >
-                <IconInfoCircle />
+                <IconInfoCircle size="18" />
               </v-icon>
             </template>
             <template #default="{ }">
-              <v-card>
-                <v-card-text>
-                  <pre>
-                    {{ JSON.stringify(value , null, 2) }}
-                  </pre>
-                </v-card-text>
-              </v-card>
+              <JsonViewer
+                :data="value"
+                title="Mined Header"
+              />
             </template>
           </v-dialog>
         </template>

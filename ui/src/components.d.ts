@@ -17,6 +17,8 @@ declare module 'vue' {
     DateRangeSelectInput: typeof import('./components/app/DateRangeSelectInput.vue')['default']
     EpochField: typeof import('./components/app/EpochField.vue')['default']
     HostPortSelectInput: typeof import('./components/app/HostPortSelectInput.vue')['default']
+    JsonView: typeof import('./components/shared/JsonView.vue')['default']
+    JsonViewer: typeof import('./components/shared/JsonViewer.vue')['default']
     MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
     PriceInput: typeof import('./components/app/PriceInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

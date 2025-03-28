@@ -141,13 +141,10 @@ const headers = [
           >
             <IconInfoCircle size="18" />
             <v-dialog activator="parent">
-              <v-card>
-                <v-card-text>
-                  <pre>
-                  {{ JSON.stringify(value, null, 2) }}
-                </pre>
-                </v-card-text>
-              </v-card>
+              <JsonViewer
+                :data="value"
+                title="Signed Json"
+              />
             </v-dialog>
           </v-btn>
         </template>

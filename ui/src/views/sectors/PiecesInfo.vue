@@ -63,39 +63,29 @@ const headers = [
       :items="pieces"
       :loading="loading"
     >
-      <template #item.f05DealProposal="{ item }">
-        <v-btn
-          v-if="item.f05DealProposal"
-          :icon="true"
-          :rounded="true"
-        >
-          <IconInfoCircle />
+      <template #item.f05DealProposal="{ value }">
+        <v-icon>
+          <IconInfoCircle size="18" />
           <v-dialog activator="parent">
-            <v-card>
-              <v-card-text>
-                <pre>
-                  {{ JSON.stringify(item.f05DealProposal, null, 2) }}
-                </pre>
-              </v-card-text>
-            </v-card>
+            <JsonViewer
+              :data="value"
+              title="f05 Deal Proposal"
+            />
           </v-dialog>
-        </v-btn>
+        </v-icon>
       </template>
-      <template #item.ddoPam="{ item }">
+      <template #item.ddoPam="{ value }">
         <v-btn
-          v-if="item.ddoPam"
+          v-if="value"
           :icon="true"
           :rounded="true"
         >
-          <IconInfoCircle />
+          <IconInfoCircle size="18" />
           <v-dialog activator="parent">
-            <v-card>
-              <v-card-text>
-                <pre>
-                  {{ JSON.stringify(item.ddoPam, null, 2) }}
-                </pre>
-              </v-card-text>
-            </v-card>
+            <JsonViewer
+              :data="value"
+              title="DDO Parameter"
+            />
           </v-dialog>
         </v-btn>
       </template>
