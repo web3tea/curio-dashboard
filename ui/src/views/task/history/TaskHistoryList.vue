@@ -6,7 +6,7 @@ import { computed, ComputedRef, ref } from 'vue'
 import { TaskHistory } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
 import { useTableSettingsStore } from "@/stores/table"
-import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   start: {
@@ -31,7 +31,6 @@ const props = defineProps({
   },
 })
 
-const { d } = useI18n()
 const tableSettings = useTableSettingsStore()
 
 const start = ref<Date | undefined>(props.start)
@@ -192,13 +191,13 @@ const selectDateRange = computed({
             </template>
 
             <template #item.posted="{ value }">
-              {{ d(value, 'long') }}
+              {{ getRelativeTime(value, "long") }}
             </template>
             <template #item.workStart="{ value }">
-              {{ d(value, 'long') }}
+              {{ getRelativeTime(value, "long") }}
             </template>
             <template #item.workEnd="{ value }">
-              {{ d(value, 'long') }}
+              {{ getRelativeTime(value, "long") }}
             </template>
             <template #item.result="{ value }">
               <v-checkbox-btn

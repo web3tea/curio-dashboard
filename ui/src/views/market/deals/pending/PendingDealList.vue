@@ -5,12 +5,11 @@ import { computed, ComputedRef, ref } from 'vue'
 import { OpenSectorPiece } from '@/typed-graph'
 import { DealSealNow, GetPendingDeals } from '@/gql/deal'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
-import { useI18n } from 'vue-i18n'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { useNotificationStore } from '@/stores/notification'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const notificationStore = useNotificationStore()
-const { d } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetPendingDeals, null, () => ({
   fetchPolicy: 'cache-first',
@@ -118,7 +117,7 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
         sticky
       >
         <template #item.createdAt="{ item }">
-          {{ d(item.createdAt, 'short') }}
+          {{ getRelativeTime(item.createdAt, "short") }}
         </template>
         <template #group-header="{ item, index, columns, toggleGroup, isGroupOpen }">
           <div

@@ -124,7 +124,7 @@ const headers = [
           <TruncatedText :text="value" />
         </template>
         <template #item.sendTime="{ value }">
-          {{ value ? d(value, 'short') : '' }}
+          {{ value ? d(value, 'long') : '' }}
         </template>
         <template #item.signedCid="{ value }">
           <TruncatedText :text="value" />

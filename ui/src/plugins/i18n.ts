@@ -26,6 +26,7 @@ const options: I18nOptions = {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
+        hour12: false,
       },
       toDay: {
         year: '2-digit',
@@ -53,7 +54,7 @@ const options: I18nOptions = {
         weekday: 'short',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: true,
+        hour12: false,
       },
       toDay: {
         year: '2-digit',

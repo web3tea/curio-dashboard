@@ -5,6 +5,7 @@ import { SubscribeNewTask } from '@/gql/task'
 import { Task } from '@/typed-graph'
 import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   maxLen: {
@@ -17,7 +18,7 @@ const props = defineProps({
   },
 })
 
-const { d, t } = useI18n()
+const { t } = useI18n()
 
 const isStop = ref(false)
 const { result, loading, stop, start } = useSubscription(SubscribeNewTask, {
@@ -76,7 +77,7 @@ const headers = [
         </router-link>
       </template>
       <template #item.postedTime="{ value }">
-        {{ d(value, 'short') }}
+        {{ getRelativeTime(value) }}
       </template>
       <template #item.addedBy="{ item }">
         <RouterLink :to="{ name: 'MachineInfo', params: { id: item.addedBy.id } }">

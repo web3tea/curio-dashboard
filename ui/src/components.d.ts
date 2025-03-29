@@ -25,6 +25,7 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StoragePathTable: typeof import('./components/app/StoragePathTable.vue')['default']
+    TaskDetailsDialog: typeof import('./components/app/TaskDetailsDialog.vue')['default']
     TaskNameSelectInput: typeof import('./components/app/TaskNameSelectInput.vue')['default']
     TruncatedChip: typeof import('./components/shared/TruncatedChip.vue')['default']
     TruncatedText: typeof import('./components/shared/TruncatedText.vue')['default']

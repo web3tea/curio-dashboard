@@ -5,8 +5,9 @@ import { Task } from '@/typed-graph'
 import { GetRunningTasks } from '@/gql/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
-const { d, t } = useI18n()
+const { t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
   fetchPolicy: 'cache-and-network',
@@ -87,10 +88,10 @@ const searchValue = ref('')
             :search="searchValue"
           >
             <template #item.postedTime="{ value }">
-              {{ d(value, 'short') }}
+              {{ getRelativeTime(value, "short") }}
             </template>
             <template #item.updateTime="{ value }">
-              {{ d(value, 'short') }}
+              {{ getRelativeTime(value, "short") }}
             </template>
             <template #item.ownerId="{ item }">
               {{ item.owner? item.owner.hostAndPort : item.ownerId }}

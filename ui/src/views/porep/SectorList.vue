@@ -4,7 +4,7 @@ import { computed, ComputedRef, ref, watch } from 'vue'
 import { GetSectorsPoreps } from '@/gql/porep'
 import { Porep } from '@/typed-graph'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
-import { useLocaleTimeAgo } from '@/utils/helpers/timeAgo'
+import { getRelativeTime } from '@/utils/helpers/time'
 import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
 import { RestartAllFailedSector } from '@/gql/sector'
 import SectorRestart from '@/views/sectors/SectorRestart.vue'
@@ -12,7 +12,7 @@ import { useI18n } from 'vue-i18n'
 import { useNotificationStore } from '@/stores/notification'
 
 const notificationStore = useNotificationStore()
-const { d, t } = useI18n()
+const { t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
   fetchPolicy: 'network-only',
@@ -167,15 +167,15 @@ onDone(() => {
             <template #item.task="{ item }">
               <div class="text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Task ID :</span>
-                <span class="text-medium-emphasis">{{ item.currentTask?.id }}</span>
+                <TaskDetailsDialog :id="item.currentTask?.id" />
               </div>
               <div class="text-subtitle-1">
                 <span class="font-weight-semibold mr-2">Posted :</span>
-                <span class="text-medium-emphasis">{{ item.currentTask?.postedTime ? useLocaleTimeAgo(item.currentTask?.postedTime) : 'N/A' }}</span>
+                <span class="text-medium-emphasis">{{ item.currentTask?.postedTime ? getRelativeTime(item.currentTask?.postedTime) : 'N/A' }}</span>
               </div>
             </template>
             <template #item.createTime="{value}">
-              {{ d(value, 'short') }}
+              {{ getRelativeTime(value, "short") }}
             </template>
             <template #item.actions="{ item }">
               <SectorRemoveDialog

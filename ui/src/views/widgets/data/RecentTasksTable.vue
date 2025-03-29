@@ -6,6 +6,7 @@ import { TaskHistory } from '@/typed-graph'
 import { formatDuration } from '@/utils/helpers/formatDuration'
 import { IconPlayerPause, IconPlayerPlay, IconPointFilled } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   maxMessages: {
@@ -18,7 +19,7 @@ const props = defineProps({
   },
 })
 
-const { d, t } = useI18n()
+const {  t } = useI18n()
 
 const isStop = ref(false)
 const { result, loading, stop, start } = useSubscription(SubscribeCompletedTask, {
@@ -84,10 +85,10 @@ const headers = [
         </router-link>
       </template>
       <template #item.posted="{ value }">
-        {{ d(value, 'short') }}
+        {{ getRelativeTime(value) }}
       </template>
       <template #item.workStart="{ value }">
-        {{ d(value, 'short') }}
+        {{ getRelativeTime(value) }}
       </template>
       <template #item.completedByHostAndPort="{ item }">
         <RouterLink

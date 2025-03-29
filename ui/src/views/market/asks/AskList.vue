@@ -8,6 +8,7 @@ import { attoFilToFilPerTiBPerMonth } from '@/utils/helpers/convertPrice'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 import SetAsk from './widgets/SetAsk.vue'
 
 const { d } = useI18n()
@@ -19,10 +20,10 @@ const items: ComputedRef<[MarketMk12StorageAsk]> = computed(() => result.value?.
 
 const headers = [
   { title: 'Miner', key: 'spId' },
-  { title: 'Price (FIL/TiB/Month)', key: 'priceFTM' },
-  { title: 'Price (attoFIL/GiB/Epoch)', key: 'price' },
-  { title: 'Verified Price (FIL/TiB/Month)', key: 'verifiedPriceFTM' },
-  { title: 'Verified Price (attoFIL/GiB/Epoch)', key: 'verifiedPrice' },
+  { title: 'Price (FIL)', key: 'priceFTM' },
+  { title: 'Price (attoFIL)', key: 'price' },
+  { title: 'Verified Price (FIL)', key: 'verifiedPriceFTM' },
+  { title: 'Verified Price (attoFIL)', key: 'verifiedPrice' },
   { title: 'Min Size', key: 'minSize' },
   { title: 'Max Size', key: 'maxSize' },
   { title: 'Created At', key: 'createdAt' },
@@ -58,6 +59,50 @@ const searchValue = ref<string>()
       :loading="loading"
       :search="searchValue"
     >
+      <template #header.priceFTM="{ column }">
+        <v-tooltip
+          location="top"
+          max-width="300"
+        >
+          <template #activator="{ props }">
+            <span v-bind="props">{{ column.title }}</span>
+          </template>
+          <span>Price in FIL per TiB per Month</span>
+        </v-tooltip>
+      </template>
+      <template #header.price="{ column }">
+        <v-tooltip
+          location="top"
+          max-width="300"
+        >
+          <template #activator="{ props }">
+            <span v-bind="props">{{ column.title }}</span>
+          </template>
+          <span>Price in attoFIL per GiB per Epoch</span>
+        </v-tooltip>
+      </template>
+      <template #header.verifiedPriceFTM="{ column }">
+        <v-tooltip
+          location="top"
+          max-width="300"
+        >
+          <template #activator="{ props }">
+            <span v-bind="props">{{ column.title }}</span>
+          </template>
+          <span>Verified Price in FIL per TiB per Month</span>
+        </v-tooltip>
+      </template>
+      <template #header.verifiedPrice="{ column }">
+        <v-tooltip
+          location="top"
+          max-width="300"
+        >
+          <template #activator="{ props }">
+            <span v-bind="props">{{ column.title }}</span>
+          </template>
+          <span>Verified Price in attoFIL per GiB per Epoch</span>
+        </v-tooltip>
+      </template>
       <template #item.spId="{ value }">
         <RouterLink :to="{ name: 'MinerDetails', params: { id: value } }">
           {{ value }}
@@ -79,7 +124,7 @@ const searchValue = ref<string>()
         {{ d(value * 1000, 'long') }}
       </template>
       <template #item.expiry="{ value }">
-        {{ d(value * 1000, 'long') }}
+        {{ getRelativeTime(value * 1000, 'long') }}
       </template>
       <template #item.actions="{ item }">
         <SetAsk

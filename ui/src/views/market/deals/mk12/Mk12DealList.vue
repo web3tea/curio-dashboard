@@ -4,11 +4,9 @@ import { GetMarketMk12Deals } from '@/gql/market'
 import { useQuery } from '@vue/apollo-composable'
 import { ComputedRef, computed, ref } from 'vue'
 import { IconReload } from '@tabler/icons-vue'
-import { useI18n } from 'vue-i18n'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { watchDebounced } from '@vueuse/core'
-
-const { d } = useI18n()
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const headers = [
   { title: "UUID", key: "uuid" },
@@ -93,7 +91,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
         <TruncatedText :text="value" />
       </template>
       <template #item.createdAt="{ value }">
-        {{ d(value, 'long') }}
+        {{ getRelativeTime(value, 'long') }}
       </template>
       <template #item.pieceSize="{ value }">
         {{ formatBytes(value).combined }}
