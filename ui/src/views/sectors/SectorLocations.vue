@@ -6,7 +6,7 @@ import { GetSectorLocations } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import { SectorLocation } from '@/typed-graph'
 import { sectorFileTypeToName } from '@/utils/helpers/sectorFileType'
-import { IconReload } from '@tabler/icons-vue'
+import { IconReload, IconPointFilled } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -56,19 +56,26 @@ const headers = [
       :items="locations"
       :loading="loading"
     >
+      <template #item.isPrimary="{ value }">
+        <v-checkbox-btn
+          :model-value="value"
+          class="d-inline-flex"
+          readonly
+        />
+      </template>
       <template #item.sectorFiletype="{ item }">
         <v-chip>{{ sectorFileTypeToName(item.sectorFiletype) }}</v-chip>
       </template>
       <template #item.storage.path.urls="{ item }">
-        {{ item.storage?.path?.urls }}
-        <v-badge color="success">
+        <div class="d-flex align-center">
+          <span>{{ item.storage?.path?.urls }}</span>
           <v-icon
-            end
-            size="x-small"
-          >
-            mdi-home-outline
-          </v-icon>
-        </v-badge>
+            :icon="IconPointFilled"
+            class="ml-1"
+            color="success"
+            size="small"
+          />
+        </div>
       </template>
     </v-data-table-virtual>
   </UiChildCard>

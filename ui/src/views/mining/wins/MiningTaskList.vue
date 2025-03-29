@@ -3,7 +3,6 @@ import { computed, ComputedRef, ref } from 'vue'
 import { MiningTask } from '@/typed-graph'
 import { GetMiningWins } from '@/gql/mining'
 import { useQuery } from '@vue/apollo-composable'
-import { IconInfoCircle } from '@tabler/icons-vue'
 import { useTableSettingsStore } from "@/stores/table"
 import { useI18n } from 'vue-i18n'
 
@@ -79,7 +78,7 @@ const headers = [
   { title: 'SubmittedAt', key: 'submittedAt', sortable: false },
   { title: 'Included', key: 'included', sortable: false, align: 'center' },
   { title: 'MinedHeader', key: 'minedHeader', sortable: false, align: 'center' },
-]
+] as const
 
 </script>
 
@@ -154,22 +153,21 @@ const headers = [
         <template #item.submittedAt="{value}">
           {{ d(value, 'long') }}
         </template>
+        <template #item.included="{value}">
+          <v-checkbox-btn
+            :model-value="value"
+            class="d-inline-flex"
+            color="success"
+            readonly
+          />
+        </template>
         <template #item.minedHeader="{value}">
-          <v-dialog>
-            <template #activator="{ props:p1 }">
-              <v-icon
-                v-bind="p1"
-              >
-                <IconInfoCircle size="18" />
-              </v-icon>
-            </template>
-            <template #default="{ }">
-              <JsonViewer
-                :data="value"
-                title="Mined Header"
-              />
-            </template>
-          </v-dialog>
+          <InfoDialog>
+            <JsonViewer
+              :data="value"
+              title="Mined Header"
+            />
+          </InfoDialog>
         </template>
       </v-data-table-server>
     </v-card-text>

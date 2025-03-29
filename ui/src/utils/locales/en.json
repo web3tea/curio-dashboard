@@ -158,7 +158,8 @@
     "loading": "Loading",
     "stable": "Stable",
     "sector": "Sector | Sectors",
-    "deal": "Deal | Deals"
+    "deal": "Deal | Deals",
+    "Close": "Close"
   },
   "clusterHealth": {
     "title": "Cluster Health",

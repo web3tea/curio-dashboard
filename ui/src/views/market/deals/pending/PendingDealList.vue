@@ -40,10 +40,11 @@ const headers = [
   { title: 'Piece CID', key: 'pieceCID', sortable: false },
   { title: 'Piece Size', key: 'pieceSize' },
   { title: 'Data Raw Size', key: 'dataRawSize' },
-  { title: 'Data Delete On Finalize', key: 'dataDeleteOnFinalize' },
+  { title: 'Data Delete On Finalize', key: 'dataDeleteOnFinalize', align: 'center' },
   { title: 'Created At', key: 'createdAt' },
-  { title: 'Is Snap', key: 'isSnap' },
-]
+  { title: 'Is Snap', key: 'isSnap', align: 'center' },
+] as const
+
 const search = ref('')
 const sortBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'desc' }, { key: 'pieceIndex', order: 'asc' }] as const
 const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'desc' }] as const
@@ -175,6 +176,20 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
         </template>
         <template #item.pieceCID="{ value }">
           <TruncatedText :text="value" />
+        </template>
+        <template #item.dataDeleteOnFinalize="{ value }">
+          <v-checkbox-btn
+            :model-value="value"
+            class="d-inline-flex"
+            readonly
+          />
+        </template>
+        <template #item.isSnap="{ value }">
+          <v-checkbox-btn
+            :model-value="value"
+            class="d-inline-flex"
+            readonly
+          />
         </template>
       </v-data-table-virtual>
     </v-card-text>

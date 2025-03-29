@@ -5,7 +5,7 @@ import { GetSectorPieces } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
+import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -37,11 +37,11 @@ const headers = [
   { title: 'Raw Data Size', key: 'rawDataSize' },
   { title: 'Piece Size', key: 'pieceSize' },
   { title: 'Piece CID', key: 'pieceCID' },
-  { title: 'Keep Data', key: 'requestedKeepData' },
+  { title: 'Keep Data', key: 'requestedKeepData', align: 'center' },
   { title: 'f05 DealID', key: 'f05DealID' },
-  { title: 'f05 DealProposal', key: 'f05DealProposal' },
-  { title: 'ddo Pam', key: 'ddoPam' },
-]
+  { title: 'f05 DealProposal', key: 'f05DealProposal', align: 'center' },
+  { title: 'ddo Pam', key: 'ddoPam', align: 'center' },
+] as const
 
 </script>
 
@@ -63,46 +63,32 @@ const headers = [
       :items="pieces"
       :loading="loading"
     >
+      <template #item.requestedKeepData="{ value }">
+        <v-checkbox-btn
+          :model-value="value"
+          class="d-inline-flex"
+          readonly
+        />
+      </template>
       <template #item.f05DealProposal="{ value }">
-        <v-icon>
-          <IconInfoCircle size="18" />
-          <v-dialog activator="parent">
-            <JsonViewer
-              :data="value"
-              title="f05 Deal Proposal"
-            />
-          </v-dialog>
-        </v-icon>
+        <InfoDialog>
+          <JsonViewer
+            :data="value"
+            title="f05 Deal Proposal"
+          />
+        </InfoDialog>
       </template>
       <template #item.ddoPam="{ value }">
-        <v-btn
-          v-if="value"
-          :icon="true"
-          :rounded="true"
-        >
-          <IconInfoCircle size="18" />
-          <v-dialog activator="parent">
-            <JsonViewer
-              :data="value"
-              title="DDO Parameter"
-            />
-          </v-dialog>
-        </v-btn>
+        <InfoDialog>
+          <JsonViewer
+            :data="value"
+            title="DDO Parameter"
+          />
+        </InfoDialog>
       </template>
 
       <template #item.pieceCID="{ item }">
-        <v-text-field
-          aria-label="website"
-          class="pr-0"
-          color="primary"
-          hide-details="auto"
-          max-width="250"
-          min-width="200"
-          :model-value="item.pieceCID"
-          readonly
-          single-line
-          variant="outlined"
-        />
+        <TruncatedText :text="item.pieceCID" />
       </template>
       <template #item.rawDataSize="{ item }">
         <v-chip>{{ formatBytes(item.rawDataSize ?? 0).combined }}</v-chip>

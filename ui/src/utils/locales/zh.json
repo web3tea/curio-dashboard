@@ -158,7 +158,8 @@
     "loading": "加载中",
     "stable": "稳定",
     "sector": "扇区",
-    "deal": "订单"
+    "deal": "订单",
+    "Close": "关闭"
   },
   "clusterHealth": {
     "title": "集群健康度",

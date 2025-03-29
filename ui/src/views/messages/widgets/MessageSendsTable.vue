@@ -3,7 +3,7 @@ import { useQuery } from "@vue/apollo-composable"
 import { GetMessageSends } from "@/gql/message"
 import { computed, ComputedRef, ref } from "vue"
 import { MessageSend } from "@/typed-graph"
-import { IconInfoCircle, IconReload } from "@tabler/icons-vue"
+import { IconReload } from "@tabler/icons-vue"
 import { useTableSettingsStore } from "@/stores/table"
 import { useI18n } from "vue-i18n"
 
@@ -133,20 +133,12 @@ const headers = [
           <TruncatedText :text="value" />
         </template>
         <template #item.signedJson="{ value }">
-          <v-btn
-            v-if="value"
-            :icon="true"
-            :rounded="true"
-            size="x-small"
-          >
-            <IconInfoCircle size="18" />
-            <v-dialog activator="parent">
-              <JsonViewer
-                :data="value"
-                title="Signed Json"
-              />
-            </v-dialog>
-          </v-btn>
+          <InfoDialog>
+            <JsonViewer
+              :data="value"
+              title="Signed Json"
+            />
+          </InfoDialog>
         </template>
       </v-data-table-server>
     </v-card-text>

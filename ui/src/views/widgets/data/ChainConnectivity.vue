@@ -10,10 +10,10 @@ const { t } = useI18n()
 
 const headers = [
   { title: 'Address', key: 'address', sortable: false },
-  { title: 'Reachability', key: 'reachable' },
-  { title: 'Sync Status', key: 'syncState' },
+  { title: 'Reachability', key: 'reachable', align: 'center' },
+  { title: 'Sync Status', key: 'syncState', align: 'center' },
   { title: 'Version', key: 'version' },
-]
+] as const
 
 const { result, loading, refetch } = useQuery(GetNodeInfos, null, () => ({
   fetchPolicy: 'cache-first',
@@ -44,7 +44,16 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
       hover
       :items="items"
       :loading="loading"
-    />
+    >
+      <template #item.reachable="{ value }">
+        <v-checkbox-btn
+          :model-value="value"
+          class="d-inline-flex"
+          color="success"
+          readonly
+        />
+      </template>
+    </v-data-table-virtual>
   </UiWidgetCard>
 </template>
 

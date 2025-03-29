@@ -4,7 +4,7 @@ import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeCompletedTask } from '@/gql/task'
 import { TaskHistory } from '@/typed-graph'
 import { formatDuration } from '@/utils/helpers/formatDuration'
-import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
+import { IconPlayerPause, IconPlayerPlay, IconPointFilled } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -105,21 +105,14 @@ const headers = [
         {{ formatDuration(new Date(item.workEnd).getTime() - new Date(item.workStart).getTime()) }}
       </template>
       <template #item.result="{ item }">
-        <v-chip
-          class="px-0"
-          size="small"
-          variant="text"
-        >
-          <v-avatar
-            class="mr-2"
+        <div class="d-flex align-center">
+          <v-icon
+            :icon="IconPointFilled"
             :color="item.result ? 'success' : 'error'"
-            size="8"
-            variant="flat"
+            size="small"
           />
-          <p class="text-h6 mb-0">
-            {{ item.result ? 'success' : 'failure' }}
-          </p>
-        </v-chip>
+          <span>{{ item.result ? 'success' : 'failure' }}</span>
+        </div>
       </template>
     </v-data-table-virtual>
   </UiWidgetCard>

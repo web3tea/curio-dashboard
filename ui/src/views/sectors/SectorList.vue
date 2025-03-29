@@ -3,7 +3,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, reactive, ref } from 'vue'
 import { Sector } from '@/typed-graph'
 import { GetSectors } from '@/gql/sector'
-import { IconInfoCircle, IconReload } from '@tabler/icons-vue'
+import {  IconReload } from '@tabler/icons-vue'
 import SectorLocations from '@/views/sectors/SectorLocations.vue'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import EpochField from '@/components/app/EpochField.vue'
@@ -45,16 +45,26 @@ const headers = [
   { title: 'Sector', key: 'meta.sectorNum' },
   { title: 'Expiration', key: 'meta.expirationEpoch' },
   { title: 'Is CC', key: 'meta.isCC' },
-  { title: 'Has Unsealed', key: 'hasUnsealed' },
-  { title: 'Has Sealed', key: 'hasSealed' },
+  { title: 'Has Unsealed', key: 'hasUnsealed', align: 'center' },
+  { title: 'Has Sealed', key: 'hasSealed', align: 'center' },
   { title: 'Size', key: 'meta.regSealProof' },
-]
+] as const
+
 const options = reactive<MaskInputOptions>({
   number: { unsigned: true, fraction: 0 },
   postProcess: value => {
     return value.replace(/,/g, '')
   },
 })
+
+function hasUnsealed (item: Sector): boolean {
+  return item.locations?.some(location => location?.sectorFiletype === 1) || false
+}
+
+function hasSealed (item: Sector): boolean {
+  return item.locations?.some(location => location?.sectorFiletype === 2) || false
+}
+
 </script>
 
 <template>
@@ -141,49 +151,28 @@ const options = reactive<MaskInputOptions>({
         <template #item.meta.expirationEpoch="{ item }">
           <EpochField :epoch="item.meta?.expirationEpoch" />
         </template>
-        <template #item.meta.isCC="{ item }">
-          {{ item.meta?.isCC ? 'Yes' : 'No' }}
+        <template #item.meta.isCC="{ value }">
+          <v-checkbox-btn
+            readonly
+            :v-model="value"
+            class="d-inline-flex"
+          />
         </template>
         <template #item.hasUnsealed="{ item }">
-          <v-dialog>
-            <template #activator="{ props }">
-              {{ item.locations?.some(location => location?.sectorFiletype === 1) ? 'Yes' : 'No' }}
-              <v-icon
-                v-if="item.locations?.some(location => location?.sectorFiletype === 1)"
-                color="primary"
-                v-bind="props"
-              >
-                <IconInfoCircle />
-              </v-icon>
-            </template>
-            <template #default="{ }">
-              <SectorLocations
-                :miner="item.spID"
-                :sector-number="item.sectorNum"
-              />
-            </template>
-          </v-dialog>
+          <BooleanIcon :model-value="hasUnsealed(item)">
+            <SectorLocations
+              :miner="item.spID"
+              :sector-number="item.sectorNum"
+            />
+          </BooleanIcon>
         </template>
         <template #item.hasSealed="{ item }">
-          <v-dialog>
-            <template #activator="{ props }">
-              {{ item.locations?.some(location => location?.sectorFiletype === 2) ? 'Yes' : 'No' }}
-              <v-icon
-                v-if="item.locations?.some(location => location?.sectorFiletype === 2)"
-                color="primary"
-                v-bind="props"
-              >
-                <IconInfoCircle />
-              </v-icon>
-            </template>
-
-            <template #default="{ }">
-              <SectorLocations
-                :miner="item.spID"
-                :sector-number="item.sectorNum"
-              />
-            </template>
-          </v-dialog>
+          <BooleanIcon :model-value="hasSealed(item)">
+            <SectorLocations
+              :miner="item.spID"
+              :sector-number="item.sectorNum"
+            />
+          </BooleanIcon>
         </template>
         <template #item.meta.regSealProof="{ item }">
           {{ sealProofToSize(item.meta?.regSealProof || 0) }}

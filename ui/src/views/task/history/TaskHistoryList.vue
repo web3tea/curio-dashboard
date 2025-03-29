@@ -200,6 +200,14 @@ const selectDateRange = computed({
             <template #item.workEnd="{ value }">
               {{ d(value, 'long') }}
             </template>
+            <template #item.result="{ value }">
+              <v-checkbox-btn
+                :model-value="value"
+                class="d-inline-flex"
+                color="success"
+                readonly
+              />
+            </template>
           </v-data-table-server>
         </v-card-text>
       </v-card>
