@@ -320,54 +320,6 @@ type OpenSectorPiece struct {
 	IsSnap                        bool          `json:"isSnap"`
 }
 
-type Porep struct {
-	ID                       string        `json:"id"`
-	SpID                     types.Address `json:"spId"`
-	SectorNumber             int           `json:"sectorNumber"`
-	CreateTime               time.Time     `json:"createTime"`
-	RegSealProof             int           `json:"regSealProof"`
-	TicketEpoch              *int          `json:"ticketEpoch"`
-	TicketValue              types.Bytes   `json:"ticketValue"`
-	TaskIDSdr                *int          `json:"taskIdSdr"`
-	AfterSdr                 bool          `json:"afterSdr"`
-	TreeDCid                 *string       `json:"treeDCid"`
-	TaskIDTreeD              *int          `json:"taskIdTreeD"`
-	AfterTreeD               bool          `json:"afterTreeD"`
-	TaskIDTreeC              *int          `json:"taskIdTreeC"`
-	AfterTreeC               bool          `json:"afterTreeC"`
-	TreeRCid                 *string       `json:"treeRCid"`
-	TaskIDTreeR              *int          `json:"taskIdTreeR"`
-	AfterTreeR               bool          `json:"afterTreeR"`
-	PrecommitMsgCid          *string       `json:"precommitMsgCid"`
-	TaskIDPrecommitMsg       *int          `json:"taskIdPrecommitMsg"`
-	AfterPrecommitMsg        bool          `json:"afterPrecommitMsg"`
-	SeedEpoch                *int          `json:"seedEpoch"`
-	PrecommitMsgTsk          types.Bytes   `json:"precommitMsgTsk"`
-	AfterPrecommitMsgSuccess bool          `json:"afterPrecommitMsgSuccess"`
-	SeedValue                types.Bytes   `json:"seedValue"`
-	TaskIDPorep              *int          `json:"taskIdPorep"`
-	PorepProof               types.Bytes   `json:"porepProof"`
-	AfterPorep               bool          `json:"afterPorep"`
-	TaskIDFinalize           *int          `json:"taskIdFinalize"`
-	AfterFinalize            bool          `json:"afterFinalize"`
-	TaskIDMoveStorage        *int          `json:"taskIdMoveStorage"`
-	AfterMoveStorage         bool          `json:"afterMoveStorage"`
-	CommitMsgCid             *string       `json:"commitMsgCid"`
-	TaskIDCommitMsg          *int          `json:"taskIdCommitMsg"`
-	AfterCommitMsg           bool          `json:"afterCommitMsg"`
-	CommitMsgTsk             types.Bytes   `json:"commitMsgTsk"`
-	AfterCommitMsgSuccess    bool          `json:"afterCommitMsgSuccess"`
-	Failed                   bool          `json:"failed"`
-	FailedAt                 *time.Time    `json:"failedAt"`
-	FailedReason             string        `json:"failedReason"`
-	FailedReasonMsg          string        `json:"failedReasonMsg"`
-	TaskIDSynth              *int          `json:"taskIdSynth"`
-	AfterSynth               bool          `json:"afterSynth"`
-	UserSectorDurationEpochs *int          `json:"userSectorDurationEpochs"`
-	Status                   PorepStatus   `json:"status"`
-	CurrentTask              *Task         `json:"currentTask"`
-}
-
 type PowerClaim struct {
 	RawBytePower    *types.BigInt `json:"rawBytePower"`
 	QualityAdjPower *types.BigInt `json:"qualityAdjPower"`
@@ -450,6 +402,12 @@ type StorageUsage struct {
 }
 
 type Subscription struct {
+}
+
+type TaskCompactStage struct {
+	Name   string     `json:"name"`
+	Status TaskStatus `json:"status"`
+	TaskID *int       `json:"taskId"`
 }
 
 type TaskDurationStats struct {
@@ -545,77 +503,6 @@ func (e MiningTaskAggregateInterval) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
-type PorepStatus string
-
-const (
-	PorepStatusSdr              PorepStatus = "SDR"
-	PorepStatusTreeD            PorepStatus = "TreeD"
-	PorepStatusTreeRc           PorepStatus = "TreeRC"
-	PorepStatusSynthetic        PorepStatus = "Synthetic"
-	PorepStatusPreCommitMsg     PorepStatus = "PreCommitMsg"
-	PorepStatusPreCommitMsgWait PorepStatus = "PreCommitMsgWait"
-	PorepStatusWaitSeed         PorepStatus = "WaitSeed"
-	PorepStatusPoRep            PorepStatus = "PoRep"
-	PorepStatusClearCache       PorepStatus = "ClearCache"
-	PorepStatusMoveStorage      PorepStatus = "MoveStorage"
-	PorepStatusCommitMsg        PorepStatus = "CommitMsg"
-	PorepStatusCommitMsgWait    PorepStatus = "CommitMsgWait"
-	PorepStatusFailed           PorepStatus = "Failed"
-	PorepStatusSuccess          PorepStatus = "Success"
-	PorepStatusOnChain          PorepStatus = "OnChain"
-	PorepStatusActive           PorepStatus = "Active"
-	PorepStatusUnknown          PorepStatus = "Unknown"
-)
-
-var AllPorepStatus = []PorepStatus{
-	PorepStatusSdr,
-	PorepStatusTreeD,
-	PorepStatusTreeRc,
-	PorepStatusSynthetic,
-	PorepStatusPreCommitMsg,
-	PorepStatusPreCommitMsgWait,
-	PorepStatusWaitSeed,
-	PorepStatusPoRep,
-	PorepStatusClearCache,
-	PorepStatusMoveStorage,
-	PorepStatusCommitMsg,
-	PorepStatusCommitMsgWait,
-	PorepStatusFailed,
-	PorepStatusSuccess,
-	PorepStatusOnChain,
-	PorepStatusActive,
-	PorepStatusUnknown,
-}
-
-func (e PorepStatus) IsValid() bool {
-	switch e {
-	case PorepStatusSdr, PorepStatusTreeD, PorepStatusTreeRc, PorepStatusSynthetic, PorepStatusPreCommitMsg, PorepStatusPreCommitMsgWait, PorepStatusWaitSeed, PorepStatusPoRep, PorepStatusClearCache, PorepStatusMoveStorage, PorepStatusCommitMsg, PorepStatusCommitMsgWait, PorepStatusFailed, PorepStatusSuccess, PorepStatusOnChain, PorepStatusActive, PorepStatusUnknown:
-		return true
-	}
-	return false
-}
-
-func (e PorepStatus) String() string {
-	return string(e)
-}
-
-func (e *PorepStatus) UnmarshalGQL(v any) error {
-	str, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("enums must be strings")
-	}
-
-	*e = PorepStatus(str)
-	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid PorepStatus", str)
-	}
-	return nil
-}
-
-func (e PorepStatus) MarshalGQL(w io.Writer) {
-	fmt.Fprint(w, strconv.Quote(e.String()))
-}
-
 type StorageType string
 
 const (
@@ -699,6 +586,51 @@ func (e *TaskHistoriesAggregateInterval) UnmarshalGQL(v any) error {
 }
 
 func (e TaskHistoriesAggregateInterval) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type TaskStatus string
+
+const (
+	TaskStatusPending   TaskStatus = "Pending"
+	TaskStatusRunning   TaskStatus = "Running"
+	TaskStatusCompleted TaskStatus = "Completed"
+	TaskStatusFailed    TaskStatus = "Failed"
+)
+
+var AllTaskStatus = []TaskStatus{
+	TaskStatusPending,
+	TaskStatusRunning,
+	TaskStatusCompleted,
+	TaskStatusFailed,
+}
+
+func (e TaskStatus) IsValid() bool {
+	switch e {
+	case TaskStatusPending, TaskStatusRunning, TaskStatusCompleted, TaskStatusFailed:
+		return true
+	}
+	return false
+}
+
+func (e TaskStatus) String() string {
+	return string(e)
+}
+
+func (e *TaskStatus) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TaskStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TaskStatus", str)
+	}
+	return nil
+}
+
+func (e TaskStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

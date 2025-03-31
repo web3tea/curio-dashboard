@@ -30,13 +30,10 @@
     "MK12Deals": "MK12Deals",
     "PendingPieces": "PendingPieces",
     "Active Tasks": "Active Tasks",
-    "Sectors Overview": "Sectors Overview",
-    "SDR Pipeline": "SDR Pipeline",
     "Task Overview": "Task Overview",
     "Sector Processing": "Sector Processing",
     "Snap Deals": "Snap Deals",
     "Unsealing": "Unsealing",
-    "Sectors Events": "Sectors Events",
     "Proofs": "Proofs",
     "WindowPoSt": "WindowPoSt",
     "Partition Tasks": "Partition Tasks",
@@ -53,7 +50,9 @@
     "System & Management": "System & Management",
     "Machine List": "Machine List",
     "Resource Usage": "Resource Usage",
-    "Dashboard": "Dashboard"
+    "Dashboard": "Dashboard",
+    "PoRep Pipeline": "PoRep Pipeline",
+    "Events": "Events"
   },
   "fields": {
     "Total Power": "Total Power",

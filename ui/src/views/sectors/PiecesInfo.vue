@@ -65,6 +65,7 @@ const headers = [
     >
       <template #item.requestedKeepData="{ value }">
         <v-checkbox-btn
+          color="primary"
           :model-value="value"
           class="d-inline-flex"
           readonly

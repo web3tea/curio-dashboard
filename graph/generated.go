@@ -470,6 +470,8 @@ type ComplexityRoot struct {
 		AfterTreeR               func(childComplexity int) int
 		CommitMsgCid             func(childComplexity int) int
 		CommitMsgTsk             func(childComplexity int) int
+		CommitReadyAt            func(childComplexity int) int
+		CompactStages            func(childComplexity int) int
 		CreateTime               func(childComplexity int) int
 		CurrentTask              func(childComplexity int) int
 		Failed                   func(childComplexity int) int
@@ -480,11 +482,13 @@ type ComplexityRoot struct {
 		PorepProof               func(childComplexity int) int
 		PrecommitMsgCid          func(childComplexity int) int
 		PrecommitMsgTsk          func(childComplexity int) int
+		PrecommitReadyAt         func(childComplexity int) int
 		RegSealProof             func(childComplexity int) int
 		SectorNumber             func(childComplexity int) int
 		SeedEpoch                func(childComplexity int) int
 		SeedValue                func(childComplexity int) int
 		SpID                     func(childComplexity int) int
+		Stage                    func(childComplexity int) int
 		Status                   func(childComplexity int) int
 		TaskIDCommitMsg          func(childComplexity int) int
 		TaskIDFinalize           func(childComplexity int) int
@@ -745,6 +749,12 @@ type ComplexityRoot struct {
 		Total   func(childComplexity int) int
 	}
 
+	TaskCompactStage struct {
+		Name   func(childComplexity int) int
+		Status func(childComplexity int) int
+		TaskID func(childComplexity int) int
+	}
+
 	TaskDurationStats struct {
 		AvgDurationSeconds    func(childComplexity int) int
 		MaxDurationSeconds    func(childComplexity int) int
@@ -895,8 +905,10 @@ type PipelineSummaryResolver interface {
 type PorepResolver interface {
 	ID(ctx context.Context, obj *model.Porep) (string, error)
 
-	Status(ctx context.Context, obj *model.Porep) (model.PorepStatus, error)
+	Status(ctx context.Context, obj *model.Porep) (model.TaskStatus, error)
+	Stage(ctx context.Context, obj *model.Porep) (model.PorepStage, error)
 	CurrentTask(ctx context.Context, obj *model.Porep) (*model.Task, error)
+	CompactStages(ctx context.Context, obj *model.Porep) ([]*model.TaskCompactStage, error)
 }
 type QueryResolver interface {
 	Actors(ctx context.Context) ([]*model.Actor, error)
@@ -969,7 +981,7 @@ type QueryResolver interface {
 type SectorResolver interface {
 	ID(ctx context.Context, obj *model.Sector) (string, error)
 
-	Status(ctx context.Context, obj *model.Sector) (model.PorepStatus, error)
+	Status(ctx context.Context, obj *model.Sector) (model.TaskStatus, error)
 	Meta(ctx context.Context, obj *model.Sector) (*model.SectorMeta, error)
 	Porep(ctx context.Context, obj *model.Sector) (*model.Porep, error)
 	Locations(ctx context.Context, obj *model.Sector) ([]*model.SectorLocation, error)
@@ -3188,6 +3200,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Porep.CommitMsgTsk(childComplexity), true
 
+	case "Porep.commitReadyAt":
+		if e.complexity.Porep.CommitReadyAt == nil {
+			break
+		}
+
+		return e.complexity.Porep.CommitReadyAt(childComplexity), true
+
+	case "Porep.compactStages":
+		if e.complexity.Porep.CompactStages == nil {
+			break
+		}
+
+		return e.complexity.Porep.CompactStages(childComplexity), true
+
 	case "Porep.createTime":
 		if e.complexity.Porep.CreateTime == nil {
 			break
@@ -3258,6 +3284,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Porep.PrecommitMsgTsk(childComplexity), true
 
+	case "Porep.precommitReadyAt":
+		if e.complexity.Porep.PrecommitReadyAt == nil {
+			break
+		}
+
+		return e.complexity.Porep.PrecommitReadyAt(childComplexity), true
+
 	case "Porep.regSealProof":
 		if e.complexity.Porep.RegSealProof == nil {
 			break
@@ -3292,6 +3325,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Porep.SpID(childComplexity), true
+
+	case "Porep.stage":
+		if e.complexity.Porep.Stage == nil {
+			break
+		}
+
+		return e.complexity.Porep.Stage(childComplexity), true
 
 	case "Porep.status":
 		if e.complexity.Porep.Status == nil {
@@ -4957,6 +4997,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.TaskAggregate.Total(childComplexity), true
 
+	case "TaskCompactStage.name":
+		if e.complexity.TaskCompactStage.Name == nil {
+			break
+		}
+
+		return e.complexity.TaskCompactStage.Name(childComplexity), true
+
+	case "TaskCompactStage.status":
+		if e.complexity.TaskCompactStage.Status == nil {
+			break
+		}
+
+		return e.complexity.TaskCompactStage.Status(childComplexity), true
+
+	case "TaskCompactStage.taskId":
+		if e.complexity.TaskCompactStage.TaskID == nil {
+			break
+		}
+
+		return e.complexity.TaskCompactStage.TaskID(childComplexity), true
+
 	case "TaskDurationStats.avgDurationSeconds":
 		if e.complexity.TaskDurationStats.AvgDurationSeconds == nil {
 			break
@@ -5369,7 +5430,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/setting.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/setting.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -5385,6 +5446,7 @@ var sources = []*ast.Source{
 	{Name: "schema/alert.graphql", Input: sourceData("schema/alert.graphql"), BuiltIn: false},
 	{Name: "schema/config.graphql", Input: sourceData("schema/config.graphql"), BuiltIn: false},
 	{Name: "schema/deal.graphql", Input: sourceData("schema/deal.graphql"), BuiltIn: false},
+	{Name: "schema/directive.graphql", Input: sourceData("schema/directive.graphql"), BuiltIn: false},
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
 	{Name: "schema/market.graphql", Input: sourceData("schema/market.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
@@ -23245,6 +23307,88 @@ func (ec *executionContext) fieldContext_Porep_userSectorDurationEpochs(_ contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Porep_precommitReadyAt(ctx context.Context, field graphql.CollectedField, obj *model.Porep) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Porep_precommitReadyAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PrecommitReadyAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Porep_precommitReadyAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Porep",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Porep_commitReadyAt(ctx context.Context, field graphql.CollectedField, obj *model.Porep) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Porep_commitReadyAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CommitReadyAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Porep_commitReadyAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Porep",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Porep_status(ctx context.Context, field graphql.CollectedField, obj *model.Porep) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Porep_status(ctx, field)
 	if err != nil {
@@ -23271,9 +23415,9 @@ func (ec *executionContext) _Porep_status(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(model.PorepStatus)
+	res := resTmp.(model.TaskStatus)
 	fc.Result = res
-	return ec.marshalNPorepStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStatus(ctx, field.Selections, res)
+	return ec.marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23283,7 +23427,51 @@ func (ec *executionContext) fieldContext_Porep_status(_ context.Context, field g
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type PorepStatus does not have child fields")
+			return nil, errors.New("field of type TaskStatus does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Porep_stage(ctx context.Context, field graphql.CollectedField, obj *model.Porep) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Porep_stage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Porep().Stage(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.PorepStage)
+	fc.Result = res
+	return ec.marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Porep_stage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Porep",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type PorepStage does not have child fields")
 		},
 	}
 	return fc, nil
@@ -23353,6 +23541,58 @@ func (ec *executionContext) fieldContext_Porep_currentTask(_ context.Context, fi
 				return ec.fieldContext_Task_histories(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Task", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Porep_compactStages(ctx context.Context, field graphql.CollectedField, obj *model.Porep) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Porep_compactStages(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Porep().CompactStages(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.TaskCompactStage)
+	fc.Result = res
+	return ec.marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStageᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Porep_compactStages(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Porep",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "name":
+				return ec.fieldContext_TaskCompactStage_name(ctx, field)
+			case "status":
+				return ec.fieldContext_TaskCompactStage_status(ctx, field)
+			case "taskId":
+				return ec.fieldContext_TaskCompactStage_taskId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type TaskCompactStage", field.Name)
 		},
 	}
 	return fc, nil
@@ -26569,10 +26809,18 @@ func (ec *executionContext) fieldContext_Query_poreps(_ context.Context, field g
 				return ec.fieldContext_Porep_afterSynth(ctx, field)
 			case "userSectorDurationEpochs":
 				return ec.fieldContext_Porep_userSectorDurationEpochs(ctx, field)
+			case "precommitReadyAt":
+				return ec.fieldContext_Porep_precommitReadyAt(ctx, field)
+			case "commitReadyAt":
+				return ec.fieldContext_Porep_commitReadyAt(ctx, field)
 			case "status":
 				return ec.fieldContext_Porep_status(ctx, field)
+			case "stage":
+				return ec.fieldContext_Porep_stage(ctx, field)
 			case "currentTask":
 				return ec.fieldContext_Porep_currentTask(ctx, field)
+			case "compactStages":
+				return ec.fieldContext_Porep_compactStages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Porep", field.Name)
 		},
@@ -26702,10 +26950,18 @@ func (ec *executionContext) fieldContext_Query_porep(ctx context.Context, field 
 				return ec.fieldContext_Porep_afterSynth(ctx, field)
 			case "userSectorDurationEpochs":
 				return ec.fieldContext_Porep_userSectorDurationEpochs(ctx, field)
+			case "precommitReadyAt":
+				return ec.fieldContext_Porep_precommitReadyAt(ctx, field)
+			case "commitReadyAt":
+				return ec.fieldContext_Porep_commitReadyAt(ctx, field)
 			case "status":
 				return ec.fieldContext_Porep_status(ctx, field)
+			case "stage":
+				return ec.fieldContext_Porep_stage(ctx, field)
 			case "currentTask":
 				return ec.fieldContext_Porep_currentTask(ctx, field)
+			case "compactStages":
+				return ec.fieldContext_Porep_compactStages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Porep", field.Name)
 		},
@@ -28453,9 +28709,9 @@ func (ec *executionContext) _Sector_status(ctx context.Context, field graphql.Co
 		}
 		return graphql.Null
 	}
-	res := resTmp.(model.PorepStatus)
+	res := resTmp.(model.TaskStatus)
 	fc.Result = res
-	return ec.marshalNPorepStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStatus(ctx, field.Selections, res)
+	return ec.marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28465,7 +28721,7 @@ func (ec *executionContext) fieldContext_Sector_status(_ context.Context, field 
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type PorepStatus does not have child fields")
+			return nil, errors.New("field of type TaskStatus does not have child fields")
 		},
 	}
 	return fc, nil
@@ -28670,10 +28926,18 @@ func (ec *executionContext) fieldContext_Sector_porep(_ context.Context, field g
 				return ec.fieldContext_Porep_afterSynth(ctx, field)
 			case "userSectorDurationEpochs":
 				return ec.fieldContext_Porep_userSectorDurationEpochs(ctx, field)
+			case "precommitReadyAt":
+				return ec.fieldContext_Porep_precommitReadyAt(ctx, field)
+			case "commitReadyAt":
+				return ec.fieldContext_Porep_commitReadyAt(ctx, field)
 			case "status":
 				return ec.fieldContext_Porep_status(ctx, field)
+			case "stage":
+				return ec.fieldContext_Porep_stage(ctx, field)
 			case "currentTask":
 				return ec.fieldContext_Porep_currentTask(ctx, field)
+			case "compactStages":
+				return ec.fieldContext_Porep_compactStages(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Porep", field.Name)
 		},
@@ -33690,6 +33954,135 @@ func (ec *executionContext) _TaskAggregate_failure(ctx context.Context, field gr
 func (ec *executionContext) fieldContext_TaskAggregate_failure(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "TaskAggregate",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskCompactStage_name(ctx context.Context, field graphql.CollectedField, obj *model.TaskCompactStage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskCompactStage_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskCompactStage_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskCompactStage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskCompactStage_status(ctx context.Context, field graphql.CollectedField, obj *model.TaskCompactStage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskCompactStage_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.TaskStatus)
+	fc.Result = res
+	return ec.marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskCompactStage_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskCompactStage",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type TaskStatus does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _TaskCompactStage_taskId(ctx context.Context, field graphql.CollectedField, obj *model.TaskCompactStage) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_TaskCompactStage_taskId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_TaskCompactStage_taskId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "TaskCompactStage",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -41720,6 +42113,10 @@ func (ec *executionContext) _Porep(ctx context.Context, sel ast.SelectionSet, ob
 			}
 		case "userSectorDurationEpochs":
 			out.Values[i] = ec._Porep_userSectorDurationEpochs(ctx, field, obj)
+		case "precommitReadyAt":
+			out.Values[i] = ec._Porep_precommitReadyAt(ctx, field, obj)
+		case "commitReadyAt":
+			out.Values[i] = ec._Porep_commitReadyAt(ctx, field, obj)
 		case "status":
 			field := field
 
@@ -41756,6 +42153,42 @@ func (ec *executionContext) _Porep(ctx context.Context, sel ast.SelectionSet, ob
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "stage":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Porep_stage(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "currentTask":
 			field := field
 
@@ -41766,6 +42199,42 @@ func (ec *executionContext) _Porep(ctx context.Context, sel ast.SelectionSet, ob
 					}
 				}()
 				res = ec._Porep_currentTask(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "compactStages":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Porep_compactStages(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -45025,6 +45494,52 @@ func (ec *executionContext) _TaskAggregate(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var taskCompactStageImplementors = []string{"TaskCompactStage"}
+
+func (ec *executionContext) _TaskCompactStage(ctx context.Context, sel ast.SelectionSet, obj *model.TaskCompactStage) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, taskCompactStageImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("TaskCompactStage")
+		case "name":
+			out.Values[i] = ec._TaskCompactStage_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "status":
+			out.Values[i] = ec._TaskCompactStage_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "taskId":
+			out.Values[i] = ec._TaskCompactStage_taskId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var taskDurationStatsImplementors = []string{"TaskDurationStats"}
 
 func (ec *executionContext) _TaskDurationStats(ctx context.Context, sel ast.SelectionSet, obj *model.TaskDurationStats) graphql.Marshaler {
@@ -46437,15 +46952,54 @@ func (ec *executionContext) marshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return v
 }
 
-func (ec *executionContext) unmarshalNPorepStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStatus(ctx context.Context, v any) (model.PorepStatus, error) {
-	var res model.PorepStatus
-	err := res.UnmarshalGQL(v)
+func (ec *executionContext) unmarshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx context.Context, v any) (model.PorepStage, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := unmarshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage[tmp]
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPorepStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStatus(ctx context.Context, sel ast.SelectionSet, v model.PorepStatus) graphql.Marshaler {
-	return v
+func (ec *executionContext) marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx context.Context, sel ast.SelectionSet, v model.PorepStage) graphql.Marshaler {
+	res := graphql.MarshalString(marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage[v])
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
+
+var (
+	unmarshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage = map[string]model.PorepStage{
+		"SDR":              model.PorepStageSDR,
+		"TreeD":            model.PorepStageTreeD,
+		"TreeC":            model.PorepStageTreeC,
+		"TreeR":            model.PorepStageTreeR,
+		"Synthetic":        model.PorepStageSynthetic,
+		"PrecommitMsg":     model.PorepStagePrecommitMsg,
+		"PrecommitMsgWait": model.PorepStagePrecommitMsgWait,
+		"WaitSeed":         model.PorepStageWaitSeed,
+		"Porep":            model.PorepStagePorep,
+		"CommitMsg":        model.PorepStageCommitMsg,
+		"CommitMsgWait":    model.PorepStageCommitMsgWait,
+		"Finalize":         model.PorepStageFinalize,
+		"MoveStorage":      model.PorepStageMoveStorage,
+	}
+	marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage = map[model.PorepStage]string{
+		model.PorepStageSDR:              "SDR",
+		model.PorepStageTreeD:            "TreeD",
+		model.PorepStageTreeC:            "TreeC",
+		model.PorepStageTreeR:            "TreeR",
+		model.PorepStageSynthetic:        "Synthetic",
+		model.PorepStagePrecommitMsg:     "PrecommitMsg",
+		model.PorepStagePrecommitMsgWait: "PrecommitMsgWait",
+		model.PorepStageWaitSeed:         "WaitSeed",
+		model.PorepStagePorep:            "Porep",
+		model.PorepStageCommitMsg:        "CommitMsg",
+		model.PorepStageCommitMsgWait:    "CommitMsgWait",
+		model.PorepStageFinalize:         "Finalize",
+		model.PorepStageMoveStorage:      "MoveStorage",
+	}
+)
 
 func (ec *executionContext) marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx context.Context, sel ast.SelectionSet, v *model.PowerClaim) graphql.Marshaler {
 	if v == nil {
@@ -46655,6 +47209,60 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdash
 	return ec._Task(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskCompactStage) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNTaskCompactStage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStage(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNTaskCompactStage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStage(ctx context.Context, sel ast.SelectionSet, v *model.TaskCompactStage) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._TaskCompactStage(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskDurationStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -46769,6 +47377,16 @@ func (ec *executionContext) marshalNTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurio
 		return graphql.Null
 	}
 	return ec._TaskHistory(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx context.Context, v any) (model.TaskStatus, error) {
+	var res model.TaskStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx context.Context, sel ast.SelectionSet, v model.TaskStatus) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v any) (time.Time, error) {

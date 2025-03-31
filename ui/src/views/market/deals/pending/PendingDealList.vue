@@ -178,13 +178,16 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
         </template>
         <template #item.dataDeleteOnFinalize="{ value }">
           <v-checkbox-btn
+            color="primary"
             :model-value="value"
             class="d-inline-flex"
+
             readonly
           />
         </template>
         <template #item.isSnap="{ value }">
           <v-checkbox-btn
+            color="primary"
             :model-value="value"
             class="d-inline-flex"
             readonly

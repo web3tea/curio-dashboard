@@ -43,10 +43,20 @@ export const porepAllFragment = gql`
     failedReason
     failedReasonMsg
     status
+    stage
+    compactStages {
+      name
+      status
+      taskId
+    }
     currentTask {
       id
       name
       postedTime
+      owner {
+        id
+        hostAndPort
+      }
     }
   }
 `

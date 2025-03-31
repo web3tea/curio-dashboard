@@ -69,11 +69,11 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconBox,
       children: [
         {
-          title: t('nav.Sectors Overview'),
+          title: t('nav.Overview'),
           to: { name: "Sectors" },
         },
         {
-          title: t('nav.SDR Pipeline'),
+          title: t('nav.PoRep Pipeline'),
           to: { name: "PoRep" },
         },
         {
@@ -87,7 +87,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
           disabled: true // todo: add Unsealing page
         },
         {
-          title: t('nav.Sectors Events'),
+          title: t('nav.Events'),
           to: 'Sectors Events',
           disabled: true // todo: add Sectors Events page
         }

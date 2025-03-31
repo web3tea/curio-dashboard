@@ -5,7 +5,7 @@ import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetSectorMeta } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
-import { PorepStatus, SectorMeta } from '@/typed-graph'
+import { TaskStatus, SectorMeta } from '@/typed-graph'
 import { IconBox, IconBrandRedux, IconReload, IconTrash, IconUser } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import SectorRestart from '@/views/sectors/SectorRestart.vue'
@@ -33,7 +33,7 @@ const { result, loading, refetch } = useQuery(GetSectorMeta, {
 }))
 
 const meta: ComputedRef<SectorMeta> = computed(() => result.value?.sector.meta || {})
-const status: ComputedRef<PorepStatus> = computed(() => result.value?.sector.status)
+const status: ComputedRef<TaskStatus> = computed(() => result.value?.sector.status)
 </script>
 
 <template>

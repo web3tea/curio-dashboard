@@ -2,7 +2,7 @@ type Sector {
     id: ID!
     spID: Address!
     sectorNum: Int!
-    status: PorepStatus!
+    status: TaskStatus!
     meta: SectorMeta
     porep: Porep
     locations: [SectorLocation]!

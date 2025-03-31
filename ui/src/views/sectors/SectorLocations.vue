@@ -58,6 +58,7 @@ const headers = [
     >
       <template #item.isPrimary="{ value }">
         <v-checkbox-btn
+          color="primary"
           :model-value="value"
           class="d-inline-flex"
           readonly

@@ -10,6 +10,35 @@ type PipelineSummary {
     failed: Int!
 }
 
+enum TaskStatus {
+    Pending
+    Running
+    Completed
+    Failed
+}
+
+enum PorepStage @goModel(model: "model.PorepStage") {
+  SDR @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageSDR")
+  TreeD @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageTreeD")
+  TreeC @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageTreeC")
+  TreeR @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageTreeR")
+  Synthetic @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageSynthetic")
+  PrecommitMsg @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStagePrecommitMsg")
+  PrecommitMsgWait @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStagePrecommitMsgWait")
+  WaitSeed @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageWaitSeed")
+  Porep @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStagePorep")
+  CommitMsg @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageCommitMsg")
+  CommitMsgWait @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageCommitMsgWait")
+  Finalize @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageFinalize")
+  MoveStorage @goEnum(value: "github.com/strahe/curio-dashboard/graph/model.PorepStageMoveStorage")
+}
+
+type TaskCompactStage {
+    name: String!
+    status: TaskStatus!
+    taskId: Int
+}
+
 type Porep {
     id: ID!
     spId: Address!
@@ -54,29 +83,13 @@ type Porep {
     taskIdSynth: Int
     afterSynth: Boolean!
     userSectorDurationEpochs: Int
+    precommitReadyAt: Time
+    commitReadyAt: Time
 
-    status: PorepStatus!
+    status: TaskStatus!
+    stage: PorepStage!
     currentTask: Task
-}
-
-enum PorepStatus {
-    SDR
-    TreeD
-    TreeRC
-    Synthetic
-    PreCommitMsg
-    PreCommitMsgWait
-    WaitSeed
-    PoRep
-    ClearCache
-    MoveStorage
-    CommitMsg
-    CommitMsgWait
-    Failed
-    Success
-    OnChain
-    Active
-    Unknown
+    compactStages: [TaskCompactStage!]!
 }
 
 extend type Query {

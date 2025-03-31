@@ -90,7 +90,7 @@ func (r *sectorResolver) ID(ctx context.Context, obj *model.Sector) (string, err
 }
 
 // Status is the resolver for the status field.
-func (r *sectorResolver) Status(ctx context.Context, obj *model.Sector) (model.PorepStatus, error) {
+func (r *sectorResolver) Status(ctx context.Context, obj *model.Sector) (model.TaskStatus, error) {
 	porep, err := r.loader.Porep(ctx, obj.SpID, obj.SectorNum)
 	if err == nil {
 		r := &porepResolver{r.Resolver}
@@ -98,9 +98,9 @@ func (r *sectorResolver) Status(ctx context.Context, obj *model.Sector) (model.P
 	}
 	_, err = r.loader.SectorMeta(ctx, obj.SpID, obj.SectorNum)
 	if err == nil {
-		return model.PorepStatusActive, nil
+		return model.TaskStatusCompleted, nil
 	}
-	return model.PorepStatusUnknown, nil
+	return model.TaskStatusFailed, nil
 }
 
 // Meta is the resolver for the meta field.

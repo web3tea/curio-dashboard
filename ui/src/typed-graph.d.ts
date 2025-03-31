@@ -602,6 +602,8 @@ export type Porep = {
   afterTreeR: Scalars['Boolean']['output'];
   commitMsgCid?: Maybe<Scalars['String']['output']>;
   commitMsgTsk?: Maybe<Scalars['Bytes']['output']>;
+  commitReadyAt?: Maybe<Scalars['Time']['output']>;
+  compactStages: Array<TaskCompactStage>;
   createTime: Scalars['Time']['output'];
   currentTask?: Maybe<Task>;
   failed: Scalars['Boolean']['output'];
@@ -612,12 +614,14 @@ export type Porep = {
   porepProof?: Maybe<Scalars['Bytes']['output']>;
   precommitMsgCid?: Maybe<Scalars['String']['output']>;
   precommitMsgTsk?: Maybe<Scalars['Bytes']['output']>;
+  precommitReadyAt?: Maybe<Scalars['Time']['output']>;
   regSealProof: Scalars['Int']['output'];
   sectorNumber: Scalars['Int']['output'];
   seedEpoch?: Maybe<Scalars['Int']['output']>;
   seedValue?: Maybe<Scalars['Bytes']['output']>;
   spId: Scalars['Address']['output'];
-  status: PorepStatus;
+  stage: PorepStage;
+  status: TaskStatus;
   taskIdCommitMsg?: Maybe<Scalars['Int']['output']>;
   taskIdFinalize?: Maybe<Scalars['Int']['output']>;
   taskIdMoveStorage?: Maybe<Scalars['Int']['output']>;
@@ -635,23 +639,19 @@ export type Porep = {
   userSectorDurationEpochs?: Maybe<Scalars['Int']['output']>;
 };
 
-export type PorepStatus =
-  | 'Active'
-  | 'ClearCache'
+export type PorepStage =
   | 'CommitMsg'
   | 'CommitMsgWait'
-  | 'Failed'
+  | 'Finalize'
   | 'MoveStorage'
-  | 'OnChain'
-  | 'PoRep'
-  | 'PreCommitMsg'
-  | 'PreCommitMsgWait'
+  | 'Porep'
+  | 'PrecommitMsg'
+  | 'PrecommitMsgWait'
   | 'SDR'
-  | 'Success'
   | 'Synthetic'
+  | 'TreeC'
   | 'TreeD'
-  | 'TreeRC'
-  | 'Unknown'
+  | 'TreeR'
   | 'WaitSeed';
 
 export type PowerClaim = {
@@ -1018,7 +1018,7 @@ export type Sector = {
   porep?: Maybe<Porep>;
   sectorNum: Scalars['Int']['output'];
   spID: Scalars['Address']['output'];
-  status: PorepStatus;
+  status: TaskStatus;
   tasks: Array<Maybe<Task>>;
 };
 
@@ -1196,6 +1196,13 @@ export type TaskAggregate = {
   total: Scalars['Int']['output'];
 };
 
+export type TaskCompactStage = {
+  __typename?: 'TaskCompactStage';
+  name: Scalars['String']['output'];
+  status: TaskStatus;
+  taskId?: Maybe<Scalars['Int']['output']>;
+};
+
 export type TaskDurationStats = {
   __typename?: 'TaskDurationStats';
   avgDurationSeconds: Scalars['Float']['output'];
@@ -1242,6 +1249,12 @@ export type TaskStats = {
   success: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
 };
+
+export type TaskStatus =
+  | 'Completed'
+  | 'Failed'
+  | 'Pending'
+  | 'Running';
 
 export type TaskSuccessRate = {
   __typename?: 'TaskSuccessRate';

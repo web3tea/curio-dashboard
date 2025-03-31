@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
@@ -81,34 +82,55 @@ func (r *porepResolver) ID(ctx context.Context, obj *model.Porep) (string, error
 }
 
 // Status is the resolver for the status field.
-func (r *porepResolver) Status(ctx context.Context, obj *model.Porep) (model.PorepStatus, error) {
+func (r *porepResolver) Status(ctx context.Context, obj *model.Porep) (model.TaskStatus, error) {
 	if obj.Failed {
-		return model.PorepStatusFailed, nil
-	} else if obj.AfterCommitMsgSuccess {
-		return model.PorepStatusSuccess, nil
-	} else if obj.AfterCommitMsg {
-		return model.PorepStatusCommitMsgWait, nil
-	} else if !obj.AfterFinalize && obj.TaskIDFinalize != nil {
-		return model.PorepStatusClearCache, nil
-	} else if !obj.AfterMoveStorage && obj.TaskIDMoveStorage != nil {
-		return model.PorepStatusMoveStorage, nil
-	} else if !obj.AfterPorep && obj.AfterPrecommitMsgSuccess {
-		return model.PorepStatusPoRep, nil
-	} else if !obj.AfterPrecommitMsgSuccess && obj.AfterPrecommitMsg {
-		return model.PorepStatusPreCommitMsgWait, nil
-	} else if !obj.AfterPrecommitMsg && obj.AfterSynth {
-		return model.PorepStatusPreCommitMsg, nil
-	} else if !obj.AfterSynth && obj.AfterTreeR {
-		return model.PorepStatusSynthetic, nil
-	} else if !obj.AfterTreeR && obj.AfterTreeD {
-		return model.PorepStatusTreeRc, nil
-	} else if !obj.AfterTreeD && obj.AfterTreeR {
-		return model.PorepStatusTreeD, nil
-	} else if !obj.AfterSdr {
-		return model.PorepStatusSdr, nil
-	} else {
-		return model.PorepStatusUnknown, nil
+		return model.TaskStatusFailed, nil
 	}
+	if obj.AfterMoveStorage {
+		return model.TaskStatusCompleted, nil
+	}
+	return model.TaskStatusRunning, nil
+}
+
+// Stage is the resolver for the stage field.
+func (r *porepResolver) Stage(ctx context.Context, obj *model.Porep) (model.PorepStage, error) {
+	if obj.AfterMoveStorage {
+		return model.PorepStageMoveStorage, nil
+	}
+	if obj.AfterFinalize && !obj.AfterMoveStorage {
+		return model.PorepStageFinalize, nil
+	}
+	if obj.AfterCommitMsgSuccess && !obj.AfterFinalize {
+		return model.PorepStageCommitMsgWait, nil
+	}
+	if obj.AfterCommitMsg && !obj.AfterCommitMsgSuccess {
+		return model.PorepStageCommitMsg, nil
+	}
+	if obj.AfterPorep && !obj.AfterCommitMsg {
+		return model.PorepStagePorep, nil
+	}
+	if obj.AfterPrecommitMsgSuccess && !obj.AfterPorep {
+		return model.PorepStageWaitSeed, nil
+	}
+	if obj.AfterPrecommitMsg && !obj.AfterPrecommitMsgSuccess {
+		return model.PorepStagePrecommitMsgWait, nil
+	}
+	if obj.AfterSynth && !obj.AfterPrecommitMsg {
+		return model.PorepStagePrecommitMsg, nil
+	}
+	if obj.AfterTreeR && !obj.AfterSynth {
+		return model.PorepStageSynthetic, nil
+	}
+	if obj.AfterTreeC && !obj.AfterTreeR {
+		return model.PorepStageTreeR, nil
+	}
+	if obj.AfterTreeD && !obj.AfterTreeC {
+		return model.PorepStageTreeC, nil
+	}
+	if obj.AfterSdr && !obj.AfterTreeD {
+		return model.PorepStageTreeD, nil
+	}
+	return model.PorepStageSDR, nil
 }
 
 // CurrentTask is the resolver for the currentTask field.
@@ -117,27 +139,45 @@ func (r *porepResolver) CurrentTask(ctx context.Context, obj *model.Porep) (*mod
 	if err != nil {
 		return nil, err
 	}
-	var taskID *int
-	switch status {
-	case model.PorepStatusSdr:
-		taskID = obj.TaskIDSdr
-	case model.PorepStatusTreeD:
-		taskID = obj.TaskIDTreeD
-	case model.PorepStatusTreeRc:
-		taskID = obj.TaskIDTreeC
-	case model.PorepStatusSynthetic:
-		taskID = obj.TaskIDSynth
-	case model.PorepStatusPreCommitMsg:
-		taskID = obj.TaskIDPrecommitMsg
-	case model.PorepStatusPoRep:
-		taskID = obj.TaskIDPorep
-	case model.PorepStatusMoveStorage:
-		taskID = obj.TaskIDMoveStorage
-	case model.PorepStatusClearCache:
-		taskID = obj.TaskIDFinalize
-	case model.PorepStatusCommitMsgWait:
-		taskID = obj.TaskIDCommitMsg
+	if status == model.TaskStatusFailed || status == model.TaskStatusCompleted {
+		return nil, nil
 	}
+
+	stage, err := r.Stage(ctx, obj)
+	if err != nil {
+		return nil, err
+	}
+
+	var taskID *int
+	switch stage {
+	case model.PorepStageSDR:
+		taskID = obj.TaskIDSdr
+	case model.PorepStageTreeD:
+		taskID = obj.TaskIDTreeD
+	case model.PorepStageTreeC:
+		taskID = obj.TaskIDTreeC
+	case model.PorepStageTreeR:
+		taskID = obj.TaskIDTreeR
+	case model.PorepStageSynthetic:
+		taskID = obj.TaskIDSynth
+	case model.PorepStagePrecommitMsg:
+		taskID = obj.TaskIDPrecommitMsg
+	case model.PorepStagePrecommitMsgWait:
+		return nil, nil // No task for waiting stages
+	case model.PorepStageWaitSeed:
+		return nil, nil // No task for waiting stages
+	case model.PorepStagePorep:
+		taskID = obj.TaskIDPorep
+	case model.PorepStageCommitMsg:
+		taskID = obj.TaskIDCommitMsg
+	case model.PorepStageCommitMsgWait:
+		return nil, nil // No task for waiting stages
+	case model.PorepStageFinalize:
+		taskID = obj.TaskIDFinalize
+	case model.PorepStageMoveStorage:
+		taskID = obj.TaskIDMoveStorage
+	}
+
 	if taskID != nil {
 		task, err := r.loader.Task(ctx, *taskID)
 		if err != nil {
@@ -147,6 +187,54 @@ func (r *porepResolver) CurrentTask(ctx context.Context, obj *model.Porep) (*mod
 		return task, nil
 	}
 	return nil, nil
+}
+
+// CompactStages is the resolver for the compactStages field.
+func (r *porepResolver) CompactStages(ctx context.Context, obj *model.Porep) ([]*model.TaskCompactStage, error) {
+	current, err := r.Stage(ctx, obj)
+	if err != nil {
+		return nil, err
+	}
+
+	stages := []*model.TaskCompactStage{}
+
+	for _, stage := range model.AllPorepStages {
+		ss := &model.TaskCompactStage{
+			Name:   stage.String(),
+			Status: lo.If(current > stage, model.TaskStatusCompleted).ElseIf(current == stage, model.TaskStatusRunning).Else(model.TaskStatusPending),
+		}
+		switch stage {
+		case model.PorepStageSDR:
+			ss.TaskID = obj.TaskIDSdr
+		case model.PorepStageTreeD:
+			ss.TaskID = obj.TaskIDTreeD
+		case model.PorepStageTreeC:
+			ss.TaskID = obj.TaskIDTreeC
+		case model.PorepStageTreeR:
+			ss.TaskID = obj.TaskIDTreeR
+		case model.PorepStageSynthetic:
+			ss.TaskID = obj.TaskIDSynth
+		case model.PorepStagePrecommitMsg:
+			ss.TaskID = obj.TaskIDPrecommitMsg
+			ss.Name = "Precommit"
+		case model.PorepStagePrecommitMsgWait:
+			continue
+		case model.PorepStageWaitSeed:
+		case model.PorepStagePorep:
+			ss.TaskID = obj.TaskIDPorep
+		case model.PorepStageCommitMsg:
+			ss.TaskID = obj.TaskIDCommitMsg
+			ss.Name = "Commit"
+		case model.PorepStageCommitMsgWait:
+			continue
+		case model.PorepStageFinalize:
+			ss.TaskID = obj.TaskIDFinalize
+		case model.PorepStageMoveStorage:
+			ss.TaskID = obj.TaskIDMoveStorage
+		}
+		stages = append(stages, ss)
+	}
+	return stages, nil
 }
 
 // Poreps is the resolver for the poreps field.

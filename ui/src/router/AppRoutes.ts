@@ -56,7 +56,7 @@ const AppRoutes = {
     },
     {
       name: 'PoRep',
-      path: '/porep',
+      path: '/pipeline/porep',
       component: () => import('@/views/porep/PorepIndex.vue'),
       meta: {
         title: 'PoRep Pipeline',

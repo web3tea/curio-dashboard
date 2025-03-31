@@ -153,6 +153,7 @@ function hasSealed (item: Sector): boolean {
         </template>
         <template #item.meta.isCC="{ value }">
           <v-checkbox-btn
+            color="primary"
             readonly
             :v-model="value"
             class="d-inline-flex"
