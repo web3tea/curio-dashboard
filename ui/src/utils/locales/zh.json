@@ -211,5 +211,8 @@
     "tooltip": "当前正在运行的任务",
     "queued": "队列的任务",
     "averageWaitTime": "任务平均等待时间"
+  },
+  "activeTask": {
+    "showBackgroundTasks": "显示后台任务"
   }
 }

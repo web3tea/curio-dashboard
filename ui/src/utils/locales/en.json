@@ -211,5 +211,8 @@
     "tooltip": "Current running tasks",
     "queued": "Queued Tasks",
     "averageWaitTime": "Average Wait Time"
+  },
+  "activeTask": {
+    "showBackgroundTasks": "Show Background Tasks"
   }
 }

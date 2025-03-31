@@ -6,8 +6,9 @@ import { Task } from '@/typed-graph'
 import { GetMachineTasks } from '@/gql/task'
 import { IconReload } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
-const { t, d } = useI18n()
+const { t } = useI18n()
 
 const props = defineProps({
   id: {
@@ -52,10 +53,16 @@ const headers = [
       :loading="loading"
     >
       <template #item.owner="{ value }">
-        <!--        todo: add router link to worker details-->
-        <p class="text-high-emphasis">
-          {{ value ? value.hostAndPort : '' }}
-        </p>
+        <template v-if="value">
+          <RouterLink
+            :to="{ name: 'MachineInfo', params: { id: Number(value.id) } }"
+          >
+            {{ value.hostAndPort }}
+          </RouterLink>
+        </template>
+        <template v-else>
+          -
+        </template>
       </template>
       <template #item.name="{ value }">
         <v-chip
@@ -66,10 +73,10 @@ const headers = [
         </v-chip>
       </template>
       <template #item.updateTime="{ value }">
-        {{ d(value, 'short') }}
+        {{ getRelativeTime(value, 'short') }}
       </template>
       <template #item.postedTime="{ value }">
-        {{ d(value, 'short') }}
+        {{ getRelativeTime(value, 'short') }}
       </template>
       <template #item.previousTask="{ value }">
         <!--        todo: add router link to previous task details-->

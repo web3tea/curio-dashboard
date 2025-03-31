@@ -168,7 +168,10 @@ func (r *taskResolver) AddedBy(ctx context.Context, obj *model.Task) (*model.Mac
 FROM harmony_machines
 WHERE id = $1`, obj.AddedByID).
 		Scan(&out.ID, &out.LastContact, &out.HostAndPort, &out.CPU, &out.Gpu, &out.RAM); err != nil {
-		return nil, err
+		log.Errorf("failed to fetch machine %d: %s", obj.AddedByID, err) // This should never happen, unless there's a problem somewhere
+		return &model.Machine{
+			ID: obj.AddedByID,
+		}, nil
 	}
 	return &out, nil
 }
