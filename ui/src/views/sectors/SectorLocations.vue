@@ -34,9 +34,9 @@ const locations: ComputedRef<[SectorLocation]> = computed(() => result.value?.se
 const headers = [
   { title: 'File type', key: 'sectorFiletype' },
   { title: 'Storage Id', key: 'storageId' },
-  { title: 'Is Primary', key: 'isPrimary' },
+  { title: 'Is Primary', key: 'isPrimary', align: 'center' },
   { title: 'URL', key: 'storage.path.urls' },
-]
+] as const
 </script>
 
 <template>
@@ -57,11 +57,9 @@ const headers = [
       :loading="loading"
     >
       <template #item.isPrimary="{ value }">
-        <v-checkbox-btn
-          color="primary"
-          :model-value="value"
-          class="d-inline-flex"
-          readonly
+        <StatusIcon
+          :status="value ? 'yes': 'no'"
+          :tooltip="value ? 'Yes': 'No'"
         />
       </template>
       <template #item.sectorFiletype="{ item }">

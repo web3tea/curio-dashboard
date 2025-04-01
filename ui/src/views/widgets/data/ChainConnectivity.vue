@@ -46,11 +46,15 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
       :loading="loading"
     >
       <template #item.reachable="{ value }">
-        <v-checkbox-btn
-          :model-value="value"
-          class="d-inline-flex"
-          color="success"
-          readonly
+        <StatusIcon
+          :status="value ? 'success': 'failure'"
+          :tooltip="value ? 'Yes': 'No'"
+        />
+      </template>
+      <template #item.syncState="{ value }">
+        <StatusIcon
+          :status="value === 'ok' ? 'success': 'failure'"
+          :tooltip="value === 'ok' ? 'Ok': value"
         />
       </template>
     </v-data-table-virtual>

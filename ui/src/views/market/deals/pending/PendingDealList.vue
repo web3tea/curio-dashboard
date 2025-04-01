@@ -177,20 +177,15 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
           <TruncatedText :text="value" />
         </template>
         <template #item.dataDeleteOnFinalize="{ value }">
-          <v-checkbox-btn
-            color="primary"
-            :model-value="value"
-            class="d-inline-flex"
-
-            readonly
+          <StatusIcon
+            :status="value ? 'yes': 'no'"
+            :tooltip="value ? 'Yes': 'No'"
           />
         </template>
         <template #item.isSnap="{ value }">
-          <v-checkbox-btn
-            color="primary"
-            :model-value="value"
-            class="d-inline-flex"
-            readonly
+          <StatusIcon
+            :status="value ? 'yes': 'no'"
+            :tooltip="value ? 'Yes': 'No'"
           />
         </template>
       </v-data-table-virtual>

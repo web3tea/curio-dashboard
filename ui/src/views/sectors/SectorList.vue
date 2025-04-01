@@ -152,11 +152,9 @@ function hasSealed (item: Sector): boolean {
           <EpochField :epoch="item.meta?.expirationEpoch" />
         </template>
         <template #item.meta.isCC="{ value }">
-          <v-checkbox-btn
-            color="primary"
-            readonly
-            :v-model="value"
-            class="d-inline-flex"
+          <StatusIcon
+            :status="value ? 'yes': 'no'"
+            :tooltip="value ? 'Yes': 'No'"
           />
         </template>
         <template #item.hasUnsealed="{ item }">

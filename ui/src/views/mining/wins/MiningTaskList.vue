@@ -154,11 +154,9 @@ const headers = [
           {{ d(value, 'long') }}
         </template>
         <template #item.included="{value}">
-          <v-checkbox-btn
-            :model-value="value"
-            class="d-inline-flex"
-            color="success"
-            readonly
+          <StatusIcon
+            :status="value ? 'success': 'failure'"
+            :tooltip="value ? 'Yes': 'No'"
           />
         </template>
         <template #item.minedHeader="{value}">

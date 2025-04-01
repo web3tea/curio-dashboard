@@ -24,6 +24,7 @@ declare module 'vue' {
     PriceInput: typeof import('./components/app/PriceInput.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StatusIcon: typeof import('./components/shared/StatusIcon.vue')['default']
     StoragePathTable: typeof import('./components/app/StoragePathTable.vue')['default']
     TaskDetailsDialog: typeof import('./components/app/TaskDetailsDialog.vue')['default']
     TaskNameSelectInput: typeof import('./components/app/TaskNameSelectInput.vue')['default']

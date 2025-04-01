@@ -67,9 +67,9 @@ const headers = [
   { title: 'Posted', key: 'posted' },
   { title: 'Work Start', key: 'workStart' },
   { title: 'Work End', key: 'workEnd' },
-  { title: 'Success', key: 'result' },
+  { title: 'Success', key: 'result', align: 'center' },
   { title: 'Error', key: 'err', maxWidth: '350px' },
-]
+] as const
 
 const selectDateRange = computed({
   get: () => [start.value, end.value].filter(Boolean),
@@ -200,11 +200,9 @@ const selectDateRange = computed({
               {{ getRelativeTime(value, "long") }}
             </template>
             <template #item.result="{ value }">
-              <v-checkbox-btn
-                :model-value="value"
-                class="d-inline-flex"
-                color="success"
-                readonly
+              <StatusIcon
+                :status="value ? 'success': 'failure'"
+                :tooltip="value ? 'Yes': 'No'"
               />
             </template>
           </v-data-table-server>
