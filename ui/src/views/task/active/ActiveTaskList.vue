@@ -10,7 +10,7 @@ import { getRelativeTime } from '@/utils/helpers/time'
 const { t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
-  fetchPolicy: 'network-only',
+  fetchPolicy: 'no-cache',
   pollInterval: 3000,
 }))
 
@@ -25,6 +25,20 @@ const headers = [
   { title: 'Initiated By', key: 'initiatedByID' },
   { title: 'Previous Task', key: 'previousTaskID' },
 ]
+
+const groupBy = [
+  {
+    key: 'name',
+    order: 'asc',
+  }] as const
+
+const sortBy = [
+  {
+    key: 'postedTime',
+    order: 'desc',
+  }
+] as const
+
 const searchValue = ref('')
 const showBackgroundTasks = ref(false)
 
@@ -106,7 +120,12 @@ const filteredItems = computed(() => {
             :items="filteredItems"
             :loading="loading"
             :search="searchValue"
+            :group-by="groupBy"
+            :sort-by="sortBy"
           >
+            <template #item.name="{ value }">
+              <v-chip>{{ value }}</v-chip>
+            </template>
             <template #item.postedTime="{ value }">
               {{ getRelativeTime(value, "short") }}
             </template>
