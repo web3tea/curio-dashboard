@@ -64,7 +64,6 @@
     "Storage Usages": "Storage Usages",
     "Recently Finished Tasks": "Recently Finished Tasks",
     "New Added Tasks": "New Added Tasks",
-    "Active Tasks": "Active Tasks",
     "24H Task Counts": "24H Task Counts",
     "Basic Info": "Basic Info",
     "Week": "Week",
@@ -214,5 +213,14 @@
   },
   "activeTask": {
     "showBackgroundTasks": "Show Background Tasks"
+  },
+  "prometheus": {
+    "last30min": "Last 30 Minutes",
+    "last1hour": "Last 1 Hour",
+    "last6hour": "Last 6 Hours",
+    "last12hour": "Last 12 Hours",
+    "last24hour": "Last 24 Hours",
+    "last7day": "Last 7 Days",
+    "last30day": "Last 30 Days"
   }
 }

@@ -64,7 +64,6 @@
     "Storage Usages": "存储用量",
     "Recently Finished Tasks": "最近完成的任务",
     "New Added Tasks": "新添加任务",
-    "Active Tasks": "运行任务数",
     "24H Task Counts": "24小时任务数",
     "Basic Info": "基本信息",
     "Week": "周",
@@ -214,5 +213,14 @@
   },
   "activeTask": {
     "showBackgroundTasks": "显示后台任务"
+  },
+  "prometheus": {
+    "last30min": "过去30分钟",
+    "last1hour": "过去1小时",
+    "last6hour": "过去6小时",
+    "last12hour": "过去12小时",
+    "last24hour": "过去24小时",
+    "last7day": "过去7天",
+    "last30day": "过去30天"
   }
 }

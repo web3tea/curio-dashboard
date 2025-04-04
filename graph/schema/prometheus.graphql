@@ -1,0 +1,8 @@
+type PrometheusResponse {
+  data: JSON!
+}
+
+extend type Query {
+  prometheusQuery(query: String!, time: Time): PrometheusResponse!
+  prometheusQueryRange(query: String!, start: Time!, end: Time!, step: Int!): PrometheusResponse!
+}

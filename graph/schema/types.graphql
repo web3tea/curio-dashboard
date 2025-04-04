@@ -3,9 +3,8 @@ scalar BigInt
 scalar Time
 scalar Uint64
 scalar Int64
-scalar JSONB
-scalar Bytes
 scalar JSON
+scalar Bytes
 scalar FIL
 scalar PeerID
 scalar ActorID

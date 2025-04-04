@@ -7,7 +7,7 @@ type MessageSend {
     unsignedCid: String!
     nonce: Int
     signedData: Bytes
-    signedJson: JSONB
+    signedJson: JSON
     signedCid: String
     sendTime: Time
     sendSuccess: Boolean

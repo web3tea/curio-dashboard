@@ -11,8 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/prometheus/client_golang/api"
-
+	"github.com/strahe/curio-dashboard/graph/prometheus"
 	"github.com/strahe/curio-dashboard/graph/resolvers"
 
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -86,13 +85,12 @@ var runCmd = &cli.Command{
 
 		e.GET("/playground", playgroundHandler())
 
-		client, err := api.NewClient(api.Config{
-			Address: cfg.Features.Metrics.Prometheus,
-		})
+		pc, err := prometheus.NewClient(cfg.Features.Metrics.Prometheus)
 		if err != nil {
-			return fmt.Errorf("failed to create Prometheus client: %s", err)
+			return fmt.Errorf("failed to create prometheus client: %w", err)
 		}
-		if err := graph.Router(e, cfg, resolvers.NewResolver(cfg, harmonyDB, chainAPI, curioAPI, client)); err != nil {
+
+		if err := graph.Router(e, cfg, resolvers.NewResolver(cfg, harmonyDB, chainAPI, curioAPI, pc)); err != nil {
 			return fmt.Errorf("failed to setup GraphQL routes: %w", err)
 		}
 

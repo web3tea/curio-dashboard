@@ -77,8 +77,8 @@ type SectorMetaPiece {
     startEpoch: Int
     origEndEpoch: Int
     f05DealID: Int
-    ddoPam: JSONB
-    f05DealProposal: JSONB
+    ddoPam: JSON
+    f05DealProposal: JSON
 }
 
 type SectorSummary {

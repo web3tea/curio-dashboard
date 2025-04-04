@@ -25,7 +25,7 @@ type MiningTask {
     baseComputeTime: Time!
     won: Boolean!
     minedCid: String
-    minedHeader: JSONB
+    minedHeader: JSON
     minedAt: Time
     submittedAt: Time
     included: Boolean
@@ -43,7 +43,7 @@ type MiningStatusSummay {
     won: Int!
     included: Int!
     wonChangeRate: Float!
-    lastMinedAt: Int!
+    lastMinedAt: NullInt64!
 }
 
 extend type Query {

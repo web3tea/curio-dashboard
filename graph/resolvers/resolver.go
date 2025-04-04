@@ -9,8 +9,6 @@ import (
 
 	"github.com/filecoin-project/lotus/api/v1api"
 	logging "github.com/ipfs/go-log/v2"
-	"github.com/prometheus/client_golang/api"
-	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
 	"github.com/strahe/curio-dashboard/config"
 	"github.com/strahe/curio-dashboard/db"
 	"github.com/strahe/curio-dashboard/graph/curiorpc"
@@ -30,27 +28,24 @@ const (
 var log = logging.Logger("resolvers")
 
 type Resolver struct {
-	cfg              *config.Config
-	db               *db.HarmonyDB
-	fullNode         v1api.FullNode
-	loader           *loaders.Loader
-	prometheusAPI    v1.API
-	curioAPI         curiorpc.WebRPC
-	prometheusClient *prometheus.Client
-	cache            *expirable.LRU[string, any]
+	cfg           *config.Config
+	db            *db.HarmonyDB
+	fullNode      v1api.FullNode
+	loader        *loaders.Loader
+	prometheusAPI prometheus.API
+	curioAPI      curiorpc.WebRPC
+	cache         *expirable.LRU[string, any]
 }
 
-func NewResolver(cfg *config.Config, db *db.HarmonyDB, fullNode v1api.FullNode, curioAPI curiorpc.WebRPC, client api.Client) *Resolver {
-	papi := v1.NewAPI(client)
+func NewResolver(cfg *config.Config, db *db.HarmonyDB, fullNode v1api.FullNode, curioAPI curiorpc.WebRPC, pc prometheus.Client) *Resolver {
 	return &Resolver{
-		cfg:              cfg,
-		db:               db,
-		fullNode:         fullNode,
-		loader:           loaders.NewLoader(db, 1000),
-		prometheusAPI:    papi,
-		prometheusClient: prometheus.NewClient(papi),
-		curioAPI:         curioAPI,
-		cache:            expirable.NewLRU[string, any](1000, nil, time.Minute),
+		cfg:           cfg,
+		db:            db,
+		fullNode:      fullNode,
+		loader:        loaders.NewLoader(db, 1000),
+		prometheusAPI: prometheus.NewAPI(pc),
+		curioAPI:      curioAPI,
+		cache:         expirable.NewLRU[string, any](1000, nil, time.Minute),
 	}
 }
 

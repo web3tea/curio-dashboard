@@ -101,8 +101,8 @@ models:
     model: "github.com/strahe/curio-dashboard/types.Address"
   BigInt:
     model: "github.com/strahe/curio-dashboard/types.BigInt"
-  JSONB:
-    model: "github.com/strahe/curio-dashboard/types.JSONB"
+  JSON:
+    model: "github.com/strahe/curio-dashboard/types.JSON"
   FIL:
     model: "github.com/strahe/curio-dashboard/types.FIL"
   PeerID:

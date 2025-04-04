@@ -6,47 +6,47 @@ import (
 	"io"
 )
 
-type JSONB struct {
+type JSON struct {
 	json.RawMessage
 }
 
-func MustJSONB(v interface{}) JSONB {
-	j, err := ToJSONB(v)
+func MustJSON(v any) JSON {
+	j, err := ToJSON(v)
 	if err != nil {
-		return JSONB{}
+		return JSON{}
 	}
 	return j
 }
 
-func ToJSONB(v interface{}) (JSONB, error) {
+func ToJSON(v any) (JSON, error) {
 	switch v := v.(type) {
 	case nil:
-		return JSONB{}, nil
-	case JSONB:
+		return JSON{}, nil
+	case JSON:
 		return v, nil
 	case json.RawMessage:
-		return JSONB{RawMessage: v}, nil
+		return JSON{RawMessage: v}, nil
 	case []byte:
 		if !json.Valid(v) {
-			return JSONB{}, fmt.Errorf("invalid JSON bytes")
+			return JSON{}, fmt.Errorf("invalid JSON bytes")
 		}
-		return JSONB{RawMessage: v}, nil
+		return JSON{RawMessage: v}, nil
 	case string:
 		if !json.Valid([]byte(v)) {
-			return JSONB{}, fmt.Errorf("invalid JSON string")
+			return JSON{}, fmt.Errorf("invalid JSON string")
 		}
-		return JSONB{RawMessage: json.RawMessage(v)}, nil
+		return JSON{RawMessage: json.RawMessage(v)}, nil
 	default:
 		bytes, err := json.Marshal(v)
 		if err != nil {
-			return JSONB{}, err
+			return JSON{}, err
 		}
-		return JSONB{RawMessage: bytes}, nil
+		return JSON{RawMessage: bytes}, nil
 	}
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (c *JSONB) UnmarshalGQL(v interface{}) error {
+func (c *JSON) UnmarshalGQL(v any) error {
 	if v == nil {
 		c.RawMessage = nil
 		return nil
@@ -70,7 +70,7 @@ func (c *JSONB) UnmarshalGQL(v interface{}) error {
 	return nil
 }
 
-func (c JSONB) MarshalGQL(w io.Writer) {
+func (c JSON) MarshalGQL(w io.Writer) {
 	if c.RawMessage == nil {
 		w.Write([]byte("null")) // nolint: errcheck
 		return

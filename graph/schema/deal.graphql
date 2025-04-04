@@ -4,7 +4,7 @@ type MarketMk12Deal {
   createdAt: Time!
   signedProposalCid: String!
   proposalSignature: Bytes!
-  proposal: JSONB!
+  proposal: JSON!
   offline: Boolean!
   verified: Boolean!
   startEpoch: Int64!
@@ -17,7 +17,7 @@ type MarketMk12Deal {
   fastRetrieval: Boolean!
   announceToIpni: Boolean!
   url: NullString!
-  urlHeaders: JSONB!
+  urlHeaders: JSON!
   error: NullString!
   label: Bytes
   proposalCid: String!
@@ -42,7 +42,7 @@ type DealInfo {
   announceToIpni: Boolean!
   url: NullString!
   urls: String!
-  urlHeaders: JSONB!
+  urlHeaders: JSON!
   error: String!
   miner: String!
   isLegacy: Boolean!

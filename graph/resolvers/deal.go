@@ -60,7 +60,7 @@ func (r *queryResolver) MarketDealInfo(ctx context.Context, id string) (*model.D
 		FastRetrieval:     deal.FastRetrieval,
 		AnnounceToIpni:    deal.AnnounceToIpni,
 		Urls:              deal.URLS,
-		URLHeaders:        types.MustJSONB(deal.UrlHeaders),
+		URLHeaders:        types.MustJSON(deal.UrlHeaders),
 		Error:             deal.Error,
 		Miner:             deal.Miner,
 		IsLegacy:          deal.IsLegacy,

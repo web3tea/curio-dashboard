@@ -72,7 +72,7 @@ type DealInfo struct {
 	AnnounceToIpni    bool             `json:"announceToIpni"`
 	URL               types.NullString `json:"url"`
 	Urls              string           `json:"urls"`
-	URLHeaders        types.JSONB      `json:"urlHeaders"`
+	URLHeaders        types.JSON       `json:"urlHeaders"`
 	Error             string           `json:"error"`
 	Miner             string           `json:"miner"`
 	IsLegacy          bool             `json:"isLegacy"`
@@ -134,7 +134,7 @@ type MarketMk12Deal struct {
 	CreatedAt         time.Time        `json:"createdAt"`
 	SignedProposalCid string           `json:"signedProposalCid"`
 	ProposalSignature types.Bytes      `json:"proposalSignature"`
-	Proposal          types.JSONB      `json:"proposal"`
+	Proposal          types.JSON       `json:"proposal"`
 	Offline           bool             `json:"offline"`
 	Verified          bool             `json:"verified"`
 	StartEpoch        int64            `json:"startEpoch"`
@@ -147,7 +147,7 @@ type MarketMk12Deal struct {
 	FastRetrieval     bool             `json:"fastRetrieval"`
 	AnnounceToIpni    bool             `json:"announceToIpni"`
 	URL               types.NullString `json:"url"`
-	URLHeaders        types.JSONB      `json:"urlHeaders"`
+	URLHeaders        types.JSON       `json:"urlHeaders"`
 	Error             types.NullString `json:"error"`
 	Label             types.Bytes      `json:"label"`
 	ProposalCid       string           `json:"proposalCid"`
@@ -182,24 +182,19 @@ type MarketMk12StorageAskInput struct {
 }
 
 type MessageSend struct {
-	FromKey      string       `json:"fromKey"`
-	ToAddr       string       `json:"toAddr"`
-	SendReason   string       `json:"sendReason"`
-	SendTaskID   int          `json:"sendTaskId"`
-	UnsignedData types.Bytes  `json:"unsignedData"`
-	UnsignedCid  string       `json:"unsignedCid"`
-	Nonce        *int         `json:"nonce"`
-	SignedData   types.Bytes  `json:"signedData"`
-	SignedJSON   *types.JSONB `json:"signedJson"`
-	SignedCid    *string      `json:"signedCid"`
-	SendTime     *time.Time   `json:"sendTime"`
-	SendSuccess  *bool        `json:"sendSuccess"`
-	SendError    *string      `json:"sendError"`
-}
-
-type MetricsActiveTask struct {
-	Name   string      `json:"name"`
-	Series [][]float64 `json:"series"`
+	FromKey      string      `json:"fromKey"`
+	ToAddr       string      `json:"toAddr"`
+	SendReason   string      `json:"sendReason"`
+	SendTaskID   int         `json:"sendTaskId"`
+	UnsignedData types.Bytes `json:"unsignedData"`
+	UnsignedCid  string      `json:"unsignedCid"`
+	Nonce        *int        `json:"nonce"`
+	SignedData   types.Bytes `json:"signedData"`
+	SignedJSON   *types.JSON `json:"signedJson"`
+	SignedCid    *string     `json:"signedCid"`
+	SendTime     *time.Time  `json:"sendTime"`
+	SendSuccess  *bool       `json:"sendSuccess"`
+	SendError    *string     `json:"sendError"`
 }
 
 type MinerBeneficiaryTerm struct {
@@ -254,11 +249,11 @@ type MiningCountAggregated struct {
 }
 
 type MiningStatusSummay struct {
-	Total         int     `json:"total"`
-	Won           int     `json:"won"`
-	Included      int     `json:"included"`
-	WonChangeRate float64 `json:"wonChangeRate"`
-	LastMinedAt   int     `json:"lastMinedAt"`
+	Total         int             `json:"total"`
+	Won           int             `json:"won"`
+	Included      int             `json:"included"`
+	WonChangeRate float64         `json:"wonChangeRate"`
+	LastMinedAt   types.NullInt64 `json:"lastMinedAt"`
 }
 
 type MiningSummaryDay struct {
@@ -274,7 +269,7 @@ type MiningTask struct {
 	BaseComputeTime time.Time     `json:"baseComputeTime"`
 	Won             bool          `json:"won"`
 	MinedCid        *string       `json:"minedCid"`
-	MinedHeader     *types.JSONB  `json:"minedHeader"`
+	MinedHeader     *types.JSON   `json:"minedHeader"`
 	MinedAt         *time.Time    `json:"minedAt"`
 	SubmittedAt     *time.Time    `json:"submittedAt"`
 	Included        *bool         `json:"included"`
@@ -305,17 +300,17 @@ type OpenSectorPiece struct {
 	PieceCid                      string        `json:"pieceCID"`
 	PieceSize                     int           `json:"pieceSize"`
 	DataURL                       string        `json:"dataURL"`
-	DataHeaders                   string        `json:"dataHeaders"`
+	DataHeaders                   types.JSON    `json:"dataHeaders"`
 	DataRawSize                   int           `json:"dataRawSize"`
 	DataDeleteOnFinalize          bool          `json:"dataDeleteOnFinalize"`
 	F05PublishCid                 *string       `json:"f05PublishCID"`
 	F05DealID                     *int          `json:"f05DealID"`
-	F05DealProposal               *string       `json:"f05DealProposal"`
+	F05DealProposal               *types.JSON   `json:"f05DealProposal"`
 	F05DealStartEpoch             *int          `json:"f05DealStartEpoch"`
 	F05DealEndEpoch               *int          `json:"f05DealEndEpoch"`
 	DirectStartEpoch              *int          `json:"directStartEpoch"`
 	DirectEndEpoch                *int          `json:"directEndEpoch"`
-	DirectPieceActivationManifest *string       `json:"directPieceActivationManifest"`
+	DirectPieceActivationManifest *types.JSON   `json:"directPieceActivationManifest"`
 	CreatedAt                     time.Time     `json:"createdAt"`
 	IsSnap                        bool          `json:"isSnap"`
 }
@@ -345,6 +340,10 @@ type PriceFilterInput struct {
 	Verified        bool   `json:"verified"`
 }
 
+type PrometheusResponse struct {
+	Data types.JSON `json:"data"`
+}
+
 type Query struct {
 }
 
@@ -365,8 +364,8 @@ type SectorMetaPiece struct {
 	StartEpoch        *int          `json:"startEpoch"`
 	OrigEndEpoch      *int          `json:"origEndEpoch"`
 	F05DealID         *int          `json:"f05DealID"`
-	DdoPam            *types.JSONB  `json:"ddoPam"`
-	F05DealProposal   *types.JSONB  `json:"f05DealProposal"`
+	DdoPam            *types.JSON   `json:"ddoPam"`
+	F05DealProposal   *types.JSON   `json:"f05DealProposal"`
 }
 
 type SectorSummary struct {

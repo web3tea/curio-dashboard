@@ -1,8 +1,0 @@
-type MetricsActiveTask {
-    name: String!
-    series: [[Float!]!] # [[Timestamp, Value]]
-}
-
-extend type Query {
-    metricsActiveTasks(lastDays: Int!, machine: String): [MetricsActiveTask]
-}

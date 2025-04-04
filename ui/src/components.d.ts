@@ -22,6 +22,7 @@ declare module 'vue' {
     JsonViewer: typeof import('./components/shared/JsonViewer.vue')['default']
     MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
     PriceInput: typeof import('./components/app/PriceInput.vue')['default']
+    PrometheusChart: typeof import('./components/app/PrometheusChart.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     StatusIcon: typeof import('./components/shared/StatusIcon.vue')['default']

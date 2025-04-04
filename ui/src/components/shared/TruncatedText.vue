@@ -30,6 +30,9 @@ const props = defineProps({
 })
 
 const needsTruncation = computed(() => {
+  if (!props.text) {
+    return false
+  }
   return props.text.length > props.maxLength
 })
 

@@ -276,11 +276,6 @@ type ComplexityRoot struct {
 		UnsignedData func(childComplexity int) int
 	}
 
-	MetricsActiveTask struct {
-		Name   func(childComplexity int) int
-		Series func(childComplexity int) int
-	}
-
 	Miner struct {
 		Balance func(childComplexity int) int
 		ID      func(childComplexity int) int
@@ -522,6 +517,10 @@ type ComplexityRoot struct {
 		Verified        func(childComplexity int) int
 	}
 
+	PrometheusResponse struct {
+		Data func(childComplexity int) int
+	}
+
 	Query struct {
 		Actor                      func(childComplexity int, address types.Address) int
 		Actors                     func(childComplexity int) int
@@ -555,7 +554,6 @@ type ComplexityRoot struct {
 		MessageSend                func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
 		MessageSends               func(childComplexity int, account *types.Address, offset int, limit int) int
 		MessageSendsCount          func(childComplexity int, account *types.Address) int
-		MetricsActiveTasks         func(childComplexity int, lastDays int, machine *string) int
 		Miner                      func(childComplexity int, address types.Address) int
 		MinerPower                 func(childComplexity int, address *types.Address) int
 		MiningCount                func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
@@ -570,6 +568,8 @@ type ComplexityRoot struct {
 		PipelinesSummary           func(childComplexity int) int
 		Porep                      func(childComplexity int, sp types.Address, sectorNumber int) int
 		Poreps                     func(childComplexity int) int
+		PrometheusQuery            func(childComplexity int, query string, time *time.Time) int
+		PrometheusQueryRange       func(childComplexity int, query string, start time.Time, end time.Time, step int) int
 		RunningTaskSummary         func(childComplexity int) int
 		Sector                     func(childComplexity int, actor types.Address, sectorNumber int) int
 		SectorSummary              func(childComplexity int) int
@@ -942,7 +942,6 @@ type QueryResolver interface {
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
-	MetricsActiveTasks(ctx context.Context, lastDays int, machine *string) ([]*model.MetricsActiveTask, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
 	MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error)
@@ -957,6 +956,8 @@ type QueryResolver interface {
 	Poreps(ctx context.Context) ([]*model.Porep, error)
 	Porep(ctx context.Context, sp types.Address, sectorNumber int) (*model.Porep, error)
 	PipelinesSummary(ctx context.Context) ([]*model.PipelineSummary, error)
+	PrometheusQuery(ctx context.Context, query string, time *time.Time) (*model.PrometheusResponse, error)
+	PrometheusQueryRange(ctx context.Context, query string, start time.Time, end time.Time, step int) (*model.PrometheusResponse, error)
 	Sectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.Sector, error)
 	SectorsCount(ctx context.Context, actor *types.Address) (int, error)
 	Sector(ctx context.Context, actor types.Address, sectorNumber int) (*model.Sector, error)
@@ -2136,20 +2137,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MessageSend.UnsignedData(childComplexity), true
-
-	case "MetricsActiveTask.name":
-		if e.complexity.MetricsActiveTask.Name == nil {
-			break
-		}
-
-		return e.complexity.MetricsActiveTask.Name(childComplexity), true
-
-	case "MetricsActiveTask.series":
-		if e.complexity.MetricsActiveTask.Series == nil {
-			break
-		}
-
-		return e.complexity.MetricsActiveTask.Series(childComplexity), true
 
 	case "Miner.balance":
 		if e.complexity.Miner.Balance == nil {
@@ -3508,6 +3495,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PriceFilter.Verified(childComplexity), true
 
+	case "PrometheusResponse.data":
+		if e.complexity.PrometheusResponse.Data == nil {
+			break
+		}
+
+		return e.complexity.PrometheusResponse.Data(childComplexity), true
+
 	case "Query.actor":
 		if e.complexity.Query.Actor == nil {
 			break
@@ -3817,18 +3811,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.MessageSendsCount(childComplexity, args["account"].(*types.Address)), true
 
-	case "Query.metricsActiveTasks":
-		if e.complexity.Query.MetricsActiveTasks == nil {
-			break
-		}
-
-		args, err := ec.field_Query_metricsActiveTasks_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.MetricsActiveTasks(childComplexity, args["lastDays"].(int), args["machine"].(*string)), true
-
 	case "Query.miner":
 		if e.complexity.Query.Miner == nil {
 			break
@@ -3976,6 +3958,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Poreps(childComplexity), true
+
+	case "Query.prometheusQuery":
+		if e.complexity.Query.PrometheusQuery == nil {
+			break
+		}
+
+		args, err := ec.field_Query_prometheusQuery_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.PrometheusQuery(childComplexity, args["query"].(string), args["time"].(*time.Time)), true
+
+	case "Query.prometheusQueryRange":
+		if e.complexity.Query.PrometheusQueryRange == nil {
+			break
+		}
+
+		args, err := ec.field_Query_prometheusQueryRange_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.PrometheusQueryRange(childComplexity, args["query"].(string), args["start"].(time.Time), args["end"].(time.Time), args["step"].(int)), true
 
 	case "Query.runningTaskSummary":
 		if e.complexity.Query.RunningTaskSummary == nil {
@@ -5430,7 +5436,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metrics.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/setting.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/setting.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -5450,12 +5456,12 @@ var sources = []*ast.Source{
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
 	{Name: "schema/market.graphql", Input: sourceData("schema/market.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
-	{Name: "schema/metrics.graphql", Input: sourceData("schema/metrics.graphql"), BuiltIn: false},
 	{Name: "schema/miner.graphql", Input: sourceData("schema/miner.graphql"), BuiltIn: false},
 	{Name: "schema/mining.graphql", Input: sourceData("schema/mining.graphql"), BuiltIn: false},
 	{Name: "schema/mutation.graphql", Input: sourceData("schema/mutation.graphql"), BuiltIn: false},
 	{Name: "schema/node.graphql", Input: sourceData("schema/node.graphql"), BuiltIn: false},
 	{Name: "schema/pipeline.graphql", Input: sourceData("schema/pipeline.graphql"), BuiltIn: false},
+	{Name: "schema/prometheus.graphql", Input: sourceData("schema/prometheus.graphql"), BuiltIn: false},
 	{Name: "schema/query.graphql", Input: sourceData("schema/query.graphql"), BuiltIn: false},
 	{Name: "schema/sector.graphql", Input: sourceData("schema/sector.graphql"), BuiltIn: false},
 	{Name: "schema/setting.graphql", Input: sourceData("schema/setting.graphql"), BuiltIn: false},
@@ -6851,57 +6857,6 @@ func (ec *executionContext) field_Query_messageSends_argsLimit(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_Query_metricsActiveTasks_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := ec.field_Query_metricsActiveTasks_argsLastDays(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["lastDays"] = arg0
-	arg1, err := ec.field_Query_metricsActiveTasks_argsMachine(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["machine"] = arg1
-	return args, nil
-}
-func (ec *executionContext) field_Query_metricsActiveTasks_argsLastDays(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (int, error) {
-	if _, ok := rawArgs["lastDays"]; !ok {
-		var zeroVal int
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("lastDays"))
-	if tmp, ok := rawArgs["lastDays"]; ok {
-		return ec.unmarshalNInt2int(ctx, tmp)
-	}
-
-	var zeroVal int
-	return zeroVal, nil
-}
-
-func (ec *executionContext) field_Query_metricsActiveTasks_argsMachine(
-	ctx context.Context,
-	rawArgs map[string]any,
-) (*string, error) {
-	if _, ok := rawArgs["machine"]; !ok {
-		var zeroVal *string
-		return zeroVal, nil
-	}
-
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("machine"))
-	if tmp, ok := rawArgs["machine"]; ok {
-		return ec.unmarshalOString2ᚖstring(ctx, tmp)
-	}
-
-	var zeroVal *string
-	return zeroVal, nil
-}
-
 func (ec *executionContext) field_Query_minerPower_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -7616,6 +7571,154 @@ func (ec *executionContext) field_Query_porep_argsSectorNumber(
 	}
 
 	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_prometheusQueryRange_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_prometheusQueryRange_argsQuery(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["query"] = arg0
+	arg1, err := ec.field_Query_prometheusQueryRange_argsStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["start"] = arg1
+	arg2, err := ec.field_Query_prometheusQueryRange_argsEnd(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["end"] = arg2
+	arg3, err := ec.field_Query_prometheusQueryRange_argsStep(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["step"] = arg3
+	return args, nil
+}
+func (ec *executionContext) field_Query_prometheusQueryRange_argsQuery(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["query"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("query"))
+	if tmp, ok := rawArgs["query"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_prometheusQueryRange_argsStart(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (time.Time, error) {
+	if _, ok := rawArgs["start"]; !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+	if tmp, ok := rawArgs["start"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_prometheusQueryRange_argsEnd(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (time.Time, error) {
+	if _, ok := rawArgs["end"]; !ok {
+		var zeroVal time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+	if tmp, ok := rawArgs["end"]; ok {
+		return ec.unmarshalNTime2timeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal time.Time
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_prometheusQueryRange_argsStep(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["step"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("step"))
+	if tmp, ok := rawArgs["step"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_prometheusQuery_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_prometheusQuery_argsQuery(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["query"] = arg0
+	arg1, err := ec.field_Query_prometheusQuery_argsTime(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["time"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Query_prometheusQuery_argsQuery(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["query"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("query"))
+	if tmp, ok := rawArgs["query"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_prometheusQuery_argsTime(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*time.Time, error) {
+	if _, ok := rawArgs["time"]; !ok {
+		var zeroVal *time.Time
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("time"))
+	if tmp, ok := rawArgs["time"]; ok {
+		return ec.unmarshalOTime2ᚖtimeᚐTime(ctx, tmp)
+	}
+
+	var zeroVal *time.Time
 	return zeroVal, nil
 }
 
@@ -10988,9 +11091,9 @@ func (ec *executionContext) _DealInfo_urlHeaders(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.JSONB)
+	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_urlHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11000,7 +11103,7 @@ func (ec *executionContext) fieldContext_DealInfo_urlHeaders(_ context.Context, 
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONB does not have child fields")
+			return nil, errors.New("field of type JSON does not have child fields")
 		},
 	}
 	return fc, nil
@@ -14056,9 +14159,9 @@ func (ec *executionContext) _MarketMk12Deal_proposal(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.JSONB)
+	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_proposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14068,7 +14171,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_proposal(_ context.Conte
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONB does not have child fields")
+			return nil, errors.New("field of type JSON does not have child fields")
 		},
 	}
 	return fc, nil
@@ -14628,9 +14731,9 @@ func (ec *executionContext) _MarketMk12Deal_urlHeaders(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(types.JSONB)
+	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_urlHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14640,7 +14743,7 @@ func (ec *executionContext) fieldContext_MarketMk12Deal_urlHeaders(_ context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONB does not have child fields")
+			return nil, errors.New("field of type JSON does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15496,9 +15599,9 @@ func (ec *executionContext) _MessageSend_signedJson(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.JSONB)
+	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageSend_signedJson(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15508,7 +15611,7 @@ func (ec *executionContext) fieldContext_MessageSend_signedJson(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONB does not have child fields")
+			return nil, errors.New("field of type JSON does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15673,91 +15776,6 @@ func (ec *executionContext) fieldContext_MessageSend_sendError(_ context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _MetricsActiveTask_name(ctx context.Context, field graphql.CollectedField, obj *model.MetricsActiveTask) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MetricsActiveTask_name(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_MetricsActiveTask_name(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "MetricsActiveTask",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _MetricsActiveTask_series(ctx context.Context, field graphql.CollectedField, obj *model.MetricsActiveTask) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_MetricsActiveTask_series(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Series, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([][]float64)
-	fc.Result = res
-	return ec.marshalOFloat2ᚕᚕfloat64ᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_MetricsActiveTask_series(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "MetricsActiveTask",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Float does not have child fields")
 		},
 	}
 	return fc, nil
@@ -18199,9 +18217,9 @@ func (ec *executionContext) _MiningStatusSummay_lastMinedAt(ctx context.Context,
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningStatusSummay_lastMinedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18211,7 +18229,7 @@ func (ec *executionContext) fieldContext_MiningStatusSummay_lastMinedAt(_ contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -18633,9 +18651,9 @@ func (ec *executionContext) _MiningTask_minedHeader(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.JSONB)
+	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningTask_minedHeader(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18645,7 +18663,7 @@ func (ec *executionContext) fieldContext_MiningTask_minedHeader(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONB does not have child fields")
+			return nil, errors.New("field of type JSON does not have child fields")
 		},
 	}
 	return fc, nil
@@ -20566,9 +20584,9 @@ func (ec *executionContext) _OpenSectorPiece_dataHeaders(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSON2string(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_dataHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20777,9 +20795,9 @@ func (ec *executionContext) _OpenSectorPiece_f05DealProposal(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_f05DealProposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20982,9 +21000,9 @@ func (ec *executionContext) _OpenSectorPiece_directPieceActivationManifest(ctx c
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_directPieceActivationManifest(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23988,6 +24006,50 @@ func (ec *executionContext) fieldContext_PriceFilter_verified(_ context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _PrometheusResponse_data(ctx context.Context, field graphql.CollectedField, obj *model.PrometheusResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_PrometheusResponse_data(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Data, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.JSON)
+	fc.Result = res
+	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_PrometheusResponse_data(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "PrometheusResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSON does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_actors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_actors(ctx, field)
 	if err != nil {
@@ -25959,64 +26021,6 @@ func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_metricsActiveTasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_metricsActiveTasks(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MetricsActiveTasks(rctx, fc.Args["lastDays"].(int), fc.Args["machine"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*model.MetricsActiveTask)
-	fc.Result = res
-	return ec.marshalOMetricsActiveTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetricsActiveTask(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_metricsActiveTasks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "name":
-				return ec.fieldContext_MetricsActiveTask_name(ctx, field)
-			case "series":
-				return ec.fieldContext_MetricsActiveTask_series(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MetricsActiveTask", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_metricsActiveTasks_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_miner(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_miner(ctx, field)
 	if err != nil {
@@ -27037,6 +27041,124 @@ func (ec *executionContext) fieldContext_Query_pipelinesSummary(_ context.Contex
 			}
 			return nil, fmt.Errorf("no field named %q was found under type PipelineSummary", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_prometheusQuery(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_prometheusQuery(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().PrometheusQuery(rctx, fc.Args["query"].(string), fc.Args["time"].(*time.Time))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PrometheusResponse)
+	fc.Result = res
+	return ec.marshalNPrometheusResponse2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_prometheusQuery(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "data":
+				return ec.fieldContext_PrometheusResponse_data(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PrometheusResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_prometheusQuery_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_prometheusQueryRange(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_prometheusQueryRange(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().PrometheusQueryRange(rctx, fc.Args["query"].(string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["step"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.PrometheusResponse)
+	fc.Result = res
+	return ec.marshalNPrometheusResponse2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_prometheusQueryRange(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "data":
+				return ec.fieldContext_PrometheusResponse_data(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PrometheusResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_prometheusQueryRange_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -30833,9 +30955,9 @@ func (ec *executionContext) _SectorMetaPiece_ddoPam(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.JSONB)
+	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_ddoPam(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30845,7 +30967,7 @@ func (ec *executionContext) fieldContext_SectorMetaPiece_ddoPam(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONB does not have child fields")
+			return nil, errors.New("field of type JSON does not have child fields")
 		},
 	}
 	return fc, nil
@@ -30874,9 +30996,9 @@ func (ec *executionContext) _SectorMetaPiece_f05DealProposal(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*types.JSONB)
+	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_f05DealProposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30886,7 +31008,7 @@ func (ec *executionContext) fieldContext_SectorMetaPiece_f05DealProposal(_ conte
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type JSONB does not have child fields")
+			return nil, errors.New("field of type JSON does not have child fields")
 		},
 	}
 	return fc, nil
@@ -40205,47 +40327,6 @@ func (ec *executionContext) _MessageSend(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
-var metricsActiveTaskImplementors = []string{"MetricsActiveTask"}
-
-func (ec *executionContext) _MetricsActiveTask(ctx context.Context, sel ast.SelectionSet, obj *model.MetricsActiveTask) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, metricsActiveTaskImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("MetricsActiveTask")
-		case "name":
-			out.Values[i] = ec._MetricsActiveTask_name(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "series":
-			out.Values[i] = ec._MetricsActiveTask_series(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 var minerImplementors = []string{"Miner"}
 
 func (ec *executionContext) _Miner(ctx context.Context, sel ast.SelectionSet, obj *model.Miner) graphql.Marshaler {
@@ -42388,6 +42469,45 @@ func (ec *executionContext) _PriceFilter(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var prometheusResponseImplementors = []string{"PrometheusResponse"}
+
+func (ec *executionContext) _PrometheusResponse(ctx context.Context, sel ast.SelectionSet, obj *model.PrometheusResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, prometheusResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("PrometheusResponse")
+		case "data":
+			out.Values[i] = ec._PrometheusResponse_data(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var queryImplementors = []string{"Query"}
 
 func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -43017,25 +43137,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "metricsActiveTasks":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_metricsActiveTasks(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "miner":
 			field := field
 
@@ -43299,6 +43400,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_pipelinesSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "prometheusQuery":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_prometheusQuery(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "prometheusQueryRange":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_prometheusQueryRange(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -46554,36 +46699,6 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) unmarshalNFloat2ᚕfloat64ᚄ(ctx context.Context, v any) ([]float64, error) {
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([]float64, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNFloat2float64(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNFloat2ᚕfloat64ᚄ(ctx context.Context, sel ast.SelectionSet, v []float64) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNFloat2float64(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
 func (ec *executionContext) marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx context.Context, sel ast.SelectionSet, v []*model.GaugeCountValue) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -46681,28 +46796,13 @@ func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) unmarshalNJSON2string(ctx context.Context, v any) (string, error) {
-	res, err := graphql.UnmarshalString(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNJSON2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
-	res := graphql.MarshalString(v)
-	if res == graphql.Null {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-	}
-	return res
-}
-
-func (ec *executionContext) unmarshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v any) (types.JSONB, error) {
-	var res types.JSONB
+func (ec *executionContext) unmarshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, v any) (types.JSON, error) {
+	var res types.JSON
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNJSONB2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, sel ast.SelectionSet, v types.JSONB) graphql.Marshaler {
+func (ec *executionContext) marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, sel ast.SelectionSet, v types.JSON) graphql.Marshaler {
 	return v
 }
 
@@ -47024,6 +47124,20 @@ func (ec *executionContext) marshalNPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurio
 func (ec *executionContext) unmarshalNPriceFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx context.Context, v any) (model.PriceFilterInput, error) {
 	res, err := ec.unmarshalInputPriceFilterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNPrometheusResponse2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx context.Context, sel ast.SelectionSet, v model.PrometheusResponse) graphql.Marshaler {
+	return ec._PrometheusResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNPrometheusResponse2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx context.Context, sel ast.SelectionSet, v *model.PrometheusResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._PrometheusResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNSectorLocation2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx context.Context, sel ast.SelectionSet, v []*model.SectorLocation) graphql.Marshaler {
@@ -48066,42 +48180,6 @@ func (ec *executionContext) marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑ
 	return ec._DealInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOFloat2ᚕᚕfloat64ᚄ(ctx context.Context, v any) ([][]float64, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var vSlice []any
-	vSlice = graphql.CoerceList(v)
-	var err error
-	res := make([][]float64, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNFloat2ᚕfloat64ᚄ(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalOFloat2ᚕᚕfloat64ᚄ(ctx context.Context, sel ast.SelectionSet, v [][]float64) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNFloat2ᚕfloat64ᚄ(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
 func (ec *executionContext) marshalOGaugeCountValue2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx context.Context, sel ast.SelectionSet, v *model.GaugeCountValue) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -48125,32 +48203,16 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalOJSON2ᚖstring(ctx context.Context, v any) (*string, error) {
+func (ec *executionContext) unmarshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, v any) (*types.JSON, error) {
 	if v == nil {
 		return nil, nil
 	}
-	res, err := graphql.UnmarshalString(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOJSON2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalString(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, v any) (*types.JSONB, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(types.JSONB)
+	var res = new(types.JSON)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOJSONB2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSONB(ctx context.Context, sel ast.SelectionSet, v *types.JSONB) graphql.Marshaler {
+func (ec *executionContext) marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, sel ast.SelectionSet, v *types.JSON) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48428,54 +48490,6 @@ func (ec *executionContext) marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurio
 		return graphql.Null
 	}
 	return ec._MessageSend(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalOMetricsActiveTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetricsActiveTask(ctx context.Context, sel ast.SelectionSet, v []*model.MetricsActiveTask) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOMetricsActiveTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetricsActiveTask(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOMetricsActiveTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetricsActiveTask(ctx context.Context, sel ast.SelectionSet, v *model.MetricsActiveTask) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._MetricsActiveTask(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMiner2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx context.Context, sel ast.SelectionSet, v *model.Miner) graphql.Marshaler {
