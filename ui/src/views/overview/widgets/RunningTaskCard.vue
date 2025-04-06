@@ -4,12 +4,14 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RunningTaskSummary, TrendType } from '@/typed-graph'
 import { GetRunningTaskSummary } from '@/gql/task'
+import { RouteLocationRaw } from 'vue-router'
 import { formatDuration } from '@/utils/helpers/formatDuration'
 
-withDefaults(defineProps<{
-  detailsLink?: string;
-}>(), {
-  detailsLink: '#',
+defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'ActiveTasks' }),
+  },
 })
 
 const { t } = useI18n()

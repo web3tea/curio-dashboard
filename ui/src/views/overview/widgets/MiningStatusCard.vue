@@ -5,16 +5,20 @@ import { computed,  } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { calculateStartTime } from '@/utils/helpers/startTime'
 import { GetMiningStatusSummary } from '@/gql/mining'
-import { useLocaleTimeAgo } from '@/utils/helpers/timeAgo'
+import { RouteLocationRaw } from 'vue-router'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const { t } = useI18n()
 
-const props = withDefaults(defineProps<{
-  detailsLink?: string;
-  timeRange?: TimeRangeType;
-}>(), {
-  detailsLink: '#',
-  timeRange: 'HOUR_24',
+const props = defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'MiningTaskList' }),
+  },
+  timeRange: {
+    type: String as () => TimeRangeType,
+    default: 'HOUR_24',
+  },
 })
 
 const end = computed(() => new Date())
@@ -52,7 +56,7 @@ const item = computed<MiningStatusData>(() => {
     won: sourceData.won || 0,
     included: sourceData.included || 0,
     orphan:(sourceData.won || 0) - (sourceData.included || 0),
-    lastWon: sourceData.lastMinedAt ? useLocaleTimeAgo(new Date(sourceData.lastMinedAt)).value : "N/A",
+    lastWon: sourceData.lastMinedAt ? getRelativeTime(sourceData.lastMinedAt * 1000) : "N/A",
     trend: wonChangeRate > 0 ? "UP" : "DOWN",
     trendValue: `${wonChangeRate}%` ,
   }

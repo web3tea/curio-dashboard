@@ -3,14 +3,14 @@ import { useQuery } from '@vue/apollo-composable'
 import { useI18n } from 'vue-i18n'
 import { TrendType } from '@/typed-graph'
 import { computed } from 'vue'
+import { RouteLocationRaw } from 'vue-router'
 import { GetSectorSummary } from '@/gql/sector'
 
-withDefaults(defineProps<{
-  detailsLink?: string;
-  timeRange?: string;
-}>(), {
-  detailsLink: '#',
-  timeRange: '24h',
+defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'Sectors' }),
+  }
 })
 
 const { t } = useI18n()

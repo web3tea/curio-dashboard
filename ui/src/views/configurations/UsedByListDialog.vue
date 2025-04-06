@@ -3,6 +3,7 @@ import { PropType, ref } from 'vue'
 import { MachineDetail } from '@/typed-graph'
 import { IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   title: {
@@ -15,7 +16,7 @@ const props = defineProps({
   },
 })
 
-const { t, d } = useI18n()
+const { t } = useI18n()
 
 const searchValue = ref('')
 const dialog = ref(false)
@@ -67,7 +68,7 @@ const headers = [
           </v-text-field>
         </template>
         <template #item.startupTime="{ value }">
-          {{ d(value, 'short') }}
+          {{ getRelativeTime(value, 'long') }}
         </template>
       </v-data-table-virtual>
     </template>

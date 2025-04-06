@@ -4,7 +4,7 @@ import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeCompletedTask } from '@/gql/task'
 import { TaskHistory } from '@/typed-graph'
 import { formatDuration } from '@/utils/helpers/formatDuration'
-import { IconPlayerPause, IconPlayerPlay, IconPointFilled } from '@tabler/icons-vue'
+import { IconPlayerPause, IconPlayerPlay } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { getRelativeTime } from '@/utils/helpers/time'
 
@@ -47,8 +47,7 @@ const headers = [
   { title: 'Start', key: 'workStart' },
   { title: 'Queued', key: 'queued' },
   { title: 'Took', key: 'took' },
-  { title: 'Result', key: 'result' },
-  { title: 'Error', key: 'err' },
+  { title: 'Success', key: 'result' },
 ]
 
 </script>
@@ -106,14 +105,10 @@ const headers = [
         {{ formatDuration(new Date(item.workEnd).getTime() - new Date(item.workStart).getTime()) }}
       </template>
       <template #item.result="{ item }">
-        <div class="d-flex align-center">
-          <v-icon
-            :icon="IconPointFilled"
-            :color="item.result ? 'success' : 'error'"
-            size="small"
-          />
-          <span>{{ item.result ? 'success' : 'failure' }}</span>
-        </div>
+        <StatusIcon
+          :status="item.result ? 'success': 'failure'"
+          :tooltip="item.result ? 'Success': item.err || 'Failure'"
+        />
       </template>
     </v-data-table-virtual>
   </UiWidgetCard>

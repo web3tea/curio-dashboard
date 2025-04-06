@@ -2,9 +2,7 @@
 
 import { useGlobalStore } from '@/stores/apps/global'
 import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-const { d } = useI18n()
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   epoch: {
@@ -27,7 +25,7 @@ const text = computed(() => {
   if (!props.epoch) {
     return props.defaultText
   }
-  return d(globalStore.epochToTime(props.epoch), 'long')
+  return getRelativeTime(globalStore.epochToTime(props.epoch), 'long')
 })
 
 </script>

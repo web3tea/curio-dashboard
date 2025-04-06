@@ -1,4 +1,5 @@
 import { RouteLocationNormalizedLoaded } from 'vue-router'
+import { parseBoolean, parseNumber } from '@/utils/helpers/routeParamsParser'
 
 const AppRoutes = {
   path: '/',
@@ -77,11 +78,11 @@ const AppRoutes = {
       path: '/tasks/history',
       component: () => import('@/views/task/history/TaskHistoryIndex.vue'),
       props: (route: RouteLocationNormalizedLoaded) => ({
-        start: Number(route.query.start),
-        end: Number(route.query.end),
+        start: parseNumber(route.query.start),
+        end: parseNumber(route.query.end),
         name: route.query.name,
         machine: route.query.machine,
-        success: route.query.success,
+        success: parseBoolean(route.query.success),
       }),
       meta: {
         title: 'Task History',
@@ -110,7 +111,10 @@ const AppRoutes = {
       name: 'SectorDetails',
       path: '/sectors/:miner/:sectorNumber',
       component: () => import('@/views/sectors/SectorDetails.vue'),
-      props: true,
+      props: (route: RouteLocationNormalizedLoaded) => ({
+        miner: route.params.miner,
+        sectorNumber: parseNumber(route.params.sectorNumber)
+      }),
       meta: {
         title: 'Sector Details',
         description: 'Sector details',

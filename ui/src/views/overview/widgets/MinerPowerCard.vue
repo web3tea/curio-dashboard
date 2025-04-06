@@ -4,13 +4,15 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { MinerPower } from '@/typed-graph'
 import { GetMinerPower } from '@/gql/miner'
+import { RouteLocationRaw } from 'vue-router'
 import { TrendType } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
-withDefaults(defineProps<{
-  detailsLink?: string;
-}>(), {
-  detailsLink: '#',
+defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'Miners' }),
+  },
 })
 
 const { t } = useI18n()

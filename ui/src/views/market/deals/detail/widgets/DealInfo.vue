@@ -6,6 +6,7 @@ import { IconReload } from '@tabler/icons-vue'
 import { ComputedRef, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatBytes } from '@/utils/helpers/formatBytes'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   id: {
@@ -14,7 +15,7 @@ const props = defineProps({
   },
 })
 
-const { t, d } = useI18n()
+const { t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetDealInfo, {
   id: props.id,
@@ -185,7 +186,7 @@ const dealProperties = computed(() => ({
             Created At
           </v-col>
           <v-col cols="9">
-            {{ item.createdAt ? d(item.createdAt, 'long') : '-' }}
+            {{ getRelativeTime(item.createdAt, 'long') }}
           </v-col>
         </v-row>
       </v-col>

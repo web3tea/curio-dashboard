@@ -199,6 +199,7 @@ export type MachineSummary = {
   uniqueHostsDown: Scalars['Int']['output'];
   uniqueHostsTotal: Scalars['Int']['output'];
   uniqueHostsUp: Scalars['Int']['output'];
+  updatedAt: Scalars['Time']['output'];
 };
 
 export type MarketAllowFilter = {

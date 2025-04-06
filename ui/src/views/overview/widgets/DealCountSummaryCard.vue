@@ -3,14 +3,14 @@ import { useQuery } from '@vue/apollo-composable'
 import { TrendType } from '@/typed-graph'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { RouteLocationRaw } from 'vue-router'
 import { GetDealCountSummary } from '@/gql/deal'
 
-withDefaults(defineProps<{
-  detailsLink?: string;
-  timeRange?: string;
-}>(), {
-  detailsLink: '#',
-  timeRange: '24h',
+defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'MarketMk12Deals' }),
+  }
 })
 
 const { t } = useI18n()

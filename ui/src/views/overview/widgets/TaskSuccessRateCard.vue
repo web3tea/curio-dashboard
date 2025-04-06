@@ -2,22 +2,32 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useQuery } from '@vue/apollo-composable'
-import { TaskSuccessRate, TrendType } from '@/typed-graph'
+import { RouteLocationRaw } from 'vue-router'
+import { TaskSuccessRate, TrendType,TimeRangeType  } from '@/typed-graph'
 import { GetTaskSuccessRate } from '@/gql/task'
+import { calculateStartTime } from '@/utils/helpers/startTime'
 
 const { t } = useI18n()
 
-withDefaults(defineProps<{
-  detailsLink?: string;
-  timeRange?: string;
-}>(), {
-  detailsLink: '#',
-  timeRange: '24h',
+const props = defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'TaskHistory', query: { success: false } }),
+  },
+  timeRange: {
+    type: String as () => TimeRangeType,
+    default: 'HOUR_24'
+  }
+})
+
+const end = computed(() => new Date())
+const start = computed(() => {
+  return calculateStartTime(props.timeRange, end.value)
 })
 
 const { result, loading, refetch } = useQuery(GetTaskSuccessRate, {
-  start: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
-  end: new Date()
+  start: start.value,
+  end: end.value,
 }, {
   pollInterval: 600000,
 })

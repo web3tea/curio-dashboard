@@ -101,6 +101,7 @@ export const GetMachinesSummary = gql`
       totalCpu
       totalGpu
       totalRam
+      updatedAt
     }
   }
 `

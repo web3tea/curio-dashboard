@@ -211,6 +211,7 @@ type ComplexityRoot struct {
 		UniqueHostsDown  func(childComplexity int) int
 		UniqueHostsTotal func(childComplexity int) int
 		UniqueHostsUp    func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
 	}
 
 	MarketAllowFilter struct {
@@ -855,6 +856,7 @@ type MachineSummaryResolver interface {
 	TotalRAM(ctx context.Context, obj *model.MachineSummary) (int, error)
 	TotalCPU(ctx context.Context, obj *model.MachineSummary) (int, error)
 	TotalGpu(ctx context.Context, obj *model.MachineSummary) (float64, error)
+	UpdatedAt(ctx context.Context, obj *model.MachineSummary) (*time.Time, error)
 }
 type MinerResolver interface {
 	Info(ctx context.Context, obj *model.Miner) (*model.MinerInfo, error)
@@ -1801,6 +1803,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MachineSummary.UniqueHostsUp(childComplexity), true
+
+	case "MachineSummary.updatedAt":
+		if e.complexity.MachineSummary.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.MachineSummary.UpdatedAt(childComplexity), true
 
 	case "MarketAllowFilter.status":
 		if e.complexity.MarketAllowFilter.Status == nil {
@@ -13690,6 +13699,50 @@ func (ec *executionContext) fieldContext_MachineSummary_totalGpu(_ context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _MachineSummary_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.MachineSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MachineSummary_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MachineSummary().UpdatedAt(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MachineSummary_updatedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MachineSummary",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _MarketAllowFilter_wallet(ctx context.Context, field graphql.CollectedField, obj *model.MarketAllowFilter) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MarketAllowFilter_wallet(ctx, field)
 	if err != nil {
@@ -25004,6 +25057,8 @@ func (ec *executionContext) fieldContext_Query_machineSummary(_ context.Context,
 				return ec.fieldContext_MachineSummary_totalCpu(ctx, field)
 			case "totalGpu":
 				return ec.fieldContext_MachineSummary_totalGpu(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_MachineSummary_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type MachineSummary", field.Name)
 		},
@@ -39921,6 +39976,42 @@ func (ec *executionContext) _MachineSummary(ctx context.Context, sel ast.Selecti
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "updatedAt":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MachineSummary_updatedAt(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -47510,6 +47601,27 @@ func (ec *executionContext) unmarshalNTime2timeᚐTime(ctx context.Context, v an
 
 func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel ast.SelectionSet, v time.Time) graphql.Marshaler {
 	res := graphql.MarshalTime(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNTime2ᚖtimeᚐTime(ctx context.Context, v any) (*time.Time, error) {
+	res, err := graphql.UnmarshalTime(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	res := graphql.MarshalTime(*v)
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")

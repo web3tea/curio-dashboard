@@ -3,20 +3,20 @@ import {  ComputedRef, computed } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { NodeHealthSummary } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
+import { RouteLocationRaw } from 'vue-router'
 import { GetNodeHealth } from '@/gql/machine'
 
 const { t } = useI18n()
 
-withDefaults(defineProps<{
-  detailsLink?: string;
-  timeRange?: string;
-}>(), {
-  detailsLink: '#',
-  timeRange: '24h',
+defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'Machines' })
+  }
 })
 
 const { result, loading, refetch } = useQuery(GetNodeHealth, null, {
-  pollInterval: 60000
+  pollInterval: 10000
 })
 const item: ComputedRef<NodeHealthSummary> = computed(() => result.value?.nodeHealthSummary || {})
 

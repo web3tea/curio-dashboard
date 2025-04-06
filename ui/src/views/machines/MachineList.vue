@@ -7,8 +7,9 @@ import { GetMachines } from '@/gql/machine'
 import { Machine } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
-const { d, t } = useI18n()
+const {  t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
@@ -56,8 +57,8 @@ const headers = [
   { title: 'CPU', value: 'cpu', sortable: true },
   { title: 'GPU', value: 'gpu', sortable: true },
   { title: 'RAM', value: 'ram', sortable: true },
-  { title: 'Layers', value: 'detail.layers' },
-  { title: 'Support Tasks', value: 'detail.tasks' },
+  { title: 'Layers', value: 'detail.layers', maxWidth: 150 },
+  { title: 'Support Tasks', value: 'detail.tasks', maxWidth: 500 },
 ]
 </script>
 
@@ -157,12 +158,12 @@ const headers = [
             </template>
             <template #item.lastContact="{ value }">
               <div :title="value">
-                {{ d(value, 'short') }}
+                {{ getRelativeTime(value) }}
               </div>
             </template>
             <template #item.detail.startupTime="{ value }">
               <div :title="value">
-                {{ d(value, 'short') }}
+                {{ getRelativeTime(value, 'short') }}
               </div>
             </template>
             <template #item.ram="{ value }">
@@ -174,6 +175,7 @@ const headers = [
                   v-for="layer in value.split(',')"
                   :key="layer"
                   :to="{name: 'ConfigurationEdit', params: {layer: layer}}"
+                  size="small"
                 >
                   {{ layer }}
                 </v-chip>
@@ -184,6 +186,7 @@ const headers = [
                 <v-chip
                   v-for="task in value.split(',')"
                   :key="task"
+                  size="small"
                 >
                   {{ task }}
                 </v-chip>

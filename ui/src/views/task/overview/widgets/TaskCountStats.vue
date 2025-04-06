@@ -18,7 +18,7 @@ const props = defineProps({
   height: {
     type: String,
     required: false,
-    default: '450'
+    default: undefined,
   }
 })
 
@@ -70,6 +70,13 @@ const failedPercentage = (item: TaskStats) => {
       :loading="loading"
       density="compact"
     >
+      <template #item.name="{ value }">
+        <RouterLink
+          :to="{ name: 'TaskHistory', query: { name: value } }"
+        >
+          {{ value }}
+        </RouterLink>
+      </template>
       <template #item.failure="{item}">
         <p :style="{ color: failedPercentage(item) > 80 ? 'red' : failedPercentage(item) > 30 ? 'yellow' : 'inherit' }">
           {{ item.failure }} ({{ failedPercentage(item).toFixed(2) }}%)

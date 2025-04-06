@@ -21,7 +21,7 @@ const props = defineProps({
   height: {
     type: String,
     required: false,
-    default: '450'
+    default: undefined
   }
 })
 const { t } = useI18n()
@@ -73,6 +73,13 @@ const sortBy = [{ key: 'p99DurationSeconds', order: 'desc' }] as const
       :height="height"
       :sort-by="sortBy"
     >
+      <template #item.name="{ value }">
+        <RouterLink
+          :to="{ name: 'TaskHistory', query: { name: value } }"
+        >
+          {{ value }}
+        </RouterLink>
+      </template>
       <template #item.maxDurationSeconds="{ item }">
         {{ formatDurationSeconds(item.maxDurationSeconds) }}
       </template>

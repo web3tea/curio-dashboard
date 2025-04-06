@@ -3,11 +3,12 @@ import { ref, computed } from 'vue'
 import { TrendType } from '@/typed-graph'
 import { Icon, IconAlertTriangle, IconArrowDown, IconArrowsExchange, IconArrowUp, IconCircleCheck, IconInfoCircle } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { RouteLocationRaw } from 'vue-router'
 
 const props = withDefaults(defineProps<{
   title: string;
   tooltip?: string;
-  detailsLink?: string;
+  detailsLink?: RouteLocationRaw;
   detailsText?: string;
   trend?: TrendType;
   trendValue?: string;

@@ -6,21 +6,21 @@ import { MachineSummary } from '@/typed-graph'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconBrandSpeedtest, IconCpu, IconServer } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
-const { t, d } = useI18n()
+const { t } = useI18n()
 
 const { result } = useQuery(GetMachinesSummary, null, () => ({
-  fetchPolicy: 'cache-first',
-  pollInterval: 600000,
+  pollInterval: 60000,
 }))
 
 const stats: ComputedRef<MachineSummary> = computed(() => result.value?.machineSummary)
 
 const cards = computed(() => [
-  { value: stats.value?.total || 0, text: t('fields.Machines'), icon: IconServer, color: 'primary' },
-  { value: stats.value?.totalCpu || 0, text: t('fields.CPU'), icon: IconCpu, color: 'info' },
-  { value: stats.value?.totalGpu || 0, text: t('fields.GPU'), icon: IconCpu, color: 'success' },
-  { value: formatBytes(stats.value?.totalRam || 0).combined, text: t('fields.RAM'), icon: IconBrandSpeedtest, color: 'warning' },
+  { value: stats.value?.total || 0, text: t('fields.Machines'), icon: IconServer, color: 'primary', updatedAt: stats.value?.updatedAt },
+  { value: stats.value?.totalCpu || 0, text: t('fields.CPU'), icon: IconCpu, color: 'info', updatedAt: stats.value?.updatedAt },
+  { value: stats.value?.totalGpu || 0, text: t('fields.GPU'), icon: IconCpu, color: 'success', updatedAt: stats.value?.updatedAt },
+  { value: formatBytes(stats.value?.totalRam || 0).combined, text: t('fields.RAM'), icon: IconBrandSpeedtest, color: 'warning', updatedAt: stats.value?.updatedAt },
 ])
 
 </script>
@@ -44,7 +44,7 @@ const cards = computed(() => [
                   {{ card.value }}
                 </h3>
                 <h6 class="text-caption font-weight-medium mb-0">
-                  {{ d(new Date(), "short") }}
+                  {{ getRelativeTime(card.updatedAt, "short") }}
                 </h6>
               </div>
               <span class="d-flex align-center">

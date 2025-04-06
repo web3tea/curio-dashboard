@@ -60,6 +60,7 @@ type MachineSummary {
     totalRam: Int!
     totalCpu: Int!
     totalGpu: Float!
+    updatedAt: Time!
 }
 
 extend type Query {

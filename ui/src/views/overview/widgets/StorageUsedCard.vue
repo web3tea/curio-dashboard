@@ -4,14 +4,14 @@ import { GetStorageStats } from '@/gql/storage'
 import { computed, ComputedRef } from 'vue'
 import { StorageStats, TrendType } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
+import { RouteLocationRaw } from 'vue-router'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
-withDefaults(defineProps<{
-  detailsLink?: string;
-  timeRange?: string;
-}>(), {
-  detailsLink: '#',
-  timeRange: '24h',
+defineProps({
+  detailsLink: {
+    type: Object as () => RouteLocationRaw,
+    default: () => ({ name: 'Storages' }),
+  },
 })
 
 const { t } = useI18n()

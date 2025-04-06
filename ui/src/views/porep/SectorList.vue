@@ -27,7 +27,7 @@ const headers = [
   { title: 'Sector', key: 'sectorNumber', width: '50px' },
   { title: 'Miner', key: 'spId',width: '100px' },
   { title: 'CreatetAt', key: 'createTime', width: '120px' },
-  { title: 'Progress', key: 'progress', width: '200px', sortable: false },
+  { title: 'Progress', key: 'progress', width: '250px', sortable: false },
   { title: 'Status', key: 'status', width: '100px' },
   { title: 'Stages', key: 'compactStages', sortable: false },
   { title: 'Actions', key: 'actions', sortable: false, width: '100px' },

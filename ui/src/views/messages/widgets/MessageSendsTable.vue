@@ -5,7 +5,7 @@ import { computed, ComputedRef, ref } from "vue"
 import { MessageSend } from "@/typed-graph"
 import { IconReload } from "@tabler/icons-vue"
 import { useTableSettingsStore } from "@/stores/table"
-import { useI18n } from "vue-i18n"
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   account: {
@@ -21,8 +21,6 @@ const props = defineProps({
     default: 'calc(100vh - 330px)'
   },
 })
-
-const { d } = useI18n()
 
 const tableSettings = useTableSettingsStore()
 
@@ -51,12 +49,11 @@ const headers = [
   { title: 'Nonce', key: 'nonce' },
   { title: 'Reason', key: 'sendReason' },
   { title: 'TaskID', key: 'sendTaskId' },
-  { title: 'Success', key: 'sendSuccess' },
   { title: 'Send Time', key: 'sendTime' },
   { title: 'Signed CID', key: 'signedCid' },
   { title: 'Signed JSON', key: 'signedJson', align: 'center' },
   { title: 'Unsigned CID', key: 'unsignedCid' },
-  { title: 'Error', key: 'sendError', maxWidth: '200px' },
+  { title: 'Success', key: 'sendSuccess', align: 'center' },
 ] as const
 
 </script>
@@ -124,7 +121,7 @@ const headers = [
           <TruncatedText :text="value" />
         </template>
         <template #item.sendTime="{ value }">
-          {{ value ? d(value, 'long') : '' }}
+          {{ getRelativeTime(value, "long") }}
         </template>
         <template #item.signedCid="{ value }">
           <TruncatedText :text="value" />
@@ -139,6 +136,12 @@ const headers = [
               title="Signed Json"
             />
           </InfoDialog>
+        </template>
+        <template #item.sendSuccess="{ item }">
+          <StatusIcon
+            :status="item.sendSuccess ? 'success': 'failure'"
+            :tooltip="item.sendSuccess ? 'Yes': item.sendError || 'Failure'"
+          />
         </template>
       </v-data-table-server>
     </v-card-text>

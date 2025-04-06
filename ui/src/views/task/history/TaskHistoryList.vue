@@ -68,7 +68,6 @@ const headers = [
   { title: 'Work Start', key: 'workStart' },
   { title: 'Work End', key: 'workEnd' },
   { title: 'Success', key: 'result', align: 'center' },
-  { title: 'Error', key: 'err', maxWidth: '350px' },
 ] as const
 
 const selectDateRange = computed({
@@ -199,10 +198,10 @@ const selectDateRange = computed({
             <template #item.workEnd="{ value }">
               {{ getRelativeTime(value, "long") }}
             </template>
-            <template #item.result="{ value }">
+            <template #item.result="{ item }">
               <StatusIcon
-                :status="value ? 'success': 'failure'"
-                :tooltip="value ? 'Yes': 'No'"
+                :status="item.result ? 'success': 'failure'"
+                :tooltip="item.result ? 'Success': item.err || 'Failure'"
               />
             </template>
           </v-data-table-server>

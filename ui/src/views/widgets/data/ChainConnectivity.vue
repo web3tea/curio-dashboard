@@ -54,7 +54,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
       <template #item.syncState="{ value }">
         <StatusIcon
           :status="value === 'ok' ? 'success': 'failure'"
-          :tooltip="value === 'ok' ? 'Ok': value"
+          :tooltip="value"
         />
       </template>
     </v-data-table-virtual>

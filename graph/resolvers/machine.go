@@ -12,6 +12,7 @@ import (
 
 	io_prometheus_client "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
+	"github.com/samber/lo"
 	"github.com/strahe/curio-dashboard/graph"
 	"github.com/strahe/curio-dashboard/graph/cachecontrol"
 	"github.com/strahe/curio-dashboard/graph/model"
@@ -254,6 +255,11 @@ func (r *machineSummaryResolver) TotalGpu(ctx context.Context, obj *model.Machin
 	var total float64
 	err := r.db.QueryRow(ctx, "SELECT SUM(gpu) FROM harmony_machines").Scan(&total)
 	return total, err
+}
+
+// UpdatedAt is the resolver for the updatedAt field.
+func (r *machineSummaryResolver) UpdatedAt(ctx context.Context, obj *model.MachineSummary) (*time.Time, error) {
+	return lo.ToPtr(time.Now()), nil
 }
 
 // Machine is the resolver for the machine field.

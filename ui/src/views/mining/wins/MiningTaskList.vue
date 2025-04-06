@@ -4,7 +4,7 @@ import { MiningTask } from '@/typed-graph'
 import { GetMiningWins } from '@/gql/mining'
 import { useQuery } from '@vue/apollo-composable'
 import { useTableSettingsStore } from "@/stores/table"
-import { useI18n } from 'vue-i18n'
+import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
   start: {
@@ -25,7 +25,6 @@ const props = defineProps({
   },
 })
 
-const { d } = useI18n()
 const tableSettings = useTableSettingsStore()
 
 const page = ref(1)
@@ -148,10 +147,10 @@ const headers = [
           <TruncatedText :text="value" />
         </template>
         <template #item.minedAt="{value}">
-          {{ d(value, 'long') }}
+          {{ getRelativeTime(value, 'long') }}
         </template>
         <template #item.submittedAt="{value}">
-          {{ d(value, 'long') }}
+          {{ getRelativeTime(value, 'long') }}
         </template>
         <template #item.included="{value}">
           <StatusIcon
