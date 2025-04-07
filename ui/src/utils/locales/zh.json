@@ -222,5 +222,13 @@
     "last24hour": "过去24小时",
     "last7day": "过去7天",
     "last30day": "过去30天"
+  },
+  "cardCommon": {
+    "loading": "加载中...",
+    "noData": "没有数据"
+  },
+  "runningTaskBarChart": {
+    "seriesName": "任务数",
+    "title": "当前运行的任务数"
   }
 }

@@ -32,3 +32,10 @@
     }
   }
 }
+.apexcharts-theme-dark {
+    background: rgb(var(--v-theme-background));
+}
+.apexcharts-canvas {
+  margin: 0 auto;
+  background: rgb(var(--v-theme-background));
+}

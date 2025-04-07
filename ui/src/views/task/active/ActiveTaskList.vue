@@ -6,6 +6,7 @@ import { GetRunningTasks } from '@/gql/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { getRelativeTime } from '@/utils/helpers/time'
+import ActiveTaskBarChart from './widgets/ActiveTaskBarChart.vue'
 
 const { t } = useI18n()
 
@@ -55,7 +56,11 @@ const filteredItems = computed(() => {
   <v-row>
     <v-col
       cols="12"
-      md="12"
+    >
+      <ActiveTaskBarChart />
+    </v-col>
+    <v-col
+      cols="12"
     >
       <v-card
         class="bg-surface"

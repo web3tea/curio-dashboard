@@ -222,5 +222,13 @@
     "last24hour": "Last 24 Hours",
     "last7day": "Last 7 Days",
     "last30day": "Last 30 Days"
+  },
+  "cardCommon": {
+    "loading": "Loading...",
+    "noData": "No Data"
+  },
+  "runningTaskBarChart": {
+    "seriesName": "Task Count",
+    "title": "Current Running Task Count"
   }
 }
