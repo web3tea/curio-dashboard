@@ -44,9 +44,9 @@ type Config struct {
 type ResolverRoot interface {
 	Actor() ActorResolver
 	Config() ConfigResolver
-	Global() GlobalResolver
 	Machine() MachineResolver
 	MachineSummary() MachineSummaryResolver
+	Metadata() MetadataResolver
 	Miner() MinerResolver
 	MinerBalance() MinerBalanceResolver
 	MiningCountSummary() MiningCountSummaryResolver
@@ -92,6 +92,11 @@ type ComplexityRoot struct {
 		ID          func(childComplexity int) int
 		MachineName func(childComplexity int) int
 		Message     func(childComplexity int) int
+	}
+
+	ChainHead struct {
+		Height    func(childComplexity int) int
+		Timestamp func(childComplexity int) int
 	}
 
 	ClientFilter struct {
@@ -148,11 +153,6 @@ type ComplexityRoot struct {
 	GaugeCountValue struct {
 		Key   func(childComplexity int) int
 		Value func(childComplexity int) int
-	}
-
-	Global struct {
-		GenesisTimestamp func(childComplexity int) int
-		NetworkName      func(childComplexity int) int
 	}
 
 	Machine struct {
@@ -275,6 +275,11 @@ type ComplexityRoot struct {
 		ToAddr       func(childComplexity int) int
 		UnsignedCid  func(childComplexity int) int
 		UnsignedData func(childComplexity int) int
+	}
+
+	Metadata struct {
+		GenesisTimestamp func(childComplexity int) int
+		NetworkName      func(childComplexity int) int
 	}
 
 	Miner struct {
@@ -529,7 +534,6 @@ type ComplexityRoot struct {
 		Config                     func(childComplexity int, layer string) int
 		Configs                    func(childComplexity int) int
 		DealsPending               func(childComplexity int) int
-		Global                     func(childComplexity int) int
 		Machine                    func(childComplexity int, id int) int
 		MachineByHostAndPort       func(childComplexity int, hostAndPort string) int
 		MachineSummary             func(childComplexity int) int
@@ -555,6 +559,7 @@ type ComplexityRoot struct {
 		MessageSend                func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
 		MessageSends               func(childComplexity int, account *types.Address, offset int, limit int) int
 		MessageSendsCount          func(childComplexity int, account *types.Address) int
+		Metadata                   func(childComplexity int) int
 		Miner                      func(childComplexity int, address types.Address) int
 		MinerPower                 func(childComplexity int, address *types.Address) int
 		MiningCount                func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
@@ -723,6 +728,7 @@ type ComplexityRoot struct {
 
 	Subscription struct {
 		Alerts        func(childComplexity int, offset int) int
+		ChainHead     func(childComplexity int) int
 		CompletedTask func(childComplexity int, machine *string, last int) int
 		NewTask       func(childComplexity int, machineID *int, last int) int
 	}
@@ -835,10 +841,6 @@ type ActorResolver interface {
 type ConfigResolver interface {
 	UsedBy(ctx context.Context, obj *model.Config) ([]*model.MachineDetail, error)
 }
-type GlobalResolver interface {
-	NetworkName(ctx context.Context, obj *model.Global) (string, error)
-	GenesisTimestamp(ctx context.Context, obj *model.Global) (int, error)
-}
 type MachineResolver interface {
 	Detail(ctx context.Context, obj *model.Machine) (*model.MachineDetail, error)
 	Tasks(ctx context.Context, obj *model.Machine) ([]*model.Task, error)
@@ -857,6 +859,10 @@ type MachineSummaryResolver interface {
 	TotalCPU(ctx context.Context, obj *model.MachineSummary) (int, error)
 	TotalGpu(ctx context.Context, obj *model.MachineSummary) (float64, error)
 	UpdatedAt(ctx context.Context, obj *model.MachineSummary) (*time.Time, error)
+}
+type MetadataResolver interface {
+	NetworkName(ctx context.Context, obj *model.Metadata) (string, error)
+	GenesisTimestamp(ctx context.Context, obj *model.Metadata) (uint64, error)
 }
 type MinerResolver interface {
 	Info(ctx context.Context, obj *model.Miner) (*model.MinerInfo, error)
@@ -944,6 +950,7 @@ type QueryResolver interface {
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
+	Metadata(ctx context.Context) (*model.Metadata, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
 	MiningSummaryByDay(ctx context.Context, start time.Time, end time.Time) ([]*model.MiningSummaryDay, error)
@@ -964,7 +971,6 @@ type QueryResolver interface {
 	SectorsCount(ctx context.Context, actor *types.Address) (int, error)
 	Sector(ctx context.Context, actor types.Address, sectorNumber int) (*model.Sector, error)
 	SectorSummary(ctx context.Context) (*model.SectorSummary, error)
-	Global(ctx context.Context) (*model.Global, error)
 	Storage(ctx context.Context, id string) (*model.Storage, error)
 	StoragePaths(ctx context.Context) ([]*model.StoragePath, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
@@ -1020,6 +1026,7 @@ type StoragePathResolver interface {
 }
 type SubscriptionResolver interface {
 	Alerts(ctx context.Context, offset int) (<-chan *model.Alert, error)
+	ChainHead(ctx context.Context) (<-chan *model.ChainHead, error)
 	CompletedTask(ctx context.Context, machine *string, last int) (<-chan *model.TaskHistory, error)
 	NewTask(ctx context.Context, machineID *int, last int) (<-chan *model.Task, error)
 }
@@ -1175,6 +1182,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Alert.Message(childComplexity), true
+
+	case "ChainHead.height":
+		if e.complexity.ChainHead.Height == nil {
+			break
+		}
+
+		return e.complexity.ChainHead.Height(childComplexity), true
+
+	case "ChainHead.timestamp":
+		if e.complexity.ChainHead.Timestamp == nil {
+			break
+		}
+
+		return e.complexity.ChainHead.Timestamp(childComplexity), true
 
 	case "ClientFilter.active":
 		if e.complexity.ClientFilter.Active == nil {
@@ -1462,20 +1483,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.GaugeCountValue.Value(childComplexity), true
-
-	case "Global.genesisTimestamp":
-		if e.complexity.Global.GenesisTimestamp == nil {
-			break
-		}
-
-		return e.complexity.Global.GenesisTimestamp(childComplexity), true
-
-	case "Global.networkName":
-		if e.complexity.Global.NetworkName == nil {
-			break
-		}
-
-		return e.complexity.Global.NetworkName(childComplexity), true
 
 	case "Machine.cpu":
 		if e.complexity.Machine.CPU == nil {
@@ -2146,6 +2153,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MessageSend.UnsignedData(childComplexity), true
+
+	case "Metadata.genesisTimestamp":
+		if e.complexity.Metadata.GenesisTimestamp == nil {
+			break
+		}
+
+		return e.complexity.Metadata.GenesisTimestamp(childComplexity), true
+
+	case "Metadata.networkName":
+		if e.complexity.Metadata.NetworkName == nil {
+			break
+		}
+
+		return e.complexity.Metadata.NetworkName(childComplexity), true
 
 	case "Miner.balance":
 		if e.complexity.Miner.Balance == nil {
@@ -3563,13 +3584,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.DealsPending(childComplexity), true
 
-	case "Query.global":
-		if e.complexity.Query.Global == nil {
-			break
-		}
-
-		return e.complexity.Query.Global(childComplexity), true
-
 	case "Query.machine":
 		if e.complexity.Query.Machine == nil {
 			break
@@ -3819,6 +3833,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.MessageSendsCount(childComplexity, args["account"].(*types.Address)), true
+
+	case "Query.metadata":
+		if e.complexity.Query.Metadata == nil {
+			break
+		}
+
+		return e.complexity.Query.Metadata(childComplexity), true
 
 	case "Query.miner":
 		if e.complexity.Query.Miner == nil {
@@ -4869,6 +4890,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subscription.Alerts(childComplexity, args["offset"].(int)), true
 
+	case "Subscription.chainHead":
+		if e.complexity.Subscription.ChainHead == nil {
+			break
+		}
+
+		return e.complexity.Subscription.ChainHead(childComplexity), true
+
 	case "Subscription.completedTask":
 		if e.complexity.Subscription.CompletedTask == nil {
 			break
@@ -5445,7 +5473,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/setting.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -5465,6 +5493,7 @@ var sources = []*ast.Source{
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
 	{Name: "schema/market.graphql", Input: sourceData("schema/market.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
+	{Name: "schema/metadata.graphql", Input: sourceData("schema/metadata.graphql"), BuiltIn: false},
 	{Name: "schema/miner.graphql", Input: sourceData("schema/miner.graphql"), BuiltIn: false},
 	{Name: "schema/mining.graphql", Input: sourceData("schema/mining.graphql"), BuiltIn: false},
 	{Name: "schema/mutation.graphql", Input: sourceData("schema/mutation.graphql"), BuiltIn: false},
@@ -5473,7 +5502,6 @@ var sources = []*ast.Source{
 	{Name: "schema/prometheus.graphql", Input: sourceData("schema/prometheus.graphql"), BuiltIn: false},
 	{Name: "schema/query.graphql", Input: sourceData("schema/query.graphql"), BuiltIn: false},
 	{Name: "schema/sector.graphql", Input: sourceData("schema/sector.graphql"), BuiltIn: false},
-	{Name: "schema/setting.graphql", Input: sourceData("schema/setting.graphql"), BuiltIn: false},
 	{Name: "schema/storage.graphql", Input: sourceData("schema/storage.graphql"), BuiltIn: false},
 	{Name: "schema/subscription.graphql", Input: sourceData("schema/subscription.graphql"), BuiltIn: false},
 	{Name: "schema/task.graphql", Input: sourceData("schema/task.graphql"), BuiltIn: false},
@@ -9600,6 +9628,94 @@ func (ec *executionContext) fieldContext_Alert_message(_ context.Context, field 
 	return fc, nil
 }
 
+func (ec *executionContext) _ChainHead_height(ctx context.Context, field graphql.CollectedField, obj *model.ChainHead) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ChainHead_height(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Height, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ChainHead_height(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ChainHead",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ChainHead_timestamp(ctx context.Context, field graphql.CollectedField, obj *model.ChainHead) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ChainHead_timestamp(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Timestamp, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ChainHead_timestamp(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ChainHead",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ClientFilter_name(ctx context.Context, field graphql.CollectedField, obj *model.ClientFilter) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ClientFilter_name(ctx, field)
 	if err != nil {
@@ -11419,94 +11535,6 @@ func (ec *executionContext) fieldContext_GaugeCountValue_value(_ context.Context
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Global_networkName(ctx context.Context, field graphql.CollectedField, obj *model.Global) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Global_networkName(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Global().NetworkName(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Global_networkName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Global",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Global_genesisTimestamp(ctx context.Context, field graphql.CollectedField, obj *model.Global) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Global_genesisTimestamp(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Global().GenesisTimestamp(rctx, obj)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Global_genesisTimestamp(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Global",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
 		},
@@ -15829,6 +15857,94 @@ func (ec *executionContext) fieldContext_MessageSend_sendError(_ context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Metadata_networkName(ctx context.Context, field graphql.CollectedField, obj *model.Metadata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Metadata_networkName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Metadata().NetworkName(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Metadata_networkName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Metadata",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Metadata_genesisTimestamp(ctx context.Context, field graphql.CollectedField, obj *model.Metadata) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Metadata_genesisTimestamp(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Metadata().GenesisTimestamp(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint64)
+	fc.Result = res
+	return ec.marshalNUint642uint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Metadata_genesisTimestamp(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Metadata",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Uint64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -26076,6 +26192,56 @@ func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_metadata(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_metadata(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Metadata(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Metadata)
+	fc.Result = res
+	return ec.marshalNMetadata2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_metadata(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "networkName":
+				return ec.fieldContext_Metadata_networkName(ctx, field)
+			case "genesisTimestamp":
+				return ec.fieldContext_Metadata_genesisTimestamp(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Metadata", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_miner(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_miner(ctx, field)
 	if err != nil {
@@ -27465,56 +27631,6 @@ func (ec *executionContext) fieldContext_Query_sectorSummary(_ context.Context, 
 				return ec.fieldContext_SectorSummary_failed(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SectorSummary", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_global(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_global(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Global(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Global)
-	fc.Result = res
-	return ec.marshalNGlobal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGlobal(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_global(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "networkName":
-				return ec.fieldContext_Global_networkName(ctx, field)
-			case "genesisTimestamp":
-				return ec.fieldContext_Global_genesisTimestamp(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Global", field.Name)
 		},
 	}
 	return fc, nil
@@ -33106,6 +33222,70 @@ func (ec *executionContext) fieldContext_Subscription_alerts(ctx context.Context
 	if fc.Args, err = ec.field_Subscription_alerts_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Subscription_chainHead(ctx context.Context, field graphql.CollectedField) (ret func(ctx context.Context) graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subscription_chainHead(ctx, field)
+	if err != nil {
+		return nil
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Subscription().ChainHead(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return nil
+	}
+	return func(ctx context.Context) graphql.Marshaler {
+		select {
+		case res, ok := <-resTmp.(<-chan *model.ChainHead):
+			if !ok {
+				return nil
+			}
+			return graphql.WriterFunc(func(w io.Writer) {
+				w.Write([]byte{'{'})
+				graphql.MarshalString(field.Alias).MarshalGQL(w)
+				w.Write([]byte{':'})
+				ec.marshalNChainHead2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx, field.Selections, res).MarshalGQL(w)
+				w.Write([]byte{'}'})
+			})
+		case <-ctx.Done():
+			return nil
+		}
+	}
+}
+
+func (ec *executionContext) fieldContext_Subscription_chainHead(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Subscription",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "height":
+				return ec.fieldContext_ChainHead_height(ctx, field)
+			case "timestamp":
+				return ec.fieldContext_ChainHead_timestamp(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ChainHead", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -38711,6 +38891,50 @@ func (ec *executionContext) _Alert(ctx context.Context, sel ast.SelectionSet, ob
 	return out
 }
 
+var chainHeadImplementors = []string{"ChainHead"}
+
+func (ec *executionContext) _ChainHead(ctx context.Context, sel ast.SelectionSet, obj *model.ChainHead) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, chainHeadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ChainHead")
+		case "height":
+			out.Values[i] = ec._ChainHead_height(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "timestamp":
+			out.Values[i] = ec._ChainHead_timestamp(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var clientFilterImplementors = []string{"ClientFilter"}
 
 func (ec *executionContext) _ClientFilter(ctx context.Context, sel ast.SelectionSet, obj *model.ClientFilter) graphql.Marshaler {
@@ -39094,112 +39318,6 @@ func (ec *executionContext) _GaugeCountValue(ctx context.Context, sel ast.Select
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var globalImplementors = []string{"Global"}
-
-func (ec *executionContext) _Global(ctx context.Context, sel ast.SelectionSet, obj *model.Global) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, globalImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Global")
-		case "networkName":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Global_networkName(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "genesisTimestamp":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Global_genesisTimestamp(ctx, field, obj)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -40395,6 +40513,112 @@ func (ec *executionContext) _MessageSend(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = ec._MessageSend_sendSuccess(ctx, field, obj)
 		case "sendError":
 			out.Values[i] = ec._MessageSend_sendError(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var metadataImplementors = []string{"Metadata"}
+
+func (ec *executionContext) _Metadata(ctx context.Context, sel ast.SelectionSet, obj *model.Metadata) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, metadataImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Metadata")
+		case "networkName":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Metadata_networkName(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "genesisTimestamp":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Metadata_genesisTimestamp(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -43228,6 +43452,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "metadata":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_metadata(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "miner":
 			field := field
 
@@ -43614,28 +43860,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_sectorSummary(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "global":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_global(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -45434,6 +45658,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	switch fields[0].Name {
 	case "alerts":
 		return ec._Subscription_alerts(ctx, fields[0])
+	case "chainHead":
+		return ec._Subscription_chainHead(ctx, fields[0])
 	case "completedTask":
 		return ec._Subscription_completedTask(ctx, fields[0])
 	case "newTask":
@@ -46750,6 +46976,20 @@ func (ec *executionContext) marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashbo
 	return v
 }
 
+func (ec *executionContext) marshalNChainHead2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx context.Context, sel ast.SelectionSet, v model.ChainHead) graphql.Marshaler {
+	return ec._ChainHead(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNChainHead2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx context.Context, sel ast.SelectionSet, v *model.ChainHead) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._ChainHead(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx context.Context, sel ast.SelectionSet, v *model.ClientFilter) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -46826,20 +47066,6 @@ func (ec *executionContext) marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstrahe�
 	wg.Wait()
 
 	return ret
-}
-
-func (ec *executionContext) marshalNGlobal2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGlobal(ctx context.Context, sel ast.SelectionSet, v model.Global) graphql.Marshaler {
-	return ec._Global(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNGlobal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGlobal(ctx context.Context, sel ast.SelectionSet, v *model.Global) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Global(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v any) (string, error) {
@@ -47031,6 +47257,20 @@ func (ec *executionContext) unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋs
 func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v any) (model.MarketMk12StorageAskInput, error) {
 	res, err := ec.unmarshalInputMarketMk12StorageAskInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNMetadata2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx context.Context, sel ast.SelectionSet, v model.Metadata) graphql.Marshaler {
+	return ec._Metadata(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNMetadata2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx context.Context, sel ast.SelectionSet, v *model.Metadata) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Metadata(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNMiningCount2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx context.Context, sel ast.SelectionSet, v model.MiningCount) graphql.Marshaler {

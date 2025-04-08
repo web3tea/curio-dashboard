@@ -10,7 +10,8 @@ import { useI18n } from 'vue-i18n'
 export function getRelativeTime(
   date: Date | string | number | null | undefined,
   originTimeFormat: string | undefined | null = undefined,
-  maxUnits = 2
+  maxUnits = 2,
+  formatDate?: (date: Date, format: string) => string
 ): string {
   // Check for null, undefined or invalid date
   if (date === null || date === undefined) {
@@ -59,8 +60,12 @@ export function getRelativeTime(
 
   // Format original time if needed
   if (originTimeFormat) {
-    const { d } = useI18n()
+      if (formatDate) {
+        const formattedDate = formatDate(targetDate, originTimeFormat)
+        return `${formattedDate} (${relativeTime})`
+      }
 
+    const { d } = useI18n()
     const formattedDate = d(targetDate, originTimeFormat)
     return `${formattedDate} (${relativeTime})`
   }

@@ -1,0 +1,17 @@
+type Metadata {
+    networkName: String!
+    genesisTimestamp: Uint64!
+}
+
+type ChainHead {
+    height: Uint64!
+    timestamp: Uint64!
+}
+
+extend type Query {
+    metadata: Metadata!
+}
+
+extend type Subscription {
+    chainHead: ChainHead!
+}
