@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue'
 import PendingDealList from '@/views/market/deals/pending/PendingDealList.vue'
 
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
-const breadcrumbs = ref([
+const breadcrumbs = computed(() => [
   {
-    title: t('nav.Deals'),
+    title: t('nav.deals'),
     disabled: true,
     to: "#"
   },
   {
-    title: t('nav.PendingPieces'),
+    title: t('nav.pendingDeals'),
     disabled: true,
     to: { name: 'PendingDeals' },
   },

@@ -8,8 +8,12 @@ import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { useNotificationStore } from '@/stores/notification'
 import { getRelativeTime } from '@/utils/helpers/time'
+import { useLocalState } from '@/utils/helpers/localState'
+import { useI18n } from 'vue-i18n'
 
-const notificationStore = useNotificationStore()
+const { t } = useI18n()
+
+const ns = useNotificationStore()
 
 const { result, loading, refetch } = useQuery(GetPendingDeals, null, () => ({
   fetchPolicy: 'cache-first',
@@ -25,11 +29,11 @@ const { mutate: dealSealNow, loading: dealSealNowLoading, onDone, onError } = us
 }))
 
 onDone(() => {
-  notificationStore.success('Deal sealed successfully')
+  ns.success('Start sealing')
 })
 
 onError(e => {
-  notificationStore.error(e.message)
+  ns.error(e.message)
 })
 
 const headers = [
@@ -44,9 +48,24 @@ const headers = [
   { title: 'Is Snap', key: 'isSnap', align: 'center' },
 ] as const
 
+interface TableSettings {
+  enableGrouping: boolean;
+}
+
+const tableSettings = useLocalState<TableSettings>('pending-deal-list-table-settings', {
+  enableGrouping: false,
+})
+
 const search = ref('')
 const sortBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'desc' }, { key: 'pieceIndex', order: 'asc' }] as const
-const groupBy = [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'desc' }] as const
+
+const groupBy = computed(() => {
+  if (tableSettings.value.enableGrouping) {
+    return [{ key: 'spID', order: 'asc' }, { key: 'sectorNumber', order: 'desc' }] as const
+  } else {
+    return []
+  }
+})
 
 const fillProgress = computed(() => (spID: number, sectorNumber: number): number => {
   const totalSize = 32 * 1024 * 1024 * 1024 // 32GB in bytes
@@ -85,6 +104,18 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
               <IconSearch :size="14" />
             </template>
           </v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-switch
+            v-model="tableSettings.enableGrouping"
+            :label="t('pendingDeal.groupBySector')"
+            hide-details
+            density="compact"
+            color="primary"
+          />
         </v-col>
         <v-col
           cols="12"

@@ -121,11 +121,11 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     },
     { header: t('nav.Market & Deals'), icon: IconShoppingCart },
     {
-      title: t('nav.Deals'),
+      title: t('nav.deals'),
       icon: IconContract,
       children: [
         {
-          title: t('nav.Pending Pieces'),
+          title: t('nav.pendingDeals'),
           to: { name: "PendingDeals" },
         },
         {

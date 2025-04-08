@@ -6,11 +6,12 @@ import { GetRunningTasks } from '@/gql/task'
 import { IconReload, IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { getRelativeTime } from '@/utils/helpers/time'
+import { useLocalState } from '@/utils/helpers/localState'
 
 const { t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
-  fetchPolicy: 'no-cache',
+  fetchPolicy: 'cache-and-network',
   pollInterval: 3000,
 }))
 
@@ -26,12 +27,6 @@ const headers = [
   { title: 'Previous Task', key: 'previousTaskID' },
 ]
 
-const groupBy = [
-  {
-    key: 'name',
-    order: 'asc',
-  }] as const
-
 const sortBy = [
   {
     key: 'postedTime',
@@ -39,16 +34,39 @@ const sortBy = [
   }
 ] as const
 
+interface TableSettings {
+  enableGrouping: boolean;
+  showBackgroundTasks: boolean;
+}
+
+const tableSettings = useLocalState<TableSettings>('active-task-list-table-settings', {
+  enableGrouping: true,
+  showBackgroundTasks: false
+})
+
 const searchValue = ref('')
-const showBackgroundTasks = ref(false)
 
 const filteredItems = computed(() => {
-  if (showBackgroundTasks.value) {
+  if (tableSettings.value.showBackgroundTasks) {
     return items.value
   } else {
     return items.value.filter(task => !task.name.startsWith('bg:'))
   }
 })
+
+const dynamicGroupBy = computed(() => {
+  if (tableSettings.value.enableGrouping) {
+    return [
+      {
+        key: 'name',
+        order: 'asc',
+      }
+    ] as const
+  } else {
+    return [] // empty array means no grouping
+  }
+})
+
 </script>
 
 <template>
@@ -90,10 +108,19 @@ const filteredItems = computed(() => {
               class="d-flex align-center"
             >
               <v-switch
-                v-model="showBackgroundTasks"
+                v-model="tableSettings.enableGrouping"
+                :label="t('activeTask.groupByName')"
+                hide-details
+                density="compact"
+                color="primary"
+                class="mr-6"
+              />
+              <v-switch
+                v-model="tableSettings.showBackgroundTasks"
                 :label="t('activeTask.showBackgroundTasks')"
                 hide-details
                 density="compact"
+                color="primary"
               />
             </v-col>
             <v-col
@@ -120,7 +147,7 @@ const filteredItems = computed(() => {
             :items="filteredItems"
             :loading="loading"
             :search="searchValue"
-            :group-by="groupBy"
+            :group-by="dynamicGroupBy"
             :sort-by="sortBy"
           >
             <template #item.name="{ value }">

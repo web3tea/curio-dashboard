@@ -19,7 +19,6 @@
     "Settings": "设置",
     "Client Allow/Deny": "客户白名单",
     "Wins": "Wins",
-    "Pending Pieces": "Pending Pieces",
     "MK12 Deals": "MK12 Deals",
     "Market Balances": "Market Balances",
     "Storage Asks": "Storage Asks",
@@ -28,7 +27,6 @@
     "StorageAsks": "StorageAsks",
     "Balances": "余额",
     "MK12Deals": "MK12Deals",
-    "PendingPieces": "PendingPieces",
     "Active Tasks": "活跃任务",
     "Task Overview": "任务概览",
     "Sector Processing": "扇区处理",
@@ -52,7 +50,9 @@
     "Resource Usage": "资源使用情况",
     "Dashboard": "仪表盘",
     "PoRep Pipeline": "封存管道",
-    "Events": "事件"
+    "Events": "事件",
+    "deals": "交易",
+    "pendingDeals": "待处理交易"
   },
   "fields": {
     "Total Power": "总算力",
@@ -212,7 +212,8 @@
     "averageWaitTime": "任务平均等待时间"
   },
   "activeTask": {
-    "showBackgroundTasks": "显示后台任务"
+    "showBackgroundTasks": "显示后台任务",
+    "groupByName": "按名称分组"
   },
   "prometheus": {
     "last30min": "过去30分钟",
@@ -222,5 +223,8 @@
     "last24hour": "过去24小时",
     "last7day": "过去7天",
     "last30day": "过去30天"
+  },
+  "pendingDeal": {
+    "groupBySector": "按扇区分组"
   }
 }

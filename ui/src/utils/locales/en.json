@@ -6,7 +6,6 @@
     "PoRep": "PoRep",
     "Tasks": "Tasks",
     "Sectors": "Sectors",
-    "Pending Pieces": "Pending Pieces",
     "Deals": "Deals",
     "Machines": "Machines",
     "Storages": "Storages",
@@ -28,7 +27,6 @@
     "MK12 Deals": "MK12 Deals",
     "StorageAsks": "StorageAsks",
     "MK12Deals": "MK12Deals",
-    "PendingPieces": "PendingPieces",
     "Active Tasks": "Active Tasks",
     "Task Overview": "Task Overview",
     "Sector Processing": "Sector Processing",
@@ -52,7 +50,9 @@
     "Resource Usage": "Resource Usage",
     "Dashboard": "Dashboard",
     "PoRep Pipeline": "PoRep Pipeline",
-    "Events": "Events"
+    "Events": "Events",
+    "deals": "Deals",
+    "pendingDeals": "Pending Deals"
   },
   "fields": {
     "Total Power": "Total Power",
@@ -212,7 +212,8 @@
     "averageWaitTime": "Average Wait Time"
   },
   "activeTask": {
-    "showBackgroundTasks": "Show Background Tasks"
+    "showBackgroundTasks": "Show Background Tasks",
+    "groupByName": "Group by Name"
   },
   "prometheus": {
     "last30min": "Last 30 Minutes",
@@ -222,5 +223,8 @@
     "last24hour": "Last 24 Hours",
     "last7day": "Last 7 Days",
     "last30day": "Last 30 Days"
+  },
+  "pendingDeal": {
+    "groupBySector": "Group By Sector"
   }
 }
