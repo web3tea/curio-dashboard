@@ -1,8 +1,11 @@
 <script setup lang="ts">
 
-import { useGlobalStore } from '@/stores/apps/global'
+import { useMetadataStore } from '@/stores/apps/metadata'
 import { computed } from 'vue'
 import { getRelativeTime } from '@/utils/helpers/time'
+import { useI18n } from 'vue-i18n'
+
+const { d } = useI18n()
 
 const props = defineProps({
   epoch: {
@@ -19,19 +22,19 @@ const props = defineProps({
   }
 })
 
-const globalStore = useGlobalStore()
+const ms = useMetadataStore()
 
 const text = computed(() => {
   if (!props.epoch) {
     return props.defaultText
   }
-  return getRelativeTime(globalStore.epochToTime(props.epoch), 'long')
+  return getRelativeTime(ms.epochToTime(props.epoch), 'long', 2, d)
 })
 
 </script>
 
 <template>
-  <v-tooltip :text="text">
+  <v-tooltip>
     <template #activator="{ props: pp }">
       <span
         v-bind="pp"
@@ -39,6 +42,7 @@ const text = computed(() => {
         {{ epoch }}
       </span>
     </template>
+    {{ text }}
   </v-tooltip>
 </template>
 

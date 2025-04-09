@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import gql from 'graphql-tag'
 import { computed, ComputedRef } from 'vue'
-import { Global } from '@/typed-graph'
+import { Metadata } from '@/typed-graph'
 import { useQuery } from '@vue/apollo-composable'
 
-export const GetGlobal = gql`
-  query GetGlobal {
-    global {
+export const GetMetadata = gql`
+  query GetMetadata {
+    metadata {
       networkName
       genesisTimestamp
     }
@@ -26,12 +26,12 @@ const networkInfos = {
   },
 }
 
-export const useGlobalStore = defineStore('global', () => {
-  const { result } = useQuery(GetGlobal, null, {
-    fetchPolicy: 'cache-first',
+export const useMetadataStore = defineStore('metadata', () => {
+  const { result } = useQuery(GetMetadata, null, {
+    fetchPolicy: 'cache-and-network',
   })
 
-  const global: ComputedRef<Global> = computed(() => result.value?.global || {})
+  const global: ComputedRef<Metadata> = computed(() => result.value?.metadata || {})
 
   const networkInfo = computed(() => {
     return networkInfos[global.value.networkName as keyof typeof networkInfos] || networkInfos.mainnet

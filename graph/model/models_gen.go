@@ -25,6 +25,11 @@ type Alert struct {
 	Message     string `json:"message"`
 }
 
+type ChainHead struct {
+	Height    uint64 `json:"height"`
+	Timestamp uint64 `json:"timestamp"`
+}
+
 type ClientFilter struct {
 	Name               string           `json:"name"`
 	Active             bool             `json:"active"`

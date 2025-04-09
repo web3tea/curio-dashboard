@@ -56,6 +56,12 @@ export type Alert = {
   message: Scalars['String']['output'];
 };
 
+export type ChainHead = {
+  __typename?: 'ChainHead';
+  height: Scalars['Uint64']['output'];
+  timestamp: Scalars['Uint64']['output'];
+};
+
 export type ClientFilter = {
   __typename?: 'ClientFilter';
   active: Scalars['Boolean']['output'];
@@ -126,12 +132,6 @@ export type GaugeCountValue = {
   __typename?: 'GaugeCountValue';
   key: Scalars['String']['output'];
   value: Scalars['Int']['output'];
-};
-
-export type Global = {
-  __typename?: 'Global';
-  genesisTimestamp: Scalars['Int']['output'];
-  networkName: Scalars['String']['output'];
 };
 
 export type Machine = {
@@ -285,6 +285,12 @@ export type MessageSend = {
   toAddr: Scalars['String']['output'];
   unsignedCid: Scalars['String']['output'];
   unsignedData: Scalars['Bytes']['output'];
+};
+
+export type Metadata = {
+  __typename?: 'Metadata';
+  genesisTimestamp: Scalars['Uint64']['output'];
+  networkName: Scalars['String']['output'];
 };
 
 export type Miner = {
@@ -688,7 +694,6 @@ export type Query = {
   config?: Maybe<Config>;
   configs?: Maybe<Array<Maybe<Config>>>;
   dealsPending?: Maybe<Array<Maybe<OpenSectorPiece>>>;
-  global: Global;
   machine?: Maybe<Machine>;
   machineByHostAndPort?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
@@ -714,6 +719,7 @@ export type Query = {
   messageSend?: Maybe<MessageSend>;
   messageSends?: Maybe<Array<Maybe<MessageSend>>>;
   messageSendsCount: Scalars['Int']['output'];
+  metadata: Metadata;
   miner?: Maybe<Miner>;
   minerPower?: Maybe<MinerPower>;
   miningCount: MiningCount;
@@ -1158,6 +1164,7 @@ export type StorageUsage = {
 export type Subscription = {
   __typename?: 'Subscription';
   alerts: Alert;
+  chainHead: ChainHead;
   completedTask: TaskHistory;
   newTask: Task;
 };
