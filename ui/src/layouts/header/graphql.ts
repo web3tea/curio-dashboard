@@ -19,3 +19,12 @@ export const SubscribeAlerts = gql`
     }
   }
 `
+
+export const SubscribeChainHead = gql`
+  subscription SubscribeChainHead {
+    chainHead {
+      height
+      timestamp
+    }
+  }
+`

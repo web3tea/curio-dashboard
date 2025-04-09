@@ -5,19 +5,18 @@ import NotificationDD from './NotificationDD.vue'
 import ProfileDD from './ProfileDD.vue'
 import Searchbar from './SearchBarPanel.vue'
 import FullScreen from './FullScreen.vue'
+import ChainStatus from './ChainStatus.vue'
 import { useCustomizerStore } from '@/stores/customizer'
 import Logo from '@/layouts/logo/AppLogo.vue'
-import { IconLanguage, IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand, IconSearch } from '@tabler/icons-vue'
+import { IconLanguage,
+         IconLayoutSidebarLeftCollapse,
+         IconLayoutSidebarLeftExpand,
+         IconSearch } from '@tabler/icons-vue'
 import Theme from '@/layouts/header/AppTheme.vue'
 import Orientation from '@/layouts/header/AppOrientation.vue'
-import { useUIStore } from '@/stores/ui'
-import { storeToRefs } from 'pinia'
 
 const customizer = useCustomizerStore()
 const priority = ref(customizer.horizontalLayout ? 0 : 0)
-
-const uiStore = useUIStore()
-const { isOnline } = storeToRefs(uiStore)
 
 </script>
 
@@ -83,12 +82,8 @@ const { isOnline } = storeToRefs(uiStore)
     >
       <Searchbar />
     </v-sheet>
-    <v-badge
-      :color="isOnline ? 'success': 'error'"
-      inline
-    >
-      <v-icon>mdi-home-outline</v-icon>
-    </v-badge>
+
+    <ChainStatus />
     <v-spacer />
     <Orientation />
     <FullScreen />
