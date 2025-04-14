@@ -151,7 +151,7 @@ func GetFullNodeAPIV1Curio(ctx *cli.Context, ainfoCfg []string, curioVersion str
 		sp := strings.SplitN(curioVersion, "+", 3)
 		if len(sp) == 3 {
 			// version + build + commit
-			if sp[1] != string(networkName) && ignoreVersionMismatch {
+			if sp[1] != string(networkName) && !ignoreVersionMismatch {
 				log.Warnf("Network mismatch for node %s: curio built for %s but node is on %s",
 					head.addr, curioVersion, networkName)
 				closer()
