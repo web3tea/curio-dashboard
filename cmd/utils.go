@@ -21,14 +21,13 @@ import (
 	"golang.org/x/xerrors"
 )
 
-func getChainAPI(cctx *cli.Context, cfg config.ChainConfig, curioVersion string) (api.Chain, jsonrpc.ClientCloser, error) {
-
+func getChainAPI(cctx *cli.Context, cfg config.ChainConfig, curioVersion string, ignoreVersionMismatch bool) (api.Chain, jsonrpc.ClientCloser, error) {
 	apiInfo := cfg.APIs
 	if os.Getenv("FULLNODE_API_INFO") != "" {
 		apiInfo = strings.Split(os.Getenv("FULLNODE_API_INFO"), ",")
 	}
 
-	return GetFullNodeAPIV1Curio(cctx, apiInfo, curioVersion)
+	return GetFullNodeAPIV1Curio(cctx, apiInfo, curioVersion, ignoreVersionMismatch)
 }
 
 func getCurioWebRPCV0(ctx *cli.Context, cfg *config.Config) (curiorpc.WebRPC, jsonrpc.ClientCloser, error) {
@@ -106,7 +105,7 @@ type httpHead struct {
 	header http.Header
 }
 
-func GetFullNodeAPIV1Curio(ctx *cli.Context, ainfoCfg []string, curioVersion string) (api.Chain, jsonrpc.ClientCloser, error) {
+func GetFullNodeAPIV1Curio(ctx *cli.Context, ainfoCfg []string, curioVersion string, ignoreVersionMismatch bool) (api.Chain, jsonrpc.ClientCloser, error) {
 	if len(ainfoCfg) == 0 {
 		return nil, nil, xerrors.Errorf("no full node API endpoints provided")
 	}
@@ -152,7 +151,7 @@ func GetFullNodeAPIV1Curio(ctx *cli.Context, ainfoCfg []string, curioVersion str
 		sp := strings.SplitN(curioVersion, "+", 3)
 		if len(sp) == 3 {
 			// version + build + commit
-			if sp[1] != string(networkName) {
+			if sp[1] != string(networkName) && ignoreVersionMismatch {
 				log.Warnf("Network mismatch for node %s: curio built for %s but node is on %s",
 					head.addr, curioVersion, networkName)
 				closer()

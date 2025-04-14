@@ -70,7 +70,7 @@ var runCmd = &cli.Command{
 			fmt.Printf("\033[33;1m The dashboard may not work correctly. Continuing as requested with --ignore-version-mismatch flag. \033[0m\n\n")
 		}
 
-		chainAPI, closer, err := getChainAPI(cctx, cfg.Chain, curioVersion)
+		chainAPI, closer, err := getChainAPI(cctx, cfg.Chain, curioVersion, cctx.Bool("ignore-version-mismatch"))
 		if err != nil {
 			return fmt.Errorf("failed to get chain API: %w", err)
 		}
