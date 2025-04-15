@@ -16,14 +16,12 @@ import { icons } from '@/plugins/mdi-icon'
 import { LightTheme } from '@/theme/LightTheme'
 import { DarkTheme } from '@/theme/DarkTheme'
 import { VDateInput } from 'vuetify/labs/components'
-import { VSnackbarQueue } from 'vuetify/labs/VSnackbarQueue'
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
 export default createVuetify({
   components: {
     ...components,
     VDateInput,
-    VSnackbarQueue,
   },
   directives,
   icons: {
