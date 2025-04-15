@@ -4,7 +4,7 @@ import { ref, useSlots, computed } from 'vue'
 import { IconCircleCheck, IconCircleX } from '@tabler/icons-vue'
 
 interface BooleanIconProps {
-  modelValue: boolean;
+  modelValue?: boolean;
   width?: number;
   maxWidth?: string;
 }
