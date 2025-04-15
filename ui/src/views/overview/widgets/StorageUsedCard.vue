@@ -44,7 +44,7 @@ const item = computed<StorageUsedData>(() => {
 
   return {
     ...stats,
-    usedRate: usedRate+80,
+    usedRate: usedRate,
     trend: usedRate > 80 ? "WARNING" : "GOOD",
   }
 })
