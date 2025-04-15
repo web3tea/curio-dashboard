@@ -1,7 +1,12 @@
 {
   "name": "ui",
   "license": "Apache-2.0",
+  "engines": {
+      "node": "22.x",
+      "yarn": ">=1.22.0"
+    },
   "scripts": {
+    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) { console.error('You must use Yarn to install dependencies'); process.exit(1); }\"",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
