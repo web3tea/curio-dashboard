@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import eslintPluginVue from 'eslint-plugin-vue'
 import ts from 'typescript-eslint'
 import vuetify from 'eslint-plugin-vuetify'
+import globals from 'globals'
 import stylistic from '@stylistic/eslint-plugin'
 
 export default ts.config(
@@ -17,9 +18,13 @@ export default ts.config(
             '@stylistic': stylistic,
         },
         languageOptions: {
-            parserOptions: {
-                parser: '@typescript-eslint/parser'
-            }
+          sourceType: 'module',
+          globals: {
+            ...globals.browser
+          },
+          parserOptions: {
+              parser: '@typescript-eslint/parser'
+          }
         },
         rules: {
             "vue/script-indent": ["error", 2],
