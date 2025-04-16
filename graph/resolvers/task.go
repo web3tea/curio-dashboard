@@ -226,7 +226,5 @@ func (r *Resolver) Task() graph.TaskResolver { return &taskResolver{r} }
 // TaskHistory returns graph.TaskHistoryResolver implementation.
 func (r *Resolver) TaskHistory() graph.TaskHistoryResolver { return &taskHistoryResolver{r} }
 
-type (
-	taskResolver        struct{ *Resolver }
-	taskHistoryResolver struct{ *Resolver }
-)
+type taskResolver struct{ *Resolver }
+type taskHistoryResolver struct{ *Resolver }

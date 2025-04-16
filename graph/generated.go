@@ -16,10 +16,10 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/web3tea/curio-dashboard/graph/model"
-	"github.com/web3tea/curio-dashboard/types"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
+	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 // region    ************************** generated!.gotpl **************************
@@ -5618,7 +5618,7 @@ func (ec *executionContext) field_Mutation_dealSealNow_argsMiner(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -5674,7 +5674,7 @@ func (ec *executionContext) field_Mutation_marketAddBalance_argsMiner(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -5692,7 +5692,7 @@ func (ec *executionContext) field_Mutation_marketAddBalance_argsWallet(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("wallet"))
 	if tmp, ok := rawArgs["wallet"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -5710,7 +5710,7 @@ func (ec *executionContext) field_Mutation_marketAddBalance_argsAmount(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("amount"))
 	if tmp, ok := rawArgs["amount"]; ok {
-		return ec.unmarshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐFIL(ctx, tmp)
+		return ec.unmarshalNFIL2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐFIL(ctx, tmp)
 	}
 
 	var zeroVal types.FIL
@@ -5738,7 +5738,7 @@ func (ec *executionContext) field_Mutation_marketAddClientFilter_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNClientFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx, tmp)
+		return ec.unmarshalNClientFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx, tmp)
 	}
 
 	var zeroVal model.ClientFilterInput
@@ -5766,7 +5766,7 @@ func (ec *executionContext) field_Mutation_marketAddPriceFilter_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNPriceFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx, tmp)
+		return ec.unmarshalNPriceFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx, tmp)
 	}
 
 	var zeroVal model.PriceFilterInput
@@ -5794,7 +5794,7 @@ func (ec *executionContext) field_Mutation_marketDeleteAllowFilter_argsWallet(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("wallet"))
 	if tmp, ok := rawArgs["wallet"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -5883,7 +5883,7 @@ func (ec *executionContext) field_Mutation_marketSetAllowFilter_argsWallet(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("wallet"))
 	if tmp, ok := rawArgs["wallet"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -5929,7 +5929,7 @@ func (ec *executionContext) field_Mutation_marketToggleAllowFilter_argsWallet(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("wallet"))
 	if tmp, ok := rawArgs["wallet"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -5985,7 +5985,7 @@ func (ec *executionContext) field_Mutation_marketUpdateClientFilter_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNClientFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx, tmp)
+		return ec.unmarshalNClientFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx, tmp)
 	}
 
 	var zeroVal model.ClientFilterInput
@@ -6013,7 +6013,7 @@ func (ec *executionContext) field_Mutation_marketUpdatePriceFilter_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNPriceFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx, tmp)
+		return ec.unmarshalNPriceFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx, tmp)
 	}
 
 	var zeroVal model.PriceFilterInput
@@ -6074,7 +6074,7 @@ func (ec *executionContext) field_Mutation_removeSector_argsMiner(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -6125,7 +6125,7 @@ func (ec *executionContext) field_Mutation_restartSector_argsMiner(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -6222,7 +6222,7 @@ func (ec *executionContext) field_Mutation_updateMarketMk12StorageAsk_argsInput(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 	if tmp, ok := rawArgs["input"]; ok {
-		return ec.unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx, tmp)
+		return ec.unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx, tmp)
 	}
 
 	var zeroVal model.MarketMk12StorageAskInput
@@ -6278,7 +6278,7 @@ func (ec *executionContext) field_Query_actor_argsAddress(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
 	if tmp, ok := rawArgs["address"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -6390,7 +6390,7 @@ func (ec *executionContext) field_Query_marketAllowFilter_argsWallet(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("wallet"))
 	if tmp, ok := rawArgs["wallet"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -6418,7 +6418,7 @@ func (ec *executionContext) field_Query_marketBalance_argsMiner(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("miner"))
 	if tmp, ok := rawArgs["miner"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -6558,7 +6558,7 @@ func (ec *executionContext) field_Query_marketMk12DealsCount_argsFilter(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
 	if tmp, ok := rawArgs["filter"]; ok {
-		return ec.unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx, tmp)
+		return ec.unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx, tmp)
 	}
 
 	var zeroVal model.MarketMk12DealFilterInput
@@ -6596,7 +6596,7 @@ func (ec *executionContext) field_Query_marketMk12Deals_argsFilter(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
 	if tmp, ok := rawArgs["filter"]; ok {
-		return ec.unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx, tmp)
+		return ec.unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx, tmp)
 	}
 
 	var zeroVal model.MarketMk12DealFilterInput
@@ -6660,7 +6660,7 @@ func (ec *executionContext) field_Query_marketMk12StorageAsk_argsSpID(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
 	if tmp, ok := rawArgs["spId"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -6813,7 +6813,7 @@ func (ec *executionContext) field_Query_messageSendsCount_argsAccount(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
 	if tmp, ok := rawArgs["account"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -6851,7 +6851,7 @@ func (ec *executionContext) field_Query_messageSends_argsAccount(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("account"))
 	if tmp, ok := rawArgs["account"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -6915,7 +6915,7 @@ func (ec *executionContext) field_Query_minerPower_argsAddress(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
 	if tmp, ok := rawArgs["address"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -6943,7 +6943,7 @@ func (ec *executionContext) field_Query_miner_argsAddress(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
 	if tmp, ok := rawArgs["address"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -7022,7 +7022,7 @@ func (ec *executionContext) field_Query_miningCountAggregate_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -7040,7 +7040,7 @@ func (ec *executionContext) field_Query_miningCountAggregate_argsInterval(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("interval"))
 	if tmp, ok := rawArgs["interval"]; ok {
-		return ec.unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx, tmp)
+		return ec.unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx, tmp)
 	}
 
 	var zeroVal model.MiningTaskAggregateInterval
@@ -7114,7 +7114,7 @@ func (ec *executionContext) field_Query_miningCountSummary_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -7188,7 +7188,7 @@ func (ec *executionContext) field_Query_miningCount_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -7226,7 +7226,7 @@ func (ec *executionContext) field_Query_miningStatusSummay_argsSpID(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spID"))
 	if tmp, ok := rawArgs["spID"]; ok {
-		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
 	}
 
 	var zeroVal *types.ActorID
@@ -7392,7 +7392,7 @@ func (ec *executionContext) field_Query_miningWinsCount_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -7499,7 +7499,7 @@ func (ec *executionContext) field_Query_miningWins_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -7586,7 +7586,7 @@ func (ec *executionContext) field_Query_porep_argsSp(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sp"))
 	if tmp, ok := rawArgs["sp"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -7785,7 +7785,7 @@ func (ec *executionContext) field_Query_sector_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal types.Address
@@ -7831,7 +7831,7 @@ func (ec *executionContext) field_Query_sectorsCount_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -7874,7 +7874,7 @@ func (ec *executionContext) field_Query_sectors_argsActor(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
 	if tmp, ok := rawArgs["actor"]; ok {
-		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
 	}
 
 	var zeroVal *types.Address
@@ -8104,7 +8104,7 @@ func (ec *executionContext) field_Query_taskHistoriesAggregate_argsInterval(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("interval"))
 	if tmp, ok := rawArgs["interval"]; ok {
-		return ec.unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx, tmp)
+		return ec.unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx, tmp)
 	}
 
 	var zeroVal model.TaskHistoriesAggregateInterval
@@ -8946,7 +8946,7 @@ func (ec *executionContext) _Actor_address(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Actor_address(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9031,7 +9031,7 @@ func (ec *executionContext) _Actor_qualityAdjustedPower(ctx context.Context, fie
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Actor_qualityAdjustedPower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9075,7 +9075,7 @@ func (ec *executionContext) _Actor_rawBytePower(ctx context.Context, field graph
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Actor_rawBytePower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9119,7 +9119,7 @@ func (ec *executionContext) _Actor_actorBalance(ctx context.Context, field graph
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Actor_actorBalance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9163,7 +9163,7 @@ func (ec *executionContext) _Actor_actorAvailableBalance(ctx context.Context, fi
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Actor_actorAvailableBalance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9207,7 +9207,7 @@ func (ec *executionContext) _Actor_workerBalance(ctx context.Context, field grap
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Actor_workerBalance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9248,7 +9248,7 @@ func (ec *executionContext) _Actor_deadlines(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.ActorDeadline)
 	fc.Result = res
-	return ec.marshalOActorDeadline2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx, field.Selections, res)
+	return ec.marshalOActorDeadline2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Actor_deadlines(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9832,7 +9832,7 @@ func (ec *executionContext) _ClientFilter_wallets(ctx context.Context, field gra
 	}
 	res := resTmp.([]*types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx, field.Selections, res)
+	return ec.marshalNAddress2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ClientFilter_wallets(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -9876,7 +9876,7 @@ func (ec *executionContext) _ClientFilter_peers(ctx context.Context, field graph
 	}
 	res := resTmp.([]*types.PeerID)
 	fc.Result = res
-	return ec.marshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx, field.Selections, res)
+	return ec.marshalNPeerID2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_ClientFilter_peers(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10228,7 +10228,7 @@ func (ec *executionContext) _Config_usedBy(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.MachineDetail)
 	fc.Result = res
-	return ec.marshalNMachineDetail2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx, field.Selections, res)
+	return ec.marshalNMachineDetail2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Config_usedBy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10470,7 +10470,7 @@ func (ec *executionContext) _DealInfo_spId(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(types.ActorID)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNActorID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10514,7 +10514,7 @@ func (ec *executionContext) _DealInfo_sector(ctx context.Context, field graphql.
 	}
 	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_sector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10822,7 +10822,7 @@ func (ec *executionContext) _DealInfo_clientPeerId(ctx context.Context, field gr
 	}
 	res := resTmp.(types.PeerID)
 	fc.Result = res
-	return ec.marshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx, field.Selections, res)
+	return ec.marshalNPeerID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_clientPeerId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10866,7 +10866,7 @@ func (ec *executionContext) _DealInfo_chainDealId(ctx context.Context, field gra
 	}
 	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_chainDealId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -10910,7 +10910,7 @@ func (ec *executionContext) _DealInfo_publishCid(ctx context.Context, field grap
 	}
 	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_publishCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11130,7 +11130,7 @@ func (ec *executionContext) _DealInfo_url(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11218,7 +11218,7 @@ func (ec *executionContext) _DealInfo_urlHeaders(ctx context.Context, field grap
 	}
 	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_urlHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11394,7 +11394,7 @@ func (ec *executionContext) _DealInfo_indexed(ctx context.Context, field graphql
 	}
 	res := resTmp.(types.NullBool)
 	fc.Result = res
-	return ec.marshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx, field.Selections, res)
+	return ec.marshalNNullBool2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_DealInfo_indexed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11831,7 +11831,7 @@ func (ec *executionContext) _Machine_detail(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.MachineDetail)
 	fc.Result = res
-	return ec.marshalOMachineDetail2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx, field.Selections, res)
+	return ec.marshalOMachineDetail2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Machine_detail(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11894,7 +11894,7 @@ func (ec *executionContext) _Machine_tasks(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.Task)
 	fc.Result = res
-	return ec.marshalOTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalOTask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Machine_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11963,7 +11963,7 @@ func (ec *executionContext) _Machine_taskHistories(ctx context.Context, field gr
 	}
 	res := resTmp.([]*model.TaskHistory)
 	fc.Result = res
-	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
+	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Machine_taskHistories(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12037,7 +12037,7 @@ func (ec *executionContext) _Machine_storages(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.StoragePath)
 	fc.Result = res
-	return ec.marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
+	return ec.marshalOStoragePath2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Machine_storages(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12122,7 +12122,7 @@ func (ec *executionContext) _Machine_metrics(ctx context.Context, field graphql.
 	}
 	res := resTmp.(*model.MachineMetrics)
 	fc.Result = res
-	return ec.marshalOMachineMetrics2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineMetrics(ctx, field.Selections, res)
+	return ec.marshalOMachineMetrics2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineMetrics(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Machine_metrics(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12763,7 +12763,7 @@ func (ec *executionContext) _MachineMetrics_activeTasks(ctx context.Context, fie
 	}
 	res := resTmp.([]*model.GaugeCountValue)
 	fc.Result = res
-	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
+	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineMetrics_activeTasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12813,7 +12813,7 @@ func (ec *executionContext) _MachineMetrics_addedTasks(ctx context.Context, fiel
 	}
 	res := resTmp.([]*model.GaugeCountValue)
 	fc.Result = res
-	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
+	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineMetrics_addedTasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12863,7 +12863,7 @@ func (ec *executionContext) _MachineMetrics_tasksCompleted(ctx context.Context, 
 	}
 	res := resTmp.([]*model.GaugeCountValue)
 	fc.Result = res
-	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
+	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineMetrics_tasksCompleted(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12913,7 +12913,7 @@ func (ec *executionContext) _MachineMetrics_tasksStarted(ctx context.Context, fi
 	}
 	res := resTmp.([]*model.GaugeCountValue)
 	fc.Result = res
-	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
+	return ec.marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineMetrics_tasksStarted(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13799,7 +13799,7 @@ func (ec *executionContext) _MarketAllowFilter_wallet(ctx context.Context, field
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketAllowFilter_wallet(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13887,7 +13887,7 @@ func (ec *executionContext) _MarketBalance_miner(ctx context.Context, field grap
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketBalance_miner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13931,7 +13931,7 @@ func (ec *executionContext) _MarketBalance_balance(ctx context.Context, field gr
 	}
 	res := resTmp.(types.FIL)
 	fc.Result = res
-	return ec.marshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐFIL(ctx, field.Selections, res)
+	return ec.marshalNFIL2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐFIL(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketBalance_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -13972,7 +13972,7 @@ func (ec *executionContext) _MarketBalance_balances(ctx context.Context, field g
 	}
 	res := resTmp.([]*model.WalletBalance)
 	fc.Result = res
-	return ec.marshalOWalletBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalanceᚄ(ctx, field.Selections, res)
+	return ec.marshalOWalletBalance2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalanceᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketBalance_balances(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14066,7 +14066,7 @@ func (ec *executionContext) _MarketMk12Deal_spId(ctx context.Context, field grap
 	}
 	res := resTmp.(types.ActorID)
 	fc.Result = res
-	return ec.marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+	return ec.marshalNActorID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14198,7 +14198,7 @@ func (ec *executionContext) _MarketMk12Deal_proposalSignature(ctx context.Contex
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalNBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_proposalSignature(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14242,7 +14242,7 @@ func (ec *executionContext) _MarketMk12Deal_proposal(ctx context.Context, field 
 	}
 	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_proposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14506,7 +14506,7 @@ func (ec *executionContext) _MarketMk12Deal_chainDealId(ctx context.Context, fie
 	}
 	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_chainDealId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14550,7 +14550,7 @@ func (ec *executionContext) _MarketMk12Deal_publishCid(ctx context.Context, fiel
 	}
 	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_publishCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14770,7 +14770,7 @@ func (ec *executionContext) _MarketMk12Deal_url(ctx context.Context, field graph
 	}
 	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_url(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14814,7 +14814,7 @@ func (ec *executionContext) _MarketMk12Deal_urlHeaders(ctx context.Context, fiel
 	}
 	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_urlHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14858,7 +14858,7 @@ func (ec *executionContext) _MarketMk12Deal_error(ctx context.Context, field gra
 	}
 	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_error(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14899,7 +14899,7 @@ func (ec *executionContext) _MarketMk12Deal_label(ctx context.Context, field gra
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12Deal_label(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14987,7 +14987,7 @@ func (ec *executionContext) _MarketMk12StorageAsk_spId(ctx context.Context, fiel
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MarketMk12StorageAsk_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15515,7 +15515,7 @@ func (ec *executionContext) _MessageSend_unsignedData(ctx context.Context, field
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalNBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageSend_unsignedData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15641,7 +15641,7 @@ func (ec *executionContext) _MessageSend_signedData(ctx context.Context, field g
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageSend_signedData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15682,7 +15682,7 @@ func (ec *executionContext) _MessageSend_signedJson(ctx context.Context, field g
 	}
 	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MessageSend_signedJson(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15978,7 +15978,7 @@ func (ec *executionContext) _Miner_id(ctx context.Context, field graphql.Collect
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Miner_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16019,7 +16019,7 @@ func (ec *executionContext) _Miner_info(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.MinerInfo)
 	fc.Result = res
-	return ec.marshalOMinerInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerInfo(ctx, field.Selections, res)
+	return ec.marshalOMinerInfo2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Miner_info(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16092,7 +16092,7 @@ func (ec *executionContext) _Miner_power(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.MinerPower)
 	fc.Result = res
-	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
+	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Miner_power(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16143,7 +16143,7 @@ func (ec *executionContext) _Miner_balance(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.MinerBalance)
 	fc.Result = res
-	return ec.marshalOMinerBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBalance(ctx, field.Selections, res)
+	return ec.marshalOMinerBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBalance(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Miner_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16201,7 +16201,7 @@ func (ec *executionContext) _MinerBalance_id(ctx context.Context, field graphql.
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBalance_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16245,7 +16245,7 @@ func (ec *executionContext) _MinerBalance_balance(ctx context.Context, field gra
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBalance_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16289,7 +16289,7 @@ func (ec *executionContext) _MinerBalance_available(ctx context.Context, field g
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBalance_available(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16333,7 +16333,7 @@ func (ec *executionContext) _MinerBalance_initialPledge(ctx context.Context, fie
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBalance_initialPledge(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16377,7 +16377,7 @@ func (ec *executionContext) _MinerBalance_vesting(ctx context.Context, field gra
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBalance_vesting(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16421,7 +16421,7 @@ func (ec *executionContext) _MinerBalance_preCommitDeposits(ctx context.Context,
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBalance_preCommitDeposits(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16465,7 +16465,7 @@ func (ec *executionContext) _MinerBeneficiaryTerm_quota(ctx context.Context, fie
 	}
 	res := resTmp.(types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBeneficiaryTerm_quota(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16509,7 +16509,7 @@ func (ec *executionContext) _MinerBeneficiaryTerm_usedQuota(ctx context.Context,
 	}
 	res := resTmp.(types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerBeneficiaryTerm_usedQuota(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16597,7 +16597,7 @@ func (ec *executionContext) _MinerInfo_owner(ctx context.Context, field graphql.
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_owner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16641,7 +16641,7 @@ func (ec *executionContext) _MinerInfo_worker(ctx context.Context, field graphql
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_worker(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16685,7 +16685,7 @@ func (ec *executionContext) _MinerInfo_newWorker(ctx context.Context, field grap
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_newWorker(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -16726,7 +16726,7 @@ func (ec *executionContext) _MinerInfo_controlAddresses(ctx context.Context, fie
 	}
 	res := resTmp.([]*types.Address)
 	fc.Result = res
-	return ec.marshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx, field.Selections, res)
+	return ec.marshalOAddress2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_controlAddresses(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17075,7 +17075,7 @@ func (ec *executionContext) _MinerInfo_pendingOwnerAddress(ctx context.Context, 
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_pendingOwnerAddress(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17119,7 +17119,7 @@ func (ec *executionContext) _MinerInfo_beneficiary(ctx context.Context, field gr
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_beneficiary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17160,7 +17160,7 @@ func (ec *executionContext) _MinerInfo_beneficiaryTerm(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.MinerBeneficiaryTerm)
 	fc.Result = res
-	return ec.marshalOMinerBeneficiaryTerm2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBeneficiaryTerm(ctx, field.Selections, res)
+	return ec.marshalOMinerBeneficiaryTerm2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBeneficiaryTerm(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_beneficiaryTerm(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17209,7 +17209,7 @@ func (ec *executionContext) _MinerInfo_pendingBeneficiaryChange(ctx context.Cont
 	}
 	res := resTmp.(*model.MinerPendingBeneficiaryChange)
 	fc.Result = res
-	return ec.marshalOMinerPendingBeneficiaryChange2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPendingBeneficiaryChange(ctx, field.Selections, res)
+	return ec.marshalOMinerPendingBeneficiaryChange2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPendingBeneficiaryChange(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerInfo_pendingBeneficiaryChange(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17265,7 +17265,7 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_newBeneficiary(ctx co
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerPendingBeneficiaryChange_newBeneficiary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17309,7 +17309,7 @@ func (ec *executionContext) _MinerPendingBeneficiaryChange_newQuota(ctx context.
 	}
 	res := resTmp.(types.BigInt)
 	fc.Result = res
-	return ec.marshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalNBigInt2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerPendingBeneficiaryChange_newQuota(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17529,7 +17529,7 @@ func (ec *executionContext) _MinerPower_minerPower(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.PowerClaim)
 	fc.Result = res
-	return ec.marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx, field.Selections, res)
+	return ec.marshalNPowerClaim2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerPower_minerPower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -17579,7 +17579,7 @@ func (ec *executionContext) _MinerPower_totalPower(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.PowerClaim)
 	fc.Result = res
-	return ec.marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx, field.Selections, res)
+	return ec.marshalNPowerClaim2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MinerPower_totalPower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18154,7 +18154,7 @@ func (ec *executionContext) _MiningCountSummary_previous(ctx context.Context, fi
 	}
 	res := resTmp.(*model.MiningCountSummary)
 	fc.Result = res
-	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
+	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningCountSummary_previous(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18388,7 +18388,7 @@ func (ec *executionContext) _MiningStatusSummay_lastMinedAt(ctx context.Context,
 	}
 	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningStatusSummay_lastMinedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18476,7 +18476,7 @@ func (ec *executionContext) _MiningSummaryDay_miner(ctx context.Context, field g
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningSummaryDay_miner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18608,7 +18608,7 @@ func (ec *executionContext) _MiningTask_spId(ctx context.Context, field graphql.
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningTask_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18822,7 +18822,7 @@ func (ec *executionContext) _MiningTask_minedHeader(ctx context.Context, field g
 	}
 	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MiningTask_minedHeader(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -18986,7 +18986,7 @@ func (ec *executionContext) _Mutation_createConfig(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Config)
 	fc.Result = res
-	return ec.marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
+	return ec.marshalOConfig2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19048,7 +19048,7 @@ func (ec *executionContext) _Mutation_updateConfig(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Config)
 	fc.Result = res
-	return ec.marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
+	return ec.marshalOConfig2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19110,7 +19110,7 @@ func (ec *executionContext) _Mutation_removeConfig(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.Config)
 	fc.Result = res
-	return ec.marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
+	return ec.marshalOConfig2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeConfig(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19227,7 +19227,7 @@ func (ec *executionContext) _Mutation_marketAddBalance(ctx context.Context, fiel
 	}
 	res := resTmp.(*model.MarketBalance)
 	fc.Result = res
-	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
+	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_marketAddBalance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19287,7 +19287,7 @@ func (ec *executionContext) _Mutation_updateMarketMk12StorageAsk(ctx context.Con
 	}
 	res := resTmp.(*model.MarketMk12StorageAsk)
 	fc.Result = res
-	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateMarketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19412,7 +19412,7 @@ func (ec *executionContext) _Mutation_marketUpdatePriceFilter(ctx context.Contex
 	}
 	res := resTmp.(*model.PriceFilter)
 	fc.Result = res
-	return ec.marshalOPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, field.Selections, res)
+	return ec.marshalOPriceFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_marketUpdatePriceFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19590,7 +19590,7 @@ func (ec *executionContext) _Mutation_marketUpdateClientFilter(ctx context.Conte
 	}
 	res := resTmp.(*model.ClientFilter)
 	fc.Result = res
-	return ec.marshalOClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, field.Selections, res)
+	return ec.marshalOClientFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_marketUpdateClientFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -19770,7 +19770,7 @@ func (ec *executionContext) _Mutation_marketSetAllowFilter(ctx context.Context, 
 	}
 	res := resTmp.(*model.MarketAllowFilter)
 	fc.Result = res
-	return ec.marshalOMarketAllowFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, field.Selections, res)
+	return ec.marshalOMarketAllowFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_marketSetAllowFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20491,7 +20491,7 @@ func (ec *executionContext) _OpenSectorPiece_spID(ctx context.Context, field gra
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20755,7 +20755,7 @@ func (ec *executionContext) _OpenSectorPiece_dataHeaders(ctx context.Context, fi
 	}
 	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_dataHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -20966,7 +20966,7 @@ func (ec *executionContext) _OpenSectorPiece_f05DealProposal(ctx context.Context
 	}
 	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_f05DealProposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21171,7 +21171,7 @@ func (ec *executionContext) _OpenSectorPiece_directPieceActivationManifest(ctx c
 	}
 	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_OpenSectorPiece_directPieceActivationManifest(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21303,7 +21303,7 @@ func (ec *executionContext) _PipelineSummary_id(ctx context.Context, field graph
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PipelineSummary_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21743,7 +21743,7 @@ func (ec *executionContext) _Porep_spId(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -21957,7 +21957,7 @@ func (ec *executionContext) _Porep_ticketValue(ctx context.Context, field graphq
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_ticketValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22587,7 +22587,7 @@ func (ec *executionContext) _Porep_precommitMsgTsk(ctx context.Context, field gr
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_precommitMsgTsk(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22672,7 +22672,7 @@ func (ec *executionContext) _Porep_seedValue(ctx context.Context, field graphql.
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_seedValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -22754,7 +22754,7 @@ func (ec *executionContext) _Porep_porepProof(ctx context.Context, field graphql
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_porepProof(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23135,7 +23135,7 @@ func (ec *executionContext) _Porep_commitMsgTsk(ctx context.Context, field graph
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_commitMsgTsk(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23604,7 +23604,7 @@ func (ec *executionContext) _Porep_status(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(model.TaskStatus)
 	fc.Result = res
-	return ec.marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
+	return ec.marshalNTaskStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23648,7 +23648,7 @@ func (ec *executionContext) _Porep_stage(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(model.PorepStage)
 	fc.Result = res
-	return ec.marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx, field.Selections, res)
+	return ec.marshalNPorepStage2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_stage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23689,7 +23689,7 @@ func (ec *executionContext) _Porep_currentTask(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.Task)
 	fc.Result = res
-	return ec.marshalOTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalOTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_currentTask(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23761,7 +23761,7 @@ func (ec *executionContext) _Porep_compactStages(ctx context.Context, field grap
 	}
 	res := resTmp.([]*model.TaskCompactStage)
 	fc.Result = res
-	return ec.marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStageᚄ(ctx, field.Selections, res)
+	return ec.marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStageᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Porep_compactStages(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23810,7 +23810,7 @@ func (ec *executionContext) _PowerClaim_rawBytePower(ctx context.Context, field 
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalOBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PowerClaim_rawBytePower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -23851,7 +23851,7 @@ func (ec *executionContext) _PowerClaim_qualityAdjPower(ctx context.Context, fie
 	}
 	res := resTmp.(*types.BigInt)
 	fc.Result = res
-	return ec.marshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
+	return ec.marshalOBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PowerClaim_qualityAdjPower(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24203,7 +24203,7 @@ func (ec *executionContext) _PrometheusResponse_data(ctx context.Context, field 
 	}
 	res := resTmp.(types.JSON)
 	fc.Result = res
-	return ec.marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_PrometheusResponse_data(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24244,7 +24244,7 @@ func (ec *executionContext) _Query_actors(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.Actor)
 	fc.Result = res
-	return ec.marshalOActor2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
+	return ec.marshalOActor2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_actors(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24305,7 +24305,7 @@ func (ec *executionContext) _Query_actor(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.Actor)
 	fc.Result = res
-	return ec.marshalOActor2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
+	return ec.marshalOActor2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_actor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24377,7 +24377,7 @@ func (ec *executionContext) _Query_alerts(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.Alert)
 	fc.Result = res
-	return ec.marshalOAlert2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, field.Selections, res)
+	return ec.marshalOAlert2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_alerts(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24426,7 +24426,7 @@ func (ec *executionContext) _Query_config(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Config)
 	fc.Result = res
-	return ec.marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
+	return ec.marshalOConfig2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_config(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24488,7 +24488,7 @@ func (ec *executionContext) _Query_configs(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.Config)
 	fc.Result = res
-	return ec.marshalOConfig2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
+	return ec.marshalOConfig2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_configs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24542,7 +24542,7 @@ func (ec *executionContext) _Query_marketMk12Deals(ctx context.Context, field gr
 	}
 	res := resTmp.([]*model.MarketMk12Deal)
 	fc.Result = res
-	return ec.marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx, field.Selections, res)
+	return ec.marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketMk12Deals(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24695,7 +24695,7 @@ func (ec *executionContext) _Query_marketDealInfo(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.DealInfo)
 	fc.Result = res
-	return ec.marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx, field.Selections, res)
+	return ec.marshalODealInfo2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketDealInfo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24797,7 +24797,7 @@ func (ec *executionContext) _Query_marketDealCountSummary(ctx context.Context, f
 	}
 	res := resTmp.(*model.DealCountSummary)
 	fc.Result = res
-	return ec.marshalODealCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealCountSummary(ctx, field.Selections, res)
+	return ec.marshalODealCountSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealCountSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketDealCountSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24846,7 +24846,7 @@ func (ec *executionContext) _Query_dealsPending(ctx context.Context, field graph
 	}
 	res := resTmp.([]*model.OpenSectorPiece)
 	fc.Result = res
-	return ec.marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx, field.Selections, res)
+	return ec.marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_dealsPending(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -24927,7 +24927,7 @@ func (ec *executionContext) _Query_machine(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Machine)
 	fc.Result = res
-	return ec.marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+	return ec.marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_machine(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25003,7 +25003,7 @@ func (ec *executionContext) _Query_machineByHostAndPort(ctx context.Context, fie
 	}
 	res := resTmp.(*model.Machine)
 	fc.Result = res
-	return ec.marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+	return ec.marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_machineByHostAndPort(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25079,7 +25079,7 @@ func (ec *executionContext) _Query_machines(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*model.Machine)
 	fc.Result = res
-	return ec.marshalOMachine2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+	return ec.marshalOMachine2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_machines(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25144,7 +25144,7 @@ func (ec *executionContext) _Query_machineSummary(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.MachineSummary)
 	fc.Result = res
-	return ec.marshalOMachineSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineSummary(ctx, field.Selections, res)
+	return ec.marshalOMachineSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_machineSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25207,7 +25207,7 @@ func (ec *executionContext) _Query_marketBalance(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.MarketBalance)
 	fc.Result = res
-	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
+	return ec.marshalOMarketBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketBalance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25267,7 +25267,7 @@ func (ec *executionContext) _Query_marketBalances(ctx context.Context, field gra
 	}
 	res := resTmp.([]*model.MarketBalance)
 	fc.Result = res
-	return ec.marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx, field.Selections, res)
+	return ec.marshalOMarketBalance2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketBalances(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25316,7 +25316,7 @@ func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, fi
 	}
 	res := resTmp.([]*model.MarketMk12StorageAsk)
 	fc.Result = res
-	return ec.marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+	return ec.marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketMk12StorageAsks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25375,7 +25375,7 @@ func (ec *executionContext) _Query_marketMk12StorageAsk(ctx context.Context, fie
 	}
 	res := resTmp.(*model.MarketMk12StorageAsk)
 	fc.Result = res
-	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
+	return ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketMk12StorageAsk(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25489,7 +25489,7 @@ func (ec *executionContext) _Query_makretPriceFilters(ctx context.Context, field
 	}
 	res := resTmp.([]*model.PriceFilter)
 	fc.Result = res
-	return ec.marshalOPriceFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterᚄ(ctx, field.Selections, res)
+	return ec.marshalOPriceFilter2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_makretPriceFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25546,7 +25546,7 @@ func (ec *executionContext) _Query_marketPriceFilter(ctx context.Context, field 
 	}
 	res := resTmp.(*model.PriceFilter)
 	fc.Result = res
-	return ec.marshalOPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, field.Selections, res)
+	return ec.marshalOPriceFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketPriceFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25669,7 +25669,7 @@ func (ec *executionContext) _Query_marketClientFilters(ctx context.Context, fiel
 	}
 	res := resTmp.([]*model.ClientFilter)
 	fc.Result = res
-	return ec.marshalOClientFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterᚄ(ctx, field.Selections, res)
+	return ec.marshalOClientFilter2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketClientFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25728,7 +25728,7 @@ func (ec *executionContext) _Query_marketClientFilter(ctx context.Context, field
 	}
 	res := resTmp.(*model.ClientFilter)
 	fc.Result = res
-	return ec.marshalOClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, field.Selections, res)
+	return ec.marshalOClientFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketClientFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25853,7 +25853,7 @@ func (ec *executionContext) _Query_marketAllowFilters(ctx context.Context, field
 	}
 	res := resTmp.([]*model.MarketAllowFilter)
 	fc.Result = res
-	return ec.marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilterᚄ(ctx, field.Selections, res)
+	return ec.marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilterᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketAllowFilters(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -25900,7 +25900,7 @@ func (ec *executionContext) _Query_marketAllowFilter(ctx context.Context, field 
 	}
 	res := resTmp.(*model.MarketAllowFilter)
 	fc.Result = res
-	return ec.marshalOMarketAllowFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, field.Selections, res)
+	return ec.marshalOMarketAllowFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_marketAllowFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26002,7 +26002,7 @@ func (ec *executionContext) _Query_messageSends(ctx context.Context, field graph
 	}
 	res := resTmp.([]*model.MessageSend)
 	fc.Result = res
-	return ec.marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
+	return ec.marshalOMessageSend2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_messageSends(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26137,7 +26137,7 @@ func (ec *executionContext) _Query_messageSend(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.MessageSend)
 	fc.Result = res
-	return ec.marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
+	return ec.marshalOMessageSend2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26220,7 +26220,7 @@ func (ec *executionContext) _Query_metadata(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.Metadata)
 	fc.Result = res
-	return ec.marshalNMetadata2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx, field.Selections, res)
+	return ec.marshalNMetadata2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_metadata(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26267,7 +26267,7 @@ func (ec *executionContext) _Query_miner(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.Miner)
 	fc.Result = res
-	return ec.marshalOMiner2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx, field.Selections, res)
+	return ec.marshalOMiner2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_miner(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26329,7 +26329,7 @@ func (ec *executionContext) _Query_minerPower(ctx context.Context, field graphql
 	}
 	res := resTmp.(*model.MinerPower)
 	fc.Result = res
-	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
+	return ec.marshalOMinerPower2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_minerPower(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26391,7 +26391,7 @@ func (ec *executionContext) _Query_miningSummaryByDay(ctx context.Context, field
 	}
 	res := resTmp.([]*model.MiningSummaryDay)
 	fc.Result = res
-	return ec.marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx, field.Selections, res)
+	return ec.marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_miningSummaryByDay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26454,7 +26454,7 @@ func (ec *executionContext) _Query_miningCount(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.MiningCount)
 	fc.Result = res
-	return ec.marshalNMiningCount2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx, field.Selections, res)
+	return ec.marshalNMiningCount2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_miningCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26512,7 +26512,7 @@ func (ec *executionContext) _Query_miningWins(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.MiningTask)
 	fc.Result = res
-	return ec.marshalOMiningTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx, field.Selections, res)
+	return ec.marshalOMiningTask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_miningWins(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26641,7 +26641,7 @@ func (ec *executionContext) _Query_miningCountSummary(ctx context.Context, field
 	}
 	res := resTmp.(*model.MiningCountSummary)
 	fc.Result = res
-	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
+	return ec.marshalOMiningCountSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_miningCountSummary(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26707,7 +26707,7 @@ func (ec *executionContext) _Query_miningCountAggregate(ctx context.Context, fie
 	}
 	res := resTmp.([]*model.MiningCountAggregated)
 	fc.Result = res
-	return ec.marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, field.Selections, res)
+	return ec.marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_miningCountAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26769,7 +26769,7 @@ func (ec *executionContext) _Query_miningStatusSummay(ctx context.Context, field
 	}
 	res := resTmp.(*model.MiningStatusSummay)
 	fc.Result = res
-	return ec.marshalOMiningStatusSummay2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningStatusSummay(ctx, field.Selections, res)
+	return ec.marshalOMiningStatusSummay2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningStatusSummay(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_miningStatusSummay(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26833,7 +26833,7 @@ func (ec *executionContext) _Query_nodesInfo(ctx context.Context, field graphql.
 	}
 	res := resTmp.([]*model.NodeInfo)
 	fc.Result = res
-	return ec.marshalONodeInfo2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx, field.Selections, res)
+	return ec.marshalONodeInfo2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_nodesInfo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26888,7 +26888,7 @@ func (ec *executionContext) _Query_nodeHealthSummary(ctx context.Context, field 
 	}
 	res := resTmp.(*model.NodeHealthSummary)
 	fc.Result = res
-	return ec.marshalONodeHealthSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx, field.Selections, res)
+	return ec.marshalONodeHealthSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_nodeHealthSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -26937,7 +26937,7 @@ func (ec *executionContext) _Query_poreps(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.Porep)
 	fc.Result = res
-	return ec.marshalOPorep2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, field.Selections, res)
+	return ec.marshalOPorep2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_poreps(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27078,7 +27078,7 @@ func (ec *executionContext) _Query_porep(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.Porep)
 	fc.Result = res
-	return ec.marshalOPorep2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, field.Selections, res)
+	return ec.marshalOPorep2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_porep(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27230,7 +27230,7 @@ func (ec *executionContext) _Query_pipelinesSummary(ctx context.Context, field g
 	}
 	res := resTmp.([]*model.PipelineSummary)
 	fc.Result = res
-	return ec.marshalOPipelineSummary2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx, field.Selections, res)
+	return ec.marshalOPipelineSummary2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_pipelinesSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27294,7 +27294,7 @@ func (ec *executionContext) _Query_prometheusQuery(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.PrometheusResponse)
 	fc.Result = res
-	return ec.marshalNPrometheusResponse2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx, field.Selections, res)
+	return ec.marshalNPrometheusResponse2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_prometheusQuery(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27353,7 +27353,7 @@ func (ec *executionContext) _Query_prometheusQueryRange(ctx context.Context, fie
 	}
 	res := resTmp.(*model.PrometheusResponse)
 	fc.Result = res
-	return ec.marshalNPrometheusResponse2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx, field.Selections, res)
+	return ec.marshalNPrometheusResponse2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_prometheusQueryRange(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27409,7 +27409,7 @@ func (ec *executionContext) _Query_sectors(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.Sector)
 	fc.Result = res
-	return ec.marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
+	return ec.marshalOSector2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_sectors(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27538,7 +27538,7 @@ func (ec *executionContext) _Query_sector(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Sector)
 	fc.Result = res
-	return ec.marshalOSector2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
+	return ec.marshalOSector2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_sector(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27612,7 +27612,7 @@ func (ec *executionContext) _Query_sectorSummary(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.SectorSummary)
 	fc.Result = res
-	return ec.marshalOSectorSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSummary(ctx, field.Selections, res)
+	return ec.marshalOSectorSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_sectorSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27661,7 +27661,7 @@ func (ec *executionContext) _Query_storage(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(*model.Storage)
 	fc.Result = res
-	return ec.marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
+	return ec.marshalOStorage2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_storage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27721,7 +27721,7 @@ func (ec *executionContext) _Query_storagePaths(ctx context.Context, field graph
 	}
 	res := resTmp.([]*model.StoragePath)
 	fc.Result = res
-	return ec.marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
+	return ec.marshalOStoragePath2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_storagePaths(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27806,7 +27806,7 @@ func (ec *executionContext) _Query_storageStats(ctx context.Context, field graph
 	}
 	res := resTmp.([]*model.StorageStats)
 	fc.Result = res
-	return ec.marshalOStorageStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx, field.Selections, res)
+	return ec.marshalOStorageStats2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_storageStats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27861,7 +27861,7 @@ func (ec *executionContext) _Query_task(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.Task)
 	fc.Result = res
-	return ec.marshalOTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalOTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_task(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -27941,7 +27941,7 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.Task)
 	fc.Result = res
-	return ec.marshalOTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalOTask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28054,7 +28054,7 @@ func (ec *executionContext) _Query_taskHistories(ctx context.Context, field grap
 	}
 	res := resTmp.([]*model.TaskHistory)
 	fc.Result = res
-	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
+	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_taskHistories(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28183,7 +28183,7 @@ func (ec *executionContext) _Query_taskHistoriesAggregate(ctx context.Context, f
 	}
 	res := resTmp.([]*model.TaskAggregate)
 	fc.Result = res
-	return ec.marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, field.Selections, res)
+	return ec.marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_taskHistoriesAggregate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28245,7 +28245,7 @@ func (ec *executionContext) _Query_tasksStats(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.TaskStats)
 	fc.Result = res
-	return ec.marshalOTaskStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx, field.Selections, res)
+	return ec.marshalOTaskStats2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_tasksStats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28348,7 +28348,7 @@ func (ec *executionContext) _Query_taskSuccessRate(ctx context.Context, field gr
 	}
 	res := resTmp.(*model.TaskSuccessRate)
 	fc.Result = res
-	return ec.marshalOTaskSuccessRate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskSuccessRate(ctx, field.Selections, res)
+	return ec.marshalOTaskSuccessRate2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskSuccessRate(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_taskSuccessRate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28410,7 +28410,7 @@ func (ec *executionContext) _Query_runningTaskSummary(ctx context.Context, field
 	}
 	res := resTmp.(*model.RunningTaskSummary)
 	fc.Result = res
-	return ec.marshalORunningTaskSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐRunningTaskSummary(ctx, field.Selections, res)
+	return ec.marshalORunningTaskSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRunningTaskSummary(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_runningTaskSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28459,7 +28459,7 @@ func (ec *executionContext) _Query_taskDurationStats(ctx context.Context, field 
 	}
 	res := resTmp.(*model.TaskDurationStats)
 	fc.Result = res
-	return ec.marshalOTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx, field.Selections, res)
+	return ec.marshalOTaskDurationStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_taskDurationStats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28534,7 +28534,7 @@ func (ec *executionContext) _Query_tasksDurationStats(ctx context.Context, field
 	}
 	res := resTmp.([]*model.TaskDurationStats)
 	fc.Result = res
-	return ec.marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStatsᚄ(ctx, field.Selections, res)
+	return ec.marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStatsᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_tasksDurationStats(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -28916,7 +28916,7 @@ func (ec *executionContext) _Sector_spID(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29004,7 +29004,7 @@ func (ec *executionContext) _Sector_status(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.(model.TaskStatus)
 	fc.Result = res
-	return ec.marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
+	return ec.marshalNTaskStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29045,7 +29045,7 @@ func (ec *executionContext) _Sector_meta(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(*model.SectorMeta)
 	fc.Result = res
-	return ec.marshalOSectorMeta2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMeta(ctx, field.Selections, res)
+	return ec.marshalOSectorMeta2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMeta(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_meta(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29122,7 +29122,7 @@ func (ec *executionContext) _Sector_porep(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Porep)
 	fc.Result = res
-	return ec.marshalOPorep2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, field.Selections, res)
+	return ec.marshalOPorep2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_porep(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29266,7 +29266,7 @@ func (ec *executionContext) _Sector_locations(ctx context.Context, field graphql
 	}
 	res := resTmp.([]*model.SectorLocation)
 	fc.Result = res
-	return ec.marshalNSectorLocation2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx, field.Selections, res)
+	return ec.marshalNSectorLocation2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_locations(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29332,7 +29332,7 @@ func (ec *executionContext) _Sector_pieces(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.SectorMetaPiece)
 	fc.Result = res
-	return ec.marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx, field.Selections, res)
+	return ec.marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_pieces(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29402,7 +29402,7 @@ func (ec *executionContext) _Sector_tasks(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.([]*model.Task)
 	fc.Result = res
-	return ec.marshalNTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
+	return ec.marshalNTask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29474,7 +29474,7 @@ func (ec *executionContext) _Sector_events(ctx context.Context, field graphql.Co
 	}
 	res := resTmp.([]*model.TaskHistory)
 	fc.Result = res
-	return ec.marshalNTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
+	return ec.marshalNTaskHistory2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sector_events(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29540,7 +29540,7 @@ func (ec *executionContext) _SectorLocation_minerId(ctx context.Context, field g
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorLocation_minerId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29921,7 +29921,7 @@ func (ec *executionContext) _SectorLocation_storage(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Storage)
 	fc.Result = res
-	return ec.marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
+	return ec.marshalOStorage2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorLocation_storage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30017,7 +30017,7 @@ func (ec *executionContext) _SectorMeta_spId(ctx context.Context, field graphql.
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMeta_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30190,7 +30190,7 @@ func (ec *executionContext) _SectorMeta_ticketValue(ctx context.Context, field g
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMeta_ticketValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30574,7 +30574,7 @@ func (ec *executionContext) _SectorMeta_seedValue(ctx context.Context, field gra
 	}
 	res := resTmp.(types.Bytes)
 	fc.Result = res
-	return ec.marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMeta_seedValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -30703,7 +30703,7 @@ func (ec *executionContext) _SectorMetaPiece_spID(ctx context.Context, field gra
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31128,7 +31128,7 @@ func (ec *executionContext) _SectorMetaPiece_ddoPam(ctx context.Context, field g
 	}
 	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_ddoPam(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31169,7 +31169,7 @@ func (ec *executionContext) _SectorMetaPiece_f05DealProposal(ctx context.Context
 	}
 	res := resTmp.(*types.JSON)
 	fc.Result = res
-	return ec.marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_SectorMetaPiece_f05DealProposal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31386,7 +31386,7 @@ func (ec *executionContext) _Storage_path(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.StoragePath)
 	fc.Result = res
-	return ec.marshalOStoragePath2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
+	return ec.marshalOStoragePath2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Storage_path(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31471,7 +31471,7 @@ func (ec *executionContext) _Storage_liveness(ctx context.Context, field graphql
 	}
 	res := resTmp.(*model.StorageLiveness)
 	fc.Result = res
-	return ec.marshalOStorageLiveness2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageLiveness(ctx, field.Selections, res)
+	return ec.marshalOStorageLiveness2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageLiveness(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Storage_liveness(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -31872,7 +31872,7 @@ func (ec *executionContext) _StoragePath_type(ctx context.Context, field graphql
 	}
 	res := resTmp.(model.StorageType)
 	fc.Result = res
-	return ec.marshalNStorageType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx, field.Selections, res)
+	return ec.marshalNStorageType2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -32693,7 +32693,7 @@ func (ec *executionContext) _StorageStats_type(ctx context.Context, field graphq
 	}
 	res := resTmp.(model.StorageType)
 	fc.Result = res
-	return ec.marshalNStorageType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx, field.Selections, res)
+	return ec.marshalNStorageType2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageStats_type(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -33185,7 +33185,7 @@ func (ec *executionContext) _Subscription_alerts(ctx context.Context, field grap
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNAlert2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNAlert2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -33262,7 +33262,7 @@ func (ec *executionContext) _Subscription_chainHead(ctx context.Context, field g
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNChainHead2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNChainHead2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -33326,7 +33326,7 @@ func (ec *executionContext) _Subscription_completedTask(ctx context.Context, fie
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNTaskHistory2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -33417,7 +33417,7 @@ func (ec *executionContext) _Subscription_newTask(ctx context.Context, field gra
 				w.Write([]byte{'{'})
 				graphql.MarshalString(field.Alias).MarshalGQL(w)
 				w.Write([]byte{':'})
-				ec.marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res).MarshalGQL(w)
+				ec.marshalNTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, field.Selections, res).MarshalGQL(w)
 				w.Write([]byte{'}'})
 			})
 		case <-ctx.Done():
@@ -33588,7 +33588,7 @@ func (ec *executionContext) _Task_initiatedBy(ctx context.Context, field graphql
 	}
 	res := resTmp.(*model.Machine)
 	fc.Result = res
-	return ec.marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+	return ec.marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Task_initiatedBy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -33782,7 +33782,7 @@ func (ec *executionContext) _Task_owner(ctx context.Context, field graphql.Colle
 	}
 	res := resTmp.(*model.Machine)
 	fc.Result = res
-	return ec.marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+	return ec.marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Task_owner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -33894,7 +33894,7 @@ func (ec *executionContext) _Task_addedBy(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(*model.Machine)
 	fc.Result = res
-	return ec.marshalNMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+	return ec.marshalNMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Task_addedBy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -34000,7 +34000,7 @@ func (ec *executionContext) _Task_previousTask(ctx context.Context, field graphq
 	}
 	res := resTmp.(*model.TaskHistory)
 	fc.Result = res
-	return ec.marshalOTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
+	return ec.marshalOTaskHistory2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Task_previousTask(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -34107,7 +34107,7 @@ func (ec *executionContext) _Task_histories(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*model.TaskHistory)
 	fc.Result = res
-	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
+	return ec.marshalOTaskHistory2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Task_histories(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -34393,7 +34393,7 @@ func (ec *executionContext) _TaskCompactStage_status(ctx context.Context, field 
 	}
 	res := resTmp.(model.TaskStatus)
 	fc.Result = res
-	return ec.marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
+	return ec.marshalNTaskStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TaskCompactStage_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35264,7 +35264,7 @@ func (ec *executionContext) _TaskHistory_completedBy(ctx context.Context, field 
 	}
 	res := resTmp.(*model.Machine)
 	fc.Result = res
-	return ec.marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+	return ec.marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_TaskHistory_completedBy(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36212,7 +36212,7 @@ func (ec *executionContext) _WalletBalance_address(ctx context.Context, field gr
 	}
 	res := resTmp.(types.Address)
 	fc.Result = res
-	return ec.marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_WalletBalance_address(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36256,7 +36256,7 @@ func (ec *executionContext) _WalletBalance_balance(ctx context.Context, field gr
 	}
 	res := resTmp.(types.FIL)
 	fc.Result = res
-	return ec.marshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐFIL(ctx, field.Selections, res)
+	return ec.marshalNFIL2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐFIL(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_WalletBalance_balance(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -38253,14 +38253,14 @@ func (ec *executionContext) unmarshalInputClientFilterInput(ctx context.Context,
 			it.Active = data
 		case "wallets":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wallets"))
-			data, err := ec.unmarshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx, v)
+			data, err := ec.unmarshalNAddress2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Wallets = data
 		case "peers":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("peers"))
-			data, err := ec.unmarshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx, v)
+			data, err := ec.unmarshalNPeerID2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38315,7 +38315,7 @@ func (ec *executionContext) unmarshalInputMarketMk12DealFilterInput(ctx context.
 		switch k {
 		case "spId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
-			data, err := ec.unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, v)
+			data, err := ec.unmarshalOActorID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -38370,7 +38370,7 @@ func (ec *executionContext) unmarshalInputMarketMk12StorageAskInput(ctx context.
 		switch k {
 		case "spId":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
-			data, err := ec.unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, v)
+			data, err := ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -46839,34 +46839,34 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v any) (types.ActorID, error) {
+func (ec *executionContext) unmarshalNActorID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v any) (types.ActorID, error) {
 	var res types.ActorID
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNActorID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v types.ActorID) graphql.Marshaler {
+func (ec *executionContext) marshalNActorID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v types.ActorID) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (types.Address, error) {
+func (ec *executionContext) unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (types.Address, error) {
 	var res types.Address
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAddress2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, sel ast.SelectionSet, v types.Address) graphql.Marshaler {
+func (ec *executionContext) marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, sel ast.SelectionSet, v types.Address) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v any) ([]*types.Address, error) {
+func (ec *executionContext) unmarshalNAddress2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v any) ([]*types.Address, error) {
 	var vSlice []any
 	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*types.Address, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -46874,10 +46874,10 @@ func (ec *executionContext) unmarshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcuri
 	return res, nil
 }
 
-func (ec *executionContext) marshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, sel ast.SelectionSet, v []*types.Address) graphql.Marshaler {
+func (ec *executionContext) marshalNAddress2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, sel ast.SelectionSet, v []*types.Address) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, sel, v[i])
+		ret[i] = ec.marshalNAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -46889,13 +46889,13 @@ func (ec *executionContext) marshalNAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) unmarshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (*types.Address, error) {
+func (ec *executionContext) unmarshalNAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (*types.Address, error) {
 	var res = new(types.Address)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, sel ast.SelectionSet, v *types.Address) graphql.Marshaler {
+func (ec *executionContext) marshalNAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, sel ast.SelectionSet, v *types.Address) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -46905,11 +46905,11 @@ func (ec *executionContext) marshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑd
 	return v
 }
 
-func (ec *executionContext) marshalNAlert2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v model.Alert) graphql.Marshaler {
+func (ec *executionContext) marshalNAlert2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v model.Alert) graphql.Marshaler {
 	return ec._Alert(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAlert2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v *model.Alert) graphql.Marshaler {
+func (ec *executionContext) marshalNAlert2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v *model.Alert) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -46919,23 +46919,23 @@ func (ec *executionContext) marshalNAlert2ᚖgithubᚗcomᚋstraheᚋcurioᚑdas
 	return ec._Alert(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (types.BigInt, error) {
+func (ec *executionContext) unmarshalNBigInt2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (types.BigInt, error) {
 	var res types.BigInt
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNBigInt2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, sel ast.SelectionSet, v types.BigInt) graphql.Marshaler {
+func (ec *executionContext) marshalNBigInt2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, sel ast.SelectionSet, v types.BigInt) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (*types.BigInt, error) {
+func (ec *executionContext) unmarshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (*types.BigInt, error) {
 	var res = new(types.BigInt)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, sel ast.SelectionSet, v *types.BigInt) graphql.Marshaler {
+func (ec *executionContext) marshalNBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, sel ast.SelectionSet, v *types.BigInt) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -46960,13 +46960,13 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v any) (types.Bytes, error) {
+func (ec *executionContext) unmarshalNBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v any) (types.Bytes, error) {
 	var res types.Bytes
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, sel ast.SelectionSet, v types.Bytes) graphql.Marshaler {
+func (ec *executionContext) marshalNBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, sel ast.SelectionSet, v types.Bytes) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -46976,11 +46976,11 @@ func (ec *executionContext) marshalNBytes2githubᚗcomᚋstraheᚋcurioᚑdashbo
 	return v
 }
 
-func (ec *executionContext) marshalNChainHead2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx context.Context, sel ast.SelectionSet, v model.ChainHead) graphql.Marshaler {
+func (ec *executionContext) marshalNChainHead2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx context.Context, sel ast.SelectionSet, v model.ChainHead) graphql.Marshaler {
 	return ec._ChainHead(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNChainHead2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx context.Context, sel ast.SelectionSet, v *model.ChainHead) graphql.Marshaler {
+func (ec *executionContext) marshalNChainHead2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐChainHead(ctx context.Context, sel ast.SelectionSet, v *model.ChainHead) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -46990,7 +46990,7 @@ func (ec *executionContext) marshalNChainHead2ᚖgithubᚗcomᚋstraheᚋcurio�
 	return ec._ChainHead(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx context.Context, sel ast.SelectionSet, v *model.ClientFilter) graphql.Marshaler {
+func (ec *executionContext) marshalNClientFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx context.Context, sel ast.SelectionSet, v *model.ClientFilter) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47000,18 +47000,18 @@ func (ec *executionContext) marshalNClientFilter2ᚖgithubᚗcomᚋstraheᚋcuri
 	return ec._ClientFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNClientFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx context.Context, v any) (model.ClientFilterInput, error) {
+func (ec *executionContext) unmarshalNClientFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterInput(ctx context.Context, v any) (model.ClientFilterInput, error) {
 	res, err := ec.unmarshalInputClientFilterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐFIL(ctx context.Context, v any) (types.FIL, error) {
+func (ec *executionContext) unmarshalNFIL2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐFIL(ctx context.Context, v any) (types.FIL, error) {
 	var res types.FIL
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNFIL2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐFIL(ctx context.Context, sel ast.SelectionSet, v types.FIL) graphql.Marshaler {
+func (ec *executionContext) marshalNFIL2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐFIL(ctx context.Context, sel ast.SelectionSet, v types.FIL) graphql.Marshaler {
 	return v
 }
 
@@ -47030,7 +47030,7 @@ func (ec *executionContext) marshalNFloat2float64(ctx context.Context, sel ast.S
 	return graphql.WrapContextMarshaler(ctx, res)
 }
 
-func (ec *executionContext) marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx context.Context, sel ast.SelectionSet, v []*model.GaugeCountValue) graphql.Marshaler {
+func (ec *executionContext) marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx context.Context, sel ast.SelectionSet, v []*model.GaugeCountValue) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47054,7 +47054,7 @@ func (ec *executionContext) marshalNGaugeCountValue2ᚕᚖgithubᚗcomᚋstrahe�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOGaugeCountValue2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, sel, v[i])
+			ret[i] = ec.marshalOGaugeCountValue2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47113,21 +47113,21 @@ func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) unmarshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, v any) (types.JSON, error) {
+func (ec *executionContext) unmarshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, v any) (types.JSON, error) {
 	var res types.JSON
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNJSON2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, sel ast.SelectionSet, v types.JSON) graphql.Marshaler {
+func (ec *executionContext) marshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, sel ast.SelectionSet, v types.JSON) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNMachine2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v model.Machine) graphql.Marshaler {
+func (ec *executionContext) marshalNMachine2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v model.Machine) graphql.Marshaler {
 	return ec._Machine(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v *model.Machine) graphql.Marshaler {
+func (ec *executionContext) marshalNMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v *model.Machine) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47137,7 +47137,7 @@ func (ec *executionContext) marshalNMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑd
 	return ec._Machine(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMachineDetail2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx context.Context, sel ast.SelectionSet, v []*model.MachineDetail) graphql.Marshaler {
+func (ec *executionContext) marshalNMachineDetail2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx context.Context, sel ast.SelectionSet, v []*model.MachineDetail) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47161,7 +47161,7 @@ func (ec *executionContext) marshalNMachineDetail2ᚕᚖgithubᚗcomᚋstraheᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMachineDetail2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx, sel, v[i])
+			ret[i] = ec.marshalOMachineDetail2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47175,7 +47175,7 @@ func (ec *executionContext) marshalNMachineDetail2ᚕᚖgithubᚗcomᚋstraheᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNMarketAllowFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx context.Context, sel ast.SelectionSet, v *model.MarketAllowFilter) graphql.Marshaler {
+func (ec *executionContext) marshalNMarketAllowFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx context.Context, sel ast.SelectionSet, v *model.MarketAllowFilter) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47185,7 +47185,7 @@ func (ec *executionContext) marshalNMarketAllowFilter2ᚖgithubᚗcomᚋstrahe�
 	return ec._MarketAllowFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx context.Context, sel ast.SelectionSet, v *model.MarketBalance) graphql.Marshaler {
+func (ec *executionContext) marshalNMarketBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx context.Context, sel ast.SelectionSet, v *model.MarketBalance) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47195,7 +47195,7 @@ func (ec *executionContext) marshalNMarketBalance2ᚖgithubᚗcomᚋstraheᚋcur
 	return ec._MarketBalance(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketMk12Deal) graphql.Marshaler {
+func (ec *executionContext) marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Dealᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketMk12Deal) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47219,7 +47219,7 @@ func (ec *executionContext) marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstrahe�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMarketMk12Deal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Deal(ctx, sel, v[i])
+			ret[i] = ec.marshalNMarketMk12Deal2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Deal(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47239,7 +47239,7 @@ func (ec *executionContext) marshalNMarketMk12Deal2ᚕᚖgithubᚗcomᚋstrahe�
 	return ret
 }
 
-func (ec *executionContext) marshalNMarketMk12Deal2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Deal(ctx context.Context, sel ast.SelectionSet, v *model.MarketMk12Deal) graphql.Marshaler {
+func (ec *executionContext) marshalNMarketMk12Deal2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12Deal(ctx context.Context, sel ast.SelectionSet, v *model.MarketMk12Deal) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47249,21 +47249,21 @@ func (ec *executionContext) marshalNMarketMk12Deal2ᚖgithubᚗcomᚋstraheᚋcu
 	return ec._MarketMk12Deal(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx context.Context, v any) (model.MarketMk12DealFilterInput, error) {
+func (ec *executionContext) unmarshalNMarketMk12DealFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12DealFilterInput(ctx context.Context, v any) (model.MarketMk12DealFilterInput, error) {
 	res, err := ec.unmarshalInputMarketMk12DealFilterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v any) (model.MarketMk12StorageAskInput, error) {
+func (ec *executionContext) unmarshalNMarketMk12StorageAskInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAskInput(ctx context.Context, v any) (model.MarketMk12StorageAskInput, error) {
 	res, err := ec.unmarshalInputMarketMk12StorageAskInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNMetadata2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx context.Context, sel ast.SelectionSet, v model.Metadata) graphql.Marshaler {
+func (ec *executionContext) marshalNMetadata2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx context.Context, sel ast.SelectionSet, v model.Metadata) graphql.Marshaler {
 	return ec._Metadata(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMetadata2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx context.Context, sel ast.SelectionSet, v *model.Metadata) graphql.Marshaler {
+func (ec *executionContext) marshalNMetadata2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMetadata(ctx context.Context, sel ast.SelectionSet, v *model.Metadata) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47273,11 +47273,11 @@ func (ec *executionContext) marshalNMetadata2ᚖgithubᚗcomᚋstraheᚋcurioᚑ
 	return ec._Metadata(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNMiningCount2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx context.Context, sel ast.SelectionSet, v model.MiningCount) graphql.Marshaler {
+func (ec *executionContext) marshalNMiningCount2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx context.Context, sel ast.SelectionSet, v model.MiningCount) graphql.Marshaler {
 	return ec._MiningCount(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMiningCount2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx context.Context, sel ast.SelectionSet, v *model.MiningCount) graphql.Marshaler {
+func (ec *executionContext) marshalNMiningCount2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCount(ctx context.Context, sel ast.SelectionSet, v *model.MiningCount) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47287,64 +47287,64 @@ func (ec *executionContext) marshalNMiningCount2ᚖgithubᚗcomᚋstraheᚋcurio
 	return ec._MiningCount(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, v any) (model.MiningTaskAggregateInterval, error) {
+func (ec *executionContext) unmarshalNMiningTaskAggregateInterval2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, v any) (model.MiningTaskAggregateInterval, error) {
 	var res model.MiningTaskAggregateInterval
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNMiningTaskAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, sel ast.SelectionSet, v model.MiningTaskAggregateInterval) graphql.Marshaler {
+func (ec *executionContext) marshalNMiningTaskAggregateInterval2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTaskAggregateInterval(ctx context.Context, sel ast.SelectionSet, v model.MiningTaskAggregateInterval) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, v any) (types.NullBool, error) {
+func (ec *executionContext) unmarshalNNullBool2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, v any) (types.NullBool, error) {
 	var res types.NullBool
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNNullBool2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, sel ast.SelectionSet, v types.NullBool) graphql.Marshaler {
+func (ec *executionContext) marshalNNullBool2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx context.Context, sel ast.SelectionSet, v types.NullBool) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, v any) (types.NullInt64, error) {
+func (ec *executionContext) unmarshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, v any) (types.NullInt64, error) {
 	var res types.NullInt64
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNNullInt642githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, sel ast.SelectionSet, v types.NullInt64) graphql.Marshaler {
+func (ec *executionContext) marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx context.Context, sel ast.SelectionSet, v types.NullInt64) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, v any) (types.NullString, error) {
+func (ec *executionContext) unmarshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, v any) (types.NullString, error) {
 	var res types.NullString
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNNullString2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, sel ast.SelectionSet, v types.NullString) graphql.Marshaler {
+func (ec *executionContext) marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, sel ast.SelectionSet, v types.NullString) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v any) (types.PeerID, error) {
+func (ec *executionContext) unmarshalNPeerID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v any) (types.PeerID, error) {
 	var res types.PeerID
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPeerID2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, sel ast.SelectionSet, v types.PeerID) graphql.Marshaler {
+func (ec *executionContext) marshalNPeerID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, sel ast.SelectionSet, v types.PeerID) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) unmarshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx context.Context, v any) ([]*types.PeerID, error) {
+func (ec *executionContext) unmarshalNPeerID2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx context.Context, v any) ([]*types.PeerID, error) {
 	var vSlice []any
 	vSlice = graphql.CoerceList(v)
 	var err error
 	res := make([]*types.PeerID, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNPeerID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -47352,10 +47352,10 @@ func (ec *executionContext) unmarshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurio
 	return res, nil
 }
 
-func (ec *executionContext) marshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx context.Context, sel ast.SelectionSet, v []*types.PeerID) graphql.Marshaler {
+func (ec *executionContext) marshalNPeerID2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerIDᚄ(ctx context.Context, sel ast.SelectionSet, v []*types.PeerID) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx, sel, v[i])
+		ret[i] = ec.marshalNPeerID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -47367,13 +47367,13 @@ func (ec *executionContext) marshalNPeerID2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) unmarshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v any) (*types.PeerID, error) {
+func (ec *executionContext) unmarshalNPeerID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, v any) (*types.PeerID, error) {
 	var res = new(types.PeerID)
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, sel ast.SelectionSet, v *types.PeerID) graphql.Marshaler {
+func (ec *executionContext) marshalNPeerID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐPeerID(ctx context.Context, sel ast.SelectionSet, v *types.PeerID) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47383,14 +47383,14 @@ func (ec *executionContext) marshalNPeerID2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return v
 }
 
-func (ec *executionContext) unmarshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx context.Context, v any) (model.PorepStage, error) {
+func (ec *executionContext) unmarshalNPorepStage2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx context.Context, v any) (model.PorepStage, error) {
 	tmp, err := graphql.UnmarshalString(v)
-	res := unmarshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage[tmp]
+	res := unmarshalNPorepStage2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage[tmp]
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx context.Context, sel ast.SelectionSet, v model.PorepStage) graphql.Marshaler {
-	res := graphql.MarshalString(marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage[v])
+func (ec *executionContext) marshalNPorepStage2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage(ctx context.Context, sel ast.SelectionSet, v model.PorepStage) graphql.Marshaler {
+	res := graphql.MarshalString(marshalNPorepStage2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage[v])
 	if res == graphql.Null {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47400,7 +47400,7 @@ func (ec *executionContext) marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑd
 }
 
 var (
-	unmarshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage = map[string]model.PorepStage{
+	unmarshalNPorepStage2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage = map[string]model.PorepStage{
 		"SDR":              model.PorepStageSDR,
 		"TreeD":            model.PorepStageTreeD,
 		"TreeC":            model.PorepStageTreeC,
@@ -47415,7 +47415,7 @@ var (
 		"Finalize":         model.PorepStageFinalize,
 		"MoveStorage":      model.PorepStageMoveStorage,
 	}
-	marshalNPorepStage2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage = map[model.PorepStage]string{
+	marshalNPorepStage2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorepStage = map[model.PorepStage]string{
 		model.PorepStageSDR:              "SDR",
 		model.PorepStageTreeD:            "TreeD",
 		model.PorepStageTreeC:            "TreeC",
@@ -47432,7 +47432,7 @@ var (
 	}
 )
 
-func (ec *executionContext) marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx context.Context, sel ast.SelectionSet, v *model.PowerClaim) graphql.Marshaler {
+func (ec *executionContext) marshalNPowerClaim2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPowerClaim(ctx context.Context, sel ast.SelectionSet, v *model.PowerClaim) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47442,7 +47442,7 @@ func (ec *executionContext) marshalNPowerClaim2ᚖgithubᚗcomᚋstraheᚋcurio�
 	return ec._PowerClaim(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx context.Context, sel ast.SelectionSet, v *model.PriceFilter) graphql.Marshaler {
+func (ec *executionContext) marshalNPriceFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx context.Context, sel ast.SelectionSet, v *model.PriceFilter) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47452,16 +47452,16 @@ func (ec *executionContext) marshalNPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurio
 	return ec._PriceFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNPriceFilterInput2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx context.Context, v any) (model.PriceFilterInput, error) {
+func (ec *executionContext) unmarshalNPriceFilterInput2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterInput(ctx context.Context, v any) (model.PriceFilterInput, error) {
 	res, err := ec.unmarshalInputPriceFilterInput(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNPrometheusResponse2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx context.Context, sel ast.SelectionSet, v model.PrometheusResponse) graphql.Marshaler {
+func (ec *executionContext) marshalNPrometheusResponse2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx context.Context, sel ast.SelectionSet, v model.PrometheusResponse) graphql.Marshaler {
 	return ec._PrometheusResponse(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPrometheusResponse2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx context.Context, sel ast.SelectionSet, v *model.PrometheusResponse) graphql.Marshaler {
+func (ec *executionContext) marshalNPrometheusResponse2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPrometheusResponse(ctx context.Context, sel ast.SelectionSet, v *model.PrometheusResponse) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47471,7 +47471,7 @@ func (ec *executionContext) marshalNPrometheusResponse2ᚖgithubᚗcomᚋstrahe�
 	return ec._PrometheusResponse(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNSectorLocation2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx context.Context, sel ast.SelectionSet, v []*model.SectorLocation) graphql.Marshaler {
+func (ec *executionContext) marshalNSectorLocation2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx context.Context, sel ast.SelectionSet, v []*model.SectorLocation) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47495,7 +47495,7 @@ func (ec *executionContext) marshalNSectorLocation2ᚕᚖgithubᚗcomᚋstrahe�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOSectorLocation2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx, sel, v[i])
+			ret[i] = ec.marshalOSectorLocation2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47509,7 +47509,7 @@ func (ec *executionContext) marshalNSectorLocation2ᚕᚖgithubᚗcomᚋstrahe�
 	return ret
 }
 
-func (ec *executionContext) marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx context.Context, sel ast.SelectionSet, v []*model.SectorMetaPiece) graphql.Marshaler {
+func (ec *executionContext) marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx context.Context, sel ast.SelectionSet, v []*model.SectorMetaPiece) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47533,7 +47533,7 @@ func (ec *executionContext) marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋstrahe�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOSectorMetaPiece2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx, sel, v[i])
+			ret[i] = ec.marshalOSectorMetaPiece2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47547,13 +47547,13 @@ func (ec *executionContext) marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋstrahe�
 	return ret
 }
 
-func (ec *executionContext) unmarshalNStorageType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx context.Context, v any) (model.StorageType, error) {
+func (ec *executionContext) unmarshalNStorageType2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx context.Context, v any) (model.StorageType, error) {
 	var res model.StorageType
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNStorageType2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx context.Context, sel ast.SelectionSet, v model.StorageType) graphql.Marshaler {
+func (ec *executionContext) marshalNStorageType2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageType(ctx context.Context, sel ast.SelectionSet, v model.StorageType) graphql.Marshaler {
 	return v
 }
 
@@ -47602,11 +47602,11 @@ func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel
 	return ret
 }
 
-func (ec *executionContext) marshalNTask2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v model.Task) graphql.Marshaler {
 	return ec._Task(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47630,7 +47630,7 @@ func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑd
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, sel, v[i])
+			ret[i] = ec.marshalOTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47644,7 +47644,7 @@ func (ec *executionContext) marshalNTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑd
 	return ret
 }
 
-func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47654,7 +47654,7 @@ func (ec *executionContext) marshalNTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdash
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskCompactStage) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskCompactStage) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47678,7 +47678,7 @@ func (ec *executionContext) marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋstrahe
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTaskCompactStage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStage(ctx, sel, v[i])
+			ret[i] = ec.marshalNTaskCompactStage2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStage(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47698,7 +47698,7 @@ func (ec *executionContext) marshalNTaskCompactStage2ᚕᚖgithubᚗcomᚋstrahe
 	return ret
 }
 
-func (ec *executionContext) marshalNTaskCompactStage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStage(ctx context.Context, sel ast.SelectionSet, v *model.TaskCompactStage) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskCompactStage2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskCompactStage(ctx context.Context, sel ast.SelectionSet, v *model.TaskCompactStage) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47708,7 +47708,7 @@ func (ec *executionContext) marshalNTaskCompactStage2ᚖgithubᚗcomᚋstraheᚋ
 	return ec._TaskCompactStage(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskDurationStats) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStatsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.TaskDurationStats) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47732,7 +47732,7 @@ func (ec *executionContext) marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋstrah
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx, sel, v[i])
+			ret[i] = ec.marshalNTaskDurationStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47752,7 +47752,7 @@ func (ec *executionContext) marshalNTaskDurationStats2ᚕᚖgithubᚗcomᚋstrah
 	return ret
 }
 
-func (ec *executionContext) marshalNTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskDurationStats) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskDurationStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskDurationStats) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47762,21 +47762,21 @@ func (ec *executionContext) marshalNTaskDurationStats2ᚖgithubᚗcomᚋstrahe�
 	return ec._TaskDurationStats(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, v any) (model.TaskHistoriesAggregateInterval, error) {
+func (ec *executionContext) unmarshalNTaskHistoriesAggregateInterval2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, v any) (model.TaskHistoriesAggregateInterval, error) {
 	var res model.TaskHistoriesAggregateInterval
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNTaskHistoriesAggregateInterval2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, sel ast.SelectionSet, v model.TaskHistoriesAggregateInterval) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskHistoriesAggregateInterval2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistoriesAggregateInterval(ctx context.Context, sel ast.SelectionSet, v model.TaskHistoriesAggregateInterval) graphql.Marshaler {
 	return v
 }
 
-func (ec *executionContext) marshalNTaskHistory2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v model.TaskHistory) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskHistory2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v model.TaskHistory) graphql.Marshaler {
 	return ec._TaskHistory(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v []*model.TaskHistory) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskHistory2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v []*model.TaskHistory) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -47800,7 +47800,7 @@ func (ec *executionContext) marshalNTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcu
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, sel, v[i])
+			ret[i] = ec.marshalOTaskHistory2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -47814,7 +47814,7 @@ func (ec *executionContext) marshalNTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcu
 	return ret
 }
 
-func (ec *executionContext) marshalNTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v *model.TaskHistory) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskHistory2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v *model.TaskHistory) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -47824,13 +47824,13 @@ func (ec *executionContext) marshalNTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurio
 	return ec._TaskHistory(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx context.Context, v any) (model.TaskStatus, error) {
+func (ec *executionContext) unmarshalNTaskStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx context.Context, v any) (model.TaskStatus, error) {
 	var res model.TaskStatus
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNTaskStatus2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx context.Context, sel ast.SelectionSet, v model.TaskStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNTaskStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStatus(ctx context.Context, sel ast.SelectionSet, v model.TaskStatus) graphql.Marshaler {
 	return v
 }
 
@@ -47885,7 +47885,7 @@ func (ec *executionContext) marshalNUint642uint64(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNWalletBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalance(ctx context.Context, sel ast.SelectionSet, v *model.WalletBalance) graphql.Marshaler {
+func (ec *executionContext) marshalNWalletBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalance(ctx context.Context, sel ast.SelectionSet, v *model.WalletBalance) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -48146,7 +48146,7 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOActor2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx context.Context, sel ast.SelectionSet, v []*model.Actor) graphql.Marshaler {
+func (ec *executionContext) marshalOActor2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx context.Context, sel ast.SelectionSet, v []*model.Actor) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48173,7 +48173,7 @@ func (ec *executionContext) marshalOActor2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOActor2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, sel, v[i])
+			ret[i] = ec.marshalOActor2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48187,14 +48187,14 @@ func (ec *executionContext) marshalOActor2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑ
 	return ret
 }
 
-func (ec *executionContext) marshalOActor2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx context.Context, sel ast.SelectionSet, v *model.Actor) graphql.Marshaler {
+func (ec *executionContext) marshalOActor2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActor(ctx context.Context, sel ast.SelectionSet, v *model.Actor) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Actor(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOActorDeadline2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx context.Context, sel ast.SelectionSet, v []*model.ActorDeadline) graphql.Marshaler {
+func (ec *executionContext) marshalOActorDeadline2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx context.Context, sel ast.SelectionSet, v []*model.ActorDeadline) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48221,7 +48221,7 @@ func (ec *executionContext) marshalOActorDeadline2ᚕᚖgithubᚗcomᚋstraheᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOActorDeadline2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx, sel, v[i])
+			ret[i] = ec.marshalOActorDeadline2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48235,14 +48235,14 @@ func (ec *executionContext) marshalOActorDeadline2ᚕᚖgithubᚗcomᚋstraheᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalOActorDeadline2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx context.Context, sel ast.SelectionSet, v *model.ActorDeadline) graphql.Marshaler {
+func (ec *executionContext) marshalOActorDeadline2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐActorDeadline(ctx context.Context, sel ast.SelectionSet, v *model.ActorDeadline) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ActorDeadline(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v any) (*types.ActorID, error) {
+func (ec *executionContext) unmarshalOActorID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, v any) (*types.ActorID, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48251,14 +48251,14 @@ func (ec *executionContext) unmarshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurio�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOActorID2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v *types.ActorID) graphql.Marshaler {
+func (ec *executionContext) marshalOActorID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx context.Context, sel ast.SelectionSet, v *types.ActorID) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v any) ([]*types.Address, error) {
+func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, v any) ([]*types.Address, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48268,7 +48268,7 @@ func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcuri
 	res := make([]*types.Address, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -48276,13 +48276,13 @@ func (ec *executionContext) unmarshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcuri
 	return res, nil
 }
 
-func (ec *executionContext) marshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, sel ast.SelectionSet, v []*types.Address) graphql.Marshaler {
+func (ec *executionContext) marshalOAddress2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddressᚄ(ctx context.Context, sel ast.SelectionSet, v []*types.Address) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	ret := make(graphql.Array, len(v))
 	for i := range v {
-		ret[i] = ec.marshalNAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, sel, v[i])
+		ret[i] = ec.marshalNAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, sel, v[i])
 	}
 
 	for _, e := range ret {
@@ -48294,7 +48294,7 @@ func (ec *executionContext) marshalOAddress2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (*types.Address, error) {
+func (ec *executionContext) unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, v any) (*types.Address, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48303,14 +48303,14 @@ func (ec *executionContext) unmarshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurio�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOAddress2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, sel ast.SelectionSet, v *types.Address) graphql.Marshaler {
+func (ec *executionContext) marshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx context.Context, sel ast.SelectionSet, v *types.Address) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalOAlert2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v []*model.Alert) graphql.Marshaler {
+func (ec *executionContext) marshalOAlert2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v []*model.Alert) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48337,7 +48337,7 @@ func (ec *executionContext) marshalOAlert2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOAlert2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, sel, v[i])
+			ret[i] = ec.marshalOAlert2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48351,14 +48351,14 @@ func (ec *executionContext) marshalOAlert2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑ
 	return ret
 }
 
-func (ec *executionContext) marshalOAlert2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v *model.Alert) graphql.Marshaler {
+func (ec *executionContext) marshalOAlert2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐAlert(ctx context.Context, sel ast.SelectionSet, v *model.Alert) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Alert(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (*types.BigInt, error) {
+func (ec *executionContext) unmarshalOBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, v any) (*types.BigInt, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48367,7 +48367,7 @@ func (ec *executionContext) unmarshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑ
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOBigInt2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, sel ast.SelectionSet, v *types.BigInt) graphql.Marshaler {
+func (ec *executionContext) marshalOBigInt2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBigInt(ctx context.Context, sel ast.SelectionSet, v *types.BigInt) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48400,7 +48400,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) unmarshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v any) (types.Bytes, error) {
+func (ec *executionContext) unmarshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, v any) (types.Bytes, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48409,14 +48409,14 @@ func (ec *executionContext) unmarshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdash
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOBytes2githubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, sel ast.SelectionSet, v types.Bytes) graphql.Marshaler {
+func (ec *executionContext) marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx context.Context, sel ast.SelectionSet, v types.Bytes) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalOClientFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ClientFilter) graphql.Marshaler {
+func (ec *executionContext) marshalOClientFilter2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.ClientFilter) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48443,7 +48443,7 @@ func (ec *executionContext) marshalOClientFilter2ᚕᚖgithubᚗcomᚋstraheᚋc
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, sel, v[i])
+			ret[i] = ec.marshalNClientFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48463,14 +48463,14 @@ func (ec *executionContext) marshalOClientFilter2ᚕᚖgithubᚗcomᚋstraheᚋc
 	return ret
 }
 
-func (ec *executionContext) marshalOClientFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx context.Context, sel ast.SelectionSet, v *model.ClientFilter) graphql.Marshaler {
+func (ec *executionContext) marshalOClientFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx context.Context, sel ast.SelectionSet, v *model.ClientFilter) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ClientFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOConfig2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx context.Context, sel ast.SelectionSet, v []*model.Config) graphql.Marshaler {
+func (ec *executionContext) marshalOConfig2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx context.Context, sel ast.SelectionSet, v []*model.Config) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48497,7 +48497,7 @@ func (ec *executionContext) marshalOConfig2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, sel, v[i])
+			ret[i] = ec.marshalOConfig2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48511,28 +48511,28 @@ func (ec *executionContext) marshalOConfig2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) marshalOConfig2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx context.Context, sel ast.SelectionSet, v *model.Config) graphql.Marshaler {
+func (ec *executionContext) marshalOConfig2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐConfig(ctx context.Context, sel ast.SelectionSet, v *model.Config) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Config(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalODealCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealCountSummary(ctx context.Context, sel ast.SelectionSet, v *model.DealCountSummary) graphql.Marshaler {
+func (ec *executionContext) marshalODealCountSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealCountSummary(ctx context.Context, sel ast.SelectionSet, v *model.DealCountSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._DealCountSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalODealInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx context.Context, sel ast.SelectionSet, v *model.DealInfo) graphql.Marshaler {
+func (ec *executionContext) marshalODealInfo2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐDealInfo(ctx context.Context, sel ast.SelectionSet, v *model.DealInfo) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._DealInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOGaugeCountValue2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx context.Context, sel ast.SelectionSet, v *model.GaugeCountValue) graphql.Marshaler {
+func (ec *executionContext) marshalOGaugeCountValue2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx context.Context, sel ast.SelectionSet, v *model.GaugeCountValue) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48555,7 +48555,7 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
-func (ec *executionContext) unmarshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, v any) (*types.JSON, error) {
+func (ec *executionContext) unmarshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, v any) (*types.JSON, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -48564,14 +48564,14 @@ func (ec *executionContext) unmarshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑda
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOJSON2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, sel ast.SelectionSet, v *types.JSON) graphql.Marshaler {
+func (ec *executionContext) marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, sel ast.SelectionSet, v *types.JSON) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return v
 }
 
-func (ec *executionContext) marshalOMachine2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v []*model.Machine) graphql.Marshaler {
+func (ec *executionContext) marshalOMachine2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v []*model.Machine) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48598,7 +48598,7 @@ func (ec *executionContext) marshalOMachine2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, sel, v[i])
+			ret[i] = ec.marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48612,35 +48612,35 @@ func (ec *executionContext) marshalOMachine2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) marshalOMachine2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v *model.Machine) graphql.Marshaler {
+func (ec *executionContext) marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx context.Context, sel ast.SelectionSet, v *model.Machine) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Machine(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMachineDetail2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx context.Context, sel ast.SelectionSet, v *model.MachineDetail) graphql.Marshaler {
+func (ec *executionContext) marshalOMachineDetail2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineDetail(ctx context.Context, sel ast.SelectionSet, v *model.MachineDetail) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MachineDetail(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMachineMetrics2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineMetrics(ctx context.Context, sel ast.SelectionSet, v *model.MachineMetrics) graphql.Marshaler {
+func (ec *executionContext) marshalOMachineMetrics2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineMetrics(ctx context.Context, sel ast.SelectionSet, v *model.MachineMetrics) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MachineMetrics(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMachineSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineSummary(ctx context.Context, sel ast.SelectionSet, v *model.MachineSummary) graphql.Marshaler {
+func (ec *executionContext) marshalOMachineSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachineSummary(ctx context.Context, sel ast.SelectionSet, v *model.MachineSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MachineSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketAllowFilter) graphql.Marshaler {
+func (ec *executionContext) marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketAllowFilter) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48667,7 +48667,7 @@ func (ec *executionContext) marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋstrah
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMarketAllowFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, sel, v[i])
+			ret[i] = ec.marshalNMarketAllowFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48687,14 +48687,14 @@ func (ec *executionContext) marshalOMarketAllowFilter2ᚕᚖgithubᚗcomᚋstrah
 	return ret
 }
 
-func (ec *executionContext) marshalOMarketAllowFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx context.Context, sel ast.SelectionSet, v *model.MarketAllowFilter) graphql.Marshaler {
+func (ec *executionContext) marshalOMarketAllowFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketAllowFilter(ctx context.Context, sel ast.SelectionSet, v *model.MarketAllowFilter) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MarketAllowFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketBalance) graphql.Marshaler {
+func (ec *executionContext) marshalOMarketBalance2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalanceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.MarketBalance) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48721,7 +48721,7 @@ func (ec *executionContext) marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, sel, v[i])
+			ret[i] = ec.marshalNMarketBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48741,14 +48741,14 @@ func (ec *executionContext) marshalOMarketBalance2ᚕᚖgithubᚗcomᚋstraheᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalOMarketBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx context.Context, sel ast.SelectionSet, v *model.MarketBalance) graphql.Marshaler {
+func (ec *executionContext) marshalOMarketBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketBalance(ctx context.Context, sel ast.SelectionSet, v *model.MarketBalance) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MarketBalance(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, v []*model.MarketMk12StorageAsk) graphql.Marshaler {
+func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, v []*model.MarketMk12StorageAsk) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48775,7 +48775,7 @@ func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋst
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, sel, v[i])
+			ret[i] = ec.marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48789,14 +48789,14 @@ func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚕᚖgithubᚗcomᚋst
 	return ret
 }
 
-func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, v *model.MarketMk12StorageAsk) graphql.Marshaler {
+func (ec *executionContext) marshalOMarketMk12StorageAsk2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMarketMk12StorageAsk(ctx context.Context, sel ast.SelectionSet, v *model.MarketMk12StorageAsk) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MarketMk12StorageAsk(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx context.Context, sel ast.SelectionSet, v []*model.MessageSend) graphql.Marshaler {
+func (ec *executionContext) marshalOMessageSend2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx context.Context, sel ast.SelectionSet, v []*model.MessageSend) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48823,7 +48823,7 @@ func (ec *executionContext) marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcu
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, sel, v[i])
+			ret[i] = ec.marshalOMessageSend2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48837,56 +48837,56 @@ func (ec *executionContext) marshalOMessageSend2ᚕᚖgithubᚗcomᚋstraheᚋcu
 	return ret
 }
 
-func (ec *executionContext) marshalOMessageSend2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx context.Context, sel ast.SelectionSet, v *model.MessageSend) graphql.Marshaler {
+func (ec *executionContext) marshalOMessageSend2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageSend(ctx context.Context, sel ast.SelectionSet, v *model.MessageSend) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MessageSend(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMiner2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx context.Context, sel ast.SelectionSet, v *model.Miner) graphql.Marshaler {
+func (ec *executionContext) marshalOMiner2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx context.Context, sel ast.SelectionSet, v *model.Miner) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Miner(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMinerBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBalance(ctx context.Context, sel ast.SelectionSet, v *model.MinerBalance) graphql.Marshaler {
+func (ec *executionContext) marshalOMinerBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBalance(ctx context.Context, sel ast.SelectionSet, v *model.MinerBalance) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MinerBalance(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMinerBeneficiaryTerm2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBeneficiaryTerm(ctx context.Context, sel ast.SelectionSet, v *model.MinerBeneficiaryTerm) graphql.Marshaler {
+func (ec *executionContext) marshalOMinerBeneficiaryTerm2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerBeneficiaryTerm(ctx context.Context, sel ast.SelectionSet, v *model.MinerBeneficiaryTerm) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MinerBeneficiaryTerm(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMinerInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerInfo(ctx context.Context, sel ast.SelectionSet, v *model.MinerInfo) graphql.Marshaler {
+func (ec *executionContext) marshalOMinerInfo2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerInfo(ctx context.Context, sel ast.SelectionSet, v *model.MinerInfo) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MinerInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMinerPendingBeneficiaryChange2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPendingBeneficiaryChange(ctx context.Context, sel ast.SelectionSet, v *model.MinerPendingBeneficiaryChange) graphql.Marshaler {
+func (ec *executionContext) marshalOMinerPendingBeneficiaryChange2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPendingBeneficiaryChange(ctx context.Context, sel ast.SelectionSet, v *model.MinerPendingBeneficiaryChange) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MinerPendingBeneficiaryChange(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMinerPower2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx context.Context, sel ast.SelectionSet, v *model.MinerPower) graphql.Marshaler {
+func (ec *executionContext) marshalOMinerPower2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMinerPower(ctx context.Context, sel ast.SelectionSet, v *model.MinerPower) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MinerPower(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx context.Context, sel ast.SelectionSet, v []*model.MiningCountAggregated) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx context.Context, sel ast.SelectionSet, v []*model.MiningCountAggregated) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48913,7 +48913,7 @@ func (ec *executionContext) marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋs
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMiningCountAggregated2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, sel, v[i])
+			ret[i] = ec.marshalOMiningCountAggregated2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48927,28 +48927,28 @@ func (ec *executionContext) marshalOMiningCountAggregated2ᚕᚖgithubᚗcomᚋs
 	return ret
 }
 
-func (ec *executionContext) marshalOMiningCountAggregated2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx context.Context, sel ast.SelectionSet, v *model.MiningCountAggregated) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningCountAggregated2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountAggregated(ctx context.Context, sel ast.SelectionSet, v *model.MiningCountAggregated) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MiningCountAggregated(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMiningCountSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx context.Context, sel ast.SelectionSet, v *model.MiningCountSummary) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningCountSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningCountSummary(ctx context.Context, sel ast.SelectionSet, v *model.MiningCountSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MiningCountSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMiningStatusSummay2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningStatusSummay(ctx context.Context, sel ast.SelectionSet, v *model.MiningStatusSummay) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningStatusSummay2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningStatusSummay(ctx context.Context, sel ast.SelectionSet, v *model.MiningStatusSummay) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MiningStatusSummay(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx context.Context, sel ast.SelectionSet, v []*model.MiningSummaryDay) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx context.Context, sel ast.SelectionSet, v []*model.MiningSummaryDay) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -48975,7 +48975,7 @@ func (ec *executionContext) marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstrahe
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMiningSummaryDay2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx, sel, v[i])
+			ret[i] = ec.marshalOMiningSummaryDay2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -48989,14 +48989,14 @@ func (ec *executionContext) marshalOMiningSummaryDay2ᚕᚖgithubᚗcomᚋstrahe
 	return ret
 }
 
-func (ec *executionContext) marshalOMiningSummaryDay2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx context.Context, sel ast.SelectionSet, v *model.MiningSummaryDay) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningSummaryDay2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningSummaryDay(ctx context.Context, sel ast.SelectionSet, v *model.MiningSummaryDay) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MiningSummaryDay(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMiningTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx context.Context, sel ast.SelectionSet, v []*model.MiningTask) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningTask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx context.Context, sel ast.SelectionSet, v []*model.MiningTask) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49023,7 +49023,7 @@ func (ec *executionContext) marshalOMiningTask2ᚕᚖgithubᚗcomᚋstraheᚋcur
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOMiningTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx, sel, v[i])
+			ret[i] = ec.marshalOMiningTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49037,21 +49037,21 @@ func (ec *executionContext) marshalOMiningTask2ᚕᚖgithubᚗcomᚋstraheᚋcur
 	return ret
 }
 
-func (ec *executionContext) marshalOMiningTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx context.Context, sel ast.SelectionSet, v *model.MiningTask) graphql.Marshaler {
+func (ec *executionContext) marshalOMiningTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiningTask(ctx context.Context, sel ast.SelectionSet, v *model.MiningTask) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MiningTask(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalONodeHealthSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx context.Context, sel ast.SelectionSet, v *model.NodeHealthSummary) graphql.Marshaler {
+func (ec *executionContext) marshalONodeHealthSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeHealthSummary(ctx context.Context, sel ast.SelectionSet, v *model.NodeHealthSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._NodeHealthSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalONodeInfo2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx context.Context, sel ast.SelectionSet, v []*model.NodeInfo) graphql.Marshaler {
+func (ec *executionContext) marshalONodeInfo2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx context.Context, sel ast.SelectionSet, v []*model.NodeInfo) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49078,7 +49078,7 @@ func (ec *executionContext) marshalONodeInfo2ᚕᚖgithubᚗcomᚋstraheᚋcurio
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalONodeInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx, sel, v[i])
+			ret[i] = ec.marshalONodeInfo2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49092,14 +49092,14 @@ func (ec *executionContext) marshalONodeInfo2ᚕᚖgithubᚗcomᚋstraheᚋcurio
 	return ret
 }
 
-func (ec *executionContext) marshalONodeInfo2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx context.Context, sel ast.SelectionSet, v *model.NodeInfo) graphql.Marshaler {
+func (ec *executionContext) marshalONodeInfo2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐNodeInfo(ctx context.Context, sel ast.SelectionSet, v *model.NodeInfo) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._NodeInfo(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx context.Context, sel ast.SelectionSet, v []*model.OpenSectorPiece) graphql.Marshaler {
+func (ec *executionContext) marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx context.Context, sel ast.SelectionSet, v []*model.OpenSectorPiece) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49126,7 +49126,7 @@ func (ec *executionContext) marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋstrahe�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOOpenSectorPiece2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx, sel, v[i])
+			ret[i] = ec.marshalOOpenSectorPiece2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49140,14 +49140,14 @@ func (ec *executionContext) marshalOOpenSectorPiece2ᚕᚖgithubᚗcomᚋstrahe�
 	return ret
 }
 
-func (ec *executionContext) marshalOOpenSectorPiece2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx context.Context, sel ast.SelectionSet, v *model.OpenSectorPiece) graphql.Marshaler {
+func (ec *executionContext) marshalOOpenSectorPiece2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐOpenSectorPiece(ctx context.Context, sel ast.SelectionSet, v *model.OpenSectorPiece) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._OpenSectorPiece(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPipelineSummary2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx context.Context, sel ast.SelectionSet, v []*model.PipelineSummary) graphql.Marshaler {
+func (ec *executionContext) marshalOPipelineSummary2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx context.Context, sel ast.SelectionSet, v []*model.PipelineSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49174,7 +49174,7 @@ func (ec *executionContext) marshalOPipelineSummary2ᚕᚖgithubᚗcomᚋstrahe�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOPipelineSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx, sel, v[i])
+			ret[i] = ec.marshalOPipelineSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49188,14 +49188,14 @@ func (ec *executionContext) marshalOPipelineSummary2ᚕᚖgithubᚗcomᚋstrahe�
 	return ret
 }
 
-func (ec *executionContext) marshalOPipelineSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx context.Context, sel ast.SelectionSet, v *model.PipelineSummary) graphql.Marshaler {
+func (ec *executionContext) marshalOPipelineSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPipelineSummary(ctx context.Context, sel ast.SelectionSet, v *model.PipelineSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PipelineSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPorep2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx context.Context, sel ast.SelectionSet, v []*model.Porep) graphql.Marshaler {
+func (ec *executionContext) marshalOPorep2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx context.Context, sel ast.SelectionSet, v []*model.Porep) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49222,7 +49222,7 @@ func (ec *executionContext) marshalOPorep2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOPorep2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, sel, v[i])
+			ret[i] = ec.marshalOPorep2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49236,14 +49236,14 @@ func (ec *executionContext) marshalOPorep2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑ
 	return ret
 }
 
-func (ec *executionContext) marshalOPorep2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx context.Context, sel ast.SelectionSet, v *model.Porep) graphql.Marshaler {
+func (ec *executionContext) marshalOPorep2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPorep(ctx context.Context, sel ast.SelectionSet, v *model.Porep) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Porep(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPriceFilter2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PriceFilter) graphql.Marshaler {
+func (ec *executionContext) marshalOPriceFilter2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilterᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.PriceFilter) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49270,7 +49270,7 @@ func (ec *executionContext) marshalOPriceFilter2ᚕᚖgithubᚗcomᚋstraheᚋcu
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, sel, v[i])
+			ret[i] = ec.marshalNPriceFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49290,21 +49290,21 @@ func (ec *executionContext) marshalOPriceFilter2ᚕᚖgithubᚗcomᚋstraheᚋcu
 	return ret
 }
 
-func (ec *executionContext) marshalOPriceFilter2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx context.Context, sel ast.SelectionSet, v *model.PriceFilter) graphql.Marshaler {
+func (ec *executionContext) marshalOPriceFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐPriceFilter(ctx context.Context, sel ast.SelectionSet, v *model.PriceFilter) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PriceFilter(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalORunningTaskSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐRunningTaskSummary(ctx context.Context, sel ast.SelectionSet, v *model.RunningTaskSummary) graphql.Marshaler {
+func (ec *executionContext) marshalORunningTaskSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRunningTaskSummary(ctx context.Context, sel ast.SelectionSet, v *model.RunningTaskSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._RunningTaskSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx context.Context, sel ast.SelectionSet, v []*model.Sector) graphql.Marshaler {
+func (ec *executionContext) marshalOSector2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx context.Context, sel ast.SelectionSet, v []*model.Sector) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49331,7 +49331,7 @@ func (ec *executionContext) marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOSector2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, sel, v[i])
+			ret[i] = ec.marshalOSector2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49345,56 +49345,56 @@ func (ec *executionContext) marshalOSector2ᚕᚖgithubᚗcomᚋstraheᚋcurio�
 	return ret
 }
 
-func (ec *executionContext) marshalOSector2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx context.Context, sel ast.SelectionSet, v *model.Sector) graphql.Marshaler {
+func (ec *executionContext) marshalOSector2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSector(ctx context.Context, sel ast.SelectionSet, v *model.Sector) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Sector(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOSectorLocation2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx context.Context, sel ast.SelectionSet, v *model.SectorLocation) graphql.Marshaler {
+func (ec *executionContext) marshalOSectorLocation2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx context.Context, sel ast.SelectionSet, v *model.SectorLocation) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._SectorLocation(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOSectorMeta2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMeta(ctx context.Context, sel ast.SelectionSet, v *model.SectorMeta) graphql.Marshaler {
+func (ec *executionContext) marshalOSectorMeta2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMeta(ctx context.Context, sel ast.SelectionSet, v *model.SectorMeta) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._SectorMeta(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOSectorMetaPiece2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx context.Context, sel ast.SelectionSet, v *model.SectorMetaPiece) graphql.Marshaler {
+func (ec *executionContext) marshalOSectorMetaPiece2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMetaPiece(ctx context.Context, sel ast.SelectionSet, v *model.SectorMetaPiece) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._SectorMetaPiece(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOSectorSummary2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSummary(ctx context.Context, sel ast.SelectionSet, v *model.SectorSummary) graphql.Marshaler {
+func (ec *executionContext) marshalOSectorSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSummary(ctx context.Context, sel ast.SelectionSet, v *model.SectorSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._SectorSummary(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOStorage2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx context.Context, sel ast.SelectionSet, v *model.Storage) graphql.Marshaler {
+func (ec *executionContext) marshalOStorage2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx context.Context, sel ast.SelectionSet, v *model.Storage) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Storage(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOStorageLiveness2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageLiveness(ctx context.Context, sel ast.SelectionSet, v *model.StorageLiveness) graphql.Marshaler {
+func (ec *executionContext) marshalOStorageLiveness2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageLiveness(ctx context.Context, sel ast.SelectionSet, v *model.StorageLiveness) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._StorageLiveness(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx context.Context, sel ast.SelectionSet, v []*model.StoragePath) graphql.Marshaler {
+func (ec *executionContext) marshalOStoragePath2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx context.Context, sel ast.SelectionSet, v []*model.StoragePath) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49421,7 +49421,7 @@ func (ec *executionContext) marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcu
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOStoragePath2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, sel, v[i])
+			ret[i] = ec.marshalOStoragePath2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49435,14 +49435,14 @@ func (ec *executionContext) marshalOStoragePath2ᚕᚖgithubᚗcomᚋstraheᚋcu
 	return ret
 }
 
-func (ec *executionContext) marshalOStoragePath2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx context.Context, sel ast.SelectionSet, v *model.StoragePath) graphql.Marshaler {
+func (ec *executionContext) marshalOStoragePath2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStoragePath(ctx context.Context, sel ast.SelectionSet, v *model.StoragePath) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._StoragePath(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOStorageStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx context.Context, sel ast.SelectionSet, v []*model.StorageStats) graphql.Marshaler {
+func (ec *executionContext) marshalOStorageStats2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx context.Context, sel ast.SelectionSet, v []*model.StorageStats) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49469,7 +49469,7 @@ func (ec *executionContext) marshalOStorageStats2ᚕᚖgithubᚗcomᚋstraheᚋc
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOStorageStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx, sel, v[i])
+			ret[i] = ec.marshalOStorageStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49483,7 +49483,7 @@ func (ec *executionContext) marshalOStorageStats2ᚕᚖgithubᚗcomᚋstraheᚋc
 	return ret
 }
 
-func (ec *executionContext) marshalOStorageStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx context.Context, sel ast.SelectionSet, v *model.StorageStats) graphql.Marshaler {
+func (ec *executionContext) marshalOStorageStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageStats(ctx context.Context, sel ast.SelectionSet, v *model.StorageStats) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49542,7 +49542,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalOTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalOTask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v []*model.Task) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49569,7 +49569,7 @@ func (ec *executionContext) marshalOTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑd
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, sel, v[i])
+			ret[i] = ec.marshalOTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49583,14 +49583,14 @@ func (ec *executionContext) marshalOTask2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑd
 	return ret
 }
 
-func (ec *executionContext) marshalOTask2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
+func (ec *executionContext) marshalOTask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTask(ctx context.Context, sel ast.SelectionSet, v *model.Task) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Task(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx context.Context, sel ast.SelectionSet, v []*model.TaskAggregate) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx context.Context, sel ast.SelectionSet, v []*model.TaskAggregate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49617,7 +49617,7 @@ func (ec *executionContext) marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTaskAggregate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, sel, v[i])
+			ret[i] = ec.marshalOTaskAggregate2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49631,21 +49631,21 @@ func (ec *executionContext) marshalOTaskAggregate2ᚕᚖgithubᚗcomᚋstraheᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalOTaskAggregate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx context.Context, sel ast.SelectionSet, v *model.TaskAggregate) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskAggregate2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskAggregate(ctx context.Context, sel ast.SelectionSet, v *model.TaskAggregate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TaskAggregate(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTaskDurationStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskDurationStats) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskDurationStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskDurationStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskDurationStats) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TaskDurationStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v []*model.TaskHistory) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskHistory2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v []*model.TaskHistory) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49672,7 +49672,7 @@ func (ec *executionContext) marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcu
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, sel, v[i])
+			ret[i] = ec.marshalOTaskHistory2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49686,14 +49686,14 @@ func (ec *executionContext) marshalOTaskHistory2ᚕᚖgithubᚗcomᚋstraheᚋcu
 	return ret
 }
 
-func (ec *executionContext) marshalOTaskHistory2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v *model.TaskHistory) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskHistory2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskHistory(ctx context.Context, sel ast.SelectionSet, v *model.TaskHistory) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TaskHistory(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTaskStats2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx context.Context, sel ast.SelectionSet, v []*model.TaskStats) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskStats2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx context.Context, sel ast.SelectionSet, v []*model.TaskStats) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49720,7 +49720,7 @@ func (ec *executionContext) marshalOTaskStats2ᚕᚖgithubᚗcomᚋstraheᚋcuri
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOTaskStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx, sel, v[i])
+			ret[i] = ec.marshalOTaskStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -49734,14 +49734,14 @@ func (ec *executionContext) marshalOTaskStats2ᚕᚖgithubᚗcomᚋstraheᚋcuri
 	return ret
 }
 
-func (ec *executionContext) marshalOTaskStats2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskStats) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskStats(ctx context.Context, sel ast.SelectionSet, v *model.TaskStats) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._TaskStats(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOTaskSuccessRate2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskSuccessRate(ctx context.Context, sel ast.SelectionSet, v *model.TaskSuccessRate) graphql.Marshaler {
+func (ec *executionContext) marshalOTaskSuccessRate2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐTaskSuccessRate(ctx context.Context, sel ast.SelectionSet, v *model.TaskSuccessRate) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49764,7 +49764,7 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	return res
 }
 
-func (ec *executionContext) marshalOWalletBalance2ᚕᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalanceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.WalletBalance) graphql.Marshaler {
+func (ec *executionContext) marshalOWalletBalance2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalanceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.WalletBalance) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -49791,7 +49791,7 @@ func (ec *executionContext) marshalOWalletBalance2ᚕᚖgithubᚗcomᚋstraheᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNWalletBalance2ᚖgithubᚗcomᚋstraheᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalance(ctx, sel, v[i])
+			ret[i] = ec.marshalNWalletBalance2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWalletBalance(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)

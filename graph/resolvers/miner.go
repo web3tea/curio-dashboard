@@ -247,7 +247,5 @@ func (r *Resolver) Miner() graph.MinerResolver { return &minerResolver{r} }
 // MinerBalance returns graph.MinerBalanceResolver implementation.
 func (r *Resolver) MinerBalance() graph.MinerBalanceResolver { return &minerBalanceResolver{r} }
 
-type (
-	minerResolver        struct{ *Resolver }
-	minerBalanceResolver struct{ *Resolver }
-)
+type minerResolver struct{ *Resolver }
+type minerBalanceResolver struct{ *Resolver }

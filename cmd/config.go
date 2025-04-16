@@ -5,8 +5,8 @@ import (
 
 	cliutil "github.com/filecoin-project/lotus/cli/util"
 	"github.com/pelletier/go-toml"
-	"github.com/web3tea/curio-dashboard/config"
 	"github.com/urfave/cli/v2"
+	"github.com/web3tea/curio-dashboard/config"
 )
 
 var configCmd = &cli.Command{

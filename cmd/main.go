@@ -6,8 +6,8 @@ import (
 	"github.com/filecoin-project/curio/build"
 	lcli "github.com/filecoin-project/lotus/cli"
 	logging "github.com/ipfs/go-log/v2"
-	"github.com/web3tea/curio-dashboard/version"
 	"github.com/urfave/cli/v2"
+	"github.com/web3tea/curio-dashboard/version"
 )
 
 var log = logging.Logger("cmd")
