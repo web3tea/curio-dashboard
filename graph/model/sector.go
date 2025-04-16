@@ -3,7 +3,7 @@ package model
 import (
 	"database/sql"
 
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 type Sector struct {

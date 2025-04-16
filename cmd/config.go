@@ -5,7 +5,7 @@ import (
 
 	cliutil "github.com/filecoin-project/lotus/cli/util"
 	"github.com/pelletier/go-toml"
-	"github.com/strahe/curio-dashboard/config"
+	"github.com/web3tea/curio-dashboard/config"
 	"github.com/urfave/cli/v2"
 )
 

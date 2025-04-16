@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 type PorepStage int

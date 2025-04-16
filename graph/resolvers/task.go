@@ -9,9 +9,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/strahe/curio-dashboard/graph"
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
-	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 // Task is the resolver for the task field.
@@ -226,5 +226,7 @@ func (r *Resolver) Task() graph.TaskResolver { return &taskResolver{r} }
 // TaskHistory returns graph.TaskHistoryResolver implementation.
 func (r *Resolver) TaskHistory() graph.TaskHistoryResolver { return &taskHistoryResolver{r} }
 
-type taskResolver struct{ *Resolver }
-type taskHistoryResolver struct{ *Resolver }
+type (
+	taskResolver        struct{ *Resolver }
+	taskHistoryResolver struct{ *Resolver }
+)

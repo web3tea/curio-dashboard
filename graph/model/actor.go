@@ -15,7 +15,7 @@ import (
 
 	"github.com/filecoin-project/lotus/api/v1api"
 	"github.com/filecoin-project/lotus/chain/types"
-	dTypes "github.com/strahe/curio-dashboard/types"
+	dTypes "github.com/web3tea/curio-dashboard/types"
 )
 
 type Actor struct {

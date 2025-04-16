@@ -11,10 +11,10 @@ import (
 	"time"
 
 	"github.com/filecoin-project/lotus/chain/types"
-	"github.com/strahe/curio-dashboard/graph"
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
-	"github.com/strahe/curio-dashboard/graph/model"
-	types1 "github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/graph"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
+	types1 "github.com/web3tea/curio-dashboard/types"
 )
 
 // ID is the resolver for the id field.

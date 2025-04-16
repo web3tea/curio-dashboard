@@ -1,7 +1,7 @@
 
 # Curio Dashboard
 
-[![Build Status](https://github.com/strahe/curio-dashboard/workflows/CI/badge.svg)](https://github.com/strahe/curio-dashboard/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/strahe/curio-dashboard)](https://goreportcard.com/report/github.com/strahe/curio-dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/strahe/curio-dashboard/badge)](https://www.codefactor.io/repository/github/strahe/curio-dashboard) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/strahe/curio-dashboard)](https://github.com/strahe/curio-dashboard/releases)
+[![Build Status](https://github.com/web3tea/curio-dashboard/workflows/CI/badge.svg)](https://github.com/web3tea/curio-dashboard/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/web3tea/curio-dashboard)](https://goreportcard.com/report/github.com/web3tea/curio-dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/strahe/curio-dashboard/badge)](https://www.codefactor.io/repository/github/strahe/curio-dashboard) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/strahe/curio-dashboard)](https://github.com/web3tea/curio-dashboard/releases)
 
 ## Overview
 
@@ -49,7 +49,7 @@ docker run -d \
 
 ### Pre-built Binaries
 
-Visit the [Releases](https://github.com/strahe/curio-dashboard/releases) page to download the latest binaries.
+Visit the [Releases](https://github.com/web3tea/curio-dashboard/releases) page to download the latest binaries.
 
 After downloading the correct binary for your platform and architecture, follow the [Running the Dashboard](#running-the-dashboard) instructions below.
 
@@ -63,7 +63,7 @@ Follow these steps to build the dashboard from source:
 
 2. **Clone the Repository**
    ```bash
-   git clone https://github.com/strahe/curio-dashboard.git
+   git clone https://github.com/web3tea/curio-dashboard.git
    ```
 
 3. **Build the Project**

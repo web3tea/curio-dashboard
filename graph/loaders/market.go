@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/filecoin-project/curio/web/api/webrpc"
-	"github.com/strahe/curio-dashboard/graph/model"
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 type MarketLoader interface {

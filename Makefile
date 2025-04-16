@@ -2,7 +2,7 @@ aio: all-in-one
 all: ui-deps ui go
 all-in-one: ui-deps ui go-dist
 
-ldflags=-s -w -X github.com/strahe/curio-dashboard/version.CurrentCommit=$(shell git describe --tags --always --dirty 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
+ldflags=-s -w -X github.com/web3tea/curio-dashboard/version.CurrentCommit=$(shell git describe --tags --always --dirty 2>/dev/null || git rev-parse --short HEAD 2>/dev/null)
 GOFLAGS+=-ldflags="$(ldflags)"
 
 go:

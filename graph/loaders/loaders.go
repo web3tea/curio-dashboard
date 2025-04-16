@@ -7,7 +7,7 @@ import (
 	logging "github.com/ipfs/go-log/v2"
 
 	"github.com/hashicorp/golang-lru/v2/expirable"
-	"github.com/strahe/curio-dashboard/db"
+	"github.com/web3tea/curio-dashboard/db"
 )
 
 var (

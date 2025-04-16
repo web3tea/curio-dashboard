@@ -9,11 +9,11 @@ import (
 
 	"github.com/filecoin-project/lotus/api/v1api"
 	logging "github.com/ipfs/go-log/v2"
-	"github.com/strahe/curio-dashboard/config"
-	"github.com/strahe/curio-dashboard/db"
-	"github.com/strahe/curio-dashboard/graph/curiorpc"
-	"github.com/strahe/curio-dashboard/graph/loaders"
-	"github.com/strahe/curio-dashboard/graph/prometheus"
+	"github.com/web3tea/curio-dashboard/config"
+	"github.com/web3tea/curio-dashboard/db"
+	"github.com/web3tea/curio-dashboard/graph/curiorpc"
+	"github.com/web3tea/curio-dashboard/graph/loaders"
+	"github.com/web3tea/curio-dashboard/graph/prometheus"
 )
 
 // This file will not be regenerated automatically.

@@ -19,8 +19,8 @@ import (
 	"github.com/gorilla/websocket"
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/labstack/echo/v4"
-	"github.com/strahe/curio-dashboard/config"
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/config"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 

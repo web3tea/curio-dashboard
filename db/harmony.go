@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/strahe/curio-dashboard/config"
+	"github.com/web3tea/curio-dashboard/config"
 
 	"github.com/georgysavva/scany/v2/dbscan"
 	logging "github.com/ipfs/go-log/v2"

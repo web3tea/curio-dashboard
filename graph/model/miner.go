@@ -11,7 +11,7 @@ import (
 	"github.com/filecoin-project/lotus/chain/actors/builtin/miner"
 	types2 "github.com/filecoin-project/lotus/chain/types"
 	cbor "github.com/ipfs/go-ipld-cbor"
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 type Miner struct {

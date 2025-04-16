@@ -15,10 +15,10 @@ import (
 	types2 "github.com/filecoin-project/lotus/chain/types"
 	"github.com/multiformats/go-multiaddr"
 	"github.com/samber/lo"
-	"github.com/strahe/curio-dashboard/graph"
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
-	"github.com/strahe/curio-dashboard/graph/model"
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/graph"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 // Info is the resolver for the info field.
@@ -247,5 +247,7 @@ func (r *Resolver) Miner() graph.MinerResolver { return &minerResolver{r} }
 // MinerBalance returns graph.MinerBalanceResolver implementation.
 func (r *Resolver) MinerBalance() graph.MinerBalanceResolver { return &minerBalanceResolver{r} }
 
-type minerResolver struct{ *Resolver }
-type minerBalanceResolver struct{ *Resolver }
+type (
+	minerResolver        struct{ *Resolver }
+	minerBalanceResolver struct{ *Resolver }
+)
