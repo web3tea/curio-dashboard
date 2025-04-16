@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/samber/lo"
-	"github.com/strahe/curio-dashboard/graph/model"
-	"github.com/strahe/curio-dashboard/graph/prometheus"
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph/prometheus"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 // PrometheusQuery is the resolver for the prometheusQuery field.

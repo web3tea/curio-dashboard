@@ -13,9 +13,9 @@ import (
 	io_prometheus_client "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
 	"github.com/samber/lo"
-	"github.com/strahe/curio-dashboard/graph"
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
-	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 // Detail is the resolver for the detail field.

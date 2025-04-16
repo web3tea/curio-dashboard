@@ -15,9 +15,9 @@ import (
 	lapi "github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/build"
 	cliutil "github.com/filecoin-project/lotus/cli/util"
-	"github.com/strahe/curio-dashboard/config"
-	"github.com/strahe/curio-dashboard/graph/curiorpc"
 	"github.com/urfave/cli/v2"
+	"github.com/web3tea/curio-dashboard/config"
+	"github.com/web3tea/curio-dashboard/graph/curiorpc"
 	"golang.org/x/xerrors"
 )
 

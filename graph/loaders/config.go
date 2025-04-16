@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 type ConfigLoader interface {

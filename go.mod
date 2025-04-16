@@ -1,4 +1,4 @@
-module github.com/strahe/curio-dashboard
+module github.com/web3tea/curio-dashboard
 
 go 1.24.1
 

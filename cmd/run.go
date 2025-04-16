@@ -11,19 +11,19 @@ import (
 	"strings"
 	"time"
 
-	"github.com/strahe/curio-dashboard/graph/prometheus"
-	"github.com/strahe/curio-dashboard/graph/resolvers"
+	"github.com/web3tea/curio-dashboard/graph/prometheus"
+	"github.com/web3tea/curio-dashboard/graph/resolvers"
 
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/filecoin-project/curio/build"
 	cliutil "github.com/filecoin-project/lotus/cli/util"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/strahe/curio-dashboard/config"
-	"github.com/strahe/curio-dashboard/db"
-	"github.com/strahe/curio-dashboard/graph"
-	"github.com/strahe/curio-dashboard/ui"
 	"github.com/urfave/cli/v2"
+	"github.com/web3tea/curio-dashboard/config"
+	"github.com/web3tea/curio-dashboard/db"
+	"github.com/web3tea/curio-dashboard/graph"
+	"github.com/web3tea/curio-dashboard/ui"
 )
 
 var runCmd = &cli.Command{

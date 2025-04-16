@@ -11,11 +11,11 @@ import (
 
 	"github.com/filecoin-project/curio/web/api/webrpc"
 	"github.com/samber/lo"
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
-	"github.com/strahe/curio-dashboard/graph/loaders"
-	"github.com/strahe/curio-dashboard/graph/model"
-	"github.com/strahe/curio-dashboard/graph/utils"
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/loaders"
+	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph/utils"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 // MarketAddBalance is the resolver for the marketAddBalance field.

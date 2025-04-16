@@ -10,10 +10,10 @@ import (
 	"time"
 
 	"github.com/samber/lo"
-	"github.com/strahe/curio-dashboard/graph"
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
-	"github.com/strahe/curio-dashboard/graph/model"
-	"github.com/strahe/curio-dashboard/types"
+	"github.com/web3tea/curio-dashboard/graph"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 // Previous is the resolver for the previous field.

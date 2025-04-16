@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
-	"github.com/strahe/curio-dashboard/config"
+	"github.com/web3tea/curio-dashboard/config"
 )
 
 type authHandler struct {

@@ -8,8 +8,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/strahe/curio-dashboard/graph/cachecontrol"
-	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 // NodesInfo is the resolver for the nodesInfo field.

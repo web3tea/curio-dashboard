@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 type TaskLoader interface {

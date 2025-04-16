@@ -66,7 +66,7 @@ enable_model_json_omitempty_tag: false
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
-  - "github.com/strahe/curio-dashboard/graph/model"
+  - "github.com/web3tea/curio-dashboard/graph/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -94,25 +94,25 @@ models:
     model:
       - github.com/99designs/gqlgen/graphql.Int64
   ActorID:
-    model: "github.com/strahe/curio-dashboard/types.ActorID"
+    model: "github.com/web3tea/curio-dashboard/types.ActorID"
   Bytes:
-    model: "github.com/strahe/curio-dashboard/types.Bytes"
+    model: "github.com/web3tea/curio-dashboard/types.Bytes"
   Address:
-    model: "github.com/strahe/curio-dashboard/types.Address"
+    model: "github.com/web3tea/curio-dashboard/types.Address"
   BigInt:
-    model: "github.com/strahe/curio-dashboard/types.BigInt"
+    model: "github.com/web3tea/curio-dashboard/types.BigInt"
   JSON:
-    model: "github.com/strahe/curio-dashboard/types.JSON"
+    model: "github.com/web3tea/curio-dashboard/types.JSON"
   FIL:
-    model: "github.com/strahe/curio-dashboard/types.FIL"
+    model: "github.com/web3tea/curio-dashboard/types.FIL"
   PeerID:
-    model: "github.com/strahe/curio-dashboard/types.PeerID"
+    model: "github.com/web3tea/curio-dashboard/types.PeerID"
   NullString:
-    model: "github.com/strahe/curio-dashboard/types.NullString"
+    model: "github.com/web3tea/curio-dashboard/types.NullString"
   NullInt64:
-    model: "github.com/strahe/curio-dashboard/types.NullInt64"
+    model: "github.com/web3tea/curio-dashboard/types.NullInt64"
   NullBool:
-    model: "github.com/strahe/curio-dashboard/types.NullBool"
+    model: "github.com/web3tea/curio-dashboard/types.NullBool"
   Porep:
     fields:
       id:

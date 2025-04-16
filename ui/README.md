@@ -10,7 +10,7 @@
 ### Setup
 
 ```bash
-git clone https://github.com/strahe/curio-dashboard.git
+git clone https://github.com/web3tea/curio-dashboard.git
 
 cd curio-dashboard/ui
 ```

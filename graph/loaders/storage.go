@@ -3,7 +3,7 @@ package loaders
 import (
 	"context"
 
-	"github.com/strahe/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 type StorageLoader interface {
