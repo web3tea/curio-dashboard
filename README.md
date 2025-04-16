@@ -1,7 +1,7 @@
 
 # Curio Dashboard
 
-[![Build Status](https://github.com/web3tea/curio-dashboard/workflows/CI/badge.svg)](https://github.com/web3tea/curio-dashboard/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/web3tea/curio-dashboard)](https://goreportcard.com/report/github.com/web3tea/curio-dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/strahe/curio-dashboard/badge)](https://www.codefactor.io/repository/github/strahe/curio-dashboard) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/strahe/curio-dashboard)](https://github.com/web3tea/curio-dashboard/releases)
+[![Build Status](https://github.com/web3tea/curio-dashboard/workflows/CI/badge.svg)](https://github.com/web3tea/curio-dashboard/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/web3tea/curio-dashboard)](https://goreportcard.com/report/github.com/web3tea/curio-dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/web3tea/curio-dashboard/badge)](https://www.codefactor.io/repository/github/web3tea/curio-dashboard) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/web3tea/curio-dashboard)](https://github.com/web3tea/curio-dashboard/releases)
 
 ## Overview
 
@@ -30,11 +30,11 @@
 
 ```bash
 # Pull the latest Docker image
-docker pull ghcr.io/strahe/curio-dashboard:latest  # Use the latest release
-# docker pull ghcr.io/strahe/curio-dashboard:main # Use the main branch
+docker pull ghcr.io/web3tea/curio-dashboard:latest  # Use the latest release
+# docker pull ghcr.io/web3tea/curio-dashboard:main # Use the main branch
 
 # Generate the default configuration file
-docker run --rm ghcr.io/strahe/curio-dashboard:latest config default > config.toml
+docker run --rm ghcr.io/web3tea/curio-dashboard:latest config default > config.toml
 
 # Edit the configuration file
 # vim config.toml # or use your preferred text editor
@@ -44,7 +44,7 @@ docker run -d \
   -p 9091:9091 \
   --restart unless-stopped \
   -v "$(pwd)"/config.toml:/config.toml:ro \
-  ghcr.io/strahe/curio-dashboard:latest --debug run
+  ghcr.io/web3tea/curio-dashboard:latest --debug run
 ```
 
 ### Pre-built Binaries
