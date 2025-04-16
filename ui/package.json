@@ -6,7 +6,7 @@
     "yarn": ">=1.22.0"
   },
   "scripts": {
-    "preinstall": "node -e \"if(process.env.npm_execpath.indexOf('yarn') === -1) { console.error('You must use Yarn to install dependencies'); process.exit(1); }\"",
+    "preinstall": "npx only-allow yarn",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -45,7 +45,8 @@
     "vue3-apexcharts": "^1.5.3",
     "vue3-perfect-scrollbar": "^2.0.0",
     "vuetify": "^3.7.15",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "only-allow": "^1.2.1"
   },
   "devDependencies": {
     "@babel/types": "^7.24.7",
