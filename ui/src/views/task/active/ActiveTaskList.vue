@@ -169,11 +169,11 @@ const dynamicGroupBy = computed(() => {
                   {{ item.owner.hostAndPort }}
                 </RouterLink>
                 <template v-else>
-                  -
+                  N/A
                 </template>
               </template>
               <template v-else>
-                {{ item.ownerId }}
+                {{ item.ownerId || 'N/A' }}
               </template>
             </template>
             <template #item.addedByID="{ item }">
@@ -185,11 +185,11 @@ const dynamicGroupBy = computed(() => {
                   {{ item.addedBy.hostAndPort }}
                 </RouterLink>
                 <template v-else>
-                  -
+                  N/A
                 </template>
               </template>
               <template v-else>
-                {{ item.addedByID }}
+                {{ item.addedByID || 'N/A' }}
               </template>
             </template>
             <template #item.initiatedByID="{item}">
@@ -201,12 +201,15 @@ const dynamicGroupBy = computed(() => {
                   {{ item.initiatedBy.hostAndPort }}
                 </RouterLink>
                 <template v-else>
-                  -
+                  N/A
                 </template>
               </template>
               <template v-else>
-                {{ item.initiatedByID }}
+                {{ item.initiatedByID || 'N/A' }}
               </template>
+            </template>
+            <template #item.previousTaskID="{ item }">
+              {{ item.previousTaskID || 'N/A' }}
             </template>
           </v-data-table-virtual>
         </v-card-text>

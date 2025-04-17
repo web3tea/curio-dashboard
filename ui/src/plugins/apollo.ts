@@ -85,6 +85,17 @@ const wsLink = new GraphQLWsLink(
 
 // Cache implementation
 const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        tasks: {
+          merge(_existing, incoming: unknown[]) {
+            return incoming // Replace with incoming data as it's likely the most up-to-date
+          }
+        }
+      }
+    }
+  }
 })
 
 // Create the apollo client

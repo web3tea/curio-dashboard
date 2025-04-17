@@ -7,6 +7,7 @@ import { TaskHistory } from '@/typed-graph'
 import { IconReload } from '@tabler/icons-vue'
 import { useTableSettingsStore } from "@/stores/table"
 import { getRelativeTime } from '@/utils/helpers/time'
+import { formatDuration } from '@/utils/helpers/formatDuration'
 
 const props = defineProps({
   start: {
@@ -65,8 +66,8 @@ const headers = [
   { title: 'Name', key: 'name', sortable: false },
   { title: 'Completed By', key: 'completedByHostAndPort', sortable: false },
   { title: 'Posted', key: 'posted' },
-  { title: 'Work Start', key: 'workStart' },
-  { title: 'Work End', key: 'workEnd' },
+  { title: 'Start', key: 'workStart' },
+  { title: 'Took', key: 'took', sortable: false },
   { title: 'Success', key: 'result', align: 'center' },
 ] as const
 
@@ -195,8 +196,8 @@ const selectDateRange = computed({
             <template #item.workStart="{ value }">
               {{ getRelativeTime(value, "long") }}
             </template>
-            <template #item.workEnd="{ value }">
-              {{ getRelativeTime(value, "long") }}
+            <template #item.took="{ item }">
+              {{ formatDuration(new Date(item.workEnd).getTime() - new Date(item.workStart).getTime()) }}
             </template>
             <template #item.result="{ item }">
               <StatusIcon
