@@ -134,6 +134,20 @@ export type GaugeCountValue = {
   value: Scalars['Int']['output'];
 };
 
+export type IpniStats = {
+  __typename?: 'IPNIStats';
+  indexed: Scalars['Int']['output'];
+  pendingTasks: Scalars['Int']['output'];
+  previousIndexed: Scalars['Int']['output'];
+  previousPendingTasks: Scalars['Int']['output'];
+  previousProviders: Scalars['Int']['output'];
+  previousSkipped: Scalars['Int']['output'];
+  previousTotalAdvertisements: Scalars['Int']['output'];
+  providers: Scalars['Int']['output'];
+  skipped: Scalars['Int']['output'];
+  totalAdvertisements: Scalars['Int']['output'];
+};
+
 export type Machine = {
   __typename?: 'Machine';
   cpu: Scalars['Int']['output'];
@@ -694,6 +708,7 @@ export type Query = {
   config?: Maybe<Config>;
   configs?: Maybe<Array<Maybe<Config>>>;
   dealsPending?: Maybe<Array<Maybe<OpenSectorPiece>>>;
+  ipniStats: IpniStats;
   machine?: Maybe<Machine>;
   machineByHostAndPort?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;

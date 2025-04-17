@@ -40,9 +40,6 @@
     "Legacy Deals": "Legacy Deals",
     "Deal Pipeline": "Deal Pipeline",
     "IPNI": "IPNI",
-    "Index Status": "Index Status",
-    "Piece Metadata": "Piece Metadata",
-    "IPNI Summary": "IPNI Summary",
     "Market Settings": "Market Settings",
     "Mining & Network": "Mining & Network",
     "System & Management": "System & Management",
@@ -52,7 +49,14 @@
     "PoRep Pipeline": "PoRep Pipeline",
     "Events": "Events",
     "deals": "Deals",
-    "pendingDeals": "Pending Deals"
+    "pendingDeals": "Pending Deals",
+    "ipni": {
+      "overview": "Overview",
+      "advertisements": "Advertisements",
+      "providers": "Providers",
+      "tasks": "Tasks",
+      "chunks": "Chunks"
+    }
   },
   "fields": {
     "Total Power": "Total Power",

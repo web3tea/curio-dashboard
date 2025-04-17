@@ -40,9 +40,6 @@
     "Legacy Deals": "传统交易",
     "Deal Pipeline": "交易管道",
     "IPNI": "IPNI",
-    "Index Status": "索引状态",
-    "Piece Metadata": "Piece元数据",
-    "IPNI Summary": "IPNI 概要",
     "Market Settings": "市场设置",
     "Mining & Network": "出块 & 网络",
     "System & Management": "系统 & 管理",
@@ -52,7 +49,14 @@
     "PoRep Pipeline": "封存管道",
     "Events": "事件",
     "deals": "交易",
-    "pendingDeals": "待处理交易"
+    "pendingDeals": "待处理交易",
+    "ipni": {
+      "overview": "概览",
+      "advertisements": "广告",
+      "providers": "提供者",
+      "tasks": "任务",
+      "chunks": "块"
+    }
   },
   "fields": {
     "Total Power": "总算力",

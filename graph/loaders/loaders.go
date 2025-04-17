@@ -2,11 +2,9 @@ package loaders
 
 import (
 	"fmt"
-	"time"
 
 	logging "github.com/ipfs/go-log/v2"
-
-	"github.com/hashicorp/golang-lru/v2/expirable"
+	"github.com/jellydator/ttlcache/v3"
 	"github.com/web3tea/curio-dashboard/db"
 )
 
@@ -17,7 +15,7 @@ var (
 
 type Loader struct {
 	db    *db.HarmonyDB
-	cache *expirable.LRU[string, any] // low level cache
+	cache *ttlcache.Cache[string, any]
 	MessageLoader
 	MarketLoader
 	MiningLoader
@@ -30,12 +28,13 @@ type Loader struct {
 	StorageLoader
 	TaskLoader
 	NodeLoader
+	IPNILoader
 }
 
 func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
 	loader := &Loader{
 		db:    db,
-		cache: expirable.NewLRU[string, any](cacheSize, nil, time.Minute),
+		cache: ttlcache.New[string, any](),
 	}
 
 	loader.ConfigLoader = NewConfigLoader(loader)
@@ -50,6 +49,7 @@ func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
 	loader.StorageLoader = NewStorageLoader(loader)
 	loader.TaskLoader = NewTaskLoader(loader)
 	loader.NodeLoader = NewNodeLoader(loader)
+	loader.IPNILoader = NewIPNILoader(loader)
 
 	return loader
 }

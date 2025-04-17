@@ -44,6 +44,7 @@ type Config struct {
 type ResolverRoot interface {
 	Actor() ActorResolver
 	Config() ConfigResolver
+	IPNIStats() IPNIStatsResolver
 	Machine() MachineResolver
 	MachineSummary() MachineSummaryResolver
 	Metadata() MetadataResolver
@@ -153,6 +154,19 @@ type ComplexityRoot struct {
 	GaugeCountValue struct {
 		Key   func(childComplexity int) int
 		Value func(childComplexity int) int
+	}
+
+	IPNIStats struct {
+		Indexed                     func(childComplexity int) int
+		PendingTasks                func(childComplexity int) int
+		PreviousIndexed             func(childComplexity int) int
+		PreviousPendingTasks        func(childComplexity int) int
+		PreviousProviders           func(childComplexity int) int
+		PreviousSkipped             func(childComplexity int) int
+		PreviousTotalAdvertisements func(childComplexity int) int
+		Providers                   func(childComplexity int) int
+		Skipped                     func(childComplexity int) int
+		TotalAdvertisements         func(childComplexity int) int
 	}
 
 	Machine struct {
@@ -534,6 +548,7 @@ type ComplexityRoot struct {
 		Config                     func(childComplexity int, layer string) int
 		Configs                    func(childComplexity int) int
 		DealsPending               func(childComplexity int) int
+		IpniStats                  func(childComplexity int) int
 		Machine                    func(childComplexity int, id int) int
 		MachineByHostAndPort       func(childComplexity int, hostAndPort string) int
 		MachineSummary             func(childComplexity int) int
@@ -841,6 +856,18 @@ type ActorResolver interface {
 type ConfigResolver interface {
 	UsedBy(ctx context.Context, obj *model.Config) ([]*model.MachineDetail, error)
 }
+type IPNIStatsResolver interface {
+	TotalAdvertisements(ctx context.Context, obj *model.IPNIStats) (int, error)
+	PreviousTotalAdvertisements(ctx context.Context, obj *model.IPNIStats) (int, error)
+	Providers(ctx context.Context, obj *model.IPNIStats) (int, error)
+	PreviousProviders(ctx context.Context, obj *model.IPNIStats) (int, error)
+	Indexed(ctx context.Context, obj *model.IPNIStats) (int, error)
+	PreviousIndexed(ctx context.Context, obj *model.IPNIStats) (int, error)
+	Skipped(ctx context.Context, obj *model.IPNIStats) (int, error)
+	PreviousSkipped(ctx context.Context, obj *model.IPNIStats) (int, error)
+	PendingTasks(ctx context.Context, obj *model.IPNIStats) (int, error)
+	PreviousPendingTasks(ctx context.Context, obj *model.IPNIStats) (int, error)
+}
 type MachineResolver interface {
 	Detail(ctx context.Context, obj *model.Machine) (*model.MachineDetail, error)
 	Tasks(ctx context.Context, obj *model.Machine) ([]*model.Task, error)
@@ -929,6 +956,7 @@ type QueryResolver interface {
 	MarketDealInfo(ctx context.Context, id string) (*model.DealInfo, error)
 	MarketDealCountSummary(ctx context.Context) (*model.DealCountSummary, error)
 	DealsPending(ctx context.Context) ([]*model.OpenSectorPiece, error)
+	IpniStats(ctx context.Context) (*model.IPNIStats, error)
 	Machine(ctx context.Context, id int) (*model.Machine, error)
 	MachineByHostAndPort(ctx context.Context, hostAndPort string) (*model.Machine, error)
 	Machines(ctx context.Context) ([]*model.Machine, error)
@@ -1483,6 +1511,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.GaugeCountValue.Value(childComplexity), true
+
+	case "IPNIStats.indexed":
+		if e.complexity.IPNIStats.Indexed == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.Indexed(childComplexity), true
+
+	case "IPNIStats.pendingTasks":
+		if e.complexity.IPNIStats.PendingTasks == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.PendingTasks(childComplexity), true
+
+	case "IPNIStats.previousIndexed":
+		if e.complexity.IPNIStats.PreviousIndexed == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.PreviousIndexed(childComplexity), true
+
+	case "IPNIStats.previousPendingTasks":
+		if e.complexity.IPNIStats.PreviousPendingTasks == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.PreviousPendingTasks(childComplexity), true
+
+	case "IPNIStats.previousProviders":
+		if e.complexity.IPNIStats.PreviousProviders == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.PreviousProviders(childComplexity), true
+
+	case "IPNIStats.previousSkipped":
+		if e.complexity.IPNIStats.PreviousSkipped == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.PreviousSkipped(childComplexity), true
+
+	case "IPNIStats.previousTotalAdvertisements":
+		if e.complexity.IPNIStats.PreviousTotalAdvertisements == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.PreviousTotalAdvertisements(childComplexity), true
+
+	case "IPNIStats.providers":
+		if e.complexity.IPNIStats.Providers == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.Providers(childComplexity), true
+
+	case "IPNIStats.skipped":
+		if e.complexity.IPNIStats.Skipped == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.Skipped(childComplexity), true
+
+	case "IPNIStats.totalAdvertisements":
+		if e.complexity.IPNIStats.TotalAdvertisements == nil {
+			break
+		}
+
+		return e.complexity.IPNIStats.TotalAdvertisements(childComplexity), true
 
 	case "Machine.cpu":
 		if e.complexity.Machine.CPU == nil {
@@ -3584,6 +3682,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.DealsPending(childComplexity), true
 
+	case "Query.ipniStats":
+		if e.complexity.Query.IpniStats == nil {
+			break
+		}
+
+		return e.complexity.Query.IpniStats(childComplexity), true
+
 	case "Query.machine":
 		if e.complexity.Query.Machine == nil {
 			break
@@ -5473,7 +5578,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/ipni.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -5490,6 +5595,7 @@ var sources = []*ast.Source{
 	{Name: "schema/config.graphql", Input: sourceData("schema/config.graphql"), BuiltIn: false},
 	{Name: "schema/deal.graphql", Input: sourceData("schema/deal.graphql"), BuiltIn: false},
 	{Name: "schema/directive.graphql", Input: sourceData("schema/directive.graphql"), BuiltIn: false},
+	{Name: "schema/ipni.graphql", Input: sourceData("schema/ipni.graphql"), BuiltIn: false},
 	{Name: "schema/machine.graphql", Input: sourceData("schema/machine.graphql"), BuiltIn: false},
 	{Name: "schema/market.graphql", Input: sourceData("schema/market.graphql"), BuiltIn: false},
 	{Name: "schema/message.graphql", Input: sourceData("schema/message.graphql"), BuiltIn: false},
@@ -11535,6 +11641,446 @@ func (ec *executionContext) fieldContext_GaugeCountValue_value(_ context.Context
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_totalAdvertisements(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_totalAdvertisements(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().TotalAdvertisements(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_totalAdvertisements(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_previousTotalAdvertisements(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_previousTotalAdvertisements(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().PreviousTotalAdvertisements(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_previousTotalAdvertisements(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_providers(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_providers(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().Providers(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_providers(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_previousProviders(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_previousProviders(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().PreviousProviders(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_previousProviders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_indexed(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_indexed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().Indexed(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_indexed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_previousIndexed(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_previousIndexed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().PreviousIndexed(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_previousIndexed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_skipped(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_skipped(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().Skipped(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_skipped(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_previousSkipped(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_previousSkipped(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().PreviousSkipped(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_previousSkipped(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_pendingTasks(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_pendingTasks(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().PendingTasks(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_pendingTasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIStats_previousPendingTasks(ctx context.Context, field graphql.CollectedField, obj *model.IPNIStats) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIStats_previousPendingTasks(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIStats().PreviousPendingTasks(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIStats_previousPendingTasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIStats",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
 		},
@@ -24897,6 +25443,72 @@ func (ec *executionContext) fieldContext_Query_dealsPending(_ context.Context, f
 				return ec.fieldContext_OpenSectorPiece_isSnap(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type OpenSectorPiece", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_ipniStats(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_ipniStats(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().IpniStats(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.IPNIStats)
+	fc.Result = res
+	return ec.marshalNIPNIStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIStats(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_ipniStats(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "totalAdvertisements":
+				return ec.fieldContext_IPNIStats_totalAdvertisements(ctx, field)
+			case "previousTotalAdvertisements":
+				return ec.fieldContext_IPNIStats_previousTotalAdvertisements(ctx, field)
+			case "providers":
+				return ec.fieldContext_IPNIStats_providers(ctx, field)
+			case "previousProviders":
+				return ec.fieldContext_IPNIStats_previousProviders(ctx, field)
+			case "indexed":
+				return ec.fieldContext_IPNIStats_indexed(ctx, field)
+			case "previousIndexed":
+				return ec.fieldContext_IPNIStats_previousIndexed(ctx, field)
+			case "skipped":
+				return ec.fieldContext_IPNIStats_skipped(ctx, field)
+			case "previousSkipped":
+				return ec.fieldContext_IPNIStats_previousSkipped(ctx, field)
+			case "pendingTasks":
+				return ec.fieldContext_IPNIStats_pendingTasks(ctx, field)
+			case "previousPendingTasks":
+				return ec.fieldContext_IPNIStats_previousPendingTasks(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IPNIStats", field.Name)
 		},
 	}
 	return fc, nil
@@ -39341,6 +39953,400 @@ func (ec *executionContext) _GaugeCountValue(ctx context.Context, sel ast.Select
 	return out
 }
 
+var iPNIStatsImplementors = []string{"IPNIStats"}
+
+func (ec *executionContext) _IPNIStats(ctx context.Context, sel ast.SelectionSet, obj *model.IPNIStats) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, iPNIStatsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("IPNIStats")
+		case "totalAdvertisements":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_totalAdvertisements(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "previousTotalAdvertisements":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_previousTotalAdvertisements(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "providers":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_providers(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "previousProviders":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_previousProviders(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "indexed":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_indexed(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "previousIndexed":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_previousIndexed(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "skipped":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_skipped(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "previousSkipped":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_previousSkipped(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "pendingTasks":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_pendingTasks(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "previousPendingTasks":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIStats_previousPendingTasks(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var machineImplementors = []string{"Machine"}
 
 func (ec *executionContext) _Machine(ctx context.Context, sel ast.SelectionSet, obj *model.Machine) graphql.Marshaler {
@@ -43029,6 +44035,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_dealsPending(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "ipniStats":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ipniStats(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -47081,6 +48109,20 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNIPNIStats2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIStats(ctx context.Context, sel ast.SelectionSet, v model.IPNIStats) graphql.Marshaler {
+	return ec._IPNIStats(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNIPNIStats2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIStats(ctx context.Context, sel ast.SelectionSet, v *model.IPNIStats) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._IPNIStats(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v any) (int, error) {

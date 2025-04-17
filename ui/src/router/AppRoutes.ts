@@ -275,7 +275,16 @@ const AppRoutes = {
         title: 'Deal Info',
         description: 'Market deal info',
       },
-    }
+    },
+    {
+      name: "IPNIOverview",
+      path: "/ipni",
+      component: () => import('@/views/ipni/overview/IPNIOverviewIndex.vue'),
+      meta: {
+        title: 'IPNI Overview',
+        description: 'InterPlanetary Network Indexer',
+      },
+    },
   ],
 }
 

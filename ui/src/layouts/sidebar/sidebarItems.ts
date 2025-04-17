@@ -149,21 +149,30 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconSearch,
       children: [
         {
-          title: t('nav.Index Status'),
-          to: 'Index Status',
-          disabled: true // todo: add Index Status page
+          title: t('nav.ipni.overview'),
+          to: { name: "IPNIOverview" }
         },
         {
-          title: t('nav.Piece Metadata'),
-          to: 'Piece Metadata',
-          disabled: true // todo: add Piece Metadata page
+          title: t('nav.ipni.advertisements'),
+          to: 'advertisements',
+          disabled: true // todo: add Advertisements page
         },
         {
-          title: t('nav.IPNI Summary'),
-          to: 'IPNI Summary',
-          disabled: true // todo: add IPNI Summary page
+          title: t('nav.ipni.providers'),
+          to: 'providers',
+          disabled: true // todo: add Providers page
+        },
+        {
+          title: t('nav.ipni.tasks'),
+          to: 'tasks',
+          disabled: true // todo: add Tasks page
+        },
+        {
+          title: t('nav.ipni.chunks'),
+          to: 'chunks',
+          disabled: true // todo: add Chunks page
         }
-      ]
+      ],
     },
     {
       title: t('nav.Market Settings'),

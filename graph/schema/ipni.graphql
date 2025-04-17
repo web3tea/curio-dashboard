@@ -1,0 +1,16 @@
+type IPNIStats {
+    totalAdvertisements: Int!
+    previousTotalAdvertisements: Int!
+    providers: Int!
+    previousProviders: Int!
+    indexed: Int!
+    previousIndexed: Int!
+    skipped: Int!
+    previousSkipped: Int!
+    pendingTasks: Int!
+    previousPendingTasks: Int!
+}
+
+extend type Query {
+    ipniStats: IPNIStats!
+}
