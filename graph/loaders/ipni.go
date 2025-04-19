@@ -52,7 +52,7 @@ func (l *IPNILoaderImpl) IpniTotalSkipped(ctx context.Context) (total int, err e
 }
 
 func (l *IPNILoaderImpl) IpniPendingTasks(ctx context.Context) (total int, err error) {
-	err = l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM ipni_pending`).Scan(&total)
+	err = l.loader.db.QueryRow(ctx, `SELECT COUNT(*) FROM ipni_task`).Scan(&total)
 	return total, err
 }
 

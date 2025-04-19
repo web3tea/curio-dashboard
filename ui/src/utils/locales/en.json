@@ -230,5 +230,19 @@
   },
   "pendingDeal": {
     "groupBySector": "Group By Sector"
+  },
+  "ipni": {
+    "stats": {
+      "totalAdvertisements": "Total Advertisements",
+      "newToday": "new today",
+      "providers": "Providers",
+      "noChange": "No Change",
+      "indexedStatus": "Indexed vs Skipped",
+      "indexed": "indexed",
+      "pendingTasks": "Pending Tasks",
+      "fewerThanYesterday": "fewer than yesterday",
+      "today": "today",
+      "sameAsYesterday": "same as yesterday"
+    }
   }
 }

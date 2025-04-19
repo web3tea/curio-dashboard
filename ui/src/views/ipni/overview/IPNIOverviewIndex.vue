@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import OverviewCard from './OverviewCard.vue'
 
 const { t } = useI18n()
 
@@ -18,7 +19,9 @@ const breadcrumbs = ref([
   <v-row>
     <v-col
       cols="12"
-    />
+    >
+      <OverviewCard />
+    </v-col>
   </v-row>
 </template>
 

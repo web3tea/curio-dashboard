@@ -230,5 +230,19 @@
   },
   "pendingDeal": {
     "groupBySector": "按扇区分组"
+  },
+  "ipni": {
+    "stats": {
+      "totalAdvertisements": "总广告",
+      "newToday": "今日新增",
+      "providers": "提供者",
+      "noChange": "无变化",
+      "indexedStatus": "索引状态",
+      "indexed": "已索引",
+      "pendingTasks": "待处理任务",
+      "fewerThanYesterday": "少于昨日",
+      "today": "今日",
+      "sameAsYesterday": "与昨日相同"
+    }
   }
 }
