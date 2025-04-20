@@ -95,6 +95,19 @@ type IPNIPeerID struct {
 	SpID   types.ActorID `json:"spID"`
 }
 
+type IPNITask struct {
+	TaskID       int            `json:"taskId"`
+	ContextID    types.Bytes    `json:"contextId"`
+	Complete     bool           `json:"complete"`
+	IsRm         *bool          `json:"isRm"`
+	Sector       *int           `json:"sector"`
+	SectorOffset int            `json:"sectorOffset"`
+	SpID         *types.ActorID `json:"spId"`
+	Provider     *string        `json:"provider"`
+	RegSealProof *int           `json:"regSealProof"`
+	CreatedAt    *time.Time     `json:"createdAt"`
+}
+
 type MachineDetail struct {
 	ID          int       `json:"id"`
 	MachineName string    `json:"machineName"`

@@ -34,6 +34,33 @@ type IPNIAdvertisement {
     signature: Bytes!
 }
 
+# IPNI Task object representing entries in the ipni_task table
+type IPNITask {
+    # Task identifier
+    taskId: Int!
+
+    # Content identifier
+    contextId: Bytes
+
+    # Status
+    complete: Boolean!
+    isRm: Boolean
+
+    # Sector information
+    sector: Int
+    sectorOffset: Int!
+
+    # Provider information
+    spId: ActorID
+    provider: String
+
+    # Proof information
+    regSealProof: Int
+
+    # Metadata
+    createdAt: Time
+}
+
 type IPNIPeerID {
     peerID: String!
     spID: ActorID!
@@ -60,5 +87,21 @@ extend type Query {
         provider: String
         isSkip: Boolean
         isRemoved: Boolean
+    ): Int!
+
+    # Get a single IPNI task by task ID
+    ipniTask(taskId: Int!): IPNITask
+
+    # Get a list of IPNI tasks with pagination and filtering
+    ipniTasks(
+        limit: Int
+        spId: ActorID
+        isRm: Boolean
+    ): [IPNITask!]!
+
+    # Get total count of IPNI tasks matching the filters
+    ipniTasksCount(
+        spId: ActorID
+        isRm: Boolean
     ): Int!
 }

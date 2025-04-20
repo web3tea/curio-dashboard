@@ -11,6 +11,7 @@ import (
 	"github.com/web3tea/curio-dashboard/graph"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
 	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 // Provider is the resolver for the provider field.
@@ -107,6 +108,37 @@ func (r *queryResolver) IpniAdvertisements(ctx context.Context, offset int, limi
 func (r *queryResolver) IpniAdvertisementsCount(ctx context.Context, provider *string, isSkip *bool, isRemoved *bool) (int, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
 	return r.loader.IpniAdvertisementsCount(ctx, provider, isSkip, isRemoved)
+}
+
+// IpniTask is the resolver for the ipniTask field.
+func (r *queryResolver) IpniTask(ctx context.Context, taskID int) (*model.IPNITask, error) {
+	return r.loader.IpniTask(ctx, taskID)
+}
+
+// IpniTasks is the resolver for the ipniTasks field.
+func (r *queryResolver) IpniTasks(ctx context.Context, limit *int, spID *types.ActorID, isRm *bool) ([]*model.IPNITask, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	if spID != nil {
+		peerID, err := r.loader.IpniPeerID(ctx, spID, nil)
+		if err != nil {
+			return nil, err
+		}
+		return r.loader.IpniTasks(ctx, &peerID.PeerID, limit, isRm)
+	}
+	return r.loader.IpniTasks(ctx, nil, limit, isRm)
+}
+
+// IpniTasksCount is the resolver for the ipniTasksCount field.
+func (r *queryResolver) IpniTasksCount(ctx context.Context, spID *types.ActorID, isRm *bool) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	if spID != nil {
+		peerID, err := r.loader.IpniPeerID(ctx, spID, nil)
+		if err != nil {
+			return 0, err
+		}
+		return r.loader.IpniTasksCount(ctx, &peerID.PeerID, isRm)
+	}
+	return r.loader.IpniTasksCount(ctx, nil, isRm)
 }
 
 // IPNIAdvertisement returns graph.IPNIAdvertisementResolver implementation.

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import OverviewCard from './OverviewCard.vue'
 import RecentAdvertisements from './RecentAdvertisements.vue'
+import RecentTasks from './RecentTasks.vue'
 
 const { t } = useI18n()
 
@@ -28,6 +29,12 @@ const breadcrumbs = ref([
       lg="6"
     >
       <RecentAdvertisements />
+    </v-col>
+    <v-col
+      cols="12"
+      lg="6"
+    >
+      <RecentTasks />
     </v-col>
   </v-row>
 </template>

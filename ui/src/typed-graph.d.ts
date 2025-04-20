@@ -170,6 +170,20 @@ export type IpniStats = {
   totalAdvertisements: Scalars['Int']['output'];
 };
 
+export type IpniTask = {
+  __typename?: 'IPNITask';
+  complete: Scalars['Boolean']['output'];
+  contextId?: Maybe<Scalars['Bytes']['output']>;
+  createdAt?: Maybe<Scalars['Time']['output']>;
+  isRm?: Maybe<Scalars['Boolean']['output']>;
+  provider?: Maybe<Scalars['String']['output']>;
+  regSealProof?: Maybe<Scalars['Int']['output']>;
+  sector?: Maybe<Scalars['Int']['output']>;
+  sectorOffset: Scalars['Int']['output'];
+  spId?: Maybe<Scalars['ActorID']['output']>;
+  taskId: Scalars['Int']['output'];
+};
+
 export type Machine = {
   __typename?: 'Machine';
   cpu: Scalars['Int']['output'];
@@ -734,6 +748,9 @@ export type Query = {
   ipniAdvertisements: Array<IpniAdvertisement>;
   ipniAdvertisementsCount: Scalars['Int']['output'];
   ipniStats: IpniStats;
+  ipniTask?: Maybe<IpniTask>;
+  ipniTasks: Array<IpniTask>;
+  ipniTasksCount: Scalars['Int']['output'];
   machine?: Maybe<Machine>;
   machineByHostAndPort?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
@@ -826,6 +843,24 @@ export type QueryIpniAdvertisementsCountArgs = {
   isRemoved?: InputMaybe<Scalars['Boolean']['input']>;
   isSkip?: InputMaybe<Scalars['Boolean']['input']>;
   provider?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryIpniTaskArgs = {
+  taskId: Scalars['Int']['input'];
+};
+
+
+export type QueryIpniTasksArgs = {
+  isRm?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: Scalars['Int']['input'];
+  spId?: InputMaybe<Scalars['ActorID']['input']>;
+};
+
+
+export type QueryIpniTasksCountArgs = {
+  isRm?: InputMaybe<Scalars['Boolean']['input']>;
+  spId?: InputMaybe<Scalars['ActorID']['input']>;
 };
 
 

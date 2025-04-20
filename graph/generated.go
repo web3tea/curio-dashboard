@@ -190,6 +190,19 @@ type ComplexityRoot struct {
 		TotalAdvertisements         func(childComplexity int) int
 	}
 
+	IPNITask struct {
+		Complete     func(childComplexity int) int
+		ContextID    func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		IsRm         func(childComplexity int) int
+		Provider     func(childComplexity int) int
+		RegSealProof func(childComplexity int) int
+		Sector       func(childComplexity int) int
+		SectorOffset func(childComplexity int) int
+		SpID         func(childComplexity int) int
+		TaskID       func(childComplexity int) int
+	}
+
 	Machine struct {
 		CPU           func(childComplexity int) int
 		Detail        func(childComplexity int) int
@@ -573,6 +586,9 @@ type ComplexityRoot struct {
 		IpniAdvertisements         func(childComplexity int, offset int, limit int, provider *string, isSkip *bool, isRemoved *bool) int
 		IpniAdvertisementsCount    func(childComplexity int, provider *string, isSkip *bool, isRemoved *bool) int
 		IpniStats                  func(childComplexity int) int
+		IpniTask                   func(childComplexity int, taskID int) int
+		IpniTasks                  func(childComplexity int, limit *int, spID *types.ActorID, isRm *bool) int
+		IpniTasksCount             func(childComplexity int, spID *types.ActorID, isRm *bool) int
 		Machine                    func(childComplexity int, id int) int
 		MachineByHostAndPort       func(childComplexity int, hostAndPort string) int
 		MachineSummary             func(childComplexity int) int
@@ -987,6 +1003,9 @@ type QueryResolver interface {
 	IpniAdvertisement(ctx context.Context, orderNumber int) (*model.IPNIAdvertisement, error)
 	IpniAdvertisements(ctx context.Context, offset int, limit int, provider *string, isSkip *bool, isRemoved *bool) ([]*model.IPNIAdvertisement, error)
 	IpniAdvertisementsCount(ctx context.Context, provider *string, isSkip *bool, isRemoved *bool) (int, error)
+	IpniTask(ctx context.Context, taskID int) (*model.IPNITask, error)
+	IpniTasks(ctx context.Context, limit *int, spID *types.ActorID, isRm *bool) ([]*model.IPNITask, error)
+	IpniTasksCount(ctx context.Context, spID *types.ActorID, isRm *bool) (int, error)
 	Machine(ctx context.Context, id int) (*model.Machine, error)
 	MachineByHostAndPort(ctx context.Context, hostAndPort string) (*model.Machine, error)
 	Machines(ctx context.Context) ([]*model.Machine, error)
@@ -1709,6 +1728,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.IPNIStats.TotalAdvertisements(childComplexity), true
+
+	case "IPNITask.complete":
+		if e.complexity.IPNITask.Complete == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.Complete(childComplexity), true
+
+	case "IPNITask.contextId":
+		if e.complexity.IPNITask.ContextID == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.ContextID(childComplexity), true
+
+	case "IPNITask.createdAt":
+		if e.complexity.IPNITask.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.CreatedAt(childComplexity), true
+
+	case "IPNITask.isRm":
+		if e.complexity.IPNITask.IsRm == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.IsRm(childComplexity), true
+
+	case "IPNITask.provider":
+		if e.complexity.IPNITask.Provider == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.Provider(childComplexity), true
+
+	case "IPNITask.regSealProof":
+		if e.complexity.IPNITask.RegSealProof == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.RegSealProof(childComplexity), true
+
+	case "IPNITask.sector":
+		if e.complexity.IPNITask.Sector == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.Sector(childComplexity), true
+
+	case "IPNITask.sectorOffset":
+		if e.complexity.IPNITask.SectorOffset == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.SectorOffset(childComplexity), true
+
+	case "IPNITask.spId":
+		if e.complexity.IPNITask.SpID == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.SpID(childComplexity), true
+
+	case "IPNITask.taskId":
+		if e.complexity.IPNITask.TaskID == nil {
+			break
+		}
+
+		return e.complexity.IPNITask.TaskID(childComplexity), true
 
 	case "Machine.cpu":
 		if e.complexity.Machine.CPU == nil {
@@ -3852,6 +3941,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.IpniStats(childComplexity), true
+
+	case "Query.ipniTask":
+		if e.complexity.Query.IpniTask == nil {
+			break
+		}
+
+		args, err := ec.field_Query_ipniTask_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.IpniTask(childComplexity, args["taskId"].(int)), true
+
+	case "Query.ipniTasks":
+		if e.complexity.Query.IpniTasks == nil {
+			break
+		}
+
+		args, err := ec.field_Query_ipniTasks_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.IpniTasks(childComplexity, args["limit"].(*int), args["spId"].(*types.ActorID), args["isRm"].(*bool)), true
+
+	case "Query.ipniTasksCount":
+		if e.complexity.Query.IpniTasksCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_ipniTasksCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.IpniTasksCount(childComplexity, args["spId"].(*types.ActorID), args["isRm"].(*bool)), true
 
 	case "Query.machine":
 		if e.complexity.Query.Machine == nil {
@@ -6798,6 +6923,159 @@ func (ec *executionContext) field_Query_ipniAdvertisements_argsIsRemoved(
 
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("isRemoved"))
 	if tmp, ok := rawArgs["isRemoved"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ipniTask_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_ipniTask_argsTaskID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["taskId"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_ipniTask_argsTaskID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["taskId"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("taskId"))
+	if tmp, ok := rawArgs["taskId"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ipniTasksCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_ipniTasksCount_argsSpID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["spId"] = arg0
+	arg1, err := ec.field_Query_ipniTasksCount_argsIsRm(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["isRm"] = arg1
+	return args, nil
+}
+func (ec *executionContext) field_Query_ipniTasksCount_argsSpID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.ActorID, error) {
+	if _, ok := rawArgs["spId"]; !ok {
+		var zeroVal *types.ActorID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+	if tmp, ok := rawArgs["spId"]; ok {
+		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+	}
+
+	var zeroVal *types.ActorID
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ipniTasksCount_argsIsRm(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*bool, error) {
+	if _, ok := rawArgs["isRm"]; !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("isRm"))
+	if tmp, ok := rawArgs["isRm"]; ok {
+		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
+	}
+
+	var zeroVal *bool
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ipniTasks_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_ipniTasks_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg0
+	arg1, err := ec.field_Query_ipniTasks_argsSpID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["spId"] = arg1
+	arg2, err := ec.field_Query_ipniTasks_argsIsRm(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["isRm"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_ipniTasks_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["limit"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ipniTasks_argsSpID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.ActorID, error) {
+	if _, ok := rawArgs["spId"]; !ok {
+		var zeroVal *types.ActorID
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+	if tmp, ok := rawArgs["spId"]; ok {
+		return ec.unmarshalOActorID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, tmp)
+	}
+
+	var zeroVal *types.ActorID
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_ipniTasks_argsIsRm(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*bool, error) {
+	if _, ok := rawArgs["isRm"]; !ok {
+		var zeroVal *bool
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("isRm"))
+	if tmp, ok := rawArgs["isRm"]; ok {
 		return ec.unmarshalOBoolean2ᚖbool(ctx, tmp)
 	}
 
@@ -13064,6 +13342,425 @@ func (ec *executionContext) fieldContext_IPNIStats_previousPendingTasks(_ contex
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_taskId(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_taskId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_taskId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_contextId(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_contextId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContextID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.Bytes)
+	fc.Result = res
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_contextId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_complete(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_complete(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Complete, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_complete(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_isRm(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_isRm(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsRm, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_isRm(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_sector(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_sector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Sector, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_sector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_sectorOffset(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_sectorOffset(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SectorOffset, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_sectorOffset(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_spId(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_spId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*types.ActorID)
+	fc.Result = res
+	return ec.marshalOActorID2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ActorID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_provider(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_provider(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Provider, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_provider(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_regSealProof(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_regSealProof(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RegSealProof, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_regSealProof(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNITask_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.IPNITask) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNITask_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNITask_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNITask",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -26703,6 +27400,212 @@ func (ec *executionContext) fieldContext_Query_ipniAdvertisementsCount(ctx conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_ipniAdvertisementsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_ipniTask(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_ipniTask(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().IpniTask(rctx, fc.Args["taskId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.IPNITask)
+	fc.Result = res
+	return ec.marshalOIPNITask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNITask(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_ipniTask(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "taskId":
+				return ec.fieldContext_IPNITask_taskId(ctx, field)
+			case "contextId":
+				return ec.fieldContext_IPNITask_contextId(ctx, field)
+			case "complete":
+				return ec.fieldContext_IPNITask_complete(ctx, field)
+			case "isRm":
+				return ec.fieldContext_IPNITask_isRm(ctx, field)
+			case "sector":
+				return ec.fieldContext_IPNITask_sector(ctx, field)
+			case "sectorOffset":
+				return ec.fieldContext_IPNITask_sectorOffset(ctx, field)
+			case "spId":
+				return ec.fieldContext_IPNITask_spId(ctx, field)
+			case "provider":
+				return ec.fieldContext_IPNITask_provider(ctx, field)
+			case "regSealProof":
+				return ec.fieldContext_IPNITask_regSealProof(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_IPNITask_createdAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IPNITask", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_ipniTask_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_ipniTasks(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_ipniTasks(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().IpniTasks(rctx, fc.Args["limit"].(*int), fc.Args["spId"].(*types.ActorID), fc.Args["isRm"].(*bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.IPNITask)
+	fc.Result = res
+	return ec.marshalNIPNITask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNITaskᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_ipniTasks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "taskId":
+				return ec.fieldContext_IPNITask_taskId(ctx, field)
+			case "contextId":
+				return ec.fieldContext_IPNITask_contextId(ctx, field)
+			case "complete":
+				return ec.fieldContext_IPNITask_complete(ctx, field)
+			case "isRm":
+				return ec.fieldContext_IPNITask_isRm(ctx, field)
+			case "sector":
+				return ec.fieldContext_IPNITask_sector(ctx, field)
+			case "sectorOffset":
+				return ec.fieldContext_IPNITask_sectorOffset(ctx, field)
+			case "spId":
+				return ec.fieldContext_IPNITask_spId(ctx, field)
+			case "provider":
+				return ec.fieldContext_IPNITask_provider(ctx, field)
+			case "regSealProof":
+				return ec.fieldContext_IPNITask_regSealProof(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_IPNITask_createdAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IPNITask", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_ipniTasks_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_ipniTasksCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_ipniTasksCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().IpniTasksCount(rctx, fc.Args["spId"].(*types.ActorID), fc.Args["isRm"].(*bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_ipniTasksCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_ipniTasksCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -41684,6 +42587,69 @@ func (ec *executionContext) _IPNIStats(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
+var iPNITaskImplementors = []string{"IPNITask"}
+
+func (ec *executionContext) _IPNITask(ctx context.Context, sel ast.SelectionSet, obj *model.IPNITask) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, iPNITaskImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("IPNITask")
+		case "taskId":
+			out.Values[i] = ec._IPNITask_taskId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "contextId":
+			out.Values[i] = ec._IPNITask_contextId(ctx, field, obj)
+		case "complete":
+			out.Values[i] = ec._IPNITask_complete(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "isRm":
+			out.Values[i] = ec._IPNITask_isRm(ctx, field, obj)
+		case "sector":
+			out.Values[i] = ec._IPNITask_sector(ctx, field, obj)
+		case "sectorOffset":
+			out.Values[i] = ec._IPNITask_sectorOffset(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "spId":
+			out.Values[i] = ec._IPNITask_spId(ctx, field, obj)
+		case "provider":
+			out.Values[i] = ec._IPNITask_provider(ctx, field, obj)
+		case "regSealProof":
+			out.Values[i] = ec._IPNITask_regSealProof(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._IPNITask_createdAt(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var machineImplementors = []string{"Machine"}
 
 func (ec *executionContext) _Machine(ctx context.Context, sel ast.SelectionSet, obj *model.Machine) graphql.Marshaler {
@@ -45454,6 +46420,69 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_ipniAdvertisementsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "ipniTask":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ipniTask(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "ipniTasks":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ipniTasks(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "ipniTasksCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ipniTasksCount(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -49579,6 +50608,60 @@ func (ec *executionContext) marshalNIPNIStats2ᚖgithubᚗcomᚋweb3teaᚋcurio�
 	return ec._IPNIStats(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNIPNITask2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNITaskᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.IPNITask) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNIPNITask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNITask(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNIPNITask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNITask(ctx context.Context, sel ast.SelectionSet, v *model.IPNITask) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._IPNITask(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v any) (int, error) {
 	res, err := graphql.UnmarshalInt(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -51047,6 +52130,13 @@ func (ec *executionContext) marshalOIPNIPeerID2ᚖgithubᚗcomᚋweb3teaᚋcurio
 		return graphql.Null
 	}
 	return ec._IPNIPeerID(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOIPNITask2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNITask(ctx context.Context, sel ast.SelectionSet, v *model.IPNITask) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._IPNITask(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v any) (*int, error) {

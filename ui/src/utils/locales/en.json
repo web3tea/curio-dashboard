@@ -251,7 +251,11 @@
     "status": {
       "removed": "removed",
       "skipped": "skipped",
-      "indexed": "indexed"
-    }
+      "indexed": "indexed",
+      "complete": "completed",
+      "pending": "pending"
+    },
+    "recentTasks": "Recent Tasks",
+    "noTasks": "No Tasks"
   }
 }

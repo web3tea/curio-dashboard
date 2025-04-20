@@ -248,11 +248,14 @@
     },
     "recentAdvertisements": "最近广告",
     "noAdvertisements": "暂无广告",
-
     "status": {
       "removed": "移除",
       "skipped": "跳过",
-      "indexed": "已索引"
-    }
+      "indexed": "已索引",
+      "complete": "已完成",
+      "pending": "待处理"
+    },
+    "recentTasks": "最近任务",
+    "noTasks": "无任务"
   }
 }

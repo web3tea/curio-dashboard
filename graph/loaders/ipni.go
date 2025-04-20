@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/web3tea/curio-dashboard/graph/model"
+	"github.com/web3tea/curio-dashboard/types"
 )
 
 type IPNILoader interface {
@@ -18,7 +19,10 @@ type IPNILoader interface {
 	IpniAdvertisementsCount(ctx context.Context, provider *string, isSkip, isRemoved *bool) (int, error)
 	IpniAdvertisements(ctx context.Context, provider *string, isSkip, isRemoved *bool, offset int, limit int) ([]*model.IPNIAdvertisement, error)
 	IpniAdvertisement(ctx context.Context, id int) (*model.IPNIAdvertisement, error)
-	IpniPeerID(ctx context.Context, spID *int, peerID *string) (*model.IPNIPeerID, error)
+	IpniPeerID(ctx context.Context, spID *types.ActorID, peerID *string) (*model.IPNIPeerID, error)
+	IpniTasks(ctx context.Context, provider *string, limit *int, isRemoved *bool) ([]*model.IPNITask, error)
+	IpniTask(ctx context.Context, id int) (*model.IPNITask, error)
+	IpniTasksCount(ctx context.Context, provider *string, isRemoved *bool) (int, error)
 }
 
 type IPNILoaderImpl struct {
@@ -171,7 +175,7 @@ func (l *IPNILoaderImpl) IpniAdvertisementsCount(ctx context.Context, provider *
 	return count, nil
 }
 
-func (l *IPNILoaderImpl) IpniPeerID(ctx context.Context, spID *int, peerID *string) (*model.IPNIPeerID, error) {
+func (l *IPNILoaderImpl) IpniPeerID(ctx context.Context, spID *types.ActorID, peerID *string) (*model.IPNIPeerID, error) {
 	if spID == nil && peerID == nil {
 		return nil, fmt.Errorf("spid or peerid is required")
 	}
@@ -190,4 +194,68 @@ func (l *IPNILoaderImpl) IpniPeerID(ctx context.Context, spID *int, peerID *stri
 	}
 
 	return &pi, nil
+}
+
+func (l *IPNILoaderImpl) IpniTask(ctx context.Context, id int) (*model.IPNITask, error) {
+	var task model.IPNITask
+	err := l.loader.db.QueryRow(ctx, `
+								SELECT
+									sp_id,
+									sector,
+									reg_seal_proof,
+									sector_offset,
+									context_id,
+									is_rm,
+									provider,
+									created_at,
+									task_id,
+									complete
+								FROM ipni_task
+								WHERE task_id = $1
+				`, id).Scan(&task.SpID, &task.Sector, &task.RegSealProof, &task.SectorOffset, &task.ContextID, &task.IsRm, &task.Provider, &task.CreatedAt, &task.TaskID, &task.Complete)
+	if err != nil {
+		return nil, err
+	}
+
+	return &task, nil
+}
+
+func (l *IPNILoaderImpl) IpniTasks(ctx context.Context, provider *string, limit *int, isRemoved *bool) ([]*model.IPNITask, error) {
+	var tasks []*model.IPNITask
+	if err := l.loader.db.Select(ctx, &tasks, `
+								SELECT
+									sp_id,
+									sector,
+									reg_seal_proof,
+									sector_offset,
+									context_id,
+									is_rm,
+									provider,
+									created_at,
+									task_id,
+									complete
+								FROM ipni_task
+								WHERE ($1::int IS NULL OR sp_id = $1)
+										AND ($2::text IS NULL OR provider = $2)
+										AND ($3::bool IS NULL OR is_rm = $3)
+				`, limit, provider, isRemoved); err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
+
+func (l *IPNILoaderImpl) IpniTasksCount(ctx context.Context, provider *string, isRemoved *bool) (int, error) {
+	var count int
+	err := l.loader.db.QueryRow(ctx, `
+								SELECT
+									COUNT(*)
+								FROM ipni_task
+								WHERE ($1::text IS NULL OR provider = $1)
+										AND ($2::bool IS NULL OR is_rm = $2)
+				`, provider, isRemoved).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
 }
