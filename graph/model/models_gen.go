@@ -90,6 +90,11 @@ type GaugeCountValue struct {
 	Value int    `json:"value"`
 }
 
+type IPNIPeerID struct {
+	PeerID string        `json:"peerID"`
+	SpID   types.ActorID `json:"spID"`
+}
+
 type MachineDetail struct {
 	ID          int       `json:"id"`
 	MachineName string    `json:"machineName"`

@@ -161,7 +161,9 @@
     "stable": "稳定",
     "sector": "扇区",
     "deal": "订单",
-    "Close": "关闭"
+    "Close": "关闭",
+    "error": "错误",
+    "viewAll": "查看全部"
   },
   "clusterHealth": {
     "title": "集群健康度",
@@ -243,6 +245,14 @@
       "fewerThanYesterday": "少于昨日",
       "today": "今日",
       "sameAsYesterday": "与昨日相同"
+    },
+    "recentAdvertisements": "最近广告",
+    "noAdvertisements": "暂无广告",
+
+    "status": {
+      "removed": "移除",
+      "skipped": "跳过",
+      "indexed": "已索引"
     }
   }
 }

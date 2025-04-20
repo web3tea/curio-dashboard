@@ -2,8 +2,11 @@ package loaders
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
+
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 type IPNILoader interface {
@@ -12,6 +15,10 @@ type IPNILoader interface {
 	IpniTotalIndexed(ctx context.Context) (int, error)
 	IpniTotalSkipped(ctx context.Context) (int, error)
 	IpniPendingTasks(ctx context.Context) (int, error)
+	IpniAdvertisementsCount(ctx context.Context, provider *string, isSkip, isRemoved *bool) (int, error)
+	IpniAdvertisements(ctx context.Context, provider *string, isSkip, isRemoved *bool, offset int, limit int) ([]*model.IPNIAdvertisement, error)
+	IpniAdvertisement(ctx context.Context, id int) (*model.IPNIAdvertisement, error)
+	IpniPeerID(ctx context.Context, spID *int, peerID *string) (*model.IPNIPeerID, error)
 }
 
 type IPNILoaderImpl struct {
@@ -86,4 +93,101 @@ func (l *IPNILoaderImpl) getIndexStats(ctx context.Context) (*indexStats, error)
 	l.loader.cache.Set(cacheKey, stats, time.Hour)
 
 	return stats, nil
+}
+
+func (l *IPNILoaderImpl) IpniAdvertisement(ctx context.Context, id int) (*model.IPNIAdvertisement, error) {
+	var ads []*model.IPNIAdvertisement
+	err := l.loader.db.Select(ctx, &ads, `
+        SELECT
+            ad_cid,
+            context_id,
+            is_rm,
+            previous,
+            provider,
+            addresses,
+            signature,
+            entries,
+            piece_cid,
+            piece_size,
+            is_skip
+        FROM ipni
+        WHERE order_number = $1
+    `, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(ads) == 0 {
+		return nil, ErrorNotFound
+	}
+
+	return ads[0], nil
+}
+
+func (l *IPNILoaderImpl) IpniAdvertisements(ctx context.Context, provider *string, isSkip, isRemoved *bool, offset int, limit int) ([]*model.IPNIAdvertisement, error) {
+	var ads []*model.IPNIAdvertisement
+	err := l.loader.db.Select(ctx, &ads, `
+								SELECT
+									order_number,
+									ad_cid,
+									context_id,
+									is_rm,
+									previous,
+									provider,
+									addresses,
+									signature,
+									entries,
+									piece_cid,
+									piece_size,
+									is_skip
+								FROM ipni
+								WHERE ($1::text IS NULL OR provider = $1)
+								AND ($2::boolean IS NULL OR is_skip = $2)
+								AND ($3::boolean IS NULL OR is_rm = $3)
+								ORDER BY order_number ASC
+								LIMIT $4 OFFSET $5
+				`, provider, isSkip, isRemoved, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+
+	return ads, nil
+}
+
+func (l *IPNILoaderImpl) IpniAdvertisementsCount(ctx context.Context, provider *string, isSkip, isRemoved *bool) (int, error) {
+	var count int
+	err := l.loader.db.QueryRow(ctx, `
+								SELECT
+												COUNT(*)
+								FROM ipni
+								WHERE ($1 = '' OR provider = $1)
+								AND ($2::boolean IS NULL OR is_skip = $2)
+								AND ($3::boolean IS NULL OR is_rm = $3)
+				`, provider, isSkip, isRemoved).Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
+func (l *IPNILoaderImpl) IpniPeerID(ctx context.Context, spID *int, peerID *string) (*model.IPNIPeerID, error) {
+	if spID == nil && peerID == nil {
+		return nil, fmt.Errorf("spid or peerid is required")
+	}
+
+	var pi model.IPNIPeerID
+	err := l.loader.db.QueryRow(ctx, `
+								SELECT
+									peer_id,
+									sp_id
+								FROM ipni_peerid
+								WHERE ($1::int IS NULL OR sp_id = $1)
+										AND ($2::text IS NULL OR peer_id = $2)
+				`, spID, peerID).Scan(&pi.PeerID, &pi.SpID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pi, nil
 }

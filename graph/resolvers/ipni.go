@@ -13,6 +13,11 @@ import (
 	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
+// Provider is the resolver for the provider field.
+func (r *iPNIAdvertisementResolver) Provider(ctx context.Context, obj *model.IPNIAdvertisement) (*model.IPNIPeerID, error) {
+	return r.loader.IpniPeerID(ctx, nil, obj.ProviderPeerID)
+}
+
 // TotalAdvertisements is the resolver for the totalAdvertisements field.
 func (r *iPNIStatsResolver) TotalAdvertisements(ctx context.Context, obj *model.IPNIStats) (int, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
@@ -88,7 +93,31 @@ func (r *queryResolver) IpniStats(ctx context.Context) (*model.IPNIStats, error)
 	return &model.IPNIStats{}, nil
 }
 
+// IpniAdvertisement is the resolver for the ipniAdvertisement field.
+func (r *queryResolver) IpniAdvertisement(ctx context.Context, orderNumber int) (*model.IPNIAdvertisement, error) {
+	return r.loader.IpniAdvertisement(ctx, orderNumber)
+}
+
+// IpniAdvertisements is the resolver for the ipniAdvertisements field.
+func (r *queryResolver) IpniAdvertisements(ctx context.Context, offset int, limit int, provider *string, isSkip *bool, isRemoved *bool) ([]*model.IPNIAdvertisement, error) {
+	return r.loader.IpniAdvertisements(ctx, provider, isSkip, isRemoved, offset, limit)
+}
+
+// IpniAdvertisementsCount is the resolver for the ipniAdvertisementsCount field.
+func (r *queryResolver) IpniAdvertisementsCount(ctx context.Context, provider *string, isSkip *bool, isRemoved *bool) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.IpniAdvertisementsCount(ctx, provider, isSkip, isRemoved)
+}
+
+// IPNIAdvertisement returns graph.IPNIAdvertisementResolver implementation.
+func (r *Resolver) IPNIAdvertisement() graph.IPNIAdvertisementResolver {
+	return &iPNIAdvertisementResolver{r}
+}
+
 // IPNIStats returns graph.IPNIStatsResolver implementation.
 func (r *Resolver) IPNIStats() graph.IPNIStatsResolver { return &iPNIStatsResolver{r} }
 
-type iPNIStatsResolver struct{ *Resolver }
+type (
+	iPNIAdvertisementResolver struct{ *Resolver }
+	iPNIStatsResolver         struct{ *Resolver }
+)

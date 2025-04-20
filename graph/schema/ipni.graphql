@@ -11,6 +11,54 @@ type IPNIStats {
     previousPendingTasks: Int!
 }
 
+# IPNI Advertisement object representing entries in the ipni table
+type IPNIAdvertisement {
+    # Unique identifier for the advertisement
+    orderNumber: Int!
+
+    # Content identifiers
+    pieceCid: String
+    adCid: String
+    previous: String
+    contextId: Bytes!
+
+    # Advertisement metadata
+    pieceSize: Int
+    provider: IPNIPeerID
+    entries: String
+    addresses: String
+
+    # Status flags
+    isSkip: Boolean
+    isRm: Boolean
+    signature: Bytes!
+}
+
+type IPNIPeerID {
+    peerID: String!
+    spID: ActorID!
+}
+
 extend type Query {
     ipniStats: IPNIStats!
+
+    # Get a single IPNI advertisement by order number
+    ipniAdvertisement(orderNumber: Int!): IPNIAdvertisement
+
+    # Get a list of IPNI advertisements with pagination and filtering
+    ipniAdvertisements(
+        offset: Int! = 0
+        limit: Int! = 10
+        provider: String
+        isSkip: Boolean
+        isRemoved: Boolean
+    ): [IPNIAdvertisement!]!
+
+    # Get total count of IPNI advertisements matching the filters
+    # This is separated for more efficient querying
+    ipniAdvertisementsCount(
+        provider: String
+        isSkip: Boolean
+        isRemoved: Boolean
+    ): Int!
 }

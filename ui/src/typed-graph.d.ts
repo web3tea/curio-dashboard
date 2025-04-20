@@ -134,6 +134,28 @@ export type GaugeCountValue = {
   value: Scalars['Int']['output'];
 };
 
+export type IpniAdvertisement = {
+  __typename?: 'IPNIAdvertisement';
+  adCid?: Maybe<Scalars['String']['output']>;
+  addresses?: Maybe<Scalars['String']['output']>;
+  contextId: Scalars['Bytes']['output'];
+  entries?: Maybe<Scalars['String']['output']>;
+  isRm?: Maybe<Scalars['Boolean']['output']>;
+  isSkip?: Maybe<Scalars['Boolean']['output']>;
+  orderNumber: Scalars['Int']['output'];
+  pieceCid?: Maybe<Scalars['String']['output']>;
+  pieceSize?: Maybe<Scalars['Int']['output']>;
+  previous?: Maybe<Scalars['String']['output']>;
+  provider?: Maybe<IpniPeerId>;
+  signature: Scalars['Bytes']['output'];
+};
+
+export type IpniPeerId = {
+  __typename?: 'IPNIPeerID';
+  peerID: Scalars['String']['output'];
+  spID: Scalars['ActorID']['output'];
+};
+
 export type IpniStats = {
   __typename?: 'IPNIStats';
   indexed: Scalars['Int']['output'];
@@ -708,6 +730,9 @@ export type Query = {
   config?: Maybe<Config>;
   configs?: Maybe<Array<Maybe<Config>>>;
   dealsPending?: Maybe<Array<Maybe<OpenSectorPiece>>>;
+  ipniAdvertisement?: Maybe<IpniAdvertisement>;
+  ipniAdvertisements: Array<IpniAdvertisement>;
+  ipniAdvertisementsCount: Scalars['Int']['output'];
   ipniStats: IpniStats;
   machine?: Maybe<Machine>;
   machineByHostAndPort?: Maybe<Machine>;
@@ -780,6 +805,27 @@ export type QueryActorArgs = {
 
 export type QueryConfigArgs = {
   layer: Scalars['String']['input'];
+};
+
+
+export type QueryIpniAdvertisementArgs = {
+  orderNumber: Scalars['Int']['input'];
+};
+
+
+export type QueryIpniAdvertisementsArgs = {
+  isRemoved?: InputMaybe<Scalars['Boolean']['input']>;
+  isSkip?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: Scalars['Int']['input'];
+  offset?: Scalars['Int']['input'];
+  provider?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryIpniAdvertisementsCountArgs = {
+  isRemoved?: InputMaybe<Scalars['Boolean']['input']>;
+  isSkip?: InputMaybe<Scalars['Boolean']['input']>;
+  provider?: InputMaybe<Scalars['String']['input']>;
 };
 
 

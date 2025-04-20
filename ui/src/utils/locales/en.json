@@ -161,7 +161,9 @@
     "stable": "Stable",
     "sector": "Sector | Sectors",
     "deal": "Deal | Deals",
-    "Close": "Close"
+    "Close": "Close",
+    "error": "Error",
+    "viewAll": "View All"
   },
   "clusterHealth": {
     "title": "Cluster Health",
@@ -243,6 +245,13 @@
       "fewerThanYesterday": "fewer than yesterday",
       "today": "today",
       "sameAsYesterday": "same as yesterday"
+    },
+    "recentAdvertisements": "Recent Advertisements",
+    "noAdvertisements": "No Advertisements",
+    "status": {
+      "removed": "removed",
+      "skipped": "skipped",
+      "indexed": "indexed"
     }
   }
 }
