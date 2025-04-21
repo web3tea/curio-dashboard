@@ -166,11 +166,6 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
           title: t('nav.ipni.tasks'),
           to: 'tasks',
           disabled: true // todo: add Tasks page
-        },
-        {
-          title: t('nav.ipni.chunks'),
-          to: 'chunks',
-          disabled: true // todo: add Chunks page
         }
       ],
     },

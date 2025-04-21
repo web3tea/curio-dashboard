@@ -85,7 +85,8 @@ const headers = [
   { title: "Task ID", key: 'taskId' },
   { title: "Provider", key: 'provider' },
   { title: "Sector", key: 'sector' },
-  { title: "Status", key: 'status' }
+  { title: "Status", key: 'status' },
+  { title: "Created At", key: 'createdAt' },
 ]
 
 defineExpose({

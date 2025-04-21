@@ -31,17 +31,17 @@ const breadcrumbs = ref([
     >
       <RecentAdvertisements />
     </v-col>
-    <v-col
-      cols="12"
-      md="6"
-    >
-      <RecentTasks />
-    </v-col>
+
     <v-col
       cols="12"
       md="6"
     >
       <TopProviders />
+    </v-col>
+    <v-col
+      cols="12"
+    >
+      <RecentTasks />
     </v-col>
   </v-row>
 </template>
