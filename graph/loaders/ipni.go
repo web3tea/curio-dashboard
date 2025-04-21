@@ -20,6 +20,9 @@ type IPNILoader interface {
 	IpniAdvertisements(ctx context.Context, provider *string, isSkip, isRemoved *bool, offset int, limit int) ([]*model.IPNIAdvertisement, error)
 	IpniAdvertisement(ctx context.Context, id int) (*model.IPNIAdvertisement, error)
 	IpniPeerID(ctx context.Context, spID *types.ActorID, peerID *string) (*model.IPNIPeerID, error)
+	IpniPeerIDs(ctx context.Context) ([]*model.IPNIPeerID, error)
+	IpniHead(ctx context.Context, provider string) (*model.IPNIHead, error)
+	IpniHeads(ctx context.Context) ([]*model.IPNIHead, error)
 	IpniTasks(ctx context.Context, provider *string, limit *int, isRemoved *bool) ([]*model.IPNITask, error)
 	IpniTask(ctx context.Context, id int) (*model.IPNITask, error)
 	IpniTasksCount(ctx context.Context, provider *string, isRemoved *bool) (int, error)
@@ -258,4 +261,47 @@ func (l *IPNILoaderImpl) IpniTasksCount(ctx context.Context, provider *string, i
 	}
 
 	return count, nil
+}
+
+func (l *IPNILoaderImpl) IpniHead(ctx context.Context, provider string) (*model.IPNIHead, error) {
+	var head model.IPNIHead
+	err := l.loader.db.QueryRow(ctx, `
+								SELECT
+									provider,
+									head
+								FROM ipni_head
+								WHERE provider = $1
+				`, provider).Scan(&head.Provider, &head.Head)
+	if err != nil {
+		return nil, err
+	}
+	return &head, nil
+}
+
+func (l *IPNILoaderImpl) IpniHeads(ctx context.Context) ([]*model.IPNIHead, error) {
+	var heads []*model.IPNIHead
+	err := l.loader.db.Select(ctx, &heads, `
+								SELECT
+									provider,
+									head
+								FROM ipni_head
+				`)
+	if err != nil {
+		return nil, err
+	}
+	return heads, nil
+}
+
+func (l *IPNILoaderImpl) IpniPeerIDs(ctx context.Context) ([]*model.IPNIPeerID, error) {
+	var peerIDs []*model.IPNIPeerID
+	err := l.loader.db.Select(ctx, &peerIDs, `
+								SELECT
+									peer_id,
+									sp_id
+								FROM ipni_peerid
+				`)
+	if err != nil {
+		return nil, err
+	}
+	return peerIDs, nil
 }

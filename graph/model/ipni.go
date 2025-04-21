@@ -19,3 +19,8 @@ type IPNIAdvertisement struct {
 	// covert provider peer id to sp id
 	ProviderPeerID *string `json:"-" db:"provider"`
 }
+
+type IPNIProvider struct {
+	SpID   types.ActorID `json:"spID"`
+	PeerID string        `json:"peerID"`
+}

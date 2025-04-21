@@ -253,9 +253,14 @@
       "skipped": "skipped",
       "indexed": "indexed",
       "complete": "completed",
-      "pending": "pending"
+      "pending": "pending",
+      "active": "active",
+      "inactive": "inactive",
+      "unknown": "unknown"
     },
     "recentTasks": "Recent Tasks",
-    "noTasks": "No Tasks"
+    "noTasks": "No Tasks",
+    "topProviders": "Top Providers",
+    "noProviders": "No Providers"
   }
 }

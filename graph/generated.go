@@ -45,6 +45,7 @@ type ResolverRoot interface {
 	Actor() ActorResolver
 	Config() ConfigResolver
 	IPNIAdvertisement() IPNIAdvertisementResolver
+	IPNIProvider() IPNIProviderResolver
 	IPNIStats() IPNIStatsResolver
 	Machine() MachineResolver
 	MachineSummary() MachineSummaryResolver
@@ -172,9 +173,22 @@ type ComplexityRoot struct {
 		Signature   func(childComplexity int) int
 	}
 
+	IPNIHead struct {
+		Head     func(childComplexity int) int
+		Provider func(childComplexity int) int
+	}
+
 	IPNIPeerID struct {
 		PeerID func(childComplexity int) int
 		SpID   func(childComplexity int) int
+	}
+
+	IPNIProvider struct {
+		AdCount func(childComplexity int) int
+		Head    func(childComplexity int) int
+		PeerID  func(childComplexity int) int
+		SpID    func(childComplexity int) int
+		Status  func(childComplexity int) int
 	}
 
 	IPNIStats struct {
@@ -585,6 +599,7 @@ type ComplexityRoot struct {
 		IpniAdvertisement          func(childComplexity int, orderNumber int) int
 		IpniAdvertisements         func(childComplexity int, offset int, limit int, provider *string, isSkip *bool, isRemoved *bool) int
 		IpniAdvertisementsCount    func(childComplexity int, provider *string, isSkip *bool, isRemoved *bool) int
+		IpniProviders              func(childComplexity int) int
 		IpniStats                  func(childComplexity int) int
 		IpniTask                   func(childComplexity int, taskID int) int
 		IpniTasks                  func(childComplexity int, limit *int, spID *types.ActorID, isRm *bool) int
@@ -899,6 +914,11 @@ type ConfigResolver interface {
 type IPNIAdvertisementResolver interface {
 	Provider(ctx context.Context, obj *model.IPNIAdvertisement) (*model.IPNIPeerID, error)
 }
+type IPNIProviderResolver interface {
+	Head(ctx context.Context, obj *model.IPNIProvider) (string, error)
+	AdCount(ctx context.Context, obj *model.IPNIProvider) (int, error)
+	Status(ctx context.Context, obj *model.IPNIProvider) (model.IPNIProviderStatus, error)
+}
 type IPNIStatsResolver interface {
 	TotalAdvertisements(ctx context.Context, obj *model.IPNIStats) (int, error)
 	PreviousTotalAdvertisements(ctx context.Context, obj *model.IPNIStats) (int, error)
@@ -1006,6 +1026,7 @@ type QueryResolver interface {
 	IpniTask(ctx context.Context, taskID int) (*model.IPNITask, error)
 	IpniTasks(ctx context.Context, limit *int, spID *types.ActorID, isRm *bool) ([]*model.IPNITask, error)
 	IpniTasksCount(ctx context.Context, spID *types.ActorID, isRm *bool) (int, error)
+	IpniProviders(ctx context.Context) ([]*model.IPNIProvider, error)
 	Machine(ctx context.Context, id int) (*model.Machine, error)
 	MachineByHostAndPort(ctx context.Context, hostAndPort string) (*model.Machine, error)
 	Machines(ctx context.Context) ([]*model.Machine, error)
@@ -1645,6 +1666,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.IPNIAdvertisement.Signature(childComplexity), true
 
+	case "IPNIHead.head":
+		if e.complexity.IPNIHead.Head == nil {
+			break
+		}
+
+		return e.complexity.IPNIHead.Head(childComplexity), true
+
+	case "IPNIHead.provider":
+		if e.complexity.IPNIHead.Provider == nil {
+			break
+		}
+
+		return e.complexity.IPNIHead.Provider(childComplexity), true
+
 	case "IPNIPeerID.peerID":
 		if e.complexity.IPNIPeerID.PeerID == nil {
 			break
@@ -1658,6 +1693,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.IPNIPeerID.SpID(childComplexity), true
+
+	case "IPNIProvider.adCount":
+		if e.complexity.IPNIProvider.AdCount == nil {
+			break
+		}
+
+		return e.complexity.IPNIProvider.AdCount(childComplexity), true
+
+	case "IPNIProvider.head":
+		if e.complexity.IPNIProvider.Head == nil {
+			break
+		}
+
+		return e.complexity.IPNIProvider.Head(childComplexity), true
+
+	case "IPNIProvider.peerID":
+		if e.complexity.IPNIProvider.PeerID == nil {
+			break
+		}
+
+		return e.complexity.IPNIProvider.PeerID(childComplexity), true
+
+	case "IPNIProvider.spID":
+		if e.complexity.IPNIProvider.SpID == nil {
+			break
+		}
+
+		return e.complexity.IPNIProvider.SpID(childComplexity), true
+
+	case "IPNIProvider.status":
+		if e.complexity.IPNIProvider.Status == nil {
+			break
+		}
+
+		return e.complexity.IPNIProvider.Status(childComplexity), true
 
 	case "IPNIStats.indexed":
 		if e.complexity.IPNIStats.Indexed == nil {
@@ -3934,6 +4004,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.IpniAdvertisementsCount(childComplexity, args["provider"].(*string), args["isSkip"].(*bool), args["isRemoved"].(*bool)), true
+
+	case "Query.ipniProviders":
+		if e.complexity.Query.IpniProviders == nil {
+			break
+		}
+
+		return e.complexity.Query.IpniProviders(childComplexity), true
 
 	case "Query.ipniStats":
 		if e.complexity.Query.IpniStats == nil {
@@ -12819,6 +12896,94 @@ func (ec *executionContext) fieldContext_IPNIAdvertisement_signature(_ context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _IPNIHead_head(ctx context.Context, field graphql.CollectedField, obj *model.IPNIHead) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIHead_head(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Head, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIHead_head(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIHead",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIHead_provider(ctx context.Context, field graphql.CollectedField, obj *model.IPNIHead) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIHead_provider(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Provider, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIHead_provider(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIHead",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _IPNIPeerID_peerID(ctx context.Context, field graphql.CollectedField, obj *model.IPNIPeerID) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_IPNIPeerID_peerID(ctx, field)
 	if err != nil {
@@ -12902,6 +13067,226 @@ func (ec *executionContext) fieldContext_IPNIPeerID_spID(_ context.Context, fiel
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ActorID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIProvider_spID(ctx context.Context, field graphql.CollectedField, obj *model.IPNIProvider) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIProvider_spID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.ActorID)
+	fc.Result = res
+	return ec.marshalNActorID2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐActorID(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIProvider_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIProvider",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ActorID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIProvider_peerID(ctx context.Context, field graphql.CollectedField, obj *model.IPNIProvider) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIProvider_peerID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PeerID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIProvider_peerID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIProvider",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIProvider_head(ctx context.Context, field graphql.CollectedField, obj *model.IPNIProvider) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIProvider_head(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIProvider().Head(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIProvider_head(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIProvider",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIProvider_adCount(ctx context.Context, field graphql.CollectedField, obj *model.IPNIProvider) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIProvider_adCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIProvider().AdCount(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIProvider_adCount(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIProvider",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _IPNIProvider_status(ctx context.Context, field graphql.CollectedField, obj *model.IPNIProvider) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIProvider_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.IPNIProvider().Status(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.IPNIProviderStatus)
+	fc.Result = res
+	return ec.marshalNIPNIProviderStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIProviderStatus(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIProvider_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIProvider",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type IPNIProviderStatus does not have child fields")
 		},
 	}
 	return fc, nil
@@ -27612,6 +27997,62 @@ func (ec *executionContext) fieldContext_Query_ipniTasksCount(ctx context.Contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_ipniProviders(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_ipniProviders(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().IpniProviders(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.IPNIProvider)
+	fc.Result = res
+	return ec.marshalNIPNIProvider2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIProviderᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_ipniProviders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spID":
+				return ec.fieldContext_IPNIProvider_spID(ctx, field)
+			case "peerID":
+				return ec.fieldContext_IPNIProvider_peerID(ctx, field)
+			case "head":
+				return ec.fieldContext_IPNIProvider_head(ctx, field)
+			case "adCount":
+				return ec.fieldContext_IPNIProvider_adCount(ctx, field)
+			case "status":
+				return ec.fieldContext_IPNIProvider_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type IPNIProvider", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_machine(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_machine(ctx, field)
 	if err != nil {
@@ -42149,6 +42590,50 @@ func (ec *executionContext) _IPNIAdvertisement(ctx context.Context, sel ast.Sele
 	return out
 }
 
+var iPNIHeadImplementors = []string{"IPNIHead"}
+
+func (ec *executionContext) _IPNIHead(ctx context.Context, sel ast.SelectionSet, obj *model.IPNIHead) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, iPNIHeadImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("IPNIHead")
+		case "head":
+			out.Values[i] = ec._IPNIHead_head(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "provider":
+			out.Values[i] = ec._IPNIHead_provider(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var iPNIPeerIDImplementors = []string{"IPNIPeerID"}
 
 func (ec *executionContext) _IPNIPeerID(ctx context.Context, sel ast.SelectionSet, obj *model.IPNIPeerID) graphql.Marshaler {
@@ -42170,6 +42655,158 @@ func (ec *executionContext) _IPNIPeerID(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var iPNIProviderImplementors = []string{"IPNIProvider"}
+
+func (ec *executionContext) _IPNIProvider(ctx context.Context, sel ast.SelectionSet, obj *model.IPNIProvider) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, iPNIProviderImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("IPNIProvider")
+		case "spID":
+			out.Values[i] = ec._IPNIProvider_spID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "peerID":
+			out.Values[i] = ec._IPNIProvider_peerID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "head":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIProvider_head(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "adCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIProvider_adCount(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "status":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._IPNIProvider_status(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -46495,6 +47132,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "ipniProviders":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ipniProviders(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "machine":
 			field := field
 
@@ -50592,6 +51251,70 @@ func (ec *executionContext) marshalNIPNIAdvertisement2ᚖgithubᚗcomᚋweb3tea�
 		return graphql.Null
 	}
 	return ec._IPNIAdvertisement(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNIPNIProvider2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIProviderᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.IPNIProvider) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNIPNIProvider2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIProvider(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNIPNIProvider2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIProvider(ctx context.Context, sel ast.SelectionSet, v *model.IPNIProvider) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._IPNIProvider(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNIPNIProviderStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIProviderStatus(ctx context.Context, v any) (model.IPNIProviderStatus, error) {
+	var res model.IPNIProviderStatus
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNIPNIProviderStatus2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIProviderStatus(ctx context.Context, sel ast.SelectionSet, v model.IPNIProviderStatus) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) marshalNIPNIStats2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐIPNIStats(ctx context.Context, sel ast.SelectionSet, v model.IPNIStats) graphql.Marshaler {

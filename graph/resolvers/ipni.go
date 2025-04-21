@@ -19,6 +19,34 @@ func (r *iPNIAdvertisementResolver) Provider(ctx context.Context, obj *model.IPN
 	return r.loader.IpniPeerID(ctx, nil, obj.ProviderPeerID)
 }
 
+// Head is the resolver for the head field.
+func (r *iPNIProviderResolver) Head(ctx context.Context, obj *model.IPNIProvider) (string, error) {
+	head, err := r.loader.IpniHead(ctx, obj.PeerID)
+	if err != nil {
+		return "", err
+	}
+	return head.Head, nil
+}
+
+// AdCount is the resolver for the adCount field.
+func (r *iPNIProviderResolver) AdCount(ctx context.Context, obj *model.IPNIProvider) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.IpniAdvertisementsCount(ctx, &obj.PeerID, nil, nil)
+}
+
+// Status is the resolver for the status field.
+func (r *iPNIProviderResolver) Status(ctx context.Context, obj *model.IPNIProvider) (model.IPNIProviderStatus, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	count, err := r.loader.IpniTasksCount(ctx, &obj.PeerID, nil)
+	if err != nil {
+		return model.IPNIProviderStatusUnknown, err
+	}
+	if count == 0 {
+		return model.IPNIProviderStatusInactive, nil
+	}
+	return model.IPNIProviderStatusActive, nil
+}
+
 // TotalAdvertisements is the resolver for the totalAdvertisements field.
 func (r *iPNIStatsResolver) TotalAdvertisements(ctx context.Context, obj *model.IPNIStats) (int, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
@@ -141,15 +169,36 @@ func (r *queryResolver) IpniTasksCount(ctx context.Context, spID *types.ActorID,
 	return r.loader.IpniTasksCount(ctx, nil, isRm)
 }
 
+// IpniProviders is the resolver for the ipniProviders field.
+func (r *queryResolver) IpniProviders(ctx context.Context) ([]*model.IPNIProvider, error) {
+	ids, err := r.loader.IpniPeerIDs(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var providers []*model.IPNIProvider
+	for _, id := range ids {
+		providers = append(providers, &model.IPNIProvider{
+			SpID:   id.SpID,
+			PeerID: id.PeerID,
+		})
+	}
+	return providers, nil
+}
+
 // IPNIAdvertisement returns graph.IPNIAdvertisementResolver implementation.
 func (r *Resolver) IPNIAdvertisement() graph.IPNIAdvertisementResolver {
 	return &iPNIAdvertisementResolver{r}
 }
+
+// IPNIProvider returns graph.IPNIProviderResolver implementation.
+func (r *Resolver) IPNIProvider() graph.IPNIProviderResolver { return &iPNIProviderResolver{r} }
 
 // IPNIStats returns graph.IPNIStatsResolver implementation.
 func (r *Resolver) IPNIStats() graph.IPNIStatsResolver { return &iPNIStatsResolver{r} }
 
 type (
 	iPNIAdvertisementResolver struct{ *Resolver }
+	iPNIProviderResolver      struct{ *Resolver }
 	iPNIStatsResolver         struct{ *Resolver }
 )

@@ -253,9 +253,14 @@
       "skipped": "跳过",
       "indexed": "已索引",
       "complete": "已完成",
-      "pending": "待处理"
+      "pending": "待处理",
+      "active": "活跃",
+      "inactive": "不活跃",
+      "unknown": "未知"
     },
     "recentTasks": "最近任务",
-    "noTasks": "无任务"
+    "noTasks": "无任务",
+    "topProviders": "顶级提供者",
+    "noProviders": "没有顶级提供者"
   }
 }

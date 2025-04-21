@@ -150,11 +150,31 @@ export type IpniAdvertisement = {
   signature: Scalars['Bytes']['output'];
 };
 
+export type IpniHead = {
+  __typename?: 'IPNIHead';
+  head: Scalars['String']['output'];
+  provider: Scalars['String']['output'];
+};
+
 export type IpniPeerId = {
   __typename?: 'IPNIPeerID';
   peerID: Scalars['String']['output'];
   spID: Scalars['ActorID']['output'];
 };
+
+export type IpniProvider = {
+  __typename?: 'IPNIProvider';
+  adCount: Scalars['Int']['output'];
+  head: Scalars['String']['output'];
+  peerID: Scalars['String']['output'];
+  spID: Scalars['ActorID']['output'];
+  status: IpniProviderStatus;
+};
+
+export type IpniProviderStatus =
+  | 'ACTIVE'
+  | 'INACTIVE'
+  | 'UNKNOWN';
 
 export type IpniStats = {
   __typename?: 'IPNIStats';
@@ -747,6 +767,7 @@ export type Query = {
   ipniAdvertisement?: Maybe<IpniAdvertisement>;
   ipniAdvertisements: Array<IpniAdvertisement>;
   ipniAdvertisementsCount: Scalars['Int']['output'];
+  ipniProviders: Array<IpniProvider>;
   ipniStats: IpniStats;
   ipniTask?: Maybe<IpniTask>;
   ipniTasks: Array<IpniTask>;
@@ -853,7 +874,7 @@ export type QueryIpniTaskArgs = {
 
 export type QueryIpniTasksArgs = {
   isRm?: InputMaybe<Scalars['Boolean']['input']>;
-  limit?: Scalars['Int']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
   spId?: InputMaybe<Scalars['ActorID']['input']>;
 };
 
