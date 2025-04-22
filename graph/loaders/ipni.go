@@ -167,7 +167,7 @@ func (l *IPNILoaderImpl) IpniAdvertisementsCount(ctx context.Context, provider *
 								SELECT
 												COUNT(*)
 								FROM ipni
-								WHERE ($1 = '' OR provider = $1)
+								WHERE ($1::text IS NULL OR provider = $1)
 								AND ($2::boolean IS NULL OR is_skip = $2)
 								AND ($3::boolean IS NULL OR is_rm = $3)
 				`, provider, isSkip, isRemoved).Scan(&count)

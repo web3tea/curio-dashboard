@@ -154,8 +154,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         },
         {
           title: t('nav.ipni.advertisements'),
-          to: 'advertisements',
-          disabled: true // todo: add Advertisements page
+          to: { name: "IPNIAdvertisements" },
         },
         {
           title: t('nav.ipni.providers'),

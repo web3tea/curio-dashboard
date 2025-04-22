@@ -54,8 +54,7 @@
       "overview": "概览",
       "advertisements": "广告",
       "providers": "提供者",
-      "tasks": "任务",
-      "chunks": "块"
+      "tasks": "任务"
     }
   },
   "fields": {
@@ -256,11 +255,13 @@
       "pending": "待处理",
       "active": "活跃",
       "inactive": "不活跃",
-      "unknown": "未知"
+      "unknown": "未知",
+      "all": "全部"
     },
     "recentTasks": "最近任务",
     "noTasks": "无任务",
     "topProviders": "顶级提供者",
-    "noProviders": "没有顶级提供者"
+    "noProviders": "没有顶级提供者",
+    "advertisements": "广告"
   }
 }

@@ -54,8 +54,7 @@
       "overview": "Overview",
       "advertisements": "Advertisements",
       "providers": "Providers",
-      "tasks": "Tasks",
-      "chunks": "Chunks"
+      "tasks": "Tasks"
     }
   },
   "fields": {
@@ -256,11 +255,13 @@
       "pending": "pending",
       "active": "active",
       "inactive": "inactive",
-      "unknown": "unknown"
+      "unknown": "unknown",
+      "all": "all"
     },
     "recentTasks": "Recent Tasks",
     "noTasks": "No Tasks",
     "topProviders": "Top Providers",
-    "noProviders": "No Providers"
+    "noProviders": "No Providers",
+    "advertisements": "Advertisements"
   }
 }
