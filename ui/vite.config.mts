@@ -8,6 +8,7 @@ import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import { defineConfig, type PluginOption } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 import { visualizer } from 'rollup-plugin-visualizer'
+import checker from 'vite-plugin-checker'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -28,6 +29,10 @@ export default defineConfig({
     Fonts({
     }),
     visualizer() as PluginOption,
+    checker({
+      vueTsc: true,
+      typescript: true,
+    }),
   ],
   build: {
     chunkSizeWarningLimit: 1024 * 3,

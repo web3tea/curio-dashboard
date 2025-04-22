@@ -197,8 +197,6 @@ func (r *Resolver) IPNIProvider() graph.IPNIProviderResolver { return &iPNIProvi
 // IPNIStats returns graph.IPNIStatsResolver implementation.
 func (r *Resolver) IPNIStats() graph.IPNIStatsResolver { return &iPNIStatsResolver{r} }
 
-type (
-	iPNIAdvertisementResolver struct{ *Resolver }
-	iPNIProviderResolver      struct{ *Resolver }
-	iPNIStatsResolver         struct{ *Resolver }
-)
+type iPNIAdvertisementResolver struct{ *Resolver }
+type iPNIProviderResolver struct{ *Resolver }
+type iPNIStatsResolver struct{ *Resolver }
