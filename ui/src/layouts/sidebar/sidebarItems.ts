@@ -158,8 +158,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         },
         {
           title: t('nav.ipni.providers'),
-          to: 'providers',
-          disabled: true // todo: add Providers page
+          to: { name: "IPNIProviders" },
         },
         {
           title: t('nav.ipni.tasks'),

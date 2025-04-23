@@ -262,6 +262,7 @@
     "noTasks": "无任务",
     "topProviders": "顶级提供者",
     "noProviders": "没有顶级提供者",
-    "advertisements": "广告"
+    "advertisements": "广告",
+    "providers": "提供者"
   }
 }

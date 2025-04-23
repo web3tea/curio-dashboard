@@ -287,13 +287,22 @@ const AppRoutes = {
     },
     {
       name: "IPNIAdvertisements",
-      path: "/ipni/ads",
+      path: "/ipni/advertisements",
       component: () => import('@/views/ipni/advertisements/AdvertisementsIndex.vue'),
       meta: {
-        title: 'IPNI Ads',
+        title: 'IPNI Advertisements',
         description: 'InterPlanetary Network Indexer Ads',
       },
     },
+    {
+      name: "IPNIProviders",
+      path: "/ipni/providers",
+      component: () => import('@/views/ipni/providers/ProvidersIndex.vue'),
+      meta: {
+        title: 'IPNI Providers',
+        description: 'InterPlanetary Network Indexer Providers',
+      },
+    }
   ],
 }
 
