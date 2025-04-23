@@ -30,7 +30,6 @@
     "Active Tasks": "Active Tasks",
     "Task Overview": "Task Overview",
     "Sector Processing": "Sector Processing",
-    "Snap Deals": "Snap Deals",
     "Unsealing": "Unsealing",
     "Proofs": "Proofs",
     "WindowPoSt": "WindowPoSt",
@@ -46,7 +45,6 @@
     "Machine List": "Machine List",
     "Resource Usage": "Resource Usage",
     "Dashboard": "Dashboard",
-    "PoRep Pipeline": "PoRep Pipeline",
     "Events": "Events",
     "deals": "Deals",
     "pendingDeals": "Pending Deals",
@@ -55,7 +53,8 @@
       "advertisements": "Advertisements",
       "providers": "Providers",
       "tasks": "Tasks"
-    }
+    },
+    "Snap": "Snap"
   },
   "fields": {
     "Total Power": "Total Power",

@@ -73,11 +73,11 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
           to: { name: "Sectors" },
         },
         {
-          title: t('nav.PoRep Pipeline'),
+          title: t('nav.PoRep'),
           to: { name: "PoRep" },
         },
         {
-          title: t('nav.Snap Deals'),
+          title: t('nav.Snap'),
           to: 'Snap Deals',
           disabled: true // todo: add Snap Deals page
         },
