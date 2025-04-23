@@ -9,6 +9,7 @@
 
 | ![Overview](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/overview.png) | ![Machine](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/machines.png) |
 |:--------------------------------:|:------------------------------:|
+| ![IPNI](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/ipni.png) |  |
 ### Key Features
 
 - **Authenticated Access**: Secure login ensures data protection.
