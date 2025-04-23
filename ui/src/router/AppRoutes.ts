@@ -302,6 +302,15 @@ const AppRoutes = {
         title: 'IPNI Providers',
         description: 'InterPlanetary Network Indexer Providers',
       },
+    },
+    {
+      name: "IPNITasks",
+      path: "/ipni/tasks",
+      component: () => import('@/views/ipni/tasks/TasksIndex.vue'),
+      meta: {
+        title: "IPNI Tasks",
+        description: ""
+      }
     }
   ],
 }
