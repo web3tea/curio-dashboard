@@ -17,6 +17,7 @@ require (
 	github.com/ipfs/go-ipld-cbor v0.2.0
 	github.com/ipfs/go-log/v2 v2.5.1
 	github.com/jackc/pgx/v5 v5.6.0
+	github.com/jellydator/ttlcache/v3 v3.3.0
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/libp2p/go-libp2p v0.39.1
 	github.com/multiformats/go-multiaddr v0.14.0

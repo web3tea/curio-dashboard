@@ -134,6 +134,76 @@ export type GaugeCountValue = {
   value: Scalars['Int']['output'];
 };
 
+export type IpniAdvertisement = {
+  __typename?: 'IPNIAdvertisement';
+  adCid?: Maybe<Scalars['String']['output']>;
+  addresses?: Maybe<Scalars['String']['output']>;
+  contextId: Scalars['Bytes']['output'];
+  entries?: Maybe<Scalars['String']['output']>;
+  isRm?: Maybe<Scalars['Boolean']['output']>;
+  isSkip?: Maybe<Scalars['Boolean']['output']>;
+  orderNumber: Scalars['Int']['output'];
+  pieceCid?: Maybe<Scalars['String']['output']>;
+  pieceSize?: Maybe<Scalars['Int']['output']>;
+  previous?: Maybe<Scalars['String']['output']>;
+  provider?: Maybe<IpniPeerId>;
+  signature: Scalars['Bytes']['output'];
+};
+
+export type IpniHead = {
+  __typename?: 'IPNIHead';
+  head: Scalars['String']['output'];
+  provider: Scalars['String']['output'];
+};
+
+export type IpniPeerId = {
+  __typename?: 'IPNIPeerID';
+  peerID: Scalars['String']['output'];
+  spID: Scalars['ActorID']['output'];
+};
+
+export type IpniProvider = {
+  __typename?: 'IPNIProvider';
+  adCount: Scalars['Int']['output'];
+  head: Scalars['String']['output'];
+  peerID: Scalars['String']['output'];
+  spID: Scalars['ActorID']['output'];
+  status: IpniProviderStatus;
+};
+
+export type IpniProviderStatus =
+  | 'ACTIVE'
+  | 'INACTIVE'
+  | 'UNKNOWN';
+
+export type IpniStats = {
+  __typename?: 'IPNIStats';
+  indexed: Scalars['Int']['output'];
+  pendingTasks: Scalars['Int']['output'];
+  previousIndexed: Scalars['Int']['output'];
+  previousPendingTasks: Scalars['Int']['output'];
+  previousProviders: Scalars['Int']['output'];
+  previousSkipped: Scalars['Int']['output'];
+  previousTotalAdvertisements: Scalars['Int']['output'];
+  providers: Scalars['Int']['output'];
+  skipped: Scalars['Int']['output'];
+  totalAdvertisements: Scalars['Int']['output'];
+};
+
+export type IpniTask = {
+  __typename?: 'IPNITask';
+  complete: Scalars['Boolean']['output'];
+  contextId?: Maybe<Scalars['Bytes']['output']>;
+  createdAt?: Maybe<Scalars['Time']['output']>;
+  isRm?: Maybe<Scalars['Boolean']['output']>;
+  provider?: Maybe<Scalars['String']['output']>;
+  regSealProof?: Maybe<Scalars['Int']['output']>;
+  sector?: Maybe<Scalars['Int']['output']>;
+  sectorOffset: Scalars['Int']['output'];
+  spId?: Maybe<Scalars['ActorID']['output']>;
+  taskId: Scalars['Int']['output'];
+};
+
 export type Machine = {
   __typename?: 'Machine';
   cpu: Scalars['Int']['output'];
@@ -694,6 +764,14 @@ export type Query = {
   config?: Maybe<Config>;
   configs?: Maybe<Array<Maybe<Config>>>;
   dealsPending?: Maybe<Array<Maybe<OpenSectorPiece>>>;
+  ipniAdvertisement?: Maybe<IpniAdvertisement>;
+  ipniAdvertisements: Array<IpniAdvertisement>;
+  ipniAdvertisementsCount: Scalars['Int']['output'];
+  ipniProviders: Array<IpniProvider>;
+  ipniStats: IpniStats;
+  ipniTask?: Maybe<IpniTask>;
+  ipniTasks: Array<IpniTask>;
+  ipniTasksCount: Scalars['Int']['output'];
   machine?: Maybe<Machine>;
   machineByHostAndPort?: Maybe<Machine>;
   machineSummary?: Maybe<MachineSummary>;
@@ -765,6 +843,45 @@ export type QueryActorArgs = {
 
 export type QueryConfigArgs = {
   layer: Scalars['String']['input'];
+};
+
+
+export type QueryIpniAdvertisementArgs = {
+  orderNumber: Scalars['Int']['input'];
+};
+
+
+export type QueryIpniAdvertisementsArgs = {
+  isRemoved?: InputMaybe<Scalars['Boolean']['input']>;
+  isSkip?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: Scalars['Int']['input'];
+  offset?: Scalars['Int']['input'];
+  provider?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryIpniAdvertisementsCountArgs = {
+  isRemoved?: InputMaybe<Scalars['Boolean']['input']>;
+  isSkip?: InputMaybe<Scalars['Boolean']['input']>;
+  provider?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryIpniTaskArgs = {
+  taskId: Scalars['Int']['input'];
+};
+
+
+export type QueryIpniTasksArgs = {
+  isRm?: InputMaybe<Scalars['Boolean']['input']>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  spId?: InputMaybe<Scalars['ActorID']['input']>;
+};
+
+
+export type QueryIpniTasksCountArgs = {
+  isRm?: InputMaybe<Scalars['Boolean']['input']>;
+  spId?: InputMaybe<Scalars['ActorID']['input']>;
 };
 
 

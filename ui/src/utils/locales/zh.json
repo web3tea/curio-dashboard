@@ -30,7 +30,6 @@
     "Active Tasks": "活跃任务",
     "Task Overview": "任务概览",
     "Sector Processing": "扇区处理",
-    "Snap Deals": "升级交易",
     "Unsealing": "解封",
     "Proofs": "证明",
     "WindowPoSt": "时空证明",
@@ -40,19 +39,22 @@
     "Legacy Deals": "传统交易",
     "Deal Pipeline": "交易管道",
     "IPNI": "IPNI",
-    "Index Status": "索引状态",
-    "Piece Metadata": "Piece元数据",
-    "IPNI Summary": "IPNI 概要",
     "Market Settings": "市场设置",
     "Mining & Network": "出块 & 网络",
     "System & Management": "系统 & 管理",
     "Machine List": "主机列表",
     "Resource Usage": "资源使用情况",
     "Dashboard": "仪表盘",
-    "PoRep Pipeline": "封存管道",
     "Events": "事件",
     "deals": "交易",
-    "pendingDeals": "待处理交易"
+    "pendingDeals": "待处理交易",
+    "ipni": {
+      "overview": "概览",
+      "advertisements": "广告",
+      "providers": "提供者",
+      "tasks": "任务"
+    },
+    "Snap": "升级"
   },
   "fields": {
     "Total Power": "总算力",
@@ -157,7 +159,9 @@
     "stable": "稳定",
     "sector": "扇区",
     "deal": "订单",
-    "Close": "关闭"
+    "Close": "关闭",
+    "error": "错误",
+    "viewAll": "查看全部"
   },
   "clusterHealth": {
     "title": "集群健康度",
@@ -226,5 +230,39 @@
   },
   "pendingDeal": {
     "groupBySector": "按扇区分组"
+  },
+  "ipni": {
+    "stats": {
+      "totalAdvertisements": "总广告",
+      "newToday": "今日新增",
+      "providers": "提供者",
+      "noChange": "无变化",
+      "indexedStatus": "索引状态",
+      "indexed": "已索引",
+      "pendingTasks": "待处理任务",
+      "fewerThanYesterday": "少于昨日",
+      "today": "今日",
+      "sameAsYesterday": "与昨日相同"
+    },
+    "recentAdvertisements": "最近广告",
+    "noAdvertisements": "暂无广告",
+    "status": {
+      "removed": "移除",
+      "skipped": "跳过",
+      "indexed": "已索引",
+      "complete": "已完成",
+      "pending": "待处理",
+      "active": "活跃",
+      "inactive": "不活跃",
+      "unknown": "未知",
+      "all": "全部"
+    },
+    "recentTasks": "最近任务",
+    "noTasks": "无任务",
+    "topProviders": "顶级提供者",
+    "noProviders": "没有顶级提供者",
+    "advertisements": "广告",
+    "providers": "提供者",
+    "tasks": "任务"
   }
 }

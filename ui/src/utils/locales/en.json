@@ -30,7 +30,6 @@
     "Active Tasks": "Active Tasks",
     "Task Overview": "Task Overview",
     "Sector Processing": "Sector Processing",
-    "Snap Deals": "Snap Deals",
     "Unsealing": "Unsealing",
     "Proofs": "Proofs",
     "WindowPoSt": "WindowPoSt",
@@ -40,19 +39,22 @@
     "Legacy Deals": "Legacy Deals",
     "Deal Pipeline": "Deal Pipeline",
     "IPNI": "IPNI",
-    "Index Status": "Index Status",
-    "Piece Metadata": "Piece Metadata",
-    "IPNI Summary": "IPNI Summary",
     "Market Settings": "Market Settings",
     "Mining & Network": "Mining & Network",
     "System & Management": "System & Management",
     "Machine List": "Machine List",
     "Resource Usage": "Resource Usage",
     "Dashboard": "Dashboard",
-    "PoRep Pipeline": "PoRep Pipeline",
     "Events": "Events",
     "deals": "Deals",
-    "pendingDeals": "Pending Deals"
+    "pendingDeals": "Pending Deals",
+    "ipni": {
+      "overview": "Overview",
+      "advertisements": "Advertisements",
+      "providers": "Providers",
+      "tasks": "Tasks"
+    },
+    "Snap": "Snap"
   },
   "fields": {
     "Total Power": "Total Power",
@@ -157,7 +159,9 @@
     "stable": "Stable",
     "sector": "Sector | Sectors",
     "deal": "Deal | Deals",
-    "Close": "Close"
+    "Close": "Close",
+    "error": "Error",
+    "viewAll": "View All"
   },
   "clusterHealth": {
     "title": "Cluster Health",
@@ -226,5 +230,39 @@
   },
   "pendingDeal": {
     "groupBySector": "Group By Sector"
+  },
+  "ipni": {
+    "stats": {
+      "totalAdvertisements": "Total Advertisements",
+      "newToday": "new today",
+      "providers": "Providers",
+      "noChange": "No Change",
+      "indexedStatus": "Indexed vs Skipped",
+      "indexed": "indexed",
+      "pendingTasks": "Pending Tasks",
+      "fewerThanYesterday": "fewer than yesterday",
+      "today": "today",
+      "sameAsYesterday": "same as yesterday"
+    },
+    "recentAdvertisements": "Recent Advertisements",
+    "noAdvertisements": "No Advertisements",
+    "status": {
+      "removed": "removed",
+      "skipped": "skipped",
+      "indexed": "indexed",
+      "complete": "completed",
+      "pending": "pending",
+      "active": "active",
+      "inactive": "inactive",
+      "unknown": "unknown",
+      "all": "all"
+    },
+    "recentTasks": "Recent Tasks",
+    "noTasks": "No Tasks",
+    "topProviders": "Top Providers",
+    "noProviders": "No Providers",
+    "advertisements": "Advertisements",
+    "providers": "Providers",
+    "tasks": "Tasks"
   }
 }

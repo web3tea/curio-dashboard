@@ -3,6 +3,8 @@ package loaders
 import (
 	"context"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/web3tea/curio-dashboard/graph/model"
 )
@@ -15,10 +17,11 @@ type ConfigLoader interface {
 
 type ConfigLoaderImpl struct {
 	loader *Loader
+	mu     sync.Mutex
 }
 
 func NewConfigLoader(loader *Loader) ConfigLoader {
-	return &ConfigLoaderImpl{loader}
+	return &ConfigLoaderImpl{loader: loader}
 }
 
 func (l *ConfigLoaderImpl) Config(ctx context.Context, layer string) (*model.Config, error) {
@@ -43,10 +46,14 @@ FROM
 }
 
 func (l *ConfigLoaderImpl) configUsedMap(ctx context.Context) (map[string][]*model.MachineDetail, error) {
-	cacheKey := "configUsedMap"
-	m, ok := l.loader.cache.Get(cacheKey)
-	if ok {
-		return m.(map[string][]*model.MachineDetail), nil
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	cacheKey := "config_used_map"
+
+	item := l.loader.cache.Get(cacheKey)
+	if item != nil && !item.IsExpired() {
+		return item.Value().(map[string][]*model.MachineDetail), nil
 	}
 
 	mds, err := l.loader.MachineDetails(ctx)
@@ -61,7 +68,7 @@ func (l *ConfigLoaderImpl) configUsedMap(ctx context.Context) (map[string][]*mod
 		}
 	}
 
-	l.loader.cache.Add(cacheKey, confMap)
+	l.loader.cache.Set(cacheKey, confMap, time.Minute)
 
 	return confMap, nil
 }

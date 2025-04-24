@@ -275,6 +275,42 @@ const AppRoutes = {
         title: 'Deal Info',
         description: 'Market deal info',
       },
+    },
+    {
+      name: "IPNIOverview",
+      path: "/ipni",
+      component: () => import('@/views/ipni/overview/IPNIOverviewIndex.vue'),
+      meta: {
+        title: 'IPNI Overview',
+        description: 'InterPlanetary Network Indexer',
+      },
+    },
+    {
+      name: "IPNIAdvertisements",
+      path: "/ipni/advertisements",
+      component: () => import('@/views/ipni/advertisements/AdvertisementsIndex.vue'),
+      meta: {
+        title: 'IPNI Advertisements',
+        description: 'InterPlanetary Network Indexer Ads',
+      },
+    },
+    {
+      name: "IPNIProviders",
+      path: "/ipni/providers",
+      component: () => import('@/views/ipni/providers/ProvidersIndex.vue'),
+      meta: {
+        title: 'IPNI Providers',
+        description: 'InterPlanetary Network Indexer Providers',
+      },
+    },
+    {
+      name: "IPNITasks",
+      path: "/ipni/tasks",
+      component: () => import('@/views/ipni/tasks/TasksIndex.vue'),
+      meta: {
+        title: "IPNI Tasks",
+        description: ""
+      }
     }
   ],
 }

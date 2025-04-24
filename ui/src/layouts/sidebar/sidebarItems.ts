@@ -73,11 +73,11 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
           to: { name: "Sectors" },
         },
         {
-          title: t('nav.PoRep Pipeline'),
+          title: t('nav.PoRep'),
           to: { name: "PoRep" },
         },
         {
-          title: t('nav.Snap Deals'),
+          title: t('nav.Snap'),
           to: 'Snap Deals',
           disabled: true // todo: add Snap Deals page
         },
@@ -149,21 +149,22 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconSearch,
       children: [
         {
-          title: t('nav.Index Status'),
-          to: 'Index Status',
-          disabled: true // todo: add Index Status page
+          title: t('nav.ipni.overview'),
+          to: { name: "IPNIOverview" }
         },
         {
-          title: t('nav.Piece Metadata'),
-          to: 'Piece Metadata',
-          disabled: true // todo: add Piece Metadata page
+          title: t('nav.ipni.advertisements'),
+          to: { name: "IPNIAdvertisements" },
         },
         {
-          title: t('nav.IPNI Summary'),
-          to: 'IPNI Summary',
-          disabled: true // todo: add IPNI Summary page
+          title: t('nav.ipni.providers'),
+          to: { name: "IPNIProviders" },
+        },
+        {
+          title: t('nav.ipni.tasks'),
+          to: { name: "IPNITasks" },
         }
-      ]
+      ],
     },
     {
       title: t('nav.Market Settings'),

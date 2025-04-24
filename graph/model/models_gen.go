@@ -90,6 +90,29 @@ type GaugeCountValue struct {
 	Value int    `json:"value"`
 }
 
+type IPNIHead struct {
+	Head     string `json:"head"`
+	Provider string `json:"provider"`
+}
+
+type IPNIPeerID struct {
+	PeerID string        `json:"peerID"`
+	SpID   types.ActorID `json:"spID"`
+}
+
+type IPNITask struct {
+	TaskID       int            `json:"taskId"`
+	ContextID    types.Bytes    `json:"contextId"`
+	Complete     bool           `json:"complete"`
+	IsRm         *bool          `json:"isRm"`
+	Sector       *int           `json:"sector"`
+	SectorOffset int            `json:"sectorOffset"`
+	SpID         *types.ActorID `json:"spId"`
+	Provider     *string        `json:"provider"`
+	RegSealProof *int           `json:"regSealProof"`
+	CreatedAt    *time.Time     `json:"createdAt"`
+}
+
 type MachineDetail struct {
 	ID          int       `json:"id"`
 	MachineName string    `json:"machineName"`
@@ -464,6 +487,49 @@ type TaskSummaryDay struct {
 type WalletBalance struct {
 	Address types.Address `json:"address"`
 	Balance types.FIL     `json:"balance"`
+}
+
+type IPNIProviderStatus string
+
+const (
+	IPNIProviderStatusActive   IPNIProviderStatus = "ACTIVE"
+	IPNIProviderStatusInactive IPNIProviderStatus = "INACTIVE"
+	IPNIProviderStatusUnknown  IPNIProviderStatus = "UNKNOWN"
+)
+
+var AllIPNIProviderStatus = []IPNIProviderStatus{
+	IPNIProviderStatusActive,
+	IPNIProviderStatusInactive,
+	IPNIProviderStatusUnknown,
+}
+
+func (e IPNIProviderStatus) IsValid() bool {
+	switch e {
+	case IPNIProviderStatusActive, IPNIProviderStatusInactive, IPNIProviderStatusUnknown:
+		return true
+	}
+	return false
+}
+
+func (e IPNIProviderStatus) String() string {
+	return string(e)
+}
+
+func (e *IPNIProviderStatus) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = IPNIProviderStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid IPNIProviderStatus", str)
+	}
+	return nil
+}
+
+func (e IPNIProviderStatus) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 type MiningTaskAggregateInterval string
