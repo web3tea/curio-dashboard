@@ -79,13 +79,13 @@ const icon = computed(() => {
   <!-- Vertical Mode -->
   <template v-else>
     <v-list-item
-      class="mb-1"
       color="primary"
       :disabled="item.disabled"
       :href="item.type === 'external' && typeof item.to === 'string' ? item.to : ''"
       rounded
       :target="item.type === 'external' ? '_blank' : ''"
       :to="item.type === 'external' ? '' : item.to"
+      density="comfortable"
     >
       <template #prepend>
         <component

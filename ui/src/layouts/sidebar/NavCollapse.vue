@@ -71,10 +71,10 @@ defineProps({
       <template #activator="{ props }">
         <v-list-item
           v-bind="props"
-          class="mb-1"
           color="primary"
           rounded
           :value="item.title"
+          density="comfortable"
         >
           <template #prepend>
             <component
