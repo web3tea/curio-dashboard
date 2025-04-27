@@ -28,7 +28,6 @@
     "Balances": "余额",
     "MK12Deals": "MK12Deals",
     "Active Tasks": "活跃任务",
-    "Task Overview": "任务概览",
     "Sector Processing": "扇区处理",
     "Unsealing": "解封",
     "Proofs": "证明",
@@ -42,8 +41,6 @@
     "Market Settings": "市场设置",
     "Mining & Network": "出块 & 网络",
     "System & Management": "系统 & 管理",
-    "Machine List": "主机列表",
-    "Resource Usage": "资源使用情况",
     "Dashboard": "仪表盘",
     "Events": "事件",
     "deals": "交易",
@@ -54,7 +51,9 @@
       "providers": "提供者",
       "tasks": "任务"
     },
-    "Snap": "升级"
+    "Snap": "升级",
+    "Active": "活跃",
+    "History": "历史"
   },
   "fields": {
     "Total Power": "总算力",
@@ -264,5 +263,15 @@
     "advertisements": "广告",
     "providers": "提供者",
     "tasks": "任务"
+  },
+  "tableFilter": {
+    "search": "搜索",
+    "clear": "清空",
+    "confirm": "确认"
+  },
+  "machine": {
+    "search": "搜索",
+    "filterLayers": "过滤配置层",
+    "filterTasks": "过滤任务"
   }
 }

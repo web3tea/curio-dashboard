@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref } from 'vue'
-import { EyeOutlined, SearchOutlined } from '@ant-design/icons-vue'
-import { IconReload } from '@tabler/icons-vue'
+import { computed, ComputedRef, ref, reactive } from 'vue'
+import { IconRefresh, IconEye, IconSearch } from '@tabler/icons-vue'
+import TableFilterMenu from '@/components/app/TableFilterMenu.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMachines } from '@/gql/machine'
 import { Machine } from '@/typed-graph'
@@ -9,7 +9,7 @@ import { formatBytes } from '@/utils/helpers/formatBytes'
 import { useI18n } from 'vue-i18n'
 import { getRelativeTime } from '@/utils/helpers/time'
 
-const {  t } = useI18n()
+const { t } = useI18n()
 
 const { result, loading, refetch } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
@@ -19,36 +19,58 @@ const items: ComputedRef<[Machine]> = computed(() => result.value?.machines || [
 const allLayers = computed(() => {
   const layers = new Set<string>()
   items.value.forEach(item => {
-    item.detail?.layers.split(',').forEach(layer => {
-      layers.add(layer)
-    })
+    if (item.detail?.layers) {
+      item.detail.layers.split(',').forEach(layer => {
+        if (layer.trim()) {
+          layers.add(layer.trim())
+        }
+      })
+    }
   })
-  return Array.from(layers)
+  return Array.from(layers).sort()
 })
 
 const allSupportTasks = computed(() => {
   const tasks = new Set<string>()
   items.value.forEach(item => {
-    item.detail?.tasks.split(',').forEach(task => {
-      tasks.add(task)
-    })
-  })
-  return Array.from(tasks)
-})
-const searchValue = ref('')
-const selectLayer = ref(null)
-const selectSupportTask = ref(null)
-
-const filterItems = computed(() => {
-  return items.value.filter(item => {
-    if (selectLayer.value && !item.detail?.layers.includes(selectLayer.value)) {
-      return false
+    if (item.detail?.tasks) {
+      item.detail.tasks.split(',').forEach(task => {
+        if (task.trim()) {
+          tasks.add(task.trim())
+        }
+      })
     }
-    return !(selectSupportTask.value && !item.detail?.tasks.includes(selectSupportTask.value))
   })
+  return Array.from(tasks).sort()
 })
 
-const headers = [
+// Menu visibility states
+const layersMenuOpen = ref(false)
+const tasksMenuOpen = ref(false)
+
+const searchValue = ref('')
+const layerFilterSearch = ref('')
+const taskFilterSearch = ref('')
+const selectedLayers = ref<string[]>([])
+const selectedTasks = ref<string[]>([])
+
+// Computed properties for filtered options
+const filteredLayerOptions = computed(() => {
+  if (!layerFilterSearch.value) return allLayers.value
+  return allLayers.value.filter(layer =>
+    layer.toLowerCase().includes(layerFilterSearch.value.toLowerCase())
+  )
+})
+
+const filteredTaskOptions = computed(() => {
+  if (!taskFilterSearch.value) return allSupportTasks.value
+  return allSupportTasks.value.filter(task =>
+    task.toLowerCase().includes(taskFilterSearch.value.toLowerCase())
+  )
+})
+
+// Update headers to use reactive properties for menu state
+const headers = reactive([
   { title: 'ID', value: 'id' },
   { title: 'Name', value: 'detail.machineName' },
   { title: 'Host', value: 'hostAndPort' },
@@ -59,7 +81,50 @@ const headers = [
   { title: 'RAM', value: 'ram', sortable: true },
   { title: 'Layers', value: 'detail.layers', maxWidth: 150 },
   { title: 'Support Tasks', value: 'detail.tasks', maxWidth: 500 },
-]
+])
+
+const filterItems = computed(() => {
+  return items.value.filter(item => {
+    // If no layer filters are selected, show all items
+    if (selectedLayers.value.length > 0) {
+      if (!item.detail?.layers) return false
+
+      // Check if any of the machine's layers are in the selected layers
+      const machineLayers = item.detail.layers.split(',').map(layer => layer.trim())
+      const hasSelectedLayer = machineLayers.some(layer =>
+        selectedLayers.value.includes(layer)
+      )
+
+      if (!hasSelectedLayer) return false
+    }
+
+    // If no task filters are selected, show all items
+    if (selectedTasks.value.length > 0) {
+      if (!item.detail?.tasks) return false
+
+      // Check if any of the machine's tasks are in the selected tasks
+      const machineTasks = item.detail.tasks.split(',').map(task => task.trim())
+      const hasSelectedTask = machineTasks.some(task =>
+        selectedTasks.value.includes(task)
+      )
+
+      if (!hasSelectedTask) return false
+    }
+
+    return true
+  })
+})
+
+// Methods
+const clearLayerFilters = () => {
+  selectedLayers.value = []
+  layerFilterSearch.value = ''
+}
+
+const clearTaskFilters = () => {
+  selectedTasks.value = []
+  taskFilterSearch.value = ''
+}
 </script>
 
 <template>
@@ -86,14 +151,11 @@ const headers = [
                 v-model="searchValue"
                 hide-details
                 persistent-placeholder
-                :placeholder="t('fields.Search')"
+                :placeholder="t('machine.search')"
                 type="text"
                 variant="outlined"
-              >
-                <template #prepend-inner>
-                  <SearchOutlined :style="{ fontSize: '14px' }" />
-                </template>
-              </v-text-field>
+                :prepend-inner-icon="IconSearch"
+              />
             </v-col>
             <v-col
               cols="12"
@@ -101,9 +163,11 @@ const headers = [
             >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
-                  :icon="IconReload"
+                  :icon="IconRefresh"
                   rounded
                   variant="text"
+                  size="small"
+                  :loading="loading"
                   @click="refetch"
                 />
               </div>
@@ -121,29 +185,32 @@ const headers = [
             :search="searchValue"
           >
             <template #header.detail.layers="{column}">
-              <v-autocomplete
-                v-model="selectLayer"
-                aria-label="autocomplete"
-                class="remove-details"
-                clear-icon="$close"
-                clearable
-                color="primary"
-                :items="allLayers"
-                :label="column?.title?.toUpperCase()"
-                variant="outlined"
+              <TableFilterMenu
+                :column-title="column.title || ''"
+                :menu-open="layersMenuOpen"
+                :selected-items="selectedLayers"
+                :filter-title="t('machine.filterLayers')"
+                :options="filteredLayerOptions"
+                :search-value="layerFilterSearch"
+                @update:menu-open="layersMenuOpen = $event"
+                @update:search-value="layerFilterSearch = $event"
+                @update:selected-items="selectedLayers = $event"
+                @clear="clearLayerFilters"
               />
             </template>
+
             <template #header.detail.tasks="{column}">
-              <v-autocomplete
-                v-model="selectSupportTask"
-                aria-label="autocomplete"
-                class="remove-details"
-                clear-icon="$close"
-                clearable
-                color="primary"
-                :items="allSupportTasks"
-                :label="column?.title?.toUpperCase()"
-                variant="outlined"
+              <TableFilterMenu
+                :column-title="column.title || ''"
+                :menu-open="tasksMenuOpen"
+                :selected-items="selectedTasks"
+                :filter-title="t('machine.filterTasks')"
+                :options="filteredTaskOptions"
+                :search-value="taskFilterSearch"
+                @update:menu-open="tasksMenuOpen = $event"
+                @update:search-value="taskFilterSearch = $event"
+                @update:selected-items="selectedTasks = $event"
+                @clear="clearTaskFilters"
               />
             </template>
             <template #item.id="{ value }">
@@ -200,7 +267,10 @@ const headers = [
                   title="More"
                   variant="text"
                 >
-                  <EyeOutlined />
+                  <IconEye
+                    :size="16"
+                    stroke-width="2"
+                  />
                 </v-btn>
               </div>
             </template>
@@ -210,3 +280,6 @@ const headers = [
     </v-col>
   </v-row>
 </template>
+
+<style scoped>
+</style>

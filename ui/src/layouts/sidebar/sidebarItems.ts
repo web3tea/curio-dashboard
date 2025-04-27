@@ -51,15 +51,15 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       icon: IconBrandAsana,
       children: [
         {
-          title: t('nav.Task Overview'),
+          title: t('nav.Overview'),
           to: { name: "TaskOverview" },
         },
         {
-          title: t('nav.Active Tasks'),
+          title: t('nav.Active'),
           to: { name: 'ActiveTasks' }
         },
         {
-          title: t('nav.Task History'),
+          title: t('nav.History'),
           to: { name: "TaskHistory" },
         }
       ],
@@ -216,17 +216,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     {
       title: t('nav.Machines'),
       icon: IconServer,
-      children: [
-        {
-          title: t('nav.Machine List'),
-          to: { name: "Machines" },
-        },
-        {
-          title: t('nav.Resource Usage'),
-          to: 'Resource Usage',
-          disabled: true // todo: add Resource Usage page
-        }
-      ]
+      to: { name: "Machines" },
     },
     {
       title: t('nav.Storages'),

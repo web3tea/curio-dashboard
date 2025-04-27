@@ -28,7 +28,6 @@
     "StorageAsks": "StorageAsks",
     "MK12Deals": "MK12Deals",
     "Active Tasks": "Active Tasks",
-    "Task Overview": "Task Overview",
     "Sector Processing": "Sector Processing",
     "Unsealing": "Unsealing",
     "Proofs": "Proofs",
@@ -42,8 +41,6 @@
     "Market Settings": "Market Settings",
     "Mining & Network": "Mining & Network",
     "System & Management": "System & Management",
-    "Machine List": "Machine List",
-    "Resource Usage": "Resource Usage",
     "Dashboard": "Dashboard",
     "Events": "Events",
     "deals": "Deals",
@@ -54,7 +51,9 @@
       "providers": "Providers",
       "tasks": "Tasks"
     },
-    "Snap": "Snap"
+    "Snap": "Snap",
+    "Active": "Active",
+    "History": "History"
   },
   "fields": {
     "Total Power": "Total Power",
@@ -264,5 +263,15 @@
     "advertisements": "Advertisements",
     "providers": "Providers",
     "tasks": "Tasks"
+  },
+  "tableFilter": {
+    "search": "Search",
+    "clear": "Clear",
+    "confirm": "Confirm"
+  },
+  "machine": {
+    "search": "Search",
+    "filterLayers": "Filter Layers",
+    "filterTasks": "Filter Tasks"
   }
 }
