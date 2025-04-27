@@ -18,6 +18,73 @@
 - **Real-Time Monitoring**: Live data streaming for real-time insights.
 - **Data Visualizations**: Detailed charts to analyze cluster performance and trends.
 
+## Architecture Diagram
+```mermaid
+flowchart TD
+    %% UI / Frontend
+    subgraph "UI / Frontend"
+        UI["Curio Dashboard UI (Vue.js)"]:::frontend
+    end
+
+    %% Backend Service Layer
+    subgraph "Backend Service"
+        BA["Main Application (Go)"]:::backend
+        CI["Configuration & Initialization"]:::backend
+        GA["GraphQL API Layer (gqlgen)"]:::backend
+        DB["Database Integration (Connector)"]:::backend
+        IH["Internal Helpers"]:::backend
+    end
+
+    %% External Services Layer
+    subgraph "External Services"
+        CN["Curio Node API"]:::external
+        YD["YugabyteDB"]:::external
+        PM["Prometheus"]:::external
+        EX["Curio Exporter"]:::external
+        LD["Lotus Daemon"]:::external
+    end
+
+    %% CI/CD & Containerization Layer
+    subgraph "CI/CD & Containerization"
+        CCD["CI/CD & Containerization"]:::ci
+    end
+
+    %% Data Flow Connections
+    UI -->|"GraphQL_call"| GA
+
+    CI -->|"init_ready"| BA
+    BA -->|"expose_API"| GA
+    BA -->|"handles_db"| DB
+    BA -->|"uses_helpers"| IH
+
+    GA -->|"curio webrpc"| CN
+    GA -->|"metrics"| PM
+    DB -->|"query_db"| YD
+    BA -->|"blockchain_data"| LD
+
+    CN -->|"direct_metrics"| PM
+    EX -->|"fetch_yb_data"| YD
+    EX -->|"expose_metrics"| PM
+
+    CCD -->|"deploys"| BA
+
+     %% Click Events
+        click BA "https://github.com/web3tea/curio-dashboard/blob/main/cmd/main.go"
+        click CI "https://github.com/web3tea/curio-dashboard/blob/main/config/config.go"
+        click GA "https://github.com/web3tea/curio-dashboard/tree/main/graph"
+        click DB "https://github.com/web3tea/curio-dashboard/blob/main/db/harmony.go"
+        click IH "https://github.com/web3tea/curio-dashboard/tree/main/types"
+        click UI "https://github.com/web3tea/curio-dashboard/tree/main/ui"
+        click CCD "https://github.com/web3tea/curio-dashboard/tree/main/Dockerfile"
+        click EX "https://github.com/web3tea/curio-exporter"
+
+    %% Styles
+    classDef frontend fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
+    classDef backend fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
+    classDef external fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
+    classDef ci fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
+```
+
 ## Requirements
 
 - **Curio Node**: A reachable Curio Web API, e.g., `http://localhost:4701`.
