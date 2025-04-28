@@ -1,26 +1,39 @@
----
-#########################
-#########################
-## Golang Linter rules ##
-#########################
-#########################
-
-issues:
-  exclude:
-    - scripts/
-    - extern/
-    - ui/
-
+version: "2"
 linters:
   enable:
     - rowserrcheck
     - sqlclosecheck
+    - staticcheck
+  settings:
+    rowserrcheck:
+      packages:
+        - github.com/yugabyte/pgx/v5
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - path: (.+)\.go$
+        text: scripts/
+      - path: (.+)\.go$
+        text: extern/
+      - path: (.+)\.go$
+        text: ui/
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
     - gofmt
+    - gofumpt
     - goimports
-    - stylecheck
-
-linters-settings:
-  rowserrcheck:
-    # database/sql is always checked
-    packages:
-      - github.com/yugabyte/pgx/v5
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

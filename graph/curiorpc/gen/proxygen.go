@@ -163,7 +163,6 @@ func generate(path, pkg, outpkg, outfile string) error {
 			continue
 		}
 
-		//fmt.Println("F:", fn)
 		cmap := ast.NewCommentMap(fset, f, f.Comments)
 
 		for _, im := range f.Imports {
@@ -269,7 +268,7 @@ func generate(path, pkg, outpkg, outfile string) error {
 	}
 	fmt.Println(string(jb))*/
 
-	w, err := os.OpenFile(outfile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0666)
+	w, err := os.OpenFile(outfile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0o666)
 	if err != nil {
 		return err
 	}

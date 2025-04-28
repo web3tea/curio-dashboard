@@ -72,8 +72,9 @@ func (d dbscanRows) Close() error {
 	d.Rows.Close()
 	return nil
 }
+
 func (d dbscanRows) Columns() ([]string, error) {
-	return lo.Map(d.Rows.FieldDescriptions(), func(fd pgconn.FieldDescription, _ int) string {
+	return lo.Map(d.FieldDescriptions(), func(fd pgconn.FieldDescription, _ int) string {
 		return fd.Name
 	}), nil
 }

@@ -8,8 +8,10 @@ import (
 
 type Extension struct{}
 
-var _ graphql.HandlerExtension = Extension{}
-var _ graphql.ResponseInterceptor = Extension{}
+var (
+	_ graphql.HandlerExtension    = Extension{}
+	_ graphql.ResponseInterceptor = Extension{}
+)
 
 func (c Extension) ExtensionName() string {
 	return "cache"

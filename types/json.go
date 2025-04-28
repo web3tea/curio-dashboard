@@ -54,13 +54,10 @@ func (c *JSON) UnmarshalGQL(v any) error {
 
 	switch v := v.(type) {
 	case string:
-		fmt.Println("2222", v)
 		c.RawMessage = json.RawMessage(v)
 	case []byte:
-		fmt.Println("33333", v)
 		c.RawMessage = json.RawMessage(v)
 	default:
-		fmt.Println("11111", v)
 		bytes, err := json.Marshal(v)
 		if err != nil {
 			return err
