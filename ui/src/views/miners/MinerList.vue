@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { IconRefresh, IconSearch } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Actor } from '@/typed-graph'
@@ -69,7 +69,7 @@ const headers = [
             >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
-                  :icon="IconReload"
+                  :icon="IconRefresh"
                   rounded
                   variant="text"
                   @click="refetch"

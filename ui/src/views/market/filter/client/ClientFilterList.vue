@@ -3,7 +3,7 @@ import { computed, ComputedRef, ref } from 'vue'
 import { useQuery,useMutation } from '@vue/apollo-composable'
 import { GetMarketClientFilters,DeleteMarketClientFilter, ToggleMarketClientFilter } from '@/gql/market'
 import { ClientFilter } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import SetClientFilter from './widgets/SetClientFilter.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 
@@ -65,7 +65,7 @@ const handleToggle = async (name: string) => {
     <template #actions>
       <SetClientFilter action="add" />
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

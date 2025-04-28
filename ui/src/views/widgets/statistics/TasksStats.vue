@@ -4,7 +4,7 @@ import { GetTasksStats } from '@/gql/task'
 import { computed, ComputedRef } from 'vue'
 import { TaskStats } from '@/typed-graph'
 import UiTitleCard from '@/components/shared/UiTitleCard.vue'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -51,7 +51,7 @@ const failedPercentage = (item: TaskStats) => {
     <template #action>
       <v-btn
         :disabled="loading"
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

@@ -4,7 +4,7 @@ import { computed, ComputedRef } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { TaskHistory } from '@/typed-graph'
 import moment from 'moment'
-import { IconCircleX, IconReload, IconSquareCheck } from '@tabler/icons-vue'
+import { IconCircleX, IconRefresh, IconSquareCheck } from '@tabler/icons-vue'
 import { GetSectorEvents } from '@/gql/sector'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatDuration } from '@/utils/helpers/formatDuration'
@@ -39,7 +39,7 @@ const events: ComputedRef<[TaskHistory]> = computed(() => result.value?.sector.e
   >
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

@@ -3,7 +3,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Task } from '@/typed-graph'
 import { GetRunningTasks } from '@/gql/task'
-import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { IconRefresh, IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { getRelativeTime } from '@/utils/helpers/time'
 import { useLocalState } from '@/utils/helpers/localState'
@@ -129,7 +129,7 @@ const dynamicGroupBy = computed(() => {
             >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
-                  :icon="IconReload"
+                  :icon="IconRefresh"
                   rounded
                   variant="text"
                   @click="refetch"

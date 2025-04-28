@@ -3,7 +3,7 @@ import { GetStoragePaths } from '@/gql/storage'
 import { useQuery } from '@vue/apollo-composable'
 import { StoragePath } from '@/typed-graph'
 import { computed, ComputedRef, ref } from 'vue'
-import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { IconRefresh, IconSearch } from '@tabler/icons-vue'
 import { getColorByType } from '@/utils/helpers/storageTypeColor'
 
 const { result, loading, refetch, error } = useQuery(GetStoragePaths, null, () => ({
@@ -98,7 +98,7 @@ const tabs = ['All', 'Seal', 'Store', 'Hybrid', 'Readonly']
             >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
-                  :icon="IconReload"
+                  :icon="IconRefresh"
                   rounded
                   variant="text"
                   @click="refetch"

@@ -5,7 +5,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { StoragePath } from '@/typed-graph'
 import { GetMachineStorages } from '@/gql/storage'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -31,7 +31,7 @@ const paths: ComputedRef<[StoragePath]> = computed(() => result.value?.machine.s
   <UiChildCard :title="t('fields.Storages')">
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

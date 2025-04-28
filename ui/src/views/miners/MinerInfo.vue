@@ -6,7 +6,7 @@ import { computed } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { formatFIL } from '@/utils/helpers/formatFIL'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -73,7 +73,7 @@ const cols2 = computed(() => {
   >
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

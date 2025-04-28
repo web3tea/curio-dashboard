@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref, watch } from 'vue'
 import { GetSectorsPoreps } from '@/gql/porep'
 import { Porep, TaskStatus } from '@/typed-graph'
-import { IconReload, IconSearch, IconSettings } from '@tabler/icons-vue'
+import { IconRefresh, IconSearch, IconSettings } from '@tabler/icons-vue'
 import { getRelativeTime } from '@/utils/helpers/time'
 import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
 import { RestartAllFailedSector } from '@/gql/sector'
@@ -209,7 +209,7 @@ function progressValue(item: Porep) {
             >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
-                  :icon="IconReload"
+                  :icon="IconRefresh"
                   rounded
                   variant="text"
                   @click="refetch"

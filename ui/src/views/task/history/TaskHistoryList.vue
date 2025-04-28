@@ -4,7 +4,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetTaskHistories } from '@/gql/task'
 import { computed, ComputedRef, ref } from 'vue'
 import { TaskHistory } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useTableSettingsStore } from "@/stores/table"
 import { getRelativeTime } from '@/utils/helpers/time'
 import { formatDuration } from '@/utils/helpers/formatDuration'
@@ -153,7 +153,7 @@ const selectDateRange = computed({
             >
               <div class="d-flex ga-2 justify-end">
                 <v-btn
-                  :icon="IconReload"
+                  :icon="IconRefresh"
                   rounded
                   variant="text"
                   @click="refetch"

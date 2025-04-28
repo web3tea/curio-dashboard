@@ -5,7 +5,7 @@ import { GetSectorPieces } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -49,7 +49,7 @@ const headers = [
   <UiChildCard :title="t('fields.Pieces Info')">
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

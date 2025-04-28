@@ -3,7 +3,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef,ref } from 'vue'
 import { GetMarketBalances } from '@/gql/market'
 import { MarketBalance } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import AddBalance from './widgets/AddBalance.vue'
 
 const headers = [
@@ -26,7 +26,7 @@ const searchValue = ref<string>()
   >
     <template #actions>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

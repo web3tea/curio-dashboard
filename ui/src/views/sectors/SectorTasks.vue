@@ -5,7 +5,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetSectorTasks } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import { Task } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -45,7 +45,7 @@ const headers = [
   <UiChildCard :title="t('fields.Sector Tasks')">
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

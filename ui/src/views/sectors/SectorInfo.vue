@@ -6,7 +6,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetSectorMeta } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import { TaskStatus, SectorMeta } from '@/typed-graph'
-import { IconBox, IconBrandRedux, IconReload, IconTrash, IconUser } from '@tabler/icons-vue'
+import { IconBox, IconBrandRedux, IconRefresh, IconTrash, IconUser } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import SectorRestart from '@/views/sectors/SectorRestart.vue'
 
@@ -43,7 +43,7 @@ const status: ComputedRef<TaskStatus> = computed(() => result.value?.sector.stat
   >
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

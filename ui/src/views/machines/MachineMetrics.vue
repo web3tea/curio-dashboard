@@ -5,7 +5,7 @@ import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { computed } from 'vue'
 import moment from 'moment'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { getRelativeTime } from '@/utils/helpers/time'
 
@@ -78,7 +78,7 @@ function isURL(str: string | undefined | null): boolean {
   >
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

@@ -5,7 +5,7 @@ import { computed, ComputedRef } from 'vue'
 import { StorageStats } from '@/typed-graph'
 import { GetStorageStats } from '@/gql/storage'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -39,7 +39,7 @@ function usePercentage (available: number, total: number) {
     <template #append>
       <v-btn
         :disabled="loading"
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

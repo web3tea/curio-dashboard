@@ -3,7 +3,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetNodeInfos } from '@/gql/chain'
 import { computed, ComputedRef } from 'vue'
 import { NodeInfo } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -31,7 +31,7 @@ const items: ComputedRef<[NodeInfo]> = computed(() => result.value?.nodesInfo ||
     <template #append>
       <v-btn
         :disabled="loading"
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

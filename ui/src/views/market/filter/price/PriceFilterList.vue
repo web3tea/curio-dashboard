@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@vue/apollo-composable'
 import { computed, ComputedRef,ref } from 'vue'
 import { DeleteMarketPriceFilter, GetMarketPriceFilters } from '@/gql/market'
 import { PriceFilter } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import SetPriceFilter from './widgets/SetPriceFilter.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { attoFilToFilPerTiBPerMonth } from '@/utils/helpers/convertPrice'
@@ -50,7 +50,7 @@ const handleDelete = async (name: string) => {
     <template #actions>
       <SetPriceFilter action="add" />
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

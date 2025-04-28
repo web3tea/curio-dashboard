@@ -2,16 +2,16 @@ import {
   IconBox,
   IconBrandAsana,
   IconContract,
-  IconCurrency,
+  IconStars,
   IconDatabase,
   IconFilterCog,
   IconHome,
   IconServer,
   IconSettings,
   IconUsers,
-  IconVector,
+  IconSend,
   IconCertificate,
-  IconSearch,
+  IconBrandGoogleAnalytics,
   IconShoppingCart
 } from '@tabler/icons-vue'
 import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
@@ -116,7 +116,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     },
     {
       title: t('nav.Messages'),
-      icon: IconVector,
+      icon: IconSend,
       to: { name: "MessageSends" },
     },
     { header: t('nav.Market & Deals'), icon: IconShoppingCart },
@@ -146,7 +146,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     },
     {
       title: t('nav.IPNI'),
-      icon: IconSearch,
+      icon: IconBrandGoogleAnalytics,
       children: [
         {
           title: t('nav.ipni.overview'),
@@ -200,7 +200,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     },
     {
       title: t('nav.Wins'),
-      icon: IconCurrency,
+      icon: IconStars,
       children: [
         {
           title: t('nav.Overview'),

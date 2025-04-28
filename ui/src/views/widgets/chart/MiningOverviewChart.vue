@@ -4,7 +4,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { GetMiningSummary } from '@/gql/mining'
 import { MiningSummaryDay } from '@/typed-graph'
 import { useCustomizerStore } from '@/stores/customizer'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
@@ -134,7 +134,7 @@ const totalWonBlocks = computed(() => {
     <template #append>
       <v-btn
         :disabled="loading"
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

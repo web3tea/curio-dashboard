@@ -3,7 +3,7 @@ import { computed, ref, ComputedRef } from 'vue'
 import { useLazyQuery } from '@vue/apollo-composable'
 import { GetRunningTask } from '@/gql/task'
 import { Task, Machine } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { getRelativeTime } from '@/utils/helpers/time'
 
 const props = defineProps({
@@ -64,7 +64,7 @@ const getHostInfo = (entity: Machine | undefined | null = undefined) => {
             </v-card-title>
             <v-btn
               :disabled="loading"
-              :icon="IconReload"
+              :icon="IconRefresh"
               rounded
               variant="text"
               size="small"

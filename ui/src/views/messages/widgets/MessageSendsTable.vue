@@ -3,7 +3,7 @@ import { useQuery } from "@vue/apollo-composable"
 import { GetMessageSends } from "@/gql/message"
 import { computed, ComputedRef, ref } from "vue"
 import { MessageSend } from "@/typed-graph"
-import { IconReload } from "@tabler/icons-vue"
+import { IconRefresh } from "@tabler/icons-vue"
 import { useTableSettingsStore } from "@/stores/table"
 import { getRelativeTime } from '@/utils/helpers/time'
 
@@ -91,7 +91,7 @@ const headers = [
         >
           <div class="d-flex ga-2 justify-end">
             <v-btn
-              :icon="IconReload"
+              :icon="IconRefresh"
               rounded
               variant="text"
               @click="refetch"

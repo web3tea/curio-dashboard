@@ -4,7 +4,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { Config, MachineDetail, Maybe } from '@/typed-graph'
 import { GetConfigs } from '@/gql/config'
-import { IconPlus, IconReload, IconSearch } from '@tabler/icons-vue'
+import { IconPlus, IconRefresh, IconSearch } from '@tabler/icons-vue'
 import ConfigRemoveDialog from '@/views/configurations/ConfigRemoveDialog.vue'
 import { useI18n } from 'vue-i18n'
 import UsedByListDialog from '@/views/configurations/UsedByListDialog.vue'
@@ -76,7 +76,7 @@ const searchValue = ref('')
                   {{ t('actions.Create') }}
                 </v-btn>
                 <v-btn
-                  :icon="IconReload"
+                  :icon="IconRefresh"
                   rounded
                   variant="text"
                   @click="refetch"

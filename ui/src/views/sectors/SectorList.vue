@@ -3,7 +3,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, reactive, ref } from 'vue'
 import { Sector } from '@/typed-graph'
 import { GetSectors } from '@/gql/sector'
-import {  IconReload } from '@tabler/icons-vue'
+import {  IconRefresh } from '@tabler/icons-vue'
 import SectorLocations from '@/views/sectors/SectorLocations.vue'
 import { sealProofToSize } from '@/utils/helpers/sealProofToSize'
 import EpochField from '@/components/app/EpochField.vue'
@@ -115,7 +115,7 @@ function hasSealed (item: Sector): boolean {
         >
           <div class="d-flex ga-2 justify-end">
             <v-btn
-              :icon="IconReload"
+              :icon="IconRefresh"
               rounded
               variant="text"
               @click="refetch"

@@ -6,7 +6,7 @@ import { GetSectorLocations } from '@/gql/sector'
 import { computed, ComputedRef } from 'vue'
 import { SectorLocation } from '@/typed-graph'
 import { sectorFileTypeToName } from '@/utils/helpers/sectorFileType'
-import { IconReload, IconPointFilled } from '@tabler/icons-vue'
+import { IconRefresh, IconPointFilled } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -43,7 +43,7 @@ const headers = [
   <UiChildCard :title="t('fields.Sector Locations')">
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

@@ -4,7 +4,7 @@ import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { Task } from '@/typed-graph'
 import { GetMachineTasks } from '@/gql/task'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { getRelativeTime } from '@/utils/helpers/time'
 
@@ -39,7 +39,7 @@ const headers = [
   <UiChildCard :title="t('fields.Running Tasks')">
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

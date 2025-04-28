@@ -4,7 +4,7 @@ import { useMutation, useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef, ref } from 'vue'
 import { OpenSectorPiece } from '@/typed-graph'
 import { DealSealNow, GetPendingDeals } from '@/gql/deal'
-import { IconReload, IconSearch } from '@tabler/icons-vue'
+import { IconRefresh, IconSearch } from '@tabler/icons-vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { useNotificationStore } from '@/stores/notification'
 import { getRelativeTime } from '@/utils/helpers/time'
@@ -123,7 +123,7 @@ const fillProgress = computed(() => (spID: number, sectorNumber: number): number
         >
           <div class="d-flex ga-2 justify-end">
             <v-btn
-              :icon="IconReload"
+              :icon="IconRefresh"
               rounded
               variant="text"
               @click="refetch"

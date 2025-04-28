@@ -3,7 +3,7 @@ import { computed, ComputedRef, ref } from 'vue'
 import { useQuery,useMutation } from '@vue/apollo-composable'
 import { GetMarketClientAllowList, DeleteMarketClientAllow, ToggleMarketClientAllow } from '@/gql/market'
 import { MarketAllowFilter } from '@/typed-graph'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import SetClientAllow from './widgets/SetClientAllow.vue'
 
 const headers = [
@@ -59,7 +59,7 @@ const handleToggle = async (wallet: string) => {
     <template #actions>
       <SetClientAllow action="add" />
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

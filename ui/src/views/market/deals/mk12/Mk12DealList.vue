@@ -3,7 +3,7 @@ import { MarketMk12Deal } from '@/typed-graph'
 import { GetMarketMk12Deals } from '@/gql/market'
 import { useQuery } from '@vue/apollo-composable'
 import { ComputedRef, computed, ref } from 'vue'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { watchDebounced } from '@vueuse/core'
 import { getRelativeTime } from '@/utils/helpers/time'
@@ -47,7 +47,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
   <UiTableCard v-model="search">
     <template #actions>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

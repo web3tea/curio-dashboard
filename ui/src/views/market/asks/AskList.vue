@@ -6,7 +6,7 @@ import { GetMarketMk12StorageAsks } from '@/gql/market'
 import { MarketMk12StorageAsk } from '@/typed-graph'
 import { attoFilToFilPerTiBPerMonth } from '@/utils/helpers/convertPrice'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { getRelativeTime } from '@/utils/helpers/time'
 import SetAsk from './widgets/SetAsk.vue'
 
@@ -42,7 +42,7 @@ const searchValue = ref<string>()
         action="add"
       />
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

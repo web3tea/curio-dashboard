@@ -3,7 +3,7 @@ import { GetTasksDurationStats } from '@/gql/task'
 import { TaskDurationStats } from '@/typed-graph'
 import { useQuery } from '@vue/apollo-composable'
 import { ComputedRef, computed, ref } from 'vue'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 import { formatDurationSeconds } from '@/utils/helpers/formatDuration'
 
@@ -56,7 +56,7 @@ const sortBy = [{ key: 'p99DurationSeconds', order: 'desc' }] as const
     <template #append>
       <v-btn
         :disabled="loading"
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"

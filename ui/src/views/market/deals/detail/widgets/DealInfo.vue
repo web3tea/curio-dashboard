@@ -2,7 +2,7 @@
 import { GetDealInfo } from '@/gql/deal'
 import { DealInfo } from '@/typed-graph'
 import { useQuery } from '@vue/apollo-composable'
-import { IconReload } from '@tabler/icons-vue'
+import { IconRefresh } from '@tabler/icons-vue'
 import { ComputedRef, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { formatBytes } from '@/utils/helpers/formatBytes'
@@ -40,7 +40,7 @@ const dealProperties = computed(() => ({
   >
     <template #action>
       <v-btn
-        :icon="IconReload"
+        :icon="IconRefresh"
         rounded
         variant="text"
         @click="refetch"
