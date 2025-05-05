@@ -30,8 +30,8 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           setup-node: true
-      - run: yarn install --frozen-lockfile
-      - run: yarn lint
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
 
   i18n-check:
       name: i18n-check
@@ -45,9 +45,9 @@ jobs:
           with:
             setup-node: true
         - name: Install dependencies
-          run: yarn install --frozen-lockfile
+          run: pnpm install --frozen-lockfile
         - name: Check i18n translations
-          run: yarn i18n:check
+          run: pnpm i18n:check
 
   golangci-lint:
     name: golangci-lint
@@ -76,7 +76,7 @@ jobs:
         run: go install golang.org/x/tools/cmd/goimports@latest
       - name: Install dependencies
         run: |
-          cd ui && yarn install --frozen-lockfile
+          cd ui && pnpm install --frozen-lockfile
       - name: Run code generation
         run: make gen
       - name: Check for changes
