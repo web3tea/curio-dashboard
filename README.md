@@ -127,7 +127,9 @@ Follow these steps to build the dashboard from source:
 
 1. **Install System Dependencies**
    Follow the [Curio Storage Installation Guide](https://docs.curiostorage.org/installation#linux-build-from-source).
-   You’ll also need Node.js and Yarn for the frontend.
+   You’ll also need Node.js and pnpm for the frontend.
+   * [Node.js >= 22](https://nodejs.org/en/download/)
+   * [pnpm >= 10.0.0](https://pnpm.io/installation)
 
 2. **Clone the Repository**
    ```bash
@@ -157,4 +159,4 @@ Follow these steps to build the dashboard from source:
 
 4. **Access the Dashboard**
    - Production URL: [http://localhost:9091](http://localhost:9091)
-   - Development URL: [http://localhost:3000](http://localhost:3000) (`cd ui; yarn dev`)
+   - Development URL: [http://localhost:3000](http://localhost:3000) (`cd ui; pnpm dev`)
