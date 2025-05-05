@@ -4,8 +4,8 @@
 
 ### Prerequisites
 
-- Node v22
-- yarn 
+- [Node](https://nodejs.org/) >= v22
+- [pnpm](https://pnpm.io/) >= 10
 
 ### Setup
 
@@ -18,16 +18,16 @@ cd curio-dashboard/ui
 ### Install dependencies
 
 ```bash
-yarn install
+pnpm i
 ```
 
 ### Start the development server
 
 ```bash
-yarn dev
+pnpm dev
 
 # or
-VITE_SERVER_URL=http://your.server yarn dev
+VITE_SERVER_URL=http://your.server pnpm dev
 
 # The default server url is http://localhost:9091/graphql
 ```
@@ -35,10 +35,10 @@ VITE_SERVER_URL=http://your.server yarn dev
 ### Build for production
 
 ```bash
-yarn build
+pnpm build
 
 # or
-VITE_SERVER_URL=http://your.server yarn build
+VITE_SERVER_URL=http://your.server pnpm build
 
 # The default server url is /graphql
 ```

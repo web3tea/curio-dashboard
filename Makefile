@@ -12,10 +12,10 @@ go-dist:
 	go build $(GOFLAGS) -o curio-dashboard -tags dist ./cmd
 
 ui-deps:
-	cd ui && yarn install
+	cd ui && pnpm install
 
 ui:
-	cd ui && yarn build
+	cd ui && pnpm build
 .PHONY: ui
 
 lint: golanglint uilint i18n-check
@@ -24,13 +24,13 @@ golanglint:
 	golangci-lint run -v ./...
 
 uilint:
-	cd ui && yarn lint
+	cd ui && pnpm lint
 
 i18n-check:
-	cd ui && yarn i18n:check
+	cd ui && pnpm i18n:check
 
 i18n-extract:
-	cd ui && yarn i18n:extract
+	cd ui && pnpm i18n:extract
 
 curio-rpc-gen:
 	go run ./graph/curiorpc/gen
@@ -38,7 +38,7 @@ curio-rpc-gen:
 .PHONY: api-gen
 
 type-gen:
-	 cd ui && yarn type-gen
+	 cd ui && pnpm type-gen
 
 go-gen:
 	go generate ./...
