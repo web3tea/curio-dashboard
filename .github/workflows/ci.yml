@@ -30,9 +30,6 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           setup-node: true
-      - uses: pnpm/action-setup@v4
-        with:
-          version: latest
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
@@ -47,9 +44,6 @@ jobs:
         - uses: ./.github/actions/setup
           with:
             setup-node: true
-        - uses: pnpm/action-setup@v4
-          with:
-            version: latest
         - name: Install dependencies
           run: pnpm install --frozen-lockfile
         - name: Check i18n translations
@@ -78,9 +72,6 @@ jobs:
         with:
           setup-go: true
           setup-node: true
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
       - name: Install goimports
         run: go install golang.org/x/tools/cmd/goimports@latest
       - name: Install dependencies
@@ -107,9 +98,6 @@ jobs:
           setup-system-deps: true
           setup-node: true
           setup-go: true
-      - uses: pnpm/action-setup@v4
-        with:
-          version: latest
       - run: make ui-deps ui
       - run: |
           make go-dist
