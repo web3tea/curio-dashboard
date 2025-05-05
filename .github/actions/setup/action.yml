@@ -24,14 +24,14 @@ runs:
       if: inputs.setup-node
       uses: actions/setup-node@v4
       with:
-        node-version: 22
-        cache: 'yarn'
-        cache-dependency-path: 'ui/yarn.lock'
+        node-version: latest
+        cache: 'pnpm'
+        cache-dependency-path: 'ui/pnpm-lock.yaml'
 
     - name: Setup Go
       if: inputs.setup-go
       uses: actions/setup-go@v5
       with:
-        go-version: '1.24'
+        go-version: '>=1.24'
         check-latest: true
         cache-dependency-path: 'go.sum'
