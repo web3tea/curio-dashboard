@@ -2,11 +2,11 @@
   "name": "ui",
   "license": "Apache-2.0",
   "engines": {
-    "node": "22.x",
-    "yarn": ">=1.22.0"
+    "node": ">=22",
+    "pnpm": ">=10"
   },
   "scripts": {
-    "preinstall": "npx only-allow yarn",
+    "preinstall": "npx only-allow pnpm",
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -21,6 +21,7 @@
     "@codemirror/language": "^6.10.2",
     "@codemirror/legacy-modes": "^6.4.0",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.36.7",
     "@fontsource/inter": "^5.0.19",
     "@fontsource/poppins": "^5.0.14",
     "@fontsource/public-sans": "^5.0.18",
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@babel/types": "^7.24.7",
+    "@codemirror/lint": "^6.8.5",
     "@eslint/js": "^9.16.0",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/fragment-matcher": "^5.0.2",
