@@ -820,8 +820,8 @@ export type Query = {
   sectors?: Maybe<Array<Maybe<Sector>>>;
   sectorsCount: Scalars['Int']['output'];
   storage?: Maybe<Storage>;
-  storagePaths?: Maybe<Array<Maybe<StoragePath>>>;
   storageStats?: Maybe<Array<Maybe<StorageStats>>>;
+  storages: Array<Storage>;
   task?: Maybe<Task>;
   taskDurationStats?: Maybe<TaskDurationStats>;
   taskHistories?: Maybe<Array<Maybe<TaskHistory>>>;

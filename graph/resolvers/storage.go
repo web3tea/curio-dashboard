@@ -18,10 +18,17 @@ func (r *queryResolver) Storage(ctx context.Context, id string) (*model.Storage,
 	return &model.Storage{ID: id}, nil
 }
 
-// StoragePaths is the resolver for the storagePaths field.
-func (r *queryResolver) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
-	return r.loader.StoragePaths(ctx)
+// Storages is the resolver for the storages field.
+func (r *queryResolver) Storages(ctx context.Context) ([]*model.Storage, error) {
+	paths, err := r.loader.StoragePaths(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var storages []*model.Storage
+	for _, path := range paths {
+		storages = append(storages, &model.Storage{ID: path.ID, Path: path})
+	}
+	return storages, nil
 }
 
 // StorageStats is the resolver for the storageStats field.
@@ -33,39 +40,22 @@ func (r *queryResolver) StorageStats(ctx context.Context) ([]*model.StorageStats
 // Path is the resolver for the path field.
 func (r *storageResolver) Path(ctx context.Context, obj *model.Storage) (*model.StoragePath, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	if obj.Path != nil {
+		return obj.Path, nil
+	}
 	return r.loader.StoragePath(ctx, obj.ID)
 }
 
 // Liveness is the resolver for the liveness field.
 func (r *storageResolver) Liveness(ctx context.Context, obj *model.Storage) (*model.StorageLiveness, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
-	return r.loader.StorageLiveness(ctx, obj.ID)
-}
-
-// ID is the resolver for the id field.
-func (r *storagePathResolver) ID(ctx context.Context, obj *model.StoragePath) (string, error) {
-	return obj.StorageID, nil
-}
-
-// Type is the resolver for the type field.
-func (r *storagePathResolver) Type(ctx context.Context, obj *model.StoragePath) (model.StorageType, error) {
-	switch {
-	case obj.CanStore && obj.CanSeal:
-		return model.StorageTypeHybrid, nil
-	case obj.CanSeal:
-		return model.StorageTypeSeal, nil
-	case obj.CanStore:
-		return model.StorageTypeStore, nil
-	default:
-		return model.StorageTypeReadonly, nil
+	if obj.Liveness != nil {
+		return obj.Liveness, nil
 	}
+	return r.loader.StorageLiveness(ctx, obj.ID)
 }
 
 // Storage returns graph.StorageResolver implementation.
 func (r *Resolver) Storage() graph.StorageResolver { return &storageResolver{r} }
 
-// StoragePath returns graph.StoragePathResolver implementation.
-func (r *Resolver) StoragePath() graph.StoragePathResolver { return &storagePathResolver{r} }
-
 type storageResolver struct{ *Resolver }
-type storagePathResolver struct{ *Resolver }
