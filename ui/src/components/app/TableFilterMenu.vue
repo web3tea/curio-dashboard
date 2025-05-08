@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmits, defineProps } from 'vue'
+import { defineProps } from 'vue'
 import { IconFilter, IconSearch } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 

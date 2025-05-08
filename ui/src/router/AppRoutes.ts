@@ -55,6 +55,7 @@ const AppRoutes = {
         description: 'List of all storages paths in the cluster',
       },
     },
+
     {
       name: 'PoRep',
       path: '/pipeline/porep',

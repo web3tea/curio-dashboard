@@ -2,6 +2,7 @@ package loaders
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/web3tea/curio-dashboard/graph/model"
 )
@@ -49,7 +50,7 @@ WHERE storage_id = $1`, id); err != nil {
 		return nil, err
 	}
 	if len(m) != 1 {
-		return nil, ErrorNotFound
+		return nil, fmt.Errorf("storage id not found: %s", id)
 	}
 	return m[0], nil
 }

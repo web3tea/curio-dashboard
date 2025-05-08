@@ -273,5 +273,28 @@
     "search": "搜索",
     "filterLayers": "过滤配置层",
     "filterTasks": "过滤任务"
+  },
+  "storage": {
+    "status": "状态",
+    "type": "类型",
+    "lastHeartbeat": "最后心跳",
+    "heartbeatError": "心跳错误",
+    "diskUsage": "容量信息",
+    "capacity": "总容量",
+    "used": "已使用",
+    "available": "可用",
+    "usage": "使用量",
+    "liveness": "在线状态",
+    "lastChecked": "最后检查",
+    "lastLive": "最后在线",
+    "lastDead": "最后异常",
+    "lastDeadReason": "最后异常原因",
+    "details": "详情",
+    "noStorageFound": "没有存储",
+    "urls": "链接"
+  },
+  "storageFilter": {
+    "filterStatus": "筛选状态",
+    "filterType": "筛选类型"
   }
 }

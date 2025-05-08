@@ -2,11 +2,16 @@
 import { useQuery } from '@vue/apollo-composable'
 import { GetStoragePaths } from '@/gql/storage'
 import { computed, ComputedRef, ref } from 'vue'
-import { StoragePath, Storage } from '@/typed-graph'
-import { IconRefresh, IconSearch } from '@tabler/icons-vue'
+import { StoragePath, Storage, StorageType } from '@/typed-graph'
+import { IconRefresh, IconSearch, IconEye } from '@tabler/icons-vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { getRelativeTime } from '@/utils/helpers/time'
 import { getColorByType } from '@/utils/helpers/storageTypeColor'
+import TableFilterMenu from '@/components/app/TableFilterMenu.vue'
+import { useI18n } from 'vue-i18n'
+import StoragePathDetailDialog from './StoragePathDetailDialog.vue'
+
+const { t } = useI18n()
 
 const { result, loading, refetch, error } = useQuery(GetStoragePaths, null, {})
 
@@ -17,7 +22,7 @@ const items: ComputedRef<StoragePath[]> = computed(() => {
 
 const headers = [
   { title: 'ID', key: 'storageId', sortable: true },
-  { title: 'Status', key: 'status', align: 'center', sortable: true },
+  { title: 'Status', key: 'status', align: 'center', sortable: false },
   { title: 'Capacity', key: 'capacity', align: 'end', sortable: true },
   { title: 'Used', key: 'used', align: 'end', sortable: true },
   { title: 'Available', key: 'available', align: 'end', sortable: true },
@@ -28,6 +33,68 @@ const headers = [
 ] as const
 
 const searchValue = ref('')
+const showDetailDialog = ref(false)
+const selectedStorageId = ref<string | null>(null)
+
+// Filter state
+const statusMenuOpen = ref(false)
+const typeMenuOpen = ref(false)
+const statusFilterSearch = ref('')
+const typeFilterSearch = ref('')
+const selectedStatuses = ref<string[]>([])
+const selectedTypes = ref<string[]>([])
+
+// Possible status and type values
+const allStatuses = ['Healthy', 'Unhealthy']
+const allStorageTypes: StorageType[] = ['Hybrid', 'Seal', 'Store', 'Readonly']
+
+// Computed properties for filtered options
+const filteredStatusOptions = computed(() => {
+  if (!statusFilterSearch.value) return allStatuses
+  const searchLower = statusFilterSearch.value.toLowerCase()
+  return allStatuses.filter(status => status.toLowerCase().includes(searchLower))
+})
+
+const filteredTypeOptions = computed(() => {
+  if (!typeFilterSearch.value) return allStorageTypes
+  const searchLower = typeFilterSearch.value.toLowerCase()
+  return allStorageTypes.filter(type => type.toLowerCase().includes(searchLower))
+})
+
+// Methods for clearing filters
+const clearStatusFilters = () => {
+  selectedStatuses.value = []
+  statusFilterSearch.value = ''
+}
+
+const clearTypeFilters = () => {
+  selectedTypes.value = []
+  typeFilterSearch.value = ''
+}
+
+// Filtered items with filter logic
+const filteredItems = computed(() => {
+  if (selectedStatuses.value.length === 0 && selectedTypes.value.length === 0) {
+    return items.value // Return all items when no filters are applied
+  }
+
+  return items.value.filter(item => {
+    // Filter by status if any status is selected
+    if (selectedStatuses.value.length > 0) {
+      const itemStatus = isStorageHealthy(item) ? 'Healthy' : 'Unhealthy'
+      if (!selectedStatuses.value.includes(itemStatus)) {
+        return false
+      }
+    }
+
+    // Filter by type if any type is selected
+    if (selectedTypes.value.length > 0 && !selectedTypes.value.includes(getStorageType(item))) {
+      return false
+    }
+
+    return true
+  })
+})
 
 const isHeartbeatStale = (dateStr: string): boolean => {
   if (!dateStr) return true
@@ -42,7 +109,6 @@ const getUsagePercentage = (capacity: number, available: number): number => {
 }
 
 const getUsageColor = (percentage: number): string => {
-  if (!percentage) return 'success'
   if (percentage > 90) return 'error'
   if (percentage > 70) return 'warning'
   return 'success'
@@ -53,7 +119,7 @@ const isStorageHealthy = (path: StoragePath): boolean => {
   return !isHeartbeatStale(path.lastHeartbeat) && !path.heartbeatErr
 }
 
-const getStorageType = (path: StoragePath): string => {
+const getStorageType = (path: StoragePath): StorageType => {
   if (path.canSeal && path.canStore) return 'Hybrid'
   if (path.canSeal) return 'Seal'
   if (path.canStore) return 'Store'
@@ -77,12 +143,6 @@ const getStorageType = (path: StoragePath): string => {
             class="align-center"
             justify="space-between"
           >
-            <v-col
-              cols="12"
-              md="6"
-            >
-              <h2>Storage Paths</h2>
-            </v-col>
             <v-col
               cols="12"
               md="3"
@@ -120,15 +180,35 @@ const getStorageType = (path: StoragePath): string => {
         <v-card-text class="pa-0">
           <v-data-table-virtual
             :headers="headers"
-            :items="items"
+            :items="filteredItems"
             :search="searchValue"
             :loading="loading"
             :items-per-page="10"
             class="elevation-0"
           >
             <template #item.storageId="{ value }">
-              {{ value }}
+              <a
+                href="#"
+                @click.prevent="selectedStorageId = value; showDetailDialog = true"
+              >
+                {{ value }}
+              </a>
             </template>
+            <template #header.status="{column}">
+              <TableFilterMenu
+                :column-title="column.title || ''"
+                :menu-open="statusMenuOpen"
+                :selected-items="selectedStatuses"
+                :filter-title="t('storageFilter.filterStatus', 'Filter Status')"
+                :options="filteredStatusOptions"
+                :search-value="statusFilterSearch"
+                @update:menu-open="statusMenuOpen = $event"
+                @update:search-value="statusFilterSearch = $event"
+                @update:selected-items="selectedStatuses = $event"
+                @clear="clearStatusFilters"
+              />
+            </template>
+
             <template #item.status="{ item }">
               <v-chip
                 :color="isStorageHealthy(item) ? 'success' : 'error'"
@@ -161,6 +241,21 @@ const getStorageType = (path: StoragePath): string => {
               <span class="text-caption">{{ getUsagePercentage(item.capacity, item.available) }}%</span>
             </template>
 
+            <template #header.type="{column}">
+              <TableFilterMenu
+                :column-title="column.title || ''"
+                :menu-open="typeMenuOpen"
+                :selected-items="selectedTypes"
+                :filter-title="t('storageFilter.filterType', 'Filter Type')"
+                :options="filteredTypeOptions"
+                :search-value="typeFilterSearch"
+                @update:menu-open="typeMenuOpen = $event"
+                @update:search-value="typeFilterSearch = $event"
+                @update:selected-items="selectedTypes = $event"
+                @clear="clearTypeFilters"
+              />
+            </template>
+
             <template #item.type="{ item }">
               <v-chip
                 size="small"
@@ -177,18 +272,16 @@ const getStorageType = (path: StoragePath): string => {
               </span>
             </template>
 
-            <template #item.actions>
+            <template #item.actions="{ item }">
               <div class="d-flex justify-center">
                 <v-btn
                   icon
                   size="small"
-                  color="grey"
+                  color="primary"
                   variant="text"
-                  disabled
+                  @click="selectedStorageId = item.storageId; showDetailDialog = true"
                 >
-                  <v-icon :size="18">
-                    mdi-dots-horizontal
-                  </v-icon>
+                  <IconEye :size="18" />
                 </v-btn>
               </div>
             </template>
@@ -212,6 +305,12 @@ const getStorageType = (path: StoragePath): string => {
       </v-card>
     </v-col>
   </v-row>
+
+  <!-- Storage Detail Dialog -->
+  <StoragePathDetailDialog
+    v-model="showDetailDialog"
+    :storage-id="selectedStorageId || ''"
+  />
 </template>
 
 <style scoped lang="scss">
