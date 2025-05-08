@@ -104,7 +104,7 @@ const isHeartbeatStale = (dateStr: string): boolean => {
 }
 
 const getUsagePercentage = (capacity: number, available: number): number => {
-  if (!capacity || capacity === 0 || !available) return 0
+  if (capacity === 0) return 0
   return Math.round(((capacity - available) / capacity) * 100)
 }
 
