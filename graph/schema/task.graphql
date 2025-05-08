@@ -1,17 +1,17 @@
 type Task {
     id: Int!
-    initiatedByID: Int
-    initiatedBy: Machine
+    initiatedByID: Int @goTag(key: "db", value: "initiated_by")
+    initiatedBy: Machine @goField(forceResolver: true)
     updateTime: Time!
     postedTime: Time!
     ownerId: Int
-    owner: Machine
-    addedByID: Int!
-    addedBy: Machine!
-    previousTaskID: Int
-    previousTask: TaskHistory
+    owner: Machine @goField(forceResolver: true)
+    addedByID: Int! @goTag(key: "db", value: "added_by")
+    addedBy: Machine! @goField(forceResolver: true)
+    previousTaskID: Int @goTag(key: "db", value: "previous_task")
+    previousTask: TaskHistory @goField(forceResolver: true)
     name: String!
-    histories: [TaskHistory]
+    histories: [TaskHistory] @goField(forceResolver: true)
 }
 
 type TaskSuccessRate {
@@ -80,7 +80,7 @@ type TaskHistory {
     result: Boolean!
     err: String
     completedByHostAndPort: String!
-    completedBy: Machine
+    completedBy: Machine @goField(forceResolver: true)
 }
 
 type TaskSummary {

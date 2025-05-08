@@ -178,17 +178,17 @@ func (r *sectorMetaResolver) ID(ctx context.Context, obj *model.SectorMeta) (str
 
 // MsgCidPrecommit is the resolver for the msgCidPrecommit field.
 func (r *sectorMetaResolver) MsgCidPrecommit(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	return NullToPtr(obj.MsgCidPrecommit), nil
+	panic(fmt.Errorf("not implemented: MsgCidPrecommit - msgCidPrecommit"))
 }
 
 // MsgCidCommit is the resolver for the msgCidCommit field.
 func (r *sectorMetaResolver) MsgCidCommit(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	return NullToPtr(obj.MsgCidCommit), nil
+	panic(fmt.Errorf("not implemented: MsgCidCommit - msgCidCommit"))
 }
 
 // MsgCidUpdate is the resolver for the msgCidUpdate field.
 func (r *sectorMetaResolver) MsgCidUpdate(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	return NullToPtr(obj.MsgCidUpdate), nil
+	panic(fmt.Errorf("not implemented: MsgCidUpdate - msgCidUpdate"))
 }
 
 // ExpirationEpoch is the resolver for the expirationEpoch field.
@@ -208,3 +208,18 @@ func (r *Resolver) SectorMeta() graph.SectorMetaResolver { return &sectorMetaRes
 type sectorResolver struct{ *Resolver }
 type sectorLocationResolver struct{ *Resolver }
 type sectorMetaResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *sectorMetaResolver) Deadline(ctx context.Context, obj *model.SectorMeta) (int, error) {
+	panic(fmt.Errorf("not implemented: Deadline - deadline"))
+}
+func (r *sectorMetaResolver) Partition(ctx context.Context, obj *model.SectorMeta) (int, error) {
+	panic(fmt.Errorf("not implemented: Partition - partition"))
+}
+*/

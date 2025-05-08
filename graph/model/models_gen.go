@@ -52,6 +52,13 @@ type ClientFilterInput struct {
 	Info               string           `json:"info"`
 }
 
+type Config struct {
+	ID     int              `json:"id"`
+	Title  string           `json:"title"`
+	Config string           `json:"config"`
+	UsedBy []*MachineDetail `json:"usedBy"`
+}
+
 type DealCountSummary struct {
 	Boost  int `json:"boost"`
 	Direct int `json:"direct"`
@@ -90,6 +97,22 @@ type GaugeCountValue struct {
 	Value int    `json:"value"`
 }
 
+type IPNIAdvertisement struct {
+	OrderNumber    int         `json:"orderNumber"`
+	PieceCid       *string     `json:"pieceCid"`
+	AdCid          *string     `json:"adCid"`
+	Previous       *string     `json:"previous"`
+	ContextID      types.Bytes `json:"contextId"`
+	PieceSize      *int        `json:"pieceSize"`
+	Provider       *IPNIPeerID `json:"provider"`
+	ProviderPeerID *string     `json:"-" db:"provider"`
+	Entries        *string     `json:"entries"`
+	Addresses      *string     `json:"addresses"`
+	IsSkip         *bool       `json:"isSkip"`
+	IsRm           *bool       `json:"isRm"`
+	Signature      types.Bytes `json:"signature"`
+}
+
 type IPNIHead struct {
 	Head     string `json:"head"`
 	Provider string `json:"provider"`
@@ -98,6 +121,27 @@ type IPNIHead struct {
 type IPNIPeerID struct {
 	PeerID string        `json:"peerID"`
 	SpID   types.ActorID `json:"spID"`
+}
+
+type IPNIProvider struct {
+	SpID    types.ActorID      `json:"spID"`
+	PeerID  string             `json:"peerID"`
+	Head    string             `json:"head"`
+	AdCount int                `json:"adCount"`
+	Status  IPNIProviderStatus `json:"status"`
+}
+
+type IPNIStats struct {
+	TotalAdvertisements         int `json:"totalAdvertisements"`
+	PreviousTotalAdvertisements int `json:"previousTotalAdvertisements"`
+	Providers                   int `json:"providers"`
+	PreviousProviders           int `json:"previousProviders"`
+	Indexed                     int `json:"indexed"`
+	PreviousIndexed             int `json:"previousIndexed"`
+	Skipped                     int `json:"skipped"`
+	PreviousSkipped             int `json:"previousSkipped"`
+	PendingTasks                int `json:"pendingTasks"`
+	PreviousPendingTasks        int `json:"previousPendingTasks"`
 }
 
 type IPNITask struct {
@@ -111,6 +155,20 @@ type IPNITask struct {
 	Provider     *string        `json:"provider"`
 	RegSealProof *int           `json:"regSealProof"`
 	CreatedAt    *time.Time     `json:"createdAt"`
+}
+
+type Machine struct {
+	ID            int             `json:"id"`
+	LastContact   time.Time       `json:"lastContact"`
+	HostAndPort   string          `json:"hostAndPort"`
+	CPU           int             `json:"cpu"`
+	RAM           int             `json:"ram"`
+	Gpu           float64         `json:"gpu"`
+	Detail        *MachineDetail  `json:"detail"`
+	Tasks         []*Task         `json:"tasks"`
+	TaskHistories []*TaskHistory  `json:"taskHistories"`
+	Storages      []*StoragePath  `json:"storages"`
+	Metrics       *MachineMetrics `json:"metrics"`
 }
 
 type MachineDetail struct {
@@ -143,6 +201,19 @@ type MachineMetrics struct {
 	ProcessResidentMemoryBytes int                `json:"processResidentMemoryBytes"`
 	ProcessOpenFds             int                `json:"processOpenFds"`
 	ProcessMaxFds              int                `json:"processMaxFds"`
+}
+
+type MachineSummary struct {
+	Total            int       `json:"total"`
+	TotalUp          int       `json:"totalUp"`
+	TotalDown        int       `json:"totalDown"`
+	UniqueHostsTotal int       `json:"uniqueHostsTotal"`
+	UniqueHostsUp    int       `json:"uniqueHostsUp"`
+	UniqueHostsDown  int       `json:"uniqueHostsDown"`
+	TotalRAM         int       `json:"totalRam"`
+	TotalCPU         int       `json:"totalCpu"`
+	TotalGpu         float64   `json:"totalGpu"`
+	UpdatedAt        time.Time `json:"updatedAt"`
 }
 
 type MarketAllowFilter struct {
@@ -225,6 +296,11 @@ type MessageSend struct {
 	SendError    *string     `json:"sendError"`
 }
 
+type Metadata struct {
+	NetworkName      string `json:"networkName"`
+	GenesisTimestamp uint64 `json:"genesisTimestamp"`
+}
+
 type MinerBeneficiaryTerm struct {
 	Quota      types.BigInt `json:"quota"`
 	UsedQuota  types.BigInt `json:"usedQuota"`
@@ -274,6 +350,16 @@ type MiningCountAggregated struct {
 	Total    int       `json:"total"`
 	Won      int       `json:"won"`
 	Included int       `json:"included"`
+}
+
+type MiningCountSummary struct {
+	Start    time.Time           `json:"start"`
+	End      time.Time           `json:"end"`
+	Total    int                 `json:"total"`
+	Won      int                 `json:"won"`
+	Included int                 `json:"included"`
+	Actor    *types.Address      `json:"-"`
+	Previous *MiningCountSummary `json:"previous"`
 }
 
 type MiningStatusSummay struct {
@@ -341,6 +427,18 @@ type OpenSectorPiece struct {
 	DirectPieceActivationManifest *types.JSON   `json:"directPieceActivationManifest"`
 	CreatedAt                     time.Time     `json:"createdAt"`
 	IsSnap                        bool          `json:"isSnap"`
+}
+
+type PipelineSummary struct {
+	ID           types.Address `json:"id" db:"sp_id"`
+	Sdr          int           `json:"sdr"`
+	Trees        int           `json:"trees"`
+	PrecommitMsg int           `json:"precommitMsg"`
+	WaitSeed     int           `json:"waitSeed"`
+	Porep        int           `json:"porep"`
+	CommitMsg    int           `json:"commitMsg"`
+	Done         int           `json:"done"`
+	Failed       int           `json:"failed"`
 }
 
 type PowerClaim struct {
@@ -461,6 +559,29 @@ type StorageUsage struct {
 type Subscription struct {
 }
 
+type Task struct {
+	ID             int            `json:"id"`
+	InitiatedByID  *int           `json:"initiatedByID" db:"initiated_by"`
+	InitiatedBy    *Machine       `json:"initiatedBy"`
+	UpdateTime     time.Time      `json:"updateTime"`
+	PostedTime     time.Time      `json:"postedTime"`
+	OwnerID        *int           `json:"ownerId"`
+	Owner          *Machine       `json:"owner"`
+	AddedByID      int            `json:"addedByID" db:"added_by"`
+	AddedBy        *Machine       `json:"addedBy"`
+	PreviousTaskID *int           `json:"previousTaskID" db:"previous_task"`
+	PreviousTask   *TaskHistory   `json:"previousTask"`
+	Name           string         `json:"name"`
+	Histories      []*TaskHistory `json:"histories"`
+}
+
+type TaskAggregate struct {
+	Time    time.Time `json:"time"`
+	Total   int       `json:"total"`
+	Success int       `json:"success"`
+	Failure int       `json:"failure"`
+}
+
 type TaskCompactStage struct {
 	Name   string     `json:"name"`
 	Status TaskStatus `json:"status"`
@@ -477,6 +598,19 @@ type TaskDurationStats struct {
 	P90DurationSeconds    float64 `json:"p90DurationSeconds"`
 	P95DurationSeconds    float64 `json:"p95DurationSeconds"`
 	P99DurationSeconds    float64 `json:"p99DurationSeconds"`
+}
+
+type TaskHistory struct {
+	ID                     int       `json:"id"`
+	TaskID                 int       `json:"taskId"`
+	Name                   string    `json:"name"`
+	Posted                 time.Time `json:"posted"`
+	WorkStart              time.Time `json:"workStart"`
+	WorkEnd                time.Time `json:"workEnd"`
+	Result                 bool      `json:"result"`
+	Err                    *string   `json:"err"`
+	CompletedByHostAndPort string    `json:"completedByHostAndPort"`
+	CompletedBy            *Machine  `json:"completedBy"`
 }
 
 type TaskNameAggregate struct {

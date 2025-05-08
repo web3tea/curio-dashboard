@@ -1,6 +1,6 @@
 type Metadata {
-    networkName: String!
-    genesisTimestamp: Uint64!
+    networkName: String! @goField(forceResolver: true)
+    genesisTimestamp: Uint64! @goField(forceResolver: true)
 }
 
 type ChainHead {

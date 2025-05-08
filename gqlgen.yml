@@ -113,6 +113,8 @@ models:
     model: "github.com/web3tea/curio-dashboard/types.NullInt64"
   NullBool:
     model: "github.com/web3tea/curio-dashboard/types.NullBool"
+  ChainActor:
+    model: "github.com/filecoin-project/lotus/chain/types.Actor"
   Porep:
     fields:
       id:

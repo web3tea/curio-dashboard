@@ -1,13 +1,13 @@
 type PipelineSummary {
-    id: Address!
-    sdr: Int!
-    trees: Int!
-    precommitMsg: Int!
-    waitSeed: Int!
-    porep: Int!
-    commitMsg: Int!
-    done: Int!
-    failed: Int!
+    id: Address! @goTag(key: "db", value: "sp_id")
+    sdr: Int! @goField(forceResolver: true)
+    trees: Int! @goField(forceResolver: true)
+    precommitMsg: Int! @goField(forceResolver: true)
+    waitSeed: Int! @goField(forceResolver: true)
+    porep: Int! @goField(forceResolver: true)
+    commitMsg: Int! @goField(forceResolver: true)
+    done: Int! @goField(forceResolver: true)
+    failed: Int! @goField(forceResolver: true)
 }
 
 enum TaskStatus {

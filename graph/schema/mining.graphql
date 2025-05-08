@@ -15,7 +15,8 @@ type MiningCountSummary {
     total: Int!
     won: Int!
     included: Int!
-    previous: MiningCountSummary
+    actor: Address @goTag(key: "json", value: "-")
+    previous: MiningCountSummary @goField(forceResolver: true)
 }
 
 type MiningTask {

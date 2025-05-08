@@ -48,6 +48,7 @@ type ResolverRoot interface {
 	IPNIProvider() IPNIProviderResolver
 	IPNIStats() IPNIStatsResolver
 	Machine() MachineResolver
+	MachineDetail() MachineDetailResolver
 	MachineSummary() MachineSummaryResolver
 	Metadata() MetadataResolver
 	Miner() MinerResolver
@@ -158,18 +159,19 @@ type ComplexityRoot struct {
 	}
 
 	IPNIAdvertisement struct {
-		AdCid       func(childComplexity int) int
-		Addresses   func(childComplexity int) int
-		ContextID   func(childComplexity int) int
-		Entries     func(childComplexity int) int
-		IsRm        func(childComplexity int) int
-		IsSkip      func(childComplexity int) int
-		OrderNumber func(childComplexity int) int
-		PieceCid    func(childComplexity int) int
-		PieceSize   func(childComplexity int) int
-		Previous    func(childComplexity int) int
-		Provider    func(childComplexity int) int
-		Signature   func(childComplexity int) int
+		AdCid          func(childComplexity int) int
+		Addresses      func(childComplexity int) int
+		ContextID      func(childComplexity int) int
+		Entries        func(childComplexity int) int
+		IsRm           func(childComplexity int) int
+		IsSkip         func(childComplexity int) int
+		OrderNumber    func(childComplexity int) int
+		PieceCid       func(childComplexity int) int
+		PieceSize      func(childComplexity int) int
+		Previous       func(childComplexity int) int
+		Provider       func(childComplexity int) int
+		ProviderPeerID func(childComplexity int) int
+		Signature      func(childComplexity int) int
 	}
 
 	IPNIHead struct {
@@ -411,6 +413,7 @@ type ComplexityRoot struct {
 	}
 
 	MiningCountSummary struct {
+		Actor    func(childComplexity int) int
 		End      func(childComplexity int) int
 		Included func(childComplexity int) int
 		Previous func(childComplexity int) int
@@ -936,6 +939,13 @@ type MachineResolver interface {
 	TaskHistories(ctx context.Context, obj *model.Machine, last int) ([]*model.TaskHistory, error)
 	Storages(ctx context.Context, obj *model.Machine) ([]*model.StoragePath, error)
 	Metrics(ctx context.Context, obj *model.Machine) (*model.MachineMetrics, error)
+}
+type MachineDetailResolver interface {
+	TasksArray(ctx context.Context, obj *model.MachineDetail) ([]string, error)
+
+	LayersArray(ctx context.Context, obj *model.MachineDetail) ([]string, error)
+
+	MinersArray(ctx context.Context, obj *model.MachineDetail) ([]string, error)
 }
 type MachineSummaryResolver interface {
 	Total(ctx context.Context, obj *model.MachineSummary) (int, error)
@@ -1652,6 +1662,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.IPNIAdvertisement.Provider(childComplexity), true
+
+	case "IPNIAdvertisement.providerPeerID":
+		if e.complexity.IPNIAdvertisement.ProviderPeerID == nil {
+			break
+		}
+
+		return e.complexity.IPNIAdvertisement.ProviderPeerID(childComplexity), true
 
 	case "IPNIAdvertisement.signature":
 		if e.complexity.IPNIAdvertisement.Signature == nil {
@@ -2847,6 +2864,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MiningCountAggregated.Won(childComplexity), true
+
+	case "MiningCountSummary.actor":
+		if e.complexity.MiningCountSummary.Actor == nil {
+			break
+		}
+
+		return e.complexity.MiningCountSummary.Actor(childComplexity), true
 
 	case "MiningCountSummary.end":
 		if e.complexity.MiningCountSummary.End == nil {
@@ -12682,6 +12706,47 @@ func (ec *executionContext) fieldContext_IPNIAdvertisement_provider(_ context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _IPNIAdvertisement_providerPeerID(ctx context.Context, field graphql.CollectedField, obj *model.IPNIAdvertisement) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_IPNIAdvertisement_providerPeerID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProviderPeerID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_IPNIAdvertisement_providerPeerID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "IPNIAdvertisement",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _IPNIAdvertisement_entries(ctx context.Context, field graphql.CollectedField, obj *model.IPNIAdvertisement) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_IPNIAdvertisement_entries(ctx, field)
 	if err != nil {
@@ -14921,7 +14986,7 @@ func (ec *executionContext) _MachineDetail_tasksArray(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TasksArray, nil
+		return ec.resolvers.MachineDetail().TasksArray(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14939,8 +15004,8 @@ func (ec *executionContext) fieldContext_MachineDetail_tasksArray(_ context.Cont
 	fc = &graphql.FieldContext{
 		Object:     "MachineDetail",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -15006,7 +15071,7 @@ func (ec *executionContext) _MachineDetail_layersArray(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.LayersArray, nil
+		return ec.resolvers.MachineDetail().LayersArray(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15024,8 +15089,8 @@ func (ec *executionContext) fieldContext_MachineDetail_layersArray(_ context.Con
 	fc = &graphql.FieldContext{
 		Object:     "MachineDetail",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -15135,7 +15200,7 @@ func (ec *executionContext) _MachineDetail_minersArray(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.MinersArray, nil
+		return ec.resolvers.MachineDetail().MinersArray(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15153,8 +15218,8 @@ func (ec *executionContext) fieldContext_MachineDetail_minersArray(_ context.Con
 	fc = &graphql.FieldContext{
 		Object:     "MachineDetail",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
 		},
@@ -20732,6 +20797,47 @@ func (ec *executionContext) fieldContext_MiningCountSummary_included(_ context.C
 	return fc, nil
 }
 
+func (ec *executionContext) _MiningCountSummary_actor(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MiningCountSummary_actor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Actor, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*types.Address)
+	fc.Result = res
+	return ec.marshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MiningCountSummary_actor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MiningCountSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _MiningCountSummary_previous(ctx context.Context, field graphql.CollectedField, obj *model.MiningCountSummary) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MiningCountSummary_previous(ctx, field)
 	if err != nil {
@@ -20778,6 +20884,8 @@ func (ec *executionContext) fieldContext_MiningCountSummary_previous(_ context.C
 				return ec.fieldContext_MiningCountSummary_won(ctx, field)
 			case "included":
 				return ec.fieldContext_MiningCountSummary_included(ctx, field)
+			case "actor":
+				return ec.fieldContext_MiningCountSummary_actor(ctx, field)
 			case "previous":
 				return ec.fieldContext_MiningCountSummary_previous(ctx, field)
 			}
@@ -27621,6 +27729,8 @@ func (ec *executionContext) fieldContext_Query_ipniAdvertisement(ctx context.Con
 				return ec.fieldContext_IPNIAdvertisement_pieceSize(ctx, field)
 			case "provider":
 				return ec.fieldContext_IPNIAdvertisement_provider(ctx, field)
+			case "providerPeerID":
+				return ec.fieldContext_IPNIAdvertisement_providerPeerID(ctx, field)
 			case "entries":
 				return ec.fieldContext_IPNIAdvertisement_entries(ctx, field)
 			case "addresses":
@@ -27702,6 +27812,8 @@ func (ec *executionContext) fieldContext_Query_ipniAdvertisements(ctx context.Co
 				return ec.fieldContext_IPNIAdvertisement_pieceSize(ctx, field)
 			case "provider":
 				return ec.fieldContext_IPNIAdvertisement_provider(ctx, field)
+			case "providerPeerID":
+				return ec.fieldContext_IPNIAdvertisement_providerPeerID(ctx, field)
 			case "entries":
 				return ec.fieldContext_IPNIAdvertisement_entries(ctx, field)
 			case "addresses":
@@ -29807,6 +29919,8 @@ func (ec *executionContext) fieldContext_Query_miningCountSummary(ctx context.Co
 				return ec.fieldContext_MiningCountSummary_won(ctx, field)
 			case "included":
 				return ec.fieldContext_MiningCountSummary_included(ctx, field)
+			case "actor":
+				return ec.fieldContext_MiningCountSummary_actor(ctx, field)
 			case "previous":
 				return ec.fieldContext_MiningCountSummary_previous(ctx, field)
 			}
@@ -42515,6 +42629,8 @@ func (ec *executionContext) _IPNIAdvertisement(ctx context.Context, sel ast.Sele
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "providerPeerID":
+			out.Values[i] = ec._IPNIAdvertisement_providerPeerID(ctx, field, obj)
 		case "entries":
 			out.Values[i] = ec._IPNIAdvertisement_entries(ctx, field, obj)
 		case "addresses":
@@ -43491,43 +43607,136 @@ func (ec *executionContext) _MachineDetail(ctx context.Context, sel ast.Selectio
 		case "id":
 			out.Values[i] = ec._MachineDetail_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "machineName":
 			out.Values[i] = ec._MachineDetail_machineName(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "tasks":
 			out.Values[i] = ec._MachineDetail_tasks(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "tasksArray":
-			out.Values[i] = ec._MachineDetail_tasksArray(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MachineDetail_tasksArray(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "layers":
 			out.Values[i] = ec._MachineDetail_layers(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "layersArray":
-			out.Values[i] = ec._MachineDetail_layersArray(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MachineDetail_layersArray(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "startupTime":
 			out.Values[i] = ec._MachineDetail_startupTime(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "miners":
 			out.Values[i] = ec._MachineDetail_miners(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "minersArray":
-			out.Values[i] = ec._MachineDetail_minersArray(ctx, field, obj)
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MachineDetail_minersArray(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "machineId":
 			out.Values[i] = ec._MachineDetail_machineId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -45299,6 +45508,8 @@ func (ec *executionContext) _MiningCountSummary(ctx context.Context, sel ast.Sel
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "actor":
+			out.Values[i] = ec._MiningCountSummary_actor(ctx, field, obj)
 		case "previous":
 			field := field
 
