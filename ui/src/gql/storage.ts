@@ -35,15 +35,6 @@ export const storageLivenessFragment = gql`
     lastDeadReason
   }`
 
-export const GetStoragePaths = gql`
-  query GetStoragePaths {
-    storagePaths {
-      ...StoragePathAll
-    }
-  }
-  ${storagePathFragment}
-`
-
 export const GetStorageStats = gql`
   query GetStorageStats {
     storageStats {
@@ -72,14 +63,30 @@ export const GetStorage = gql`
   ${storageLivenessFragment}
 `
 
-export const GetMachineStorages = gql`
-    query GetMachineStorages($id: Int!) {
-      machine(id: $id) {
+export const GetStorages = gql`
+    query GetStorages {
+      storages {
         id
-        storages {
+        path {
+          ...StoragePathAll
+        }
+        liveness {
+          ...StorageLivenessAll
+        }
+      }
+    }
+  ${storagePathFragment}
+  ${storageLivenessFragment}
+`
+
+export const GetStoragePaths = gql`
+    query GetStoragePaths {
+      storages {
+        id
+        path {
           ...StoragePathAll
         }
       }
     }
-    ${storagePathFragment}
+  ${storagePathFragment}
 `

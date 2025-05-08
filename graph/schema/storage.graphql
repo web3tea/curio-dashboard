@@ -1,7 +1,7 @@
 type Storage {
     id: String!
-    path: StoragePath
-    liveness:StorageLiveness
+    path: StoragePath @goField(forceResolver: true)
+    liveness:StorageLiveness @goField(forceResolver: true)
 }
 
 type StorageLiveness {
@@ -64,6 +64,6 @@ enum StorageType {
 
 extend type Query {
     storage(id: String!): Storage
-    storagePaths: [StoragePath]
+    storages: [Storage!]!
     storageStats: [StorageStats]
 }

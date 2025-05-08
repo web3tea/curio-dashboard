@@ -4,7 +4,7 @@ import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { computed, ComputedRef } from 'vue'
 import { StoragePath } from '@/typed-graph'
-import { GetMachineStorages } from '@/gql/storage'
+import { GetStorages } from '@/gql/storage'
 import { IconRefresh } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
 
@@ -17,7 +17,7 @@ const props = defineProps({
   },
 })
 
-const { result, loading, refetch, error } = useQuery(GetMachineStorages, {
+const { result, loading, refetch, error } = useQuery(GetStorages, {
   id: props.id,
 }, () => ({
   fetchPolicy: 'cache-first',

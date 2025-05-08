@@ -273,5 +273,28 @@
     "search": "Search",
     "filterLayers": "Filter Layers",
     "filterTasks": "Filter Tasks"
+  },
+  "storage": {
+    "status": "Status",
+    "type": "Type",
+    "lastHeartbeat": "Last Heartbeat",
+    "heartbeatError": "Heartbeat Error",
+    "diskUsage": "Disk usage",
+    "capacity": "Capacity",
+    "used": "Used",
+    "available": "Available",
+    "usage": "Usage",
+    "liveness": "Liveness",
+    "lastChecked": "Last Checked",
+    "lastLive": "Last Live",
+    "lastDead": "Last Dead",
+    "lastDeadReason": "Last DeadReason",
+    "details": "Details",
+    "noStorageFound": "No Storage found",
+    "urls": "Urls"
+  },
+  "storageFilter": {
+    "filterStatus": "Filter Status",
+    "filterType": "Filter Type"
   }
 }

@@ -49,12 +49,13 @@ const AppRoutes = {
     {
       name: 'Storages',
       path: '/storages',
-      component: () => import('@/views/storages/StorageIndex.vue'),
+      component: () => import('@/views/storages/paths/StorageIndex.vue'),
       meta: {
-        title: 'Storage List',
-        description: 'List of all storages in the cluster',
+        title: 'Storage Paths',
+        description: 'List of all storages paths in the cluster',
       },
     },
+
     {
       name: 'PoRep',
       path: '/pipeline/porep',
