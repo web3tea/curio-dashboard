@@ -24,7 +24,7 @@ type IPNIAdvertisement {
 
     # Advertisement metadata
     pieceSize: Int
-    provider: IPNIPeerID @goField(forceResolver: true)
+    provider: IPNIPeerID @goField(forceResolver: true) @goTag(key: "db", value: "-")
     providerPeerID: String @goTag(key: "json", value: "-") @goTag(key: "db", value: "provider")
     entries: String
     addresses: String

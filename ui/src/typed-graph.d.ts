@@ -24,7 +24,6 @@ export type Scalars = {
   NullInt64: { input: any; output: any; }
   NullString: { input: any; output: any; }
   PeerID: { input: any; output: any; }
-  SqlNull: { input: any; output: any; }
   Time: { input: any; output: any; }
   Uint64: { input: any; output: any; }
 };
@@ -1159,30 +1158,32 @@ export type Sector = {
 
 export type SectorLocation = {
   __typename?: 'SectorLocation';
-  isPrimary?: Maybe<Scalars['Boolean']['output']>;
+  isPrimary: Scalars['NullBool']['output'];
   minerId: Scalars['Address']['output'];
   readRefs: Scalars['Int']['output'];
-  readTs?: Maybe<Scalars['String']['output']>;
+  readTs: Scalars['NullString']['output'];
   sectorFiletype: Scalars['Int']['output'];
   sectorNum: Scalars['Int']['output'];
   storage?: Maybe<Storage>;
   storageId: Scalars['String']['output'];
-  writeLockOwner?: Maybe<Scalars['String']['output']>;
-  writeTs?: Maybe<Scalars['String']['output']>;
+  writeLockOwner: Scalars['NullString']['output'];
+  writeTs: Scalars['NullString']['output'];
 };
 
 export type SectorMeta = {
   __typename?: 'SectorMeta';
   curSealedCid: Scalars['String']['output'];
   curUnsealedCid: Scalars['String']['output'];
-  expirationEpoch?: Maybe<Scalars['Int']['output']>;
+  deadline: Scalars['NullInt64']['output'];
+  expirationEpoch: Scalars['NullInt64']['output'];
   id: Scalars['String']['output'];
   isCC: Scalars['Boolean']['output'];
-  msgCidCommit?: Maybe<Scalars['String']['output']>;
-  msgCidPrecommit?: Maybe<Scalars['String']['output']>;
-  msgCidUpdate?: Maybe<Scalars['String']['output']>;
+  msgCidCommit: Scalars['NullString']['output'];
+  msgCidPrecommit: Scalars['NullString']['output'];
+  msgCidUpdate: Scalars['NullString']['output'];
   origSealedCid: Scalars['String']['output'];
   origUnsealedCid: Scalars['String']['output'];
+  partition: Scalars['NullInt64']['output'];
   regSealProof: Scalars['Int']['output'];
   sectorNum: Scalars['Int']['output'];
   seedEpoch: Scalars['Int']['output'];

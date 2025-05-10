@@ -10,14 +10,14 @@ type NullString struct {
 	sql.NullString
 }
 
-func MustNullString(v interface{}) NullString {
+func MustNullString(v any) NullString {
 	b := NullString{}
 	b.Scan(v) // nolint: errcheck
 	return b
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *NullString) UnmarshalGQL(v interface{}) error {
+func (b *NullString) UnmarshalGQL(v any) error {
 	return b.Scan(v)
 }
 
@@ -30,14 +30,14 @@ type NullInt64 struct {
 	sql.NullInt64
 }
 
-func MustNullInt64(v interface{}) NullInt64 {
+func MustNullInt64(v any) NullInt64 {
 	b := NullInt64{}
 	b.Scan(v) // nolint: errcheck
 	return b
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *NullInt64) UnmarshalGQL(v interface{}) error {
+func (b *NullInt64) UnmarshalGQL(v any) error {
 	return b.Scan(v)
 }
 
@@ -50,14 +50,14 @@ type NullBool struct {
 	sql.NullBool
 }
 
-func MustNullBool(v interface{}) NullBool {
+func MustNullBool(v any) NullBool {
 	b := NullBool{}
 	b.Scan(v) // nolint: errcheck
 	return b
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *NullBool) UnmarshalGQL(v interface{}) error {
+func (b *NullBool) UnmarshalGQL(v any) error {
 	return b.Scan(v)
 }
 

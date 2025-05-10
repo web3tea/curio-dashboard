@@ -12,7 +12,6 @@ scalar NullString
 scalar NullInt64
 scalar NullBool
 scalar ChainActor
-scalar SqlNull
 
 enum TrendType {
     UP

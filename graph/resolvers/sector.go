@@ -146,26 +146,6 @@ func (r *sectorResolver) Events(ctx context.Context, obj *model.Sector) ([]*mode
 	return r.loader.SectorEvents(ctx, obj.SpID, obj.SectorNum)
 }
 
-// IsPrimary is the resolver for the isPrimary field.
-func (r *sectorLocationResolver) IsPrimary(ctx context.Context, obj *model.SectorLocation) (*bool, error) {
-	return NullToPtr(obj.IsPrimary), nil
-}
-
-// ReadTs is the resolver for the readTs field.
-func (r *sectorLocationResolver) ReadTs(ctx context.Context, obj *model.SectorLocation) (*string, error) {
-	return NullToPtr(obj.ReadTS), nil
-}
-
-// WriteTs is the resolver for the writeTs field.
-func (r *sectorLocationResolver) WriteTs(ctx context.Context, obj *model.SectorLocation) (*string, error) {
-	return NullToPtr(obj.WriteTS), nil
-}
-
-// WriteLockOwner is the resolver for the writeLockOwner field.
-func (r *sectorLocationResolver) WriteLockOwner(ctx context.Context, obj *model.SectorLocation) (*string, error) {
-	return NullToPtr(obj.WriteLockOwner), nil
-}
-
 // Storage is the resolver for the storage field.
 func (r *sectorLocationResolver) Storage(ctx context.Context, obj *model.SectorLocation) (*model.Storage, error) {
 	return &model.Storage{ID: obj.StorageID}, nil
@@ -174,26 +154,6 @@ func (r *sectorLocationResolver) Storage(ctx context.Context, obj *model.SectorL
 // ID is the resolver for the id field.
 func (r *sectorMetaResolver) ID(ctx context.Context, obj *model.SectorMeta) (string, error) {
 	return fmt.Sprintf("%s-%d", obj.SpID, obj.SectorNum), nil
-}
-
-// MsgCidPrecommit is the resolver for the msgCidPrecommit field.
-func (r *sectorMetaResolver) MsgCidPrecommit(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	panic(fmt.Errorf("not implemented: MsgCidPrecommit - msgCidPrecommit"))
-}
-
-// MsgCidCommit is the resolver for the msgCidCommit field.
-func (r *sectorMetaResolver) MsgCidCommit(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	panic(fmt.Errorf("not implemented: MsgCidCommit - msgCidCommit"))
-}
-
-// MsgCidUpdate is the resolver for the msgCidUpdate field.
-func (r *sectorMetaResolver) MsgCidUpdate(ctx context.Context, obj *model.SectorMeta) (*string, error) {
-	panic(fmt.Errorf("not implemented: MsgCidUpdate - msgCidUpdate"))
-}
-
-// ExpirationEpoch is the resolver for the expirationEpoch field.
-func (r *sectorMetaResolver) ExpirationEpoch(ctx context.Context, obj *model.SectorMeta) (*int, error) {
-	return NullToPtr(obj.ExpirationEpoch), nil
 }
 
 // Sector returns graph.SectorResolver implementation.
@@ -208,18 +168,3 @@ func (r *Resolver) SectorMeta() graph.SectorMetaResolver { return &sectorMetaRes
 type sectorResolver struct{ *Resolver }
 type sectorLocationResolver struct{ *Resolver }
 type sectorMetaResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//    it when you're done.
-//  - You have helper methods in this file. Move them out to keep these resolver files clean.
-/*
-	func (r *sectorMetaResolver) Deadline(ctx context.Context, obj *model.SectorMeta) (int, error) {
-	panic(fmt.Errorf("not implemented: Deadline - deadline"))
-}
-func (r *sectorMetaResolver) Partition(ctx context.Context, obj *model.SectorMeta) (int, error) {
-	panic(fmt.Errorf("not implemented: Partition - partition"))
-}
-*/

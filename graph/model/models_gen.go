@@ -104,7 +104,7 @@ type IPNIAdvertisement struct {
 	Previous       *string     `json:"previous"`
 	ContextID      types.Bytes `json:"contextId"`
 	PieceSize      *int        `json:"pieceSize"`
-	Provider       *IPNIPeerID `json:"provider"`
+	Provider       *IPNIPeerID `json:"provider" db:"-"`
 	ProviderPeerID *string     `json:"-" db:"provider"`
 	Entries        *string     `json:"entries"`
 	Addresses      *string     `json:"addresses"`
@@ -441,6 +441,58 @@ type PipelineSummary struct {
 	Failed       int           `json:"failed"`
 }
 
+type Porep struct {
+	ID                       string              `json:"id"`
+	SpID                     types.Address       `json:"spId"`
+	SectorNumber             int                 `json:"sectorNumber"`
+	CreateTime               time.Time           `json:"createTime"`
+	RegSealProof             int                 `json:"regSealProof"`
+	TicketEpoch              *int                `json:"ticketEpoch"`
+	TicketValue              types.Bytes         `json:"ticketValue"`
+	TaskIDSdr                *int                `json:"taskIdSdr"`
+	AfterSdr                 bool                `json:"afterSdr"`
+	TreeDCid                 *string             `json:"treeDCid"`
+	TaskIDTreeD              *int                `json:"taskIdTreeD"`
+	AfterTreeD               bool                `json:"afterTreeD"`
+	TaskIDTreeC              *int                `json:"taskIdTreeC"`
+	AfterTreeC               bool                `json:"afterTreeC"`
+	TreeRCid                 *string             `json:"treeRCid"`
+	TaskIDTreeR              *int                `json:"taskIdTreeR"`
+	AfterTreeR               bool                `json:"afterTreeR"`
+	PrecommitMsgCid          *string             `json:"precommitMsgCid"`
+	TaskIDPrecommitMsg       *int                `json:"taskIdPrecommitMsg"`
+	AfterPrecommitMsg        bool                `json:"afterPrecommitMsg"`
+	SeedEpoch                *int                `json:"seedEpoch"`
+	PrecommitMsgTsk          types.Bytes         `json:"precommitMsgTsk"`
+	AfterPrecommitMsgSuccess bool                `json:"afterPrecommitMsgSuccess"`
+	SeedValue                types.Bytes         `json:"seedValue"`
+	TaskIDPorep              *int                `json:"taskIdPorep"`
+	PorepProof               types.Bytes         `json:"porepProof"`
+	AfterPorep               bool                `json:"afterPorep"`
+	TaskIDFinalize           *int                `json:"taskIdFinalize"`
+	AfterFinalize            bool                `json:"afterFinalize"`
+	TaskIDMoveStorage        *int                `json:"taskIdMoveStorage"`
+	AfterMoveStorage         bool                `json:"afterMoveStorage"`
+	CommitMsgCid             *string             `json:"commitMsgCid"`
+	TaskIDCommitMsg          *int                `json:"taskIdCommitMsg"`
+	AfterCommitMsg           bool                `json:"afterCommitMsg"`
+	CommitMsgTsk             types.Bytes         `json:"commitMsgTsk"`
+	AfterCommitMsgSuccess    bool                `json:"afterCommitMsgSuccess"`
+	Failed                   bool                `json:"failed"`
+	FailedAt                 *time.Time          `json:"failedAt"`
+	FailedReason             string              `json:"failedReason"`
+	FailedReasonMsg          string              `json:"failedReasonMsg"`
+	TaskIDSynth              *int                `json:"taskIdSynth"`
+	AfterSynth               bool                `json:"afterSynth"`
+	UserSectorDurationEpochs *int                `json:"userSectorDurationEpochs"`
+	PrecommitReadyAt         *time.Time          `json:"precommitReadyAt"`
+	CommitReadyAt            *time.Time          `json:"commitReadyAt"`
+	Status                   TaskStatus          `json:"status"`
+	Stage                    PorepStage          `json:"stage"`
+	CurrentTask              *Task               `json:"currentTask"`
+	CompactStages            []*TaskCompactStage `json:"compactStages"`
+}
+
 type PowerClaim struct {
 	RawBytePower    *types.BigInt `json:"rawBytePower"`
 	QualityAdjPower *types.BigInt `json:"qualityAdjPower"`
@@ -477,6 +529,54 @@ type RunningTaskSummary struct {
 	Running         int     `json:"running"`
 	Queued          int     `json:"queued"`
 	AverageWaitTime float64 `json:"averageWaitTime"`
+}
+
+type Sector struct {
+	ID        string             `json:"id" db:"-"`
+	SpID      types.Address      `json:"spID"`
+	SectorNum int                `json:"sectorNum"`
+	Status    TaskStatus         `json:"status"`
+	Meta      *SectorMeta        `json:"meta"`
+	Porep     *Porep             `json:"porep"`
+	Locations []*SectorLocation  `json:"locations"`
+	Pieces    []*SectorMetaPiece `json:"pieces"`
+	Tasks     []*Task            `json:"tasks"`
+	Events    []*TaskHistory     `json:"events"`
+}
+
+type SectorLocation struct {
+	MinerID        types.Address    `json:"minerId"`
+	SectorNum      int              `json:"sectorNum"`
+	SectorFiletype int              `json:"sectorFiletype"`
+	StorageID      string           `json:"storageId"`
+	IsPrimary      types.NullBool   `json:"isPrimary"`
+	ReadTs         types.NullString `json:"readTs"`
+	ReadRefs       int              `json:"readRefs"`
+	WriteTs        types.NullString `json:"writeTs"`
+	WriteLockOwner types.NullString `json:"writeLockOwner"`
+	Storage        *Storage         `json:"storage" db:"-"`
+}
+
+type SectorMeta struct {
+	ID              string           `json:"id" db:"-"`
+	SpID            types.Address    `json:"spId"`
+	SectorNum       int              `json:"sectorNum"`
+	RegSealProof    int              `json:"regSealProof"`
+	TicketEpoch     int              `json:"ticketEpoch"`
+	TicketValue     types.Bytes      `json:"ticketValue"`
+	OrigSealedCid   string           `json:"origSealedCid"`
+	OrigUnsealedCid string           `json:"origUnsealedCid"`
+	CurSealedCid    string           `json:"curSealedCid"`
+	CurUnsealedCid  string           `json:"curUnsealedCid"`
+	MsgCidPrecommit types.NullString `json:"msgCidPrecommit"`
+	MsgCidCommit    types.NullString `json:"msgCidCommit"`
+	MsgCidUpdate    types.NullString `json:"msgCidUpdate"`
+	SeedEpoch       int              `json:"seedEpoch"`
+	SeedValue       types.Bytes      `json:"seedValue"`
+	ExpirationEpoch types.NullInt64  `json:"expirationEpoch"`
+	IsCc            bool             `json:"isCC"`
+	Deadline        types.NullInt64  `json:"deadline"`
+	Partition       types.NullInt64  `json:"partition"`
 }
 
 type SectorMetaPiece struct {
@@ -734,6 +834,69 @@ func (e *MiningTaskAggregateInterval) UnmarshalGQL(v any) error {
 }
 
 func (e MiningTaskAggregateInterval) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type PorepStage string
+
+const (
+	PorepStageSdr              PorepStage = "SDR"
+	PorepStageTreeD            PorepStage = "TreeD"
+	PorepStageTreeC            PorepStage = "TreeC"
+	PorepStageTreeR            PorepStage = "TreeR"
+	PorepStageSynthetic        PorepStage = "Synthetic"
+	PorepStagePrecommitMsg     PorepStage = "PrecommitMsg"
+	PorepStagePrecommitMsgWait PorepStage = "PrecommitMsgWait"
+	PorepStageWaitSeed         PorepStage = "WaitSeed"
+	PorepStagePorep            PorepStage = "Porep"
+	PorepStageCommitMsg        PorepStage = "CommitMsg"
+	PorepStageCommitMsgWait    PorepStage = "CommitMsgWait"
+	PorepStageFinalize         PorepStage = "Finalize"
+	PorepStageMoveStorage      PorepStage = "MoveStorage"
+)
+
+var AllPorepStage = []PorepStage{
+	PorepStageSdr,
+	PorepStageTreeD,
+	PorepStageTreeC,
+	PorepStageTreeR,
+	PorepStageSynthetic,
+	PorepStagePrecommitMsg,
+	PorepStagePrecommitMsgWait,
+	PorepStageWaitSeed,
+	PorepStagePorep,
+	PorepStageCommitMsg,
+	PorepStageCommitMsgWait,
+	PorepStageFinalize,
+	PorepStageMoveStorage,
+}
+
+func (e PorepStage) IsValid() bool {
+	switch e {
+	case PorepStageSdr, PorepStageTreeD, PorepStageTreeC, PorepStageTreeR, PorepStageSynthetic, PorepStagePrecommitMsg, PorepStagePrecommitMsgWait, PorepStageWaitSeed, PorepStagePorep, PorepStageCommitMsg, PorepStageCommitMsgWait, PorepStageFinalize, PorepStageMoveStorage:
+		return true
+	}
+	return false
+}
+
+func (e PorepStage) String() string {
+	return string(e)
+}
+
+func (e *PorepStage) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PorepStage(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid PorepStage", str)
+	}
+	return nil
+}
+
+func (e PorepStage) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
