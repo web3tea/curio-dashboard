@@ -14,15 +14,15 @@ type Machine {
 
 type MachineDetail {
     id: Int!
-    machineName: String!
-    tasks: String!
+    machineName: NullString!
+    tasks: NullString!
     tasksArray: [String!] @goField(forceResolver: true)
-    layers: String!
+    layers: NullString!
     layersArray: [String!] @goField(forceResolver: true)
-    startupTime: Time!
-    miners: String!
+    startupTime: NullTime!
+    miners: NullString!
     minersArray: [String!] @goField(forceResolver: true)
-    machineId: Int!
+    machineId: NullInt64!
 }
 
 

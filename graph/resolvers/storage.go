@@ -55,7 +55,26 @@ func (r *storageResolver) Liveness(ctx context.Context, obj *model.Storage) (*mo
 	return r.loader.StorageLiveness(ctx, obj.ID)
 }
 
+// Type is the resolver for the type field.
+func (r *storagePathResolver) Type(ctx context.Context, obj *model.StoragePath) (model.StorageType, error) {
+	if obj.CanSeal.Bool && obj.CanStore.Bool {
+		return model.StorageTypeHybrid, nil
+	} else if obj.CanSeal.Bool {
+		return model.StorageTypeSeal, nil
+	} else if obj.CanStore.Bool {
+		return model.StorageTypeStore, nil
+	} else {
+		return model.StorageTypeReadonly, nil
+	}
+}
+
 // Storage returns graph.StorageResolver implementation.
 func (r *Resolver) Storage() graph.StorageResolver { return &storageResolver{r} }
 
-type storageResolver struct{ *Resolver }
+// StoragePath returns graph.StoragePathResolver implementation.
+func (r *Resolver) StoragePath() graph.StoragePathResolver { return &storagePathResolver{r} }
+
+type (
+	storageResolver     struct{ *Resolver }
+	storagePathResolver struct{ *Resolver }
+)

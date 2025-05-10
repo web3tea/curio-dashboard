@@ -62,7 +62,7 @@ func (l *ConfigLoaderImpl) configUsedMap(ctx context.Context) (map[string][]*mod
 	}
 	confMap := make(map[string][]*model.MachineDetail)
 	for _, md := range mds {
-		layers := strings.Split(md.Layers, ",")
+		layers := strings.Split(md.Layers.String, ",")
 		for _, layer := range layers {
 			confMap[layer] = append(confMap[layer], md)
 		}

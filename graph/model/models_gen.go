@@ -98,19 +98,19 @@ type GaugeCountValue struct {
 }
 
 type IPNIAdvertisement struct {
-	OrderNumber    int         `json:"orderNumber"`
-	PieceCid       *string     `json:"pieceCid"`
-	AdCid          *string     `json:"adCid"`
-	Previous       *string     `json:"previous"`
-	ContextID      types.Bytes `json:"contextId"`
-	PieceSize      *int        `json:"pieceSize"`
-	Provider       *IPNIPeerID `json:"provider" db:"-"`
-	ProviderPeerID *string     `json:"-" db:"provider"`
-	Entries        *string     `json:"entries"`
-	Addresses      *string     `json:"addresses"`
-	IsSkip         *bool       `json:"isSkip"`
-	IsRm           *bool       `json:"isRm"`
-	Signature      types.Bytes `json:"signature"`
+	OrderNumber    int              `json:"orderNumber"`
+	PieceCid       string           `json:"pieceCid"`
+	AdCid          string           `json:"adCid"`
+	Previous       types.NullString `json:"previous"`
+	ContextID      types.Bytes      `json:"contextId"`
+	PieceSize      int              `json:"pieceSize"`
+	Provider       *IPNIPeerID      `json:"provider" db:"-"`
+	ProviderPeerID string           `json:"-" db:"provider"`
+	Entries        string           `json:"entries"`
+	Addresses      string           `json:"addresses"`
+	IsSkip         bool             `json:"isSkip"`
+	IsRm           bool             `json:"isRm"`
+	Signature      types.Bytes      `json:"signature"`
 }
 
 type IPNIHead struct {
@@ -172,16 +172,16 @@ type Machine struct {
 }
 
 type MachineDetail struct {
-	ID          int       `json:"id"`
-	MachineName string    `json:"machineName"`
-	Tasks       string    `json:"tasks"`
-	TasksArray  []string  `json:"tasksArray"`
-	Layers      string    `json:"layers"`
-	LayersArray []string  `json:"layersArray"`
-	StartupTime time.Time `json:"startupTime"`
-	Miners      string    `json:"miners"`
-	MinersArray []string  `json:"minersArray"`
-	MachineID   int       `json:"machineId"`
+	ID          int              `json:"id"`
+	MachineName types.NullString `json:"machineName"`
+	Tasks       types.NullString `json:"tasks"`
+	TasksArray  []string         `json:"tasksArray"`
+	Layers      types.NullString `json:"layers"`
+	LayersArray []string         `json:"layersArray"`
+	StartupTime types.NullTime   `json:"startupTime"`
+	Miners      types.NullString `json:"miners"`
+	MinersArray []string         `json:"minersArray"`
+	MachineID   types.NullInt64  `json:"machineId"`
 }
 
 type MachineMetrics struct {
@@ -616,44 +616,44 @@ type StorageLiveness struct {
 }
 
 type StoragePath struct {
-	ID            string      `json:"id"`
-	StorageID     string      `json:"storageId"`
-	Type          StorageType `json:"type"`
-	Urls          string      `json:"urls"`
-	Weight        int         `json:"weight"`
-	MaxStorage    int         `json:"maxStorage"`
-	CanSeal       bool        `json:"canSeal"`
-	CanStore      bool        `json:"canStore"`
-	Groups        *string     `json:"groups"`
-	AllowTo       *string     `json:"allowTo"`
-	AllowTypes    *string     `json:"allowTypes"`
-	DenyTypes     *string     `json:"denyTypes"`
-	Capacity      int         `json:"capacity"`
-	Available     int         `json:"available"`
-	FsAvailable   int         `json:"fsAvailable"`
-	Reserved      int         `json:"reserved"`
-	Used          int         `json:"used"`
-	LastHeartbeat time.Time   `json:"lastHeartbeat"`
-	HeartbeatErr  *string     `json:"heartbeatErr"`
-	AllowMiners   string      `json:"allowMiners"`
-	DenyMiners    string      `json:"denyMiners"`
+	ID            string           `json:"id"`
+	StorageID     types.NullString `json:"storageId"`
+	Type          StorageType      `json:"type"`
+	Urls          types.NullString `json:"urls"`
+	Weight        types.NullInt64  `json:"weight"`
+	MaxStorage    types.NullInt64  `json:"maxStorage"`
+	CanSeal       types.NullBool   `json:"canSeal"`
+	CanStore      types.NullBool   `json:"canStore"`
+	Groups        types.NullString `json:"groups"`
+	AllowTo       types.NullString `json:"allowTo"`
+	AllowTypes    types.NullString `json:"allowTypes"`
+	DenyTypes     types.NullString `json:"denyTypes"`
+	Capacity      types.NullInt64  `json:"capacity"`
+	Available     types.NullInt64  `json:"available"`
+	FsAvailable   types.NullInt64  `json:"fsAvailable"`
+	Reserved      types.NullInt64  `json:"reserved"`
+	Used          types.NullInt64  `json:"used"`
+	LastHeartbeat types.NullTime   `json:"lastHeartbeat"`
+	HeartbeatErr  types.NullString `json:"heartbeatErr"`
+	AllowMiners   types.NullString `json:"allowMiners"`
+	DenyMiners    types.NullString `json:"denyMiners"`
 }
 
 type StorageStats struct {
 	Type             StorageType `json:"type"`
-	TotalCapacity    int         `json:"totalCapacity"`
-	TotalAvailable   int         `json:"totalAvailable"`
-	TotalUsed        int         `json:"totalUsed"`
-	TotalReserved    int         `json:"totalReserved"`
-	TotalFsAvailable int         `json:"totalFsAvailable"`
+	TotalCapacity    int64       `json:"totalCapacity"`
+	TotalAvailable   int64       `json:"totalAvailable"`
+	TotalUsed        int64       `json:"totalUsed"`
+	TotalReserved    int64       `json:"totalReserved"`
+	TotalFsAvailable int64       `json:"totalFsAvailable"`
 }
 
 type StorageUsage struct {
 	Time        time.Time `json:"time"`
-	Available   int       `json:"available"`
-	Used        int       `json:"used"`
-	Reserved    int       `json:"reserved"`
-	FsAvailable int       `json:"fsAvailable"`
+	Available   int64     `json:"available"`
+	Used        int64     `json:"used"`
+	Reserved    int64     `json:"reserved"`
+	FsAvailable int64     `json:"fsAvailable"`
 }
 
 type Subscription struct {

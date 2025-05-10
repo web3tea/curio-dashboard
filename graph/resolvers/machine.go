@@ -184,17 +184,17 @@ func (r *machineResolver) Metrics(ctx context.Context, obj *model.Machine) (*mod
 
 // TasksArray is the resolver for the tasksArray field.
 func (r *machineDetailResolver) TasksArray(ctx context.Context, obj *model.MachineDetail) ([]string, error) {
-	return strings.Split(obj.Tasks, ","), nil
+	return strings.Split(obj.Tasks.String, ","), nil
 }
 
 // LayersArray is the resolver for the layersArray field.
 func (r *machineDetailResolver) LayersArray(ctx context.Context, obj *model.MachineDetail) ([]string, error) {
-	return strings.Split(obj.Layers, ","), nil
+	return strings.Split(obj.Layers.String, ","), nil
 }
 
 // MinersArray is the resolver for the minersArray field.
 func (r *machineDetailResolver) MinersArray(ctx context.Context, obj *model.MachineDetail) ([]string, error) {
-	return strings.Split(obj.Miners, ","), nil
+	return strings.Split(obj.Miners.String, ","), nil
 }
 
 // Total is the resolver for the total field.

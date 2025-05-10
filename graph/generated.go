@@ -62,6 +62,7 @@ type ResolverRoot interface {
 	SectorLocation() SectorLocationResolver
 	SectorMeta() SectorMetaResolver
 	Storage() StorageResolver
+	StoragePath() StoragePathResolver
 	Subscription() SubscriptionResolver
 	Task() TaskResolver
 	TaskHistory() TaskHistoryResolver
@@ -1116,6 +1117,9 @@ type SectorMetaResolver interface {
 type StorageResolver interface {
 	Path(ctx context.Context, obj *model.Storage) (*model.StoragePath, error)
 	Liveness(ctx context.Context, obj *model.Storage) (*model.StorageLiveness, error)
+}
+type StoragePathResolver interface {
+	Type(ctx context.Context, obj *model.StoragePath) (model.StorageType, error)
 }
 type SubscriptionResolver interface {
 	Alerts(ctx context.Context, offset int) (<-chan *model.Alert, error)
@@ -12477,11 +12481,14 @@ func (ec *executionContext) _IPNIAdvertisement_pieceCid(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_pieceCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12518,11 +12525,14 @@ func (ec *executionContext) _IPNIAdvertisement_adCid(ctx context.Context, field 
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_adCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12559,11 +12569,14 @@ func (ec *executionContext) _IPNIAdvertisement_previous(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_previous(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12573,7 +12586,7 @@ func (ec *executionContext) fieldContext_IPNIAdvertisement_previous(_ context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -12644,11 +12657,14 @@ func (ec *executionContext) _IPNIAdvertisement_pieceSize(ctx context.Context, fi
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*int)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_pieceSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12732,11 +12748,14 @@ func (ec *executionContext) _IPNIAdvertisement_providerPeerID(ctx context.Contex
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_providerPeerID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12773,11 +12792,14 @@ func (ec *executionContext) _IPNIAdvertisement_entries(ctx context.Context, fiel
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_entries(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12814,11 +12836,14 @@ func (ec *executionContext) _IPNIAdvertisement_addresses(ctx context.Context, fi
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_addresses(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12855,11 +12880,14 @@ func (ec *executionContext) _IPNIAdvertisement_isSkip(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_isSkip(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -12896,11 +12924,14 @@ func (ec *executionContext) _IPNIAdvertisement_isRm(ctx context.Context, field g
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_IPNIAdvertisement_isRm(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14915,9 +14946,9 @@ func (ec *executionContext) _MachineDetail_machineName(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineDetail_machineName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14927,7 +14958,7 @@ func (ec *executionContext) fieldContext_MachineDetail_machineName(_ context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -14959,9 +14990,9 @@ func (ec *executionContext) _MachineDetail_tasks(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineDetail_tasks(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -14971,7 +15002,7 @@ func (ec *executionContext) fieldContext_MachineDetail_tasks(_ context.Context, 
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15044,9 +15075,9 @@ func (ec *executionContext) _MachineDetail_layers(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineDetail_layers(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15056,7 +15087,7 @@ func (ec *executionContext) fieldContext_MachineDetail_layers(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15129,9 +15160,9 @@ func (ec *executionContext) _MachineDetail_startupTime(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(types.NullTime)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNNullTime2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineDetail_startupTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15141,7 +15172,7 @@ func (ec *executionContext) fieldContext_MachineDetail_startupTime(_ context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type NullTime does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15173,9 +15204,9 @@ func (ec *executionContext) _MachineDetail_miners(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineDetail_miners(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15185,7 +15216,7 @@ func (ec *executionContext) fieldContext_MachineDetail_miners(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15258,9 +15289,9 @@ func (ec *executionContext) _MachineDetail_machineId(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_MachineDetail_machineId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -15270,7 +15301,7 @@ func (ec *executionContext) fieldContext_MachineDetail_machineId(_ context.Conte
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35173,9 +35204,9 @@ func (ec *executionContext) _StoragePath_storageId(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_storageId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35185,7 +35216,7 @@ func (ec *executionContext) fieldContext_StoragePath_storageId(_ context.Context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35205,7 +35236,7 @@ func (ec *executionContext) _StoragePath_type(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
+		return ec.resolvers.StoragePath().Type(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -35226,8 +35257,8 @@ func (ec *executionContext) fieldContext_StoragePath_type(_ context.Context, fie
 	fc = &graphql.FieldContext{
 		Object:     "StoragePath",
 		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type StorageType does not have child fields")
 		},
@@ -35261,9 +35292,9 @@ func (ec *executionContext) _StoragePath_urls(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_urls(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35273,7 +35304,7 @@ func (ec *executionContext) fieldContext_StoragePath_urls(_ context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35305,9 +35336,9 @@ func (ec *executionContext) _StoragePath_weight(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_weight(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35317,7 +35348,7 @@ func (ec *executionContext) fieldContext_StoragePath_weight(_ context.Context, f
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35349,9 +35380,9 @@ func (ec *executionContext) _StoragePath_maxStorage(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_maxStorage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35361,7 +35392,7 @@ func (ec *executionContext) fieldContext_StoragePath_maxStorage(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35393,9 +35424,9 @@ func (ec *executionContext) _StoragePath_canSeal(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(types.NullBool)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNNullBool2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_canSeal(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35405,7 +35436,7 @@ func (ec *executionContext) fieldContext_StoragePath_canSeal(_ context.Context, 
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			return nil, errors.New("field of type NullBool does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35437,9 +35468,9 @@ func (ec *executionContext) _StoragePath_canStore(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(types.NullBool)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNNullBool2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullBool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_canStore(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35449,7 +35480,7 @@ func (ec *executionContext) fieldContext_StoragePath_canStore(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			return nil, errors.New("field of type NullBool does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35476,11 +35507,14 @@ func (ec *executionContext) _StoragePath_groups(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_groups(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35490,7 +35524,7 @@ func (ec *executionContext) fieldContext_StoragePath_groups(_ context.Context, f
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35517,11 +35551,14 @@ func (ec *executionContext) _StoragePath_allowTo(ctx context.Context, field grap
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_allowTo(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35531,7 +35568,7 @@ func (ec *executionContext) fieldContext_StoragePath_allowTo(_ context.Context, 
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35558,11 +35595,14 @@ func (ec *executionContext) _StoragePath_allowTypes(ctx context.Context, field g
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_allowTypes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35572,7 +35612,7 @@ func (ec *executionContext) fieldContext_StoragePath_allowTypes(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35599,11 +35639,14 @@ func (ec *executionContext) _StoragePath_denyTypes(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_denyTypes(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35613,7 +35656,7 @@ func (ec *executionContext) fieldContext_StoragePath_denyTypes(_ context.Context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35645,9 +35688,9 @@ func (ec *executionContext) _StoragePath_capacity(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_capacity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35657,7 +35700,7 @@ func (ec *executionContext) fieldContext_StoragePath_capacity(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35689,9 +35732,9 @@ func (ec *executionContext) _StoragePath_available(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_available(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35701,7 +35744,7 @@ func (ec *executionContext) fieldContext_StoragePath_available(_ context.Context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35733,9 +35776,9 @@ func (ec *executionContext) _StoragePath_fsAvailable(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_fsAvailable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35745,7 +35788,7 @@ func (ec *executionContext) fieldContext_StoragePath_fsAvailable(_ context.Conte
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35777,9 +35820,9 @@ func (ec *executionContext) _StoragePath_reserved(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_reserved(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35789,7 +35832,7 @@ func (ec *executionContext) fieldContext_StoragePath_reserved(_ context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35821,9 +35864,9 @@ func (ec *executionContext) _StoragePath_used(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(types.NullInt64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNNullInt642githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullInt64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_used(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35833,7 +35876,7 @@ func (ec *executionContext) fieldContext_StoragePath_used(_ context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type NullInt64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35865,9 +35908,9 @@ func (ec *executionContext) _StoragePath_lastHeartbeat(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(types.NullTime)
 	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNNullTime2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullTime(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_lastHeartbeat(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35877,7 +35920,7 @@ func (ec *executionContext) fieldContext_StoragePath_lastHeartbeat(_ context.Con
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
+			return nil, errors.New("field of type NullTime does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35904,11 +35947,14 @@ func (ec *executionContext) _StoragePath_heartbeatErr(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_heartbeatErr(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35918,7 +35964,7 @@ func (ec *executionContext) fieldContext_StoragePath_heartbeatErr(_ context.Cont
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35950,9 +35996,9 @@ func (ec *executionContext) _StoragePath_allowMiners(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_allowMiners(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -35962,7 +36008,7 @@ func (ec *executionContext) fieldContext_StoragePath_allowMiners(_ context.Conte
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -35994,9 +36040,9 @@ func (ec *executionContext) _StoragePath_denyMiners(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(types.NullString)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StoragePath_denyMiners(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36006,7 +36052,7 @@ func (ec *executionContext) fieldContext_StoragePath_denyMiners(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type NullString does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36082,9 +36128,9 @@ func (ec *executionContext) _StorageStats_totalCapacity(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageStats_totalCapacity(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36094,7 +36140,7 @@ func (ec *executionContext) fieldContext_StorageStats_totalCapacity(_ context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36126,9 +36172,9 @@ func (ec *executionContext) _StorageStats_totalAvailable(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageStats_totalAvailable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36138,7 +36184,7 @@ func (ec *executionContext) fieldContext_StorageStats_totalAvailable(_ context.C
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36170,9 +36216,9 @@ func (ec *executionContext) _StorageStats_totalUsed(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageStats_totalUsed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36182,7 +36228,7 @@ func (ec *executionContext) fieldContext_StorageStats_totalUsed(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36214,9 +36260,9 @@ func (ec *executionContext) _StorageStats_totalReserved(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageStats_totalReserved(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36226,7 +36272,7 @@ func (ec *executionContext) fieldContext_StorageStats_totalReserved(_ context.Co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36258,9 +36304,9 @@ func (ec *executionContext) _StorageStats_totalFsAvailable(ctx context.Context, 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageStats_totalFsAvailable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36270,7 +36316,7 @@ func (ec *executionContext) fieldContext_StorageStats_totalFsAvailable(_ context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36346,9 +36392,9 @@ func (ec *executionContext) _StorageUsage_available(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageUsage_available(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36358,7 +36404,7 @@ func (ec *executionContext) fieldContext_StorageUsage_available(_ context.Contex
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36390,9 +36436,9 @@ func (ec *executionContext) _StorageUsage_used(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageUsage_used(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36402,7 +36448,7 @@ func (ec *executionContext) fieldContext_StorageUsage_used(_ context.Context, fi
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36434,9 +36480,9 @@ func (ec *executionContext) _StorageUsage_reserved(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageUsage_reserved(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36446,7 +36492,7 @@ func (ec *executionContext) fieldContext_StorageUsage_reserved(_ context.Context
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -36478,9 +36524,9 @@ func (ec *executionContext) _StorageUsage_fsAvailable(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(int64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_StorageUsage_fsAvailable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -36490,7 +36536,7 @@ func (ec *executionContext) fieldContext_StorageUsage_fsAvailable(_ context.Cont
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Int64 does not have child fields")
 		},
 	}
 	return fc, nil
@@ -42706,10 +42752,19 @@ func (ec *executionContext) _IPNIAdvertisement(ctx context.Context, sel ast.Sele
 			}
 		case "pieceCid":
 			out.Values[i] = ec._IPNIAdvertisement_pieceCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "adCid":
 			out.Values[i] = ec._IPNIAdvertisement_adCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "previous":
 			out.Values[i] = ec._IPNIAdvertisement_previous(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "contextId":
 			out.Values[i] = ec._IPNIAdvertisement_contextId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -42717,6 +42772,9 @@ func (ec *executionContext) _IPNIAdvertisement(ctx context.Context, sel ast.Sele
 			}
 		case "pieceSize":
 			out.Values[i] = ec._IPNIAdvertisement_pieceSize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "provider":
 			field := field
 
@@ -42752,14 +42810,29 @@ func (ec *executionContext) _IPNIAdvertisement(ctx context.Context, sel ast.Sele
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "providerPeerID":
 			out.Values[i] = ec._IPNIAdvertisement_providerPeerID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "entries":
 			out.Values[i] = ec._IPNIAdvertisement_entries(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "addresses":
 			out.Values[i] = ec._IPNIAdvertisement_addresses(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "isSkip":
 			out.Values[i] = ec._IPNIAdvertisement_isSkip(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "isRm":
 			out.Values[i] = ec._IPNIAdvertisement_isRm(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "signature":
 			out.Values[i] = ec._IPNIAdvertisement_signature(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -49546,92 +49619,138 @@ func (ec *executionContext) _StoragePath(ctx context.Context, sel ast.SelectionS
 		case "id":
 			out.Values[i] = ec._StoragePath_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "storageId":
 			out.Values[i] = ec._StoragePath_storageId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "type":
-			out.Values[i] = ec._StoragePath_type(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._StoragePath_type(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
 			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		case "urls":
 			out.Values[i] = ec._StoragePath_urls(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "weight":
 			out.Values[i] = ec._StoragePath_weight(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "maxStorage":
 			out.Values[i] = ec._StoragePath_maxStorage(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "canSeal":
 			out.Values[i] = ec._StoragePath_canSeal(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "canStore":
 			out.Values[i] = ec._StoragePath_canStore(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "groups":
 			out.Values[i] = ec._StoragePath_groups(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "allowTo":
 			out.Values[i] = ec._StoragePath_allowTo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "allowTypes":
 			out.Values[i] = ec._StoragePath_allowTypes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "denyTypes":
 			out.Values[i] = ec._StoragePath_denyTypes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "capacity":
 			out.Values[i] = ec._StoragePath_capacity(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "available":
 			out.Values[i] = ec._StoragePath_available(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "fsAvailable":
 			out.Values[i] = ec._StoragePath_fsAvailable(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "reserved":
 			out.Values[i] = ec._StoragePath_reserved(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "used":
 			out.Values[i] = ec._StoragePath_used(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "lastHeartbeat":
 			out.Values[i] = ec._StoragePath_lastHeartbeat(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "heartbeatErr":
 			out.Values[i] = ec._StoragePath_heartbeatErr(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
 		case "allowMiners":
 			out.Values[i] = ec._StoragePath_allowMiners(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		case "denyMiners":
 			out.Values[i] = ec._StoragePath_denyMiners(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				out.Invalids++
+				atomic.AddUint32(&out.Invalids, 1)
 			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
@@ -51646,6 +51765,16 @@ func (ec *executionContext) unmarshalNNullString2githubᚗcomᚋweb3teaᚋcurio�
 }
 
 func (ec *executionContext) marshalNNullString2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullString(ctx context.Context, sel ast.SelectionSet, v types.NullString) graphql.Marshaler {
+	return v
+}
+
+func (ec *executionContext) unmarshalNNullTime2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullTime(ctx context.Context, v any) (types.NullTime, error) {
+	var res types.NullTime
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNNullTime2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐNullTime(ctx context.Context, sel ast.SelectionSet, v types.NullTime) graphql.Marshaler {
 	return v
 }
 

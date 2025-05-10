@@ -23,6 +23,7 @@ export type Scalars = {
   NullBool: { input: any; output: any; }
   NullInt64: { input: any; output: any; }
   NullString: { input: any; output: any; }
+  NullTime: { input: any; output: any; }
   PeerID: { input: any; output: any; }
   Time: { input: any; output: any; }
   Uint64: { input: any; output: any; }
@@ -137,18 +138,18 @@ export type GaugeCountValue = {
 
 export type IpniAdvertisement = {
   __typename?: 'IPNIAdvertisement';
-  adCid?: Maybe<Scalars['String']['output']>;
-  addresses?: Maybe<Scalars['String']['output']>;
+  adCid: Scalars['String']['output'];
+  addresses: Scalars['String']['output'];
   contextId: Scalars['Bytes']['output'];
-  entries?: Maybe<Scalars['String']['output']>;
-  isRm?: Maybe<Scalars['Boolean']['output']>;
-  isSkip?: Maybe<Scalars['Boolean']['output']>;
+  entries: Scalars['String']['output'];
+  isRm: Scalars['Boolean']['output'];
+  isSkip: Scalars['Boolean']['output'];
   orderNumber: Scalars['Int']['output'];
-  pieceCid?: Maybe<Scalars['String']['output']>;
-  pieceSize?: Maybe<Scalars['Int']['output']>;
-  previous?: Maybe<Scalars['String']['output']>;
+  pieceCid: Scalars['String']['output'];
+  pieceSize: Scalars['Int']['output'];
+  previous: Scalars['NullString']['output'];
   provider?: Maybe<IpniPeerId>;
-  providerPeerID?: Maybe<Scalars['String']['output']>;
+  providerPeerID: Scalars['String']['output'];
   signature: Scalars['Bytes']['output'];
 };
 
@@ -229,14 +230,14 @@ export type MachineTaskHistoriesArgs = {
 export type MachineDetail = {
   __typename?: 'MachineDetail';
   id: Scalars['Int']['output'];
-  layers: Scalars['String']['output'];
+  layers: Scalars['NullString']['output'];
   layersArray?: Maybe<Array<Scalars['String']['output']>>;
-  machineId: Scalars['Int']['output'];
-  machineName: Scalars['String']['output'];
-  miners: Scalars['String']['output'];
+  machineId: Scalars['NullInt64']['output'];
+  machineName: Scalars['NullString']['output'];
+  miners: Scalars['NullString']['output'];
   minersArray?: Maybe<Array<Scalars['String']['output']>>;
-  startupTime: Scalars['Time']['output'];
-  tasks: Scalars['String']['output'];
+  startupTime: Scalars['NullTime']['output'];
+  tasks: Scalars['NullString']['output'];
   tasksArray?: Maybe<Array<Scalars['String']['output']>>;
 };
 
@@ -1235,36 +1236,36 @@ export type StorageLiveness = {
 
 export type StoragePath = {
   __typename?: 'StoragePath';
-  allowMiners: Scalars['String']['output'];
-  allowTo?: Maybe<Scalars['String']['output']>;
-  allowTypes?: Maybe<Scalars['String']['output']>;
-  available: Scalars['Int']['output'];
-  canSeal: Scalars['Boolean']['output'];
-  canStore: Scalars['Boolean']['output'];
-  capacity: Scalars['Int']['output'];
-  denyMiners: Scalars['String']['output'];
-  denyTypes?: Maybe<Scalars['String']['output']>;
-  fsAvailable: Scalars['Int']['output'];
-  groups?: Maybe<Scalars['String']['output']>;
-  heartbeatErr?: Maybe<Scalars['String']['output']>;
+  allowMiners: Scalars['NullString']['output'];
+  allowTo: Scalars['NullString']['output'];
+  allowTypes: Scalars['NullString']['output'];
+  available: Scalars['NullInt64']['output'];
+  canSeal: Scalars['NullBool']['output'];
+  canStore: Scalars['NullBool']['output'];
+  capacity: Scalars['NullInt64']['output'];
+  denyMiners: Scalars['NullString']['output'];
+  denyTypes: Scalars['NullString']['output'];
+  fsAvailable: Scalars['NullInt64']['output'];
+  groups: Scalars['NullString']['output'];
+  heartbeatErr: Scalars['NullString']['output'];
   id: Scalars['ID']['output'];
-  lastHeartbeat: Scalars['Time']['output'];
-  maxStorage: Scalars['Int']['output'];
-  reserved: Scalars['Int']['output'];
-  storageId: Scalars['String']['output'];
+  lastHeartbeat: Scalars['NullTime']['output'];
+  maxStorage: Scalars['NullInt64']['output'];
+  reserved: Scalars['NullInt64']['output'];
+  storageId: Scalars['NullString']['output'];
   type: StorageType;
-  urls: Scalars['String']['output'];
-  used: Scalars['Int']['output'];
-  weight: Scalars['Int']['output'];
+  urls: Scalars['NullString']['output'];
+  used: Scalars['NullInt64']['output'];
+  weight: Scalars['NullInt64']['output'];
 };
 
 export type StorageStats = {
   __typename?: 'StorageStats';
-  totalAvailable: Scalars['Int']['output'];
-  totalCapacity: Scalars['Int']['output'];
-  totalFsAvailable: Scalars['Int']['output'];
-  totalReserved: Scalars['Int']['output'];
-  totalUsed: Scalars['Int']['output'];
+  totalAvailable: Scalars['Int64']['output'];
+  totalCapacity: Scalars['Int64']['output'];
+  totalFsAvailable: Scalars['Int64']['output'];
+  totalReserved: Scalars['Int64']['output'];
+  totalUsed: Scalars['Int64']['output'];
   type: StorageType;
 };
 
@@ -1276,11 +1277,11 @@ export type StorageType =
 
 export type StorageUsage = {
   __typename?: 'StorageUsage';
-  available: Scalars['Int']['output'];
-  fsAvailable: Scalars['Int']['output'];
-  reserved: Scalars['Int']['output'];
+  available: Scalars['Int64']['output'];
+  fsAvailable: Scalars['Int64']['output'];
+  reserved: Scalars['Int64']['output'];
   time: Scalars['Time']['output'];
-  used: Scalars['Int']['output'];
+  used: Scalars['Int64']['output'];
 };
 
 export type Subscription = {
