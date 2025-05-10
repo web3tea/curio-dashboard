@@ -63,9 +63,8 @@ func (r *storagePathResolver) Type(ctx context.Context, obj *model.StoragePath) 
 		return model.StorageTypeSeal, nil
 	} else if obj.CanStore.Bool {
 		return model.StorageTypeStore, nil
-	} else {
-		return model.StorageTypeReadonly, nil
 	}
+	return model.StorageTypeReadonly, nil
 }
 
 // Storage returns graph.StorageResolver implementation.
@@ -74,7 +73,5 @@ func (r *Resolver) Storage() graph.StorageResolver { return &storageResolver{r} 
 // StoragePath returns graph.StoragePathResolver implementation.
 func (r *Resolver) StoragePath() graph.StoragePathResolver { return &storagePathResolver{r} }
 
-type (
-	storageResolver     struct{ *Resolver }
-	storagePathResolver struct{ *Resolver }
-)
+type storageResolver struct{ *Resolver }
+type storagePathResolver struct{ *Resolver }
