@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	io_prometheus_client "github.com/prometheus/client_model/go"
@@ -181,6 +182,21 @@ func (r *machineResolver) Metrics(ctx context.Context, obj *model.Machine) (*mod
 	return &result, nil
 }
 
+// TasksArray is the resolver for the tasksArray field.
+func (r *machineDetailResolver) TasksArray(ctx context.Context, obj *model.MachineDetail) ([]string, error) {
+	return strings.Split(obj.Tasks.String, ","), nil
+}
+
+// LayersArray is the resolver for the layersArray field.
+func (r *machineDetailResolver) LayersArray(ctx context.Context, obj *model.MachineDetail) ([]string, error) {
+	return strings.Split(obj.Layers.String, ","), nil
+}
+
+// MinersArray is the resolver for the minersArray field.
+func (r *machineDetailResolver) MinersArray(ctx context.Context, obj *model.MachineDetail) ([]string, error) {
+	return strings.Split(obj.Miners.String, ","), nil
+}
+
 // Total is the resolver for the total field.
 func (r *machineSummaryResolver) Total(ctx context.Context, obj *model.MachineSummary) (int, error) {
 	var total int
@@ -286,8 +302,12 @@ func (r *queryResolver) MachineSummary(ctx context.Context) (*model.MachineSumma
 // Machine returns graph.MachineResolver implementation.
 func (r *Resolver) Machine() graph.MachineResolver { return &machineResolver{r} }
 
+// MachineDetail returns graph.MachineDetailResolver implementation.
+func (r *Resolver) MachineDetail() graph.MachineDetailResolver { return &machineDetailResolver{r} }
+
 // MachineSummary returns graph.MachineSummaryResolver implementation.
 func (r *Resolver) MachineSummary() graph.MachineSummaryResolver { return &machineSummaryResolver{r} }
 
 type machineResolver struct{ *Resolver }
+type machineDetailResolver struct{ *Resolver }
 type machineSummaryResolver struct{ *Resolver }

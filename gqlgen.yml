@@ -113,15 +113,5 @@ models:
     model: "github.com/web3tea/curio-dashboard/types.NullInt64"
   NullBool:
     model: "github.com/web3tea/curio-dashboard/types.NullBool"
-  Porep:
-    fields:
-      id:
-        resolver: true
-      status:
-        resolver: true
-      currentTask:
-        resolver: true
-  Sector:
-    fields:
-      meta:
-        resolver: true
+  NullTime:
+    model: "github.com/web3tea/curio-dashboard/types.NullTime"

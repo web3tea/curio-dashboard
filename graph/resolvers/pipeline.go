@@ -130,7 +130,7 @@ func (r *porepResolver) Stage(ctx context.Context, obj *model.Porep) (model.Pore
 	if obj.AfterSdr && !obj.AfterTreeD {
 		return model.PorepStageTreeD, nil
 	}
-	return model.PorepStageSDR, nil
+	return model.PorepStageSdr, nil
 }
 
 // CurrentTask is the resolver for the currentTask field.
@@ -150,7 +150,7 @@ func (r *porepResolver) CurrentTask(ctx context.Context, obj *model.Porep) (*mod
 
 	var taskID *int
 	switch stage {
-	case model.PorepStageSDR:
+	case model.PorepStageSdr:
 		taskID = obj.TaskIDSdr
 	case model.PorepStageTreeD:
 		taskID = obj.TaskIDTreeD
@@ -198,13 +198,17 @@ func (r *porepResolver) CompactStages(ctx context.Context, obj *model.Porep) ([]
 
 	stages := []*model.TaskCompactStage{}
 
-	for _, stage := range model.AllPorepStages {
+	for _, stage := range model.AllPorepStage {
+		currentIdx := lo.IndexOf(model.AllPorepStage, current)
+		stageIdx := lo.IndexOf(model.AllPorepStage, stage)
 		ss := &model.TaskCompactStage{
-			Name:   stage.String(),
-			Status: lo.If(current > stage, model.TaskStatusCompleted).ElseIf(current == stage, model.TaskStatusRunning).Else(model.TaskStatusPending),
+			Name: stage.String(),
+			Status: lo.If(currentIdx > stageIdx, model.TaskStatusCompleted).
+				ElseIf(currentIdx == stageIdx, model.TaskStatusRunning).
+				Else(model.TaskStatusPending),
 		}
 		switch stage {
-		case model.PorepStageSDR:
+		case model.PorepStageSdr:
 			ss.TaskID = obj.TaskIDSdr
 		case model.PorepStageTreeD:
 			ss.TaskID = obj.TaskIDTreeD

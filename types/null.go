@@ -3,65 +3,86 @@ package types
 import (
 	"database/sql"
 	"io"
-	"strconv"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 type NullString struct {
 	sql.NullString
 }
 
-func MustNullString(v interface{}) NullString {
+func MustNullString(v any) NullString {
 	b := NullString{}
 	b.Scan(v) // nolint: errcheck
 	return b
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *NullString) UnmarshalGQL(v interface{}) error {
+func (b *NullString) UnmarshalGQL(v any) error {
 	return b.Scan(v)
 }
 
 // MarshalGQL implements the graphql.Marshaler interface
 func (b NullString) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.Quote(b.String)) // nolint: errcheck
+	graphql.MarshalString(b.String).MarshalGQL(w)
 }
 
 type NullInt64 struct {
 	sql.NullInt64
 }
 
-func MustNullInt64(v interface{}) NullInt64 {
+func MustNullInt64(v any) NullInt64 {
 	b := NullInt64{}
 	b.Scan(v) // nolint: errcheck
 	return b
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *NullInt64) UnmarshalGQL(v interface{}) error {
+func (b *NullInt64) UnmarshalGQL(v any) error {
 	return b.Scan(v)
 }
 
 // MarshalGQL implements the graphql.Marshaler interface
 func (b NullInt64) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.FormatInt(b.Int64, 10)) // nolint: errcheck
+	graphql.MarshalInt64(b.Int64).MarshalGQL(w)
 }
 
 type NullBool struct {
 	sql.NullBool
 }
 
-func MustNullBool(v interface{}) NullBool {
+func MustNullBool(v any) NullBool {
 	b := NullBool{}
 	b.Scan(v) // nolint: errcheck
 	return b
 }
 
 // UnmarshalGQL implements the graphql.Unmarshaler interface
-func (b *NullBool) UnmarshalGQL(v interface{}) error {
+func (b *NullBool) UnmarshalGQL(v any) error {
 	return b.Scan(v)
 }
 
 // MarshalGQL implements the graphql.Marshaler interface
 func (b NullBool) MarshalGQL(w io.Writer) {
-	io.WriteString(w, strconv.FormatBool(b.Bool)) // nolint: errcheck
+	graphql.MarshalBoolean(b.Bool).MarshalGQL(w)
+}
+
+type NullTime struct {
+	sql.NullTime
+}
+
+func MustNullTime(v any) NullTime {
+	b := NullTime{}
+	b.Scan(v) // nolint: errcheck
+	return b
+}
+
+// UnmarshalGQL implements the graphql.Unmarshaler interface
+func (b *NullTime) UnmarshalGQL(v any) error {
+	return b.Scan(v)
+}
+
+// MarshalGQL implements the graphql.Marshaler interface
+func (b NullTime) MarshalGQL(w io.Writer) {
+	graphql.MarshalTime(b.Time).MarshalGQL(w)
 }

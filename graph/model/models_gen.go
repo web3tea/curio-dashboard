@@ -52,6 +52,13 @@ type ClientFilterInput struct {
 	Info               string           `json:"info"`
 }
 
+type Config struct {
+	ID     int              `json:"id"`
+	Title  string           `json:"title"`
+	Config string           `json:"config"`
+	UsedBy []*MachineDetail `json:"usedBy"`
+}
+
 type DealCountSummary struct {
 	Boost  int `json:"boost"`
 	Direct int `json:"direct"`
@@ -90,6 +97,22 @@ type GaugeCountValue struct {
 	Value int    `json:"value"`
 }
 
+type IPNIAdvertisement struct {
+	OrderNumber    int              `json:"orderNumber"`
+	PieceCid       string           `json:"pieceCid"`
+	AdCid          string           `json:"adCid"`
+	Previous       types.NullString `json:"previous"`
+	ContextID      types.Bytes      `json:"contextId"`
+	PieceSize      int              `json:"pieceSize"`
+	Provider       *IPNIPeerID      `json:"provider" db:"-"`
+	ProviderPeerID string           `json:"-" db:"provider"`
+	Entries        string           `json:"entries"`
+	Addresses      string           `json:"addresses"`
+	IsSkip         bool             `json:"isSkip"`
+	IsRm           bool             `json:"isRm"`
+	Signature      types.Bytes      `json:"signature"`
+}
+
 type IPNIHead struct {
 	Head     string `json:"head"`
 	Provider string `json:"provider"`
@@ -98,6 +121,27 @@ type IPNIHead struct {
 type IPNIPeerID struct {
 	PeerID string        `json:"peerID"`
 	SpID   types.ActorID `json:"spID"`
+}
+
+type IPNIProvider struct {
+	SpID    types.ActorID      `json:"spID"`
+	PeerID  string             `json:"peerID"`
+	Head    string             `json:"head"`
+	AdCount int                `json:"adCount"`
+	Status  IPNIProviderStatus `json:"status"`
+}
+
+type IPNIStats struct {
+	TotalAdvertisements         int `json:"totalAdvertisements"`
+	PreviousTotalAdvertisements int `json:"previousTotalAdvertisements"`
+	Providers                   int `json:"providers"`
+	PreviousProviders           int `json:"previousProviders"`
+	Indexed                     int `json:"indexed"`
+	PreviousIndexed             int `json:"previousIndexed"`
+	Skipped                     int `json:"skipped"`
+	PreviousSkipped             int `json:"previousSkipped"`
+	PendingTasks                int `json:"pendingTasks"`
+	PreviousPendingTasks        int `json:"previousPendingTasks"`
 }
 
 type IPNITask struct {
@@ -113,17 +157,31 @@ type IPNITask struct {
 	CreatedAt    *time.Time     `json:"createdAt"`
 }
 
+type Machine struct {
+	ID            int             `json:"id"`
+	LastContact   time.Time       `json:"lastContact"`
+	HostAndPort   string          `json:"hostAndPort"`
+	CPU           int             `json:"cpu"`
+	RAM           int             `json:"ram"`
+	Gpu           float64         `json:"gpu"`
+	Detail        *MachineDetail  `json:"detail"`
+	Tasks         []*Task         `json:"tasks"`
+	TaskHistories []*TaskHistory  `json:"taskHistories"`
+	Storages      []*StoragePath  `json:"storages"`
+	Metrics       *MachineMetrics `json:"metrics"`
+}
+
 type MachineDetail struct {
-	ID          int       `json:"id"`
-	MachineName string    `json:"machineName"`
-	Tasks       string    `json:"tasks"`
-	TasksArray  []string  `json:"tasksArray"`
-	Layers      string    `json:"layers"`
-	LayersArray []string  `json:"layersArray"`
-	StartupTime time.Time `json:"startupTime"`
-	Miners      string    `json:"miners"`
-	MinersArray []string  `json:"minersArray"`
-	MachineID   int       `json:"machineId"`
+	ID          int              `json:"id"`
+	MachineName types.NullString `json:"machineName"`
+	Tasks       types.NullString `json:"tasks"`
+	TasksArray  []string         `json:"tasksArray"`
+	Layers      types.NullString `json:"layers"`
+	LayersArray []string         `json:"layersArray"`
+	StartupTime types.NullTime   `json:"startupTime"`
+	Miners      types.NullString `json:"miners"`
+	MinersArray []string         `json:"minersArray"`
+	MachineID   types.NullInt64  `json:"machineId"`
 }
 
 type MachineMetrics struct {
@@ -143,6 +201,19 @@ type MachineMetrics struct {
 	ProcessResidentMemoryBytes int                `json:"processResidentMemoryBytes"`
 	ProcessOpenFds             int                `json:"processOpenFds"`
 	ProcessMaxFds              int                `json:"processMaxFds"`
+}
+
+type MachineSummary struct {
+	Total            int       `json:"total"`
+	TotalUp          int       `json:"totalUp"`
+	TotalDown        int       `json:"totalDown"`
+	UniqueHostsTotal int       `json:"uniqueHostsTotal"`
+	UniqueHostsUp    int       `json:"uniqueHostsUp"`
+	UniqueHostsDown  int       `json:"uniqueHostsDown"`
+	TotalRAM         int       `json:"totalRam"`
+	TotalCPU         int       `json:"totalCpu"`
+	TotalGpu         float64   `json:"totalGpu"`
+	UpdatedAt        time.Time `json:"updatedAt"`
 }
 
 type MarketAllowFilter struct {
@@ -225,6 +296,11 @@ type MessageSend struct {
 	SendError    *string     `json:"sendError"`
 }
 
+type Metadata struct {
+	NetworkName      string `json:"networkName"`
+	GenesisTimestamp uint64 `json:"genesisTimestamp"`
+}
+
 type MinerBeneficiaryTerm struct {
 	Quota      types.BigInt `json:"quota"`
 	UsedQuota  types.BigInt `json:"usedQuota"`
@@ -274,6 +350,16 @@ type MiningCountAggregated struct {
 	Total    int       `json:"total"`
 	Won      int       `json:"won"`
 	Included int       `json:"included"`
+}
+
+type MiningCountSummary struct {
+	Start    time.Time           `json:"start"`
+	End      time.Time           `json:"end"`
+	Total    int                 `json:"total"`
+	Won      int                 `json:"won"`
+	Included int                 `json:"included"`
+	Actor    *types.Address      `json:"-"`
+	Previous *MiningCountSummary `json:"previous"`
 }
 
 type MiningStatusSummay struct {
@@ -343,6 +429,70 @@ type OpenSectorPiece struct {
 	IsSnap                        bool          `json:"isSnap"`
 }
 
+type PipelineSummary struct {
+	ID           types.Address `json:"id" db:"sp_id"`
+	Sdr          int           `json:"sdr"`
+	Trees        int           `json:"trees"`
+	PrecommitMsg int           `json:"precommitMsg"`
+	WaitSeed     int           `json:"waitSeed"`
+	Porep        int           `json:"porep"`
+	CommitMsg    int           `json:"commitMsg"`
+	Done         int           `json:"done"`
+	Failed       int           `json:"failed"`
+}
+
+type Porep struct {
+	ID                       string              `json:"id"`
+	SpID                     types.Address       `json:"spId"`
+	SectorNumber             int                 `json:"sectorNumber"`
+	CreateTime               time.Time           `json:"createTime"`
+	RegSealProof             int                 `json:"regSealProof"`
+	TicketEpoch              *int                `json:"ticketEpoch"`
+	TicketValue              types.Bytes         `json:"ticketValue"`
+	TaskIDSdr                *int                `json:"taskIdSdr"`
+	AfterSdr                 bool                `json:"afterSdr"`
+	TreeDCid                 *string             `json:"treeDCid"`
+	TaskIDTreeD              *int                `json:"taskIdTreeD"`
+	AfterTreeD               bool                `json:"afterTreeD"`
+	TaskIDTreeC              *int                `json:"taskIdTreeC"`
+	AfterTreeC               bool                `json:"afterTreeC"`
+	TreeRCid                 *string             `json:"treeRCid"`
+	TaskIDTreeR              *int                `json:"taskIdTreeR"`
+	AfterTreeR               bool                `json:"afterTreeR"`
+	PrecommitMsgCid          *string             `json:"precommitMsgCid"`
+	TaskIDPrecommitMsg       *int                `json:"taskIdPrecommitMsg"`
+	AfterPrecommitMsg        bool                `json:"afterPrecommitMsg"`
+	SeedEpoch                *int                `json:"seedEpoch"`
+	PrecommitMsgTsk          types.Bytes         `json:"precommitMsgTsk"`
+	AfterPrecommitMsgSuccess bool                `json:"afterPrecommitMsgSuccess"`
+	SeedValue                types.Bytes         `json:"seedValue"`
+	TaskIDPorep              *int                `json:"taskIdPorep"`
+	PorepProof               types.Bytes         `json:"porepProof"`
+	AfterPorep               bool                `json:"afterPorep"`
+	TaskIDFinalize           *int                `json:"taskIdFinalize"`
+	AfterFinalize            bool                `json:"afterFinalize"`
+	TaskIDMoveStorage        *int                `json:"taskIdMoveStorage"`
+	AfterMoveStorage         bool                `json:"afterMoveStorage"`
+	CommitMsgCid             *string             `json:"commitMsgCid"`
+	TaskIDCommitMsg          *int                `json:"taskIdCommitMsg"`
+	AfterCommitMsg           bool                `json:"afterCommitMsg"`
+	CommitMsgTsk             types.Bytes         `json:"commitMsgTsk"`
+	AfterCommitMsgSuccess    bool                `json:"afterCommitMsgSuccess"`
+	Failed                   bool                `json:"failed"`
+	FailedAt                 *time.Time          `json:"failedAt"`
+	FailedReason             string              `json:"failedReason"`
+	FailedReasonMsg          string              `json:"failedReasonMsg"`
+	TaskIDSynth              *int                `json:"taskIdSynth"`
+	AfterSynth               bool                `json:"afterSynth"`
+	UserSectorDurationEpochs *int                `json:"userSectorDurationEpochs"`
+	PrecommitReadyAt         *time.Time          `json:"precommitReadyAt"`
+	CommitReadyAt            *time.Time          `json:"commitReadyAt"`
+	Status                   TaskStatus          `json:"status"`
+	Stage                    PorepStage          `json:"stage"`
+	CurrentTask              *Task               `json:"currentTask"`
+	CompactStages            []*TaskCompactStage `json:"compactStages"`
+}
+
 type PowerClaim struct {
 	RawBytePower    *types.BigInt `json:"rawBytePower"`
 	QualityAdjPower *types.BigInt `json:"qualityAdjPower"`
@@ -379,6 +529,54 @@ type RunningTaskSummary struct {
 	Running         int     `json:"running"`
 	Queued          int     `json:"queued"`
 	AverageWaitTime float64 `json:"averageWaitTime"`
+}
+
+type Sector struct {
+	ID        string             `json:"id" db:"-"`
+	SpID      types.Address      `json:"spID"`
+	SectorNum int                `json:"sectorNum"`
+	Status    TaskStatus         `json:"status"`
+	Meta      *SectorMeta        `json:"meta"`
+	Porep     *Porep             `json:"porep"`
+	Locations []*SectorLocation  `json:"locations"`
+	Pieces    []*SectorMetaPiece `json:"pieces"`
+	Tasks     []*Task            `json:"tasks"`
+	Events    []*TaskHistory     `json:"events"`
+}
+
+type SectorLocation struct {
+	MinerID        types.Address    `json:"minerId"`
+	SectorNum      int              `json:"sectorNum"`
+	SectorFiletype int              `json:"sectorFiletype"`
+	StorageID      string           `json:"storageId"`
+	IsPrimary      types.NullBool   `json:"isPrimary"`
+	ReadTs         types.NullString `json:"readTs"`
+	ReadRefs       int              `json:"readRefs"`
+	WriteTs        types.NullString `json:"writeTs"`
+	WriteLockOwner types.NullString `json:"writeLockOwner"`
+	Storage        *Storage         `json:"storage" db:"-"`
+}
+
+type SectorMeta struct {
+	ID              string           `json:"id" db:"-"`
+	SpID            types.Address    `json:"spId"`
+	SectorNum       int              `json:"sectorNum"`
+	RegSealProof    int              `json:"regSealProof"`
+	TicketEpoch     int              `json:"ticketEpoch"`
+	TicketValue     types.Bytes      `json:"ticketValue"`
+	OrigSealedCid   string           `json:"origSealedCid"`
+	OrigUnsealedCid string           `json:"origUnsealedCid"`
+	CurSealedCid    string           `json:"curSealedCid"`
+	CurUnsealedCid  string           `json:"curUnsealedCid"`
+	MsgCidPrecommit types.NullString `json:"msgCidPrecommit"`
+	MsgCidCommit    types.NullString `json:"msgCidCommit"`
+	MsgCidUpdate    types.NullString `json:"msgCidUpdate"`
+	SeedEpoch       int              `json:"seedEpoch"`
+	SeedValue       types.Bytes      `json:"seedValue"`
+	ExpirationEpoch types.NullInt64  `json:"expirationEpoch"`
+	IsCc            bool             `json:"isCC"`
+	Deadline        types.NullInt64  `json:"deadline"`
+	Partition       types.NullInt64  `json:"partition"`
 }
 
 type SectorMetaPiece struct {
@@ -418,47 +616,70 @@ type StorageLiveness struct {
 }
 
 type StoragePath struct {
-	ID            string      `json:"id"`
-	StorageID     string      `json:"storageId"`
-	Type          StorageType `json:"type"`
-	Urls          string      `json:"urls"`
-	Weight        int         `json:"weight"`
-	MaxStorage    int         `json:"maxStorage"`
-	CanSeal       bool        `json:"canSeal"`
-	CanStore      bool        `json:"canStore"`
-	Groups        *string     `json:"groups"`
-	AllowTo       *string     `json:"allowTo"`
-	AllowTypes    *string     `json:"allowTypes"`
-	DenyTypes     *string     `json:"denyTypes"`
-	Capacity      int         `json:"capacity"`
-	Available     int         `json:"available"`
-	FsAvailable   int         `json:"fsAvailable"`
-	Reserved      int         `json:"reserved"`
-	Used          int         `json:"used"`
-	LastHeartbeat time.Time   `json:"lastHeartbeat"`
-	HeartbeatErr  *string     `json:"heartbeatErr"`
-	AllowMiners   string      `json:"allowMiners"`
-	DenyMiners    string      `json:"denyMiners"`
+	ID            string           `json:"id"`
+	StorageID     types.NullString `json:"storageId"`
+	Type          StorageType      `json:"type"`
+	Urls          types.NullString `json:"urls"`
+	Weight        types.NullInt64  `json:"weight"`
+	MaxStorage    types.NullInt64  `json:"maxStorage"`
+	CanSeal       types.NullBool   `json:"canSeal"`
+	CanStore      types.NullBool   `json:"canStore"`
+	Groups        types.NullString `json:"groups"`
+	AllowTo       types.NullString `json:"allowTo"`
+	AllowTypes    types.NullString `json:"allowTypes"`
+	DenyTypes     types.NullString `json:"denyTypes"`
+	Capacity      types.NullInt64  `json:"capacity"`
+	Available     types.NullInt64  `json:"available"`
+	FsAvailable   types.NullInt64  `json:"fsAvailable"`
+	Reserved      types.NullInt64  `json:"reserved"`
+	Used          types.NullInt64  `json:"used"`
+	LastHeartbeat types.NullTime   `json:"lastHeartbeat"`
+	HeartbeatErr  types.NullString `json:"heartbeatErr"`
+	AllowMiners   types.NullString `json:"allowMiners"`
+	DenyMiners    types.NullString `json:"denyMiners"`
 }
 
 type StorageStats struct {
 	Type             StorageType `json:"type"`
-	TotalCapacity    int         `json:"totalCapacity"`
-	TotalAvailable   int         `json:"totalAvailable"`
-	TotalUsed        int         `json:"totalUsed"`
-	TotalReserved    int         `json:"totalReserved"`
-	TotalFsAvailable int         `json:"totalFsAvailable"`
+	TotalCapacity    int64       `json:"totalCapacity"`
+	TotalAvailable   int64       `json:"totalAvailable"`
+	TotalUsed        int64       `json:"totalUsed"`
+	TotalReserved    int64       `json:"totalReserved"`
+	TotalFsAvailable int64       `json:"totalFsAvailable"`
 }
 
 type StorageUsage struct {
 	Time        time.Time `json:"time"`
-	Available   int       `json:"available"`
-	Used        int       `json:"used"`
-	Reserved    int       `json:"reserved"`
-	FsAvailable int       `json:"fsAvailable"`
+	Available   int64     `json:"available"`
+	Used        int64     `json:"used"`
+	Reserved    int64     `json:"reserved"`
+	FsAvailable int64     `json:"fsAvailable"`
 }
 
 type Subscription struct {
+}
+
+type Task struct {
+	ID             int            `json:"id"`
+	InitiatedByID  *int           `json:"initiatedByID" db:"initiated_by"`
+	InitiatedBy    *Machine       `json:"initiatedBy"`
+	UpdateTime     time.Time      `json:"updateTime"`
+	PostedTime     time.Time      `json:"postedTime"`
+	OwnerID        *int           `json:"ownerId"`
+	Owner          *Machine       `json:"owner"`
+	AddedByID      int            `json:"addedByID" db:"added_by"`
+	AddedBy        *Machine       `json:"addedBy"`
+	PreviousTaskID *int           `json:"previousTaskID" db:"previous_task"`
+	PreviousTask   *TaskHistory   `json:"previousTask"`
+	Name           string         `json:"name"`
+	Histories      []*TaskHistory `json:"histories"`
+}
+
+type TaskAggregate struct {
+	Time    time.Time `json:"time"`
+	Total   int       `json:"total"`
+	Success int       `json:"success"`
+	Failure int       `json:"failure"`
 }
 
 type TaskCompactStage struct {
@@ -477,6 +698,19 @@ type TaskDurationStats struct {
 	P90DurationSeconds    float64 `json:"p90DurationSeconds"`
 	P95DurationSeconds    float64 `json:"p95DurationSeconds"`
 	P99DurationSeconds    float64 `json:"p99DurationSeconds"`
+}
+
+type TaskHistory struct {
+	ID                     int       `json:"id"`
+	TaskID                 int       `json:"taskId"`
+	Name                   string    `json:"name"`
+	Posted                 time.Time `json:"posted"`
+	WorkStart              time.Time `json:"workStart"`
+	WorkEnd                time.Time `json:"workEnd"`
+	Result                 bool      `json:"result"`
+	Err                    *string   `json:"err"`
+	CompletedByHostAndPort string    `json:"completedByHostAndPort"`
+	CompletedBy            *Machine  `json:"completedBy"`
 }
 
 type TaskNameAggregate struct {
@@ -600,6 +834,69 @@ func (e *MiningTaskAggregateInterval) UnmarshalGQL(v any) error {
 }
 
 func (e MiningTaskAggregateInterval) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+type PorepStage string
+
+const (
+	PorepStageSdr              PorepStage = "SDR"
+	PorepStageTreeD            PorepStage = "TreeD"
+	PorepStageTreeC            PorepStage = "TreeC"
+	PorepStageTreeR            PorepStage = "TreeR"
+	PorepStageSynthetic        PorepStage = "Synthetic"
+	PorepStagePrecommitMsg     PorepStage = "PrecommitMsg"
+	PorepStagePrecommitMsgWait PorepStage = "PrecommitMsgWait"
+	PorepStageWaitSeed         PorepStage = "WaitSeed"
+	PorepStagePorep            PorepStage = "Porep"
+	PorepStageCommitMsg        PorepStage = "CommitMsg"
+	PorepStageCommitMsgWait    PorepStage = "CommitMsgWait"
+	PorepStageFinalize         PorepStage = "Finalize"
+	PorepStageMoveStorage      PorepStage = "MoveStorage"
+)
+
+var AllPorepStage = []PorepStage{
+	PorepStageSdr,
+	PorepStageTreeD,
+	PorepStageTreeC,
+	PorepStageTreeR,
+	PorepStageSynthetic,
+	PorepStagePrecommitMsg,
+	PorepStagePrecommitMsgWait,
+	PorepStageWaitSeed,
+	PorepStagePorep,
+	PorepStageCommitMsg,
+	PorepStageCommitMsgWait,
+	PorepStageFinalize,
+	PorepStageMoveStorage,
+}
+
+func (e PorepStage) IsValid() bool {
+	switch e {
+	case PorepStageSdr, PorepStageTreeD, PorepStageTreeC, PorepStageTreeR, PorepStageSynthetic, PorepStagePrecommitMsg, PorepStagePrecommitMsgWait, PorepStageWaitSeed, PorepStagePorep, PorepStageCommitMsg, PorepStageCommitMsgWait, PorepStageFinalize, PorepStageMoveStorage:
+		return true
+	}
+	return false
+}
+
+func (e PorepStage) String() string {
+	return string(e)
+}
+
+func (e *PorepStage) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = PorepStage(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid PorepStage", str)
+	}
+	return nil
+}
+
+func (e PorepStage) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 

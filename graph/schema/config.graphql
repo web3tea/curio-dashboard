@@ -2,7 +2,7 @@ type Config {
     id: Int!
     title: String!
     config: String!
-    usedBy: [MachineDetail]!
+    usedBy: [MachineDetail]! @goField(forceResolver: true)
 }
 
 extend type Query {

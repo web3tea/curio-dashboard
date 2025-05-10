@@ -16,7 +16,7 @@ import (
 
 // Provider is the resolver for the provider field.
 func (r *iPNIAdvertisementResolver) Provider(ctx context.Context, obj *model.IPNIAdvertisement) (*model.IPNIPeerID, error) {
-	return r.loader.IpniPeerID(ctx, nil, obj.ProviderPeerID)
+	return r.loader.IpniPeerID(ctx, nil, &obj.ProviderPeerID)
 }
 
 // Head is the resolver for the head field.

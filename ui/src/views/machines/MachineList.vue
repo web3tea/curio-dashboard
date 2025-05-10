@@ -20,7 +20,7 @@ const allLayers = computed(() => {
   const layers = new Set<string>()
   items.value.forEach(item => {
     if (item.detail?.layers) {
-      item.detail.layers.split(',').forEach(layer => {
+      item.detail.layers.split(',').forEach((layer: string) => {
         if (layer.trim()) {
           layers.add(layer.trim())
         }
@@ -34,7 +34,7 @@ const allSupportTasks = computed(() => {
   const tasks = new Set<string>()
   items.value.forEach(item => {
     if (item.detail?.tasks) {
-      item.detail.tasks.split(',').forEach(task => {
+      item.detail.tasks.split(',').forEach((task: string) => {
         if (task.trim()) {
           tasks.add(task.trim())
         }
@@ -90,8 +90,8 @@ const filterItems = computed(() => {
       if (!item.detail?.layers) return false
 
       // Check if any of the machine's layers are in the selected layers
-      const machineLayers = item.detail.layers.split(',').map(layer => layer.trim())
-      const hasSelectedLayer = machineLayers.some(layer =>
+      const machineLayers = item.detail.layers.split(',').map((layer: string) => layer.trim())
+      const hasSelectedLayer = machineLayers.some((layer: string) =>
         selectedLayers.value.includes(layer)
       )
 
@@ -103,8 +103,8 @@ const filterItems = computed(() => {
       if (!item.detail?.tasks) return false
 
       // Check if any of the machine's tasks are in the selected tasks
-      const machineTasks = item.detail.tasks.split(',').map(task => task.trim())
-      const hasSelectedTask = machineTasks.some(task =>
+      const machineTasks = item.detail.tasks.split(',').map((task: string) => task.trim())
+      const hasSelectedTask = machineTasks.some((task: string) =>
         selectedTasks.value.includes(task)
       )
 

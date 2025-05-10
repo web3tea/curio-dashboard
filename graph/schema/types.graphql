@@ -11,6 +11,7 @@ scalar ActorID
 scalar NullString
 scalar NullInt64
 scalar NullBool
+scalar NullTime
 
 enum TrendType {
     UP

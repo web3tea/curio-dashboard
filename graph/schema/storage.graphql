@@ -15,44 +15,44 @@ type StorageLiveness {
 
 type StoragePath {
     id: ID!
-    storageId: String!
-    type: StorageType!
-    urls: String!
-    weight: Int!
-    maxStorage: Int!
-    canSeal: Boolean!
-    canStore: Boolean!
-    groups: String
-    allowTo: String
-    allowTypes: String
-    denyTypes: String
-    capacity: Int!
-    available: Int!
-    fsAvailable: Int!
-    reserved: Int!
-    used: Int!
-    lastHeartbeat: Time!
-    heartbeatErr: String
-    allowMiners: String!
-    denyMiners: String!
+    storageId: NullString!
+    type: StorageType! @goField(forceResolver: true)
+    urls: NullString!
+    weight: NullInt64!
+    maxStorage: NullInt64!
+    canSeal: NullBool!
+    canStore: NullBool!
+    groups: NullString!
+    allowTo: NullString!
+    allowTypes: NullString!
+    denyTypes: NullString!
+    capacity: NullInt64!
+    available: NullInt64!
+    fsAvailable: NullInt64!
+    reserved: NullInt64!
+    used: NullInt64!
+    lastHeartbeat: NullTime!
+    heartbeatErr: NullString!
+    allowMiners: NullString!
+    denyMiners: NullString!
 }
 
 type StorageStats {
     type: StorageType!
-    totalCapacity: Int!
-    totalAvailable: Int!
-    totalUsed: Int!
-    totalReserved: Int!
-    totalFsAvailable: Int!
+    totalCapacity: Int64!
+    totalAvailable: Int64!
+    totalUsed: Int64!
+    totalReserved: Int64!
+    totalFsAvailable: Int64!
 }
 
 
 type StorageUsage {
     time: Time!
-    available: Int!
-    used: Int!
-    reserved: Int!
-    fsAvailable: Int!
+    available: Int64!
+    used: Int64!
+    reserved: Int64!
+    fsAvailable: Int64!
 }
 
 enum StorageType {

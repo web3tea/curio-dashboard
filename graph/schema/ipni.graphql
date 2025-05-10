@@ -1,14 +1,14 @@
 type IPNIStats {
-    totalAdvertisements: Int!
-    previousTotalAdvertisements: Int!
-    providers: Int!
-    previousProviders: Int!
-    indexed: Int!
-    previousIndexed: Int!
-    skipped: Int!
-    previousSkipped: Int!
-    pendingTasks: Int!
-    previousPendingTasks: Int!
+    totalAdvertisements: Int! @goField(forceResolver: true)
+    previousTotalAdvertisements: Int! @goField(forceResolver: true)
+    providers: Int! @goField(forceResolver: true)
+    previousProviders: Int! @goField(forceResolver: true)
+    indexed: Int! @goField(forceResolver: true)
+    previousIndexed: Int! @goField(forceResolver: true)
+    skipped: Int! @goField(forceResolver: true)
+    previousSkipped: Int! @goField(forceResolver: true)
+    pendingTasks: Int! @goField(forceResolver: true)
+    previousPendingTasks: Int! @goField(forceResolver: true)
 }
 
 # IPNI Advertisement object representing entries in the ipni table
@@ -17,20 +17,21 @@ type IPNIAdvertisement {
     orderNumber: Int!
 
     # Content identifiers
-    pieceCid: String
-    adCid: String
-    previous: String
+    pieceCid: String!
+    adCid: String!
+    previous: NullString!
     contextId: Bytes!
 
     # Advertisement metadata
-    pieceSize: Int
-    provider: IPNIPeerID
-    entries: String
-    addresses: String
+    pieceSize: Int!
+    provider: IPNIPeerID @goField(forceResolver: true) @goTag(key: "db", value: "-")
+    providerPeerID: String! @goTag(key: "json", value: "-") @goTag(key: "db", value: "provider")
+    entries: String!
+    addresses: String!
 
     # Status flags
-    isSkip: Boolean
-    isRm: Boolean
+    isSkip: Boolean!
+    isRm: Boolean!
     signature: Bytes!
 }
 
@@ -80,9 +81,9 @@ enum IPNIProviderStatus {
 type IPNIProvider {
     spID: ActorID!
     peerID: String!
-    head: String!
-    adCount: Int!
-    status: IPNIProviderStatus!
+    head: String! @goField(forceResolver: true)
+    adCount: Int! @goField(forceResolver: true)
+    status: IPNIProviderStatus! @goField(forceResolver: true)
 }
 
 extend type Query {

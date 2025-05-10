@@ -1,18 +1,18 @@
 type Sector {
-    id: ID!
+    id: ID! @goField(forceResolver: true) @goTag(key: "db", value: "-")
     spID: Address!
     sectorNum: Int!
-    status: TaskStatus!
-    meta: SectorMeta
-    porep: Porep
-    locations: [SectorLocation]!
-    pieces: [SectorMetaPiece]!
-    tasks: [Task]!
-    events: [TaskHistory]!
+    status: TaskStatus! @goField(forceResolver: true)
+    meta: SectorMeta @goField(forceResolver: true)
+    porep: Porep @goField(forceResolver: true)
+    locations: [SectorLocation]! @goField(forceResolver: true)
+    pieces: [SectorMetaPiece]! @goField(forceResolver: true)
+    tasks: [Task]! @goField(forceResolver: true)
+    events: [TaskHistory]! @goField(forceResolver: true)
 }
 
 type SectorMeta {
-    id: String!
+    id: String! @goField(forceResolver: true) @goTag(key: "db", value: "-")
     spId: Address!
     sectorNum: Int!
     regSealProof: Int!
@@ -22,13 +22,15 @@ type SectorMeta {
     origUnsealedCid: String!
     curSealedCid: String!
     curUnsealedCid: String!
-    msgCidPrecommit: String
-    msgCidCommit: String
-    msgCidUpdate: String
+    msgCidPrecommit: NullString!
+    msgCidCommit: NullString!
+    msgCidUpdate: NullString!
     seedEpoch: Int!
     seedValue: Bytes
-    expirationEpoch: Int
+    expirationEpoch: NullInt64!
     isCC: Boolean!
+    deadline: NullInt64!
+    partition: NullInt64!
 }
 
 type OpenSectorPiece {
@@ -58,13 +60,14 @@ type SectorLocation {
     sectorNum: Int!
     sectorFiletype: Int!
     storageId: String!
-    isPrimary: Boolean
-    readTs: String
+    isPrimary: NullBool!
+    readTs: NullString!
     readRefs: Int!
-    writeTs: String
-    writeLockOwner: String
-    storage: Storage
+    writeTs: NullString!
+    writeLockOwner: NullString!
+    storage: Storage @goField(forceResolver: true) @goTag(key: "db", value: "-")
 }
+
 
 type SectorMetaPiece {
     spID: Address!

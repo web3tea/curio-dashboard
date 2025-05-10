@@ -5,24 +5,24 @@ type Machine {
     cpu: Int!
     ram: Int!
     gpu: Float!
-    detail: MachineDetail
-    tasks: [Task]
-    taskHistories(last: Int!): [TaskHistory]
-    storages: [StoragePath]
-    metrics: MachineMetrics
+    detail: MachineDetail @goField(forceResolver: true)
+    tasks: [Task] @goField(forceResolver: true)
+    taskHistories(last: Int!): [TaskHistory] @goField(forceResolver: true)
+    storages: [StoragePath] @goField(forceResolver: true)
+    metrics: MachineMetrics @goField(forceResolver: true)
 }
 
 type MachineDetail {
     id: Int!
-    machineName: String!
-    tasks: String!
-    tasksArray: [String!]
-    layers: String!
-    layersArray: [String!]
-    startupTime: Time!
-    miners: String!
-    minersArray: [String!]
-    machineId: Int!
+    machineName: NullString!
+    tasks: NullString!
+    tasksArray: [String!] @goField(forceResolver: true)
+    layers: NullString!
+    layersArray: [String!] @goField(forceResolver: true)
+    startupTime: NullTime!
+    miners: NullString!
+    minersArray: [String!] @goField(forceResolver: true)
+    machineId: NullInt64!
 }
 
 
@@ -51,16 +51,16 @@ type MachineMetrics {
 }
 
 type MachineSummary {
-    total: Int!
-    totalUp: Int!
-    totalDown: Int!
-    uniqueHostsTotal: Int!
-    uniqueHostsUp: Int!
-    uniqueHostsDown: Int!
-    totalRam: Int!
-    totalCpu: Int!
-    totalGpu: Float!
-    updatedAt: Time!
+    total: Int! @goField(forceResolver: true)
+    totalUp: Int! @goField(forceResolver: true)
+    totalDown: Int! @goField(forceResolver: true)
+    uniqueHostsTotal: Int! @goField(forceResolver: true)
+    uniqueHostsUp: Int! @goField(forceResolver: true)
+    uniqueHostsDown: Int! @goField(forceResolver: true)
+    totalRam: Int! @goField(forceResolver: true)
+    totalCpu: Int! @goField(forceResolver: true)
+    totalGpu: Float! @goField(forceResolver: true)
+    updatedAt: Time! @goField(forceResolver: true)
 }
 
 extend type Query {
