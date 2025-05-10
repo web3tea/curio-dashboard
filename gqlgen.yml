@@ -115,17 +115,3 @@ models:
     model: "github.com/web3tea/curio-dashboard/types.NullBool"
   NullTime:
     model: "github.com/web3tea/curio-dashboard/types.NullTime"
-  ChainActor:
-    model: "github.com/filecoin-project/lotus/chain/types.Actor"
-  Porep:
-    fields:
-      id:
-        resolver: true
-      status:
-        resolver: true
-      currentTask:
-        resolver: true
-  Sector:
-    fields:
-      meta:
-        resolver: true

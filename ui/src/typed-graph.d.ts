@@ -16,7 +16,6 @@ export type Scalars = {
   Address: { input: any; output: any; }
   BigInt: { input: any; output: any; }
   Bytes: { input: any; output: any; }
-  ChainActor: { input: any; output: any; }
   FIL: { input: any; output: any; }
   Int64: { input: any; output: any; }
   JSON: { input: any; output: any; }
