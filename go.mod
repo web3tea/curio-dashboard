@@ -11,14 +11,16 @@ require (
 	github.com/filecoin-project/go-state-types v0.16.0
 	github.com/filecoin-project/lotus v1.32.2
 	github.com/georgysavva/scany/v2 v2.1.3
+	github.com/go-chi/chi/v5 v5.2.1
+	github.com/go-chi/cors v1.2.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/gorilla/websocket v1.5.3
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/ipfs/go-ipld-cbor v0.2.0
 	github.com/ipfs/go-log/v2 v2.5.1
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/jellydator/ttlcache/v3 v3.3.0
-	github.com/labstack/echo/v4 v4.12.0
 	github.com/libp2p/go-libp2p v0.39.1
 	github.com/multiformats/go-multiaddr v0.14.0
 	github.com/pelletier/go-toml v1.2.0
@@ -159,7 +161,6 @@ require (
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
-	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
@@ -244,7 +245,6 @@ require (
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/term v0.30.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
-	golang.org/x/time v0.11.0 // indirect
 	golang.org/x/tools v0.31.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250212204824-5a70512c5d8b // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
