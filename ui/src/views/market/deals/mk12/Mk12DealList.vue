@@ -29,13 +29,12 @@ watchDebounced(search, (value) => {
   searchDebounced.value = value?.trim() === '' ? undefined : value
 }, { debounce: 1000 })
 
-const { result, loading, refetch } = useQuery(GetMarketMk12Deals, {
+const { result, loading, refetch } = useQuery(GetMarketMk12Deals, () => ({
   filter: {
-    uuid: searchDebounced,
+    uuid: searchDebounced.value,
   },
-  offset: offset,
-  limit: limit,
-}, () => ({
+  offset: offset.value,
+  limit: limit.value,
   fetchPolicy: 'cache-first',
 }))
 const items: ComputedRef<[MarketMk12Deal]> = computed(() => result.value?.marketMk12Deals || [])
@@ -54,8 +53,8 @@ const itemsCount: ComputedRef<number> = computed(() => {
       />
     </template>
     <v-data-table-server
-      :items-per-page="limit"
-      :page="page"
+      v-model:items-per-page="limit"
+      v-model:page="page"
       fixed-header
       :headers="headers"
       hover
