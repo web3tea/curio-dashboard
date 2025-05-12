@@ -42,7 +42,7 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 			}
 
 			w.Header().Set("Content-Type", "application/json")
-			json.NewEncoder(w).Encode(map[string]string{
+			json.NewEncoder(w).Encode(map[string]string{ // nolint: errcheck
 				"token":       ts,
 				"username":    user.Username,
 				"description": u.Description,
@@ -56,7 +56,7 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 func writeError(w http.ResponseWriter, msg string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(map[string]string{
+	json.NewEncoder(w).Encode(map[string]string{ // nolint: errcheck
 		"message": msg,
 	})
 }
