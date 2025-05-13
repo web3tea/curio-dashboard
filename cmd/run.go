@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,14 +10,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 	"github.com/web3tea/curio-dashboard/graph/prometheus"
 	"github.com/web3tea/curio-dashboard/graph/resolvers"
 
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/filecoin-project/curio/build"
 	cliutil "github.com/filecoin-project/lotus/cli/util"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/urfave/cli/v2"
 	"github.com/web3tea/curio-dashboard/config"
 	"github.com/web3tea/curio-dashboard/db"
@@ -80,53 +80,56 @@ var runCmd = &cli.Command{
 			return fmt.Errorf("failed to setup network: %w", err)
 		}
 
-		e := echo.New()
-		e.Use(middleware.CORS())
+		r := chi.NewRouter()
+		r.Use(middleware.Recoverer)
+		r.Use(cors.AllowAll().Handler)
 
-		e.GET("/playground", playgroundHandler())
+		r.Get("/playground", playgroundHandler())
 
 		pc, err := prometheus.NewClient(cfg.Features.Metrics.Prometheus)
 		if err != nil {
 			return fmt.Errorf("failed to create prometheus client: %w", err)
 		}
+		graph.Router(r, cfg, resolvers.NewResolver(cfg, harmonyDB, chainAPI, curioAPI, pc))
+		r.Handle("/*", uiHandler())
 
-		if err := graph.Router(e, cfg, resolvers.NewResolver(cfg, harmonyDB, chainAPI, curioAPI, pc)); err != nil {
-			return fmt.Errorf("failed to setup GraphQL routes: %w", err)
+		srv := &http.Server{
+			Addr:    cfg.HTTP.Listen,
+			Handler: r,
 		}
-
-		e.GET("/*", uiHandler())
 
 		ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 		defer stop()
 		go func() {
-			if err := e.Start(cfg.HTTP.Listen); err != nil && !errors.Is(err, http.ErrServerClosed) {
-				e.Logger.Fatalf("shutting down the server: %s", err)
+			log.Infof("Starting server on %s", cfg.HTTP.Listen)
+			if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				log.Fatalf("listen: %s\n", err)
 			}
 		}()
 		<-ctx.Done()
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
-		if err := e.Shutdown(ctx); err != nil {
-			e.Logger.Fatal(err)
+		if err := srv.Shutdown(ctx); err != nil {
+			log.Fatalf("Server forced to shutdown: %v", err)
 		}
 		return nil
 	},
 }
 
-func playgroundHandler() echo.HandlerFunc {
-	h := playground.Handler("GraphQL playground", "/graphql")
-	return echo.WrapHandler(h)
+func playgroundHandler() http.HandlerFunc {
+	return playground.Handler("GraphQL playground", "/graphql")
 }
 
-func uiHandler() echo.HandlerFunc {
+func uiNotFound(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, "404: ui not build", http.StatusNotFound)
+}
+
+func uiHandler() http.Handler {
 	assets, _ := ui.Assets() // nolint:errcheck
 	if assets != nil {
-		fs := http.FileServer(http.FS(assets))
-		return echo.WrapHandler(http.StripPrefix("/", fs))
+		return http.FileServer(http.FS(assets))
 	}
-	return func(c echo.Context) error {
-		return c.String(http.StatusNotFound, "UI assets not found")
-	}
+	return http.HandlerFunc(uiNotFound)
 }
 
 func compareVersion(version1, version2 string) bool {
@@ -137,7 +140,7 @@ func compareVersion(version1, version2 string) bool {
 		return false
 	}
 
-	for i := 0; i < 2; i++ {
+	for i := range 2 {
 		num1, err1 := strconv.Atoi(v1Parts[i])
 		num2, err2 := strconv.Atoi(v2Parts[i])
 

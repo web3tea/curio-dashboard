@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/vektah/gqlparser/v2/ast"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -18,7 +19,6 @@ import (
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
 	logging "github.com/ipfs/go-log/v2"
-	"github.com/labstack/echo/v4"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/web3tea/curio-dashboard/config"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
@@ -26,17 +26,13 @@ import (
 
 var log = logging.Logger("graph")
 
-func Router(e *echo.Echo, cfg *config.Config, resolver ResolverRoot) error {
+func Router(r *chi.Mux, cfg *config.Config, resolver ResolverRoot) {
 	ah := authHandler{cfg: cfg}
-	e.POST("/auth/token", ah.Login)
-
-	group := e.Group("/graphql")
-	group.Match([]string{"GET"}, "", graphHandler(cfg, resolver))
-
-	return nil
+	r.Post("/auth/token", ah.Login)
+	r.Handle("/graphql", graphHandler(cfg, resolver))
 }
 
-func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
+func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 	srv := handler.New(NewExecutableSchema(Config{Resolvers: resolver}))
 	if cfg.Auth.Secret != "" {
 		log.Infof("JWT secret is set, graphql authentication is enabled")
@@ -102,7 +98,7 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) echo.HandlerFunc {
 		return gqlerror.Errorf("internal server error")
 	})
 
-	return echo.WrapHandler(srv)
+	return srv
 }
 
 type userKey struct{}

@@ -1,11 +1,11 @@
 package graph
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt"
-	"github.com/labstack/echo/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/web3tea/curio-dashboard/config"
 )
 
@@ -18,14 +18,13 @@ type authData struct {
 	Password string `json:"password"`
 }
 
-var authFailed = echo.NewHTTPError(http.StatusUnauthorized, "invalid username or password")
-
-func (h *authHandler) Login(c echo.Context) error {
-	user := new(authData)
-	if err := c.Bind(user); err != nil {
-		return authFailed
+func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
+	var user authData
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		writeError(w, "failed to decode request body", http.StatusBadRequest)
+		return
 	}
-
 	for _, u := range h.cfg.Auth.Users {
 		if u.Username == user.Username && u.Password == user.Password {
 			claims := jwt.MapClaims{}
@@ -38,15 +37,26 @@ func (h *authHandler) Login(c echo.Context) error {
 
 			ts, err := token.SignedString([]byte(h.cfg.Auth.Secret))
 			if err != nil {
-				return err
+				writeError(w, "failed to sign token", http.StatusInternalServerError)
+				return
 			}
 
-			return c.JSON(http.StatusOK, map[string]string{
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(map[string]string{ // nolint: errcheck
 				"token":       ts,
 				"username":    user.Username,
 				"description": u.Description,
 			})
+			return
 		}
 	}
-	return authFailed
+	writeError(w, "invalid username or password", http.StatusUnauthorized)
+}
+
+func writeError(w http.ResponseWriter, msg string, code int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(map[string]string{ // nolint: errcheck
+		"message": msg,
+	})
 }
