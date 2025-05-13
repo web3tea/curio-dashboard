@@ -91,14 +91,14 @@ type SectorSummary {
 }
 
 extend type Query {
-    sectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [Sector]
-    sectorsCount(actor: Address): Int!
-    sector(actor: Address!, sectorNumber: Int!): Sector
-    sectorSummary: SectorSummary
+    sectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [Sector] @hasRole(role: USER)
+    sectorsCount(actor: Address): Int! @hasRole(role: USER)
+    sector(actor: Address!, sectorNumber: Int!): Sector @hasRole(role: USER)
+    sectorSummary: SectorSummary @hasRole(role: USER)
 }
 
 extend type Mutation {
-    removeSector(miner: Address!, sectorNumber: Int!): Boolean!
-    restartSector(miner: Address!, sectorNumber: Int!): Boolean!
-    restartAllFailedSectors: Boolean!
+    removeSector(miner: Address!, sectorNumber: Int!): Boolean! @hasRole(role: OPERATOR)
+    restartSector(miner: Address!, sectorNumber: Int!): Boolean! @hasRole(role: OPERATOR)
+    restartAllFailedSectors: Boolean! @hasRole(role: OPERATOR)
 }

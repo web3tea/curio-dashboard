@@ -64,8 +64,8 @@ type MachineSummary {
 }
 
 extend type Query {
-    machine(id: Int!): Machine
-    machineByHostAndPort(hostAndPort: String!): Machine
-    machines: [Machine]
-    machineSummary: MachineSummary
+    machine(id: Int!): Machine @hasRole(role: USER)
+    machineByHostAndPort(hostAndPort: String!): Machine @hasRole(role: USER)
+    machines: [Machine] @hasRole(role: USER)
+    machineSummary: MachineSummary @hasRole(role: USER)
 }

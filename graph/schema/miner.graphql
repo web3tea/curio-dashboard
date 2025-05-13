@@ -64,6 +64,6 @@ type MinerBalance {
 }
 
 extend type Query {
-    miner(address: Address!): Miner
-    minerPower(address: Address): MinerPower
+    miner(address: Address!): Miner @hasRole(role: USER)
+    minerPower(address: Address): MinerPower @hasRole(role: USER)
 }

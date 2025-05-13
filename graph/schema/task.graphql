@@ -98,21 +98,21 @@ type TaskSummaryDay {
 }
 
 extend type Query {
-    task(id: Int!): Task
-    tasks: [Task]
-    tasksCount: Int!
-    taskHistories(start: Time, end: Time, hostPort: String, name: String, result: Boolean, offset: Int!, limit: Int!): [TaskHistory]
-    taskHistoriesCount(start: Time, end: Time, hostPort: String, name: String, result: Boolean): Int!
-    taskHistoriesAggregate(start: Time!, end: Time!, interval: TaskHistoriesAggregateInterval!): [TaskAggregate]
-    tasksStats(start: Time!, end: Time!, machine: String): [TaskStats]
-    taskNames: [String!]
-    taskSuccessRate(name: String, start: Time!, end: Time!): TaskSuccessRate
-    runningTaskSummary: RunningTaskSummary
-    taskDurationStats(name: String!, start: Time!, end: Time!): TaskDurationStats
-    tasksDurationStats(start: Time!, end: Time!): [TaskDurationStats!]!
+    task(id: Int!): Task @hasRole(role: USER)
+    tasks: [Task] @hasRole(role: USER)
+    tasksCount: Int! @hasRole(role: USER)
+    taskHistories(start: Time, end: Time, hostPort: String, name: String, result: Boolean, offset: Int!, limit: Int!): [TaskHistory] @hasRole(role: USER)
+    taskHistoriesCount(start: Time, end: Time, hostPort: String, name: String, result: Boolean): Int! @hasRole(role: USER)
+    taskHistoriesAggregate(start: Time!, end: Time!, interval: TaskHistoriesAggregateInterval!): [TaskAggregate] @hasRole(role: USER)
+    tasksStats(start: Time!, end: Time!, machine: String): [TaskStats] @hasRole(role: USER)
+    taskNames: [String!] @hasRole(role: USER)
+    taskSuccessRate(name: String, start: Time!, end: Time!): TaskSuccessRate @hasRole(role: USER)
+    runningTaskSummary: RunningTaskSummary @hasRole(role: USER)
+    taskDurationStats(name: String!, start: Time!, end: Time!): TaskDurationStats @hasRole(role: USER)
+    tasksDurationStats(start: Time!, end: Time!): [TaskDurationStats!]! @hasRole(role: USER)
 }
 
 extend type Subscription {
-    completedTask(machine: String, last: Int!): TaskHistory!
-    newTask(machineID: Int, last: Int!): Task!
+    completedTask(machine: String, last: Int!): TaskHistory! @hasRole(role: USER)
+    newTask(machineID: Int, last: Int!): Task! @hasRole(role: USER)
 }

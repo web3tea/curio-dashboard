@@ -9,9 +9,9 @@ type ChainHead {
 }
 
 extend type Query {
-    metadata: Metadata!
+    metadata: Metadata! @hasRole(role: USER)
 }
 
 extend type Subscription {
-    chainHead: ChainHead!
+    chainHead: ChainHead! @hasRole(role: USER)
 }

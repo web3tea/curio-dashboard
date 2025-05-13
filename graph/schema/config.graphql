@@ -6,12 +6,12 @@ type Config {
 }
 
 extend type Query {
-    config(layer: String!): Config
-    configs: [Config]
+    config(layer: String!): Config @hasRole(role: USER)
+    configs: [Config] @hasRole(role: USER)
 }
 
 extend type Mutation {
-    createConfig(title: String!, config: String!): Config
-    updateConfig(title: String!, config: String!): Config
-    removeConfig(title: String!): Config
+    createConfig(title: String!, config: String!): Config @hasRole(role: OPERATOR)
+    updateConfig(title: String!, config: String!): Config @hasRole(role: OPERATOR)
+    removeConfig(title: String!): Config @hasRole(role: OPERATOR)
 }

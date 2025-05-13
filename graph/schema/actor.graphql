@@ -20,6 +20,6 @@ type ActorDeadline {
 
 
 extend type Query {
-    actors: [Actor]
-    actor(address: Address!): Actor
+    actors: [Actor] @hasRole(role: USER)
+    actor(address: Address!): Actor @hasRole(role: USER)
 }

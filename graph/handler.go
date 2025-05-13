@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/samber/lo"
 	"github.com/vektah/gqlparser/v2/ast"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -22,6 +23,7 @@ import (
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/web3tea/curio-dashboard/config"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 var log = logging.Logger("graph")
@@ -32,8 +34,26 @@ func Router(r *chi.Mux, cfg *config.Config, resolver ResolverRoot) {
 	r.Handle("/graphql", graphHandler(cfg, resolver))
 }
 
+type (
+	userKey     struct{}
+	UserContext struct {
+		Username string
+		Role     model.Role
+	}
+)
+
 func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
-	srv := handler.New(NewExecutableSchema(Config{Resolvers: resolver}))
+	c := Config{Resolvers: resolver}
+	c.Directives.HasRole = func(ctx context.Context, obj any, next graphql.Resolver, role model.Role) (res any, err error) {
+		if cfg.Auth.Secret == "" {
+			return next(ctx)
+		}
+		if hasRole(ctx, role) {
+			return next(ctx)
+		}
+		return nil, fmt.Errorf("access denied: %s role required", role)
+	}
+	srv := handler.New(NewExecutableSchema(c))
 	if cfg.Auth.Secret != "" {
 		log.Infof("JWT secret is set, graphql authentication is enabled")
 	} else {
@@ -93,15 +113,13 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 		return err
 	})
 
-	srv.SetRecoverFunc(func(ctx context.Context, err interface{}) error {
+	srv.SetRecoverFunc(func(ctx context.Context, err any) error {
 		log.Error(err)
 		return gqlerror.Errorf("internal server error")
 	})
 
 	return srv
 }
-
-type userKey struct{}
 
 func webSocketInit(ctx context.Context, cfg *config.Config, initPayload transport.InitPayload) (context.Context, *transport.InitPayload, error) {
 	tokenKey := initPayload["authToken"]
@@ -110,7 +128,7 @@ func webSocketInit(ctx context.Context, cfg *config.Config, initPayload transpor
 		return nil, nil, errors.New("authToken not found in transport payload")
 	}
 
-	tc, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+	tc, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
 		return []byte(cfg.Auth.Secret), nil
 	})
 	if err != nil {
@@ -122,11 +140,41 @@ func webSocketInit(ctx context.Context, cfg *config.Config, initPayload transpor
 	claim := tc.Claims.(jwt.MapClaims)
 
 	username := claim["username"].(string)
+	uc, err := findUser(&cfg.Auth, username)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to find user: %w", err)
+	}
 
 	// put it in context
-	ctxNew := context.WithValue(ctx, userKey{}, username)
+	ctxNew := context.WithValue(ctx, userKey{}, &UserContext{
+		Username: username,
+		Role:     lo.If(uc.Role.IsValid(), uc.Role).Else(model.RoleUser),
+	})
 
 	return ctxNew, &transport.InitPayload{
 		"message": fmt.Sprintf("Hello, %s", username),
 	}, nil
+}
+
+func findUser(cfg *config.AuthConfig, username string) (*UserContext, error) {
+	for _, u := range cfg.Users {
+		if u.Username == username {
+			return &UserContext{
+				Username: u.Username,
+				Role:     model.Role(u.Role),
+			}, nil
+		}
+	}
+	return nil, fmt.Errorf("user %s not found", username)
+}
+
+func hasRole(ctx context.Context, role model.Role) bool {
+	if ctx == nil {
+		return false
+	}
+	user, ok := ctx.Value(userKey{}).(*UserContext)
+	if !ok {
+		return false
+	}
+	return user.Role.IsValid() && lo.IndexOf(model.AllRole, user.Role) >= lo.IndexOf(model.AllRole, role)
 }

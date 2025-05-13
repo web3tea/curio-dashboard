@@ -87,10 +87,10 @@ type IPNIProvider {
 }
 
 extend type Query {
-    ipniStats: IPNIStats!
+    ipniStats: IPNIStats! @hasRole(role: USER)
 
     # Get a single IPNI advertisement by order number
-    ipniAdvertisement(orderNumber: Int!): IPNIAdvertisement
+    ipniAdvertisement(orderNumber: Int!): IPNIAdvertisement @hasRole(role: USER)
 
     # Get a list of IPNI advertisements with pagination and filtering
     ipniAdvertisements(
@@ -99,7 +99,7 @@ extend type Query {
         provider: String
         isSkip: Boolean
         isRemoved: Boolean
-    ): [IPNIAdvertisement!]!
+    ): [IPNIAdvertisement!]! @hasRole(role: USER)
 
     # Get total count of IPNI advertisements matching the filters
     # This is separated for more efficient querying
@@ -107,24 +107,24 @@ extend type Query {
         provider: String
         isSkip: Boolean
         isRemoved: Boolean
-    ): Int!
+    ): Int! @hasRole(role: USER)
 
     # Get a single IPNI task by task ID
-    ipniTask(taskId: Int!): IPNITask
+    ipniTask(taskId: Int!): IPNITask @hasRole(role: USER)
 
     # Get a list of IPNI tasks with pagination and filtering
     ipniTasks(
         limit: Int
         spId: ActorID
         isRm: Boolean
-    ): [IPNITask!]!
+    ): [IPNITask!]! @hasRole(role: USER)
 
     # Get total count of IPNI tasks matching the filters
     ipniTasksCount(
         spId: ActorID
         isRm: Boolean
-    ): Int!
+    ): Int! @hasRole(role: USER)
 
-    ipniProviders: [IPNIProvider!]!
+    ipniProviders: [IPNIProvider!]! @hasRole(role: USER)
 
 }

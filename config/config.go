@@ -22,9 +22,13 @@ type MetricsConfig struct {
 	Prometheus string `toml:"prometheus" comment:"URL to connect to the Prometheus server"`
 }
 
+// UserConfig represents a user for the dashboard
+// Currently, the simplest way to store user information is used,
+// and in the future, consider using a database to store user information
 type UserConfig struct {
 	Username    string `toml:"username" comment:"Username for the user"`
 	Password    string `toml:"password" comment:"Password for the user, default to a random string"`
+	Role        string `toml:"role" comment:"Role for the user, allow 'admin', 'operator', 'user'. default to 'user'"`
 	Description string `toml:"description" comment:"Description for the user"`
 }
 
