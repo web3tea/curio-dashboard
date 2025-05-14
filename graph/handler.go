@@ -78,10 +78,9 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 			}
 		},
 	})
-	// srv.AddTransport(transport.Options{})
-	// srv.AddTransport(transport.GET{})
-	// srv.AddTransport(transport.POST{})
-	// srv.AddTransport(transport.MultipartForm{})
+	srv.AddTransport(transport.Options{})
+	srv.AddTransport(transport.GET{})
+	srv.AddTransport(transport.POST{})
 	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
 	srv.Use(extension.Introspection{})
 	srv.Use(extension.AutomaticPersistedQuery{

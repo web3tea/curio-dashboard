@@ -1,0 +1,5 @@
+enum Role {
+    USER # read-only
+    OPERATOR
+    ADMIN
+}

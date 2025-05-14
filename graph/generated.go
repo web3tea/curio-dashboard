@@ -5972,7 +5972,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/ipni.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/ipni.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql" "schema/user.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -6006,6 +6006,7 @@ var sources = []*ast.Source{
 	{Name: "schema/subscription.graphql", Input: sourceData("schema/subscription.graphql"), BuiltIn: false},
 	{Name: "schema/task.graphql", Input: sourceData("schema/task.graphql"), BuiltIn: false},
 	{Name: "schema/types.graphql", Input: sourceData("schema/types.graphql"), BuiltIn: false},
+	{Name: "schema/user.graphql", Input: sourceData("schema/user.graphql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
