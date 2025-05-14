@@ -17,7 +17,6 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/vektah/gqlparser/v2/gqlerror"
@@ -33,14 +32,6 @@ func Router(r *chi.Mux, cfg *config.Config, resolver ResolverRoot) {
 	r.Post("/auth/token", ah.Login)
 	r.Handle("/graphql", graphHandler(cfg, resolver))
 }
-
-type (
-	userKey     struct{}
-	UserContext struct {
-		Username string
-		Role     model.Role
-	}
-)
 
 func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 	c := Config{Resolvers: resolver}
@@ -122,45 +113,31 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 
 func webSocketInit(ctx context.Context, cfg *config.Config, initPayload transport.InitPayload) (context.Context, *transport.InitPayload, error) {
 	tokenKey := initPayload["authToken"]
-	token, ok := tokenKey.(string)
-	if !ok || token == "" {
+	tokenString, ok := tokenKey.(string)
+	if !ok || tokenString == "" {
 		return nil, nil, errors.New("authToken not found in transport payload")
 	}
 
-	tc, err := jwt.Parse(token, func(token *jwt.Token) (any, error) {
-		return []byte(cfg.Auth.Secret), nil
-	})
+	user, err := ValidateToken(tokenString, cfg.Auth.Secret, cfg.Auth.Users)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to parse token: %w", err)
-	}
-	if !tc.Valid {
-		return nil, nil, fmt.Errorf("invalid token")
-	}
-	claim := tc.Claims.(jwt.MapClaims)
-
-	username := claim["username"].(string)
-	uc, err := findUser(&cfg.Auth, username)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed to find user: %w", err)
+		log.Warnf("failed to validate token: %s", err)
+		return nil, nil, err
 	}
 
 	// put it in context
-	ctxNew := context.WithValue(ctx, userKey{}, &UserContext{
-		Username: username,
-		Role:     lo.If(uc.Role.IsValid(), uc.Role).Else(model.RoleUser),
-	})
+	ctxNew := context.WithValue(ctx, userKey{}, user)
 
 	return ctxNew, &transport.InitPayload{
-		"message": fmt.Sprintf("Hello, %s", username),
+		"message": fmt.Sprintf("Hello, %s", user.Username),
 	}, nil
 }
 
-func findUser(cfg *config.AuthConfig, username string) (*UserContext, error) {
-	for _, u := range cfg.Users {
+func FindUser(users []config.UserConfig, username string) (*UserContext, error) {
+	for _, u := range users {
 		if u.Username == username {
 			return &UserContext{
 				Username: u.Username,
-				Role:     model.Role(u.Role),
+				Role:     lo.If(model.Role(u.Role).IsValid(), model.Role(u.Role)).Else(model.RoleUser),
 			}, nil
 		}
 	}

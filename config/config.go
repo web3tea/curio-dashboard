@@ -28,7 +28,7 @@ type MetricsConfig struct {
 type UserConfig struct {
 	Username    string `toml:"username" comment:"Username for the user"`
 	Password    string `toml:"password" comment:"Password for the user, default to a random string"`
-	Role        string `toml:"role" comment:"Role for the user, allow 'admin', 'operator', 'user'. default to 'user'"`
+	Role        string `toml:"role" comment:"Role for the user, can be 'ADMIN', 'OPERATOR', 'USER', default to 'USER'"`
 	Description string `toml:"description" comment:"Description for the user"`
 }
 
