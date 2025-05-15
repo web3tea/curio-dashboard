@@ -176,9 +176,8 @@ func TokenExtractMiddleware(cfg *config.Config) func(next http.Handler) http.Han
 						ctx := context.WithValue(r.Context(), userKey{}, user)
 						next.ServeHTTP(w, r.WithContext(ctx))
 						return
-					} else {
-						log.Warnf("Invalid token: %v", err)
 					}
+					log.Warnf("Invalid token: %v", err)
 				}
 			}
 			// If we reach here, either no token was provided or it was invalid
