@@ -2,7 +2,6 @@ package graph
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -30,7 +29,7 @@ var log = logging.Logger("graph")
 func Router(r *chi.Mux, cfg *config.Config, resolver ResolverRoot) {
 	ah := authHandler{cfg: cfg}
 	r.Post("/auth/token", ah.Login)
-	r.Handle("/graphql", graphHandler(cfg, resolver))
+	r.With(TokenExtractMiddleware(cfg)).Handle("/graphql", graphHandler(cfg, resolver))
 }
 
 func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
@@ -115,7 +114,7 @@ func webSocketInit(ctx context.Context, cfg *config.Config, initPayload transpor
 	tokenKey := initPayload["authToken"]
 	tokenString, ok := tokenKey.(string)
 	if !ok || tokenString == "" {
-		return nil, nil, errors.New("authToken not found in transport payload")
+		return nil, nil, fmt.Errorf("no token found in init payload")
 	}
 
 	user, err := ValidateToken(tokenString, cfg.Auth.Secret, cfg.Auth.Users)
@@ -153,4 +152,38 @@ func hasRole(ctx context.Context, role model.Role) bool {
 		return false
 	}
 	return user.Role.IsValid() && lo.IndexOf(model.AllRole, user.Role) >= lo.IndexOf(model.AllRole, role)
+}
+
+func TokenExtractMiddleware(cfg *config.Config) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if cfg.Auth.Secret == "" {
+				log.Debugf("Authentication secret is not set, skipping authentication")
+				// Authentication disabled
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			// Try to extract and validate the token
+			authHeader := r.Header.Get("Authorization")
+			if authHeader != "" {
+				bearerPrefix := "Bearer "
+				if strings.HasPrefix(authHeader, bearerPrefix) {
+					tokenString := strings.TrimPrefix(authHeader, bearerPrefix)
+					user, err := ValidateToken(tokenString, cfg.Auth.Secret, cfg.Auth.Users)
+					if err == nil {
+						// Token is valid, add user to context
+						ctx := context.WithValue(r.Context(), userKey{}, user)
+						next.ServeHTTP(w, r.WithContext(ctx))
+						return
+					} else {
+						log.Warnf("Invalid token: %v", err)
+					}
+				}
+			}
+			// If we reach here, either no token was provided or it was invalid
+			// Continue without authentication
+			next.ServeHTTP(w, r)
+		})
+	}
 }

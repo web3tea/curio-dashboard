@@ -160,3 +160,28 @@ Follow these steps to build the dashboard from source:
 4. **Access the Dashboard**
    - Production URL: [http://localhost:9091](http://localhost:9091)
    - Development URL: [http://localhost:3000](http://localhost:3000) (`cd ui; pnpm dev`)
+
+## GraphQL Playground
+
+GraphQL Playground is a graphical, interactive, in-browser GraphQL IDE that allows you to explore and test the GraphQL API.
+
+### Accessing GraphQL Playground
+
+1. **Without Authentication**
+   - If authentication is disabled (no JWT secret configured), you can directly access the playground at:
+     - [http://localhost:9091/playground](http://localhost:9091/playground)
+
+2. **With Authentication**
+   - If authentication is enabled, you will need a valid token:
+     ```bash
+     ./curio-dashboard auth gt --user admin
+     ```
+   - In the playground interface, add a header with your token:
+     ```json
+     {
+       "Authorization": "Bearer <your_token>"
+     }
+     ```
+   - This token will allow you to execute authenticated GraphQL operations in the playground
+
+![Playground](assets/playground.png)
