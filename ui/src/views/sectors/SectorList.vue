@@ -86,16 +86,22 @@ function hasSealed (item: Sector): boolean {
             <v-col
               cols="12"
               md="3"
+              class="c-input-container"
             >
-              <MinerSelectInput v-model="selectedMiner" />
+              <MinerSelectInput 
+                v-model="selectedMiner"
+                class="c-input"
+              />
             </v-col>
             <v-col
               cols="6"
               md="3"
+              class="c-input-container"
             >
               <v-text-field
                 v-model="searchSectorNumberCache"
                 v-maska="options"
+                class="c-input"
                 clearable
                 color="primary"
                 data-maska-number
