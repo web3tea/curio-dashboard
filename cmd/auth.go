@@ -71,11 +71,10 @@ var validateToken = &cli.Command{
 		if err != nil {
 			return fmt.Errorf("failed to load config: %w", err)
 		}
-		token, err := graph.ValidateToken(cfg.Auth.Secret, c.String("token"), cfg.Auth.Users)
+		token, err := graph.ValidateToken(c.String("token"), cfg.Auth.Secret, cfg.Auth.Users)
 		if err != nil {
 			return fmt.Errorf("failed to validate token: %w", err)
 		}
-		fmt.Printf("Token: %s\n", token)
 		fmt.Printf("Username: %s\n", token.Username)
 		fmt.Printf("Role: %s\n", token.Role)
 		return nil
