@@ -114,24 +114,29 @@ const selectDateRange = computed({
                 <v-col
                   cols="4"
                   md="2"
+                  class="c-input-container"
                 >
-                  <TaskNameSelectInput v-model="name" />
+                  <TaskNameSelectInput class="c-input" v-model="name" />
                 </v-col>
                 <v-col
                   cols="4"
                   md="2"
+                  class="c-input-container"
                 >
                   <HostPortSelectInput
                     v-model="machine"
+                    class="c-input"
                     label="Completed By"
                   />
                 </v-col>
                 <v-col
                   cols="6"
                   md="2"
+                  class="c-input-container"
                 >
                   <BoolSelectInput
                     v-model="success"
+                    class="c-input"
                     true-title="Success"
                     false-title="Failure"
                   />
@@ -139,9 +144,11 @@ const selectDateRange = computed({
                 <v-col
                   cols="6"
                   md="3"
+                  class="c-input-container"
                 >
                   <DateRangeSelectInput
                     v-model="selectDateRange"
+                    class="c-input"
                     label="Date Range"
                   />
                 </v-col>
@@ -211,3 +218,6 @@ const selectDateRange = computed({
     </v-col>
   </v-row>
 </template>
+
+<style scoped lang="scss">
+</style>

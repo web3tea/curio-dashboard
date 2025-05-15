@@ -92,7 +92,7 @@ const menuItems = computed(() => {
       :rail="customizer.miniSidebar"
       rail-width="60"
     >
-      <div class="pa-5">
+      <div class="pa-3">
         <Logo />
       </div>
 

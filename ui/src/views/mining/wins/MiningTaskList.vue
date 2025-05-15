@@ -88,38 +88,23 @@ const headers = [
     variant="outlined"
   >
     <v-card-item>
-      <v-row
-        class="align-center"
-        justify="space-between"
-      >
-        <v-col
-          cols="6"
-          md="2"
-        >
-          <MinerSelectInput v-model="selectMiner" />
-        </v-col>
-        <v-col
-          cols="6"
-          md="3"
-        >
-          <DateRangeSelectInput
-            v-model="selectDateRange"
-            label="Date Range"
-          />
-        </v-col>
-        <v-col
-          cols="6"
-          md="2"
-        >
-          <v-switch
-            v-model="include"
-            color="primary"
-            :disabled="loading"
-            label="Valid"
-          />
-        </v-col>
-        <v-spacer />
-      </v-row>
+      <div class="action-box c-input-container">
+        <MinerSelectInput 
+          v-model="selectMiner" 
+          class="c-input miner-select"
+        />
+        <DateRangeSelectInput
+          v-model="selectDateRange"
+          class="c-input date-range-select"
+          label="Date Range"
+        />
+        <v-switch
+          v-model="include"
+          color="primary"
+          :disabled="loading"
+          label="Valid"
+        />
+      </div>
     </v-card-item>
     <v-divider />
     <v-card-text class="pa-0">
@@ -172,5 +157,32 @@ const headers = [
 </template>
 
 <style scoped lang="scss">
-
+.action-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  
+  .miner-select{
+    width: 200px;
+    max-width: 200px;
+    :deep(.v-input) {
+      width: 200px;
+    }
+    :deep(.v-input__control) {
+      width: 200px;
+    }
+  }
+  .date-range-select {
+    min-width: 180px;
+    :deep(.v-input) {
+      width: 180px;
+    }
+    :deep(.v-input__control) {
+      min-width: 180px;
+    }
+  }
+  .c-input {  
+    flex: 1;
+  }
+}
 </style>

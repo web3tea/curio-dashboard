@@ -77,10 +77,12 @@ const headers = [
             <v-col
               cols="12"
               md="3"
+              class="c-input-container"
             >
               <MinerSelectInput
                 v-if="allowSwitchMiner"
                 v-model="localAccount"
+                class="c-input"
               />
             </v-col>
           </v-row>
