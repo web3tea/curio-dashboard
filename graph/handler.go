@@ -134,9 +134,10 @@ func webSocketInit(ctx context.Context, cfg *config.Config, initPayload transpor
 func FindUser(users []config.UserConfig, username string) (*UserContext, error) {
 	for _, u := range users {
 		if u.Username == username {
+			ur := strings.ToUpper(u.Role)
 			return &UserContext{
 				Username: u.Username,
-				Role:     lo.If(model.Role(u.Role).IsValid(), model.Role(u.Role)).Else(model.RoleUser),
+				Role:     lo.If(model.Role(ur).IsValid(), model.Role(ur)).Else(model.RoleUser),
 			}, nil
 		}
 	}

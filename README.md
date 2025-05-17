@@ -12,9 +12,10 @@
 | ![Porep](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/porep.png) | ![IPNI](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/ipni.png) |
 ### Key Features
 
-- **Authenticated Access**: Secure login ensures data protection.
+- **Authenticated Access**: Secure login ensures data protection with role-based access control.
+- **Role-Based Permissions**: Built-in permission levels (Admin, Operator, User) for granular access control.
 - **Efficient Data Management**: Server-side pagination and filtering for handling large datasets.
-- **Responsive UI**: Dark/light mode support and mobile-friendly for enhanced usability.
+- **Responsive UI**: Dark/light mode support and responsive layout design for different screen sizes.
 - **Real-Time Monitoring**: Live data streaming for real-time insights.
 - **Data Visualizations**: Detailed charts to analyze cluster performance and trends.
 
@@ -125,7 +126,7 @@ Follow these steps to build the dashboard from source:
    ```
 
 2. **Edit the Configuration**
-   Adjust the `config.toml` to match your setup, or start with a [minimal configuration file](minimal.config.toml).
+   Adjust the `config.toml` to match your setup, including user roles and permissions, or start with a [minimal configuration file](minimal.config.toml).
 
 3. **Start the Backend**
    ```bash
@@ -135,6 +136,40 @@ Follow these steps to build the dashboard from source:
 4. **Access the Dashboard**
    - Production URL: [http://localhost:9091](http://localhost:9091)
    - Development URL: [http://localhost:3000](http://localhost:3000) (`cd ui; pnpm dev`)
+
+## User Authentication and Role Permissions
+
+The Curio Dashboard implements a role-based access control system with three permission levels:
+
+- **Admin**: Full system access with all privileges
+- **Operator**: Operational access for monitoring and management tasks
+- **User**: Basic read-only access for viewing dashboard data
+
+Configure users and their roles in the `config.toml` file:
+
+```toml
+[auth]
+secret = "your-jwt-secret"
+expires = 24  # Token expiration in hours
+
+[[auth.users]]
+username = "admin"
+password = "strong-password"
+role = "admin"
+description = "Administrator account"
+
+[[auth.users]]
+username = "operator"
+password = "secure-password"
+role = "operator"
+description = "Operations account"
+
+[[auth.users]]
+username = "user"
+password = "user-password"
+role = "user"
+description = "Read-only account"
+```
 
 ## GraphQL Playground
 
