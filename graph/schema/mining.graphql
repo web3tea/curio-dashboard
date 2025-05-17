@@ -48,11 +48,11 @@ type MiningStatusSummay {
 }
 
 extend type Query {
-    miningSummaryByDay(start: Time!, end: Time!): [MiningSummaryDay]
-    miningCount(start: Time!, end: Time!, actor: Address): MiningCount!
-    miningWins(start: Time, end: Time, actor: Address, include: Boolean, offset: Int!, limit: Int!): [MiningTask]
-    miningWinsCount(start: Time, end: Time, actor: Address, include: Boolean): Int!
-    miningCountSummary(start: Time!, end: Time!, actor: Address): MiningCountSummary
-    miningCountAggregate(start: Time!, end: Time!, actor: Address, interval: MiningTaskAggregateInterval!): [MiningCountAggregated]
-    miningStatusSummay(spID: ActorID, start: Time!, end: Time!): MiningStatusSummay
+    miningSummaryByDay(start: Time!, end: Time!): [MiningSummaryDay] @hasRole(role: USER)
+    miningCount(start: Time!, end: Time!, actor: Address): MiningCount! @hasRole(role: USER)
+    miningWins(start: Time, end: Time, actor: Address, include: Boolean, offset: Int!, limit: Int!): [MiningTask] @hasRole(role: USER)
+    miningWinsCount(start: Time, end: Time, actor: Address, include: Boolean): Int! @hasRole(role: USER)
+    miningCountSummary(start: Time!, end: Time!, actor: Address): MiningCountSummary @hasRole(role: USER)
+    miningCountAggregate(start: Time!, end: Time!, actor: Address, interval: MiningTaskAggregateInterval!): [MiningCountAggregated] @hasRole(role: USER)
+    miningStatusSummay(spID: ActorID, start: Time!, end: Time!): MiningStatusSummay @hasRole(role: USER)
 }

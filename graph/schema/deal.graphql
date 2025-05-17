@@ -65,13 +65,13 @@ type DealCountSummary {
 }
 
 extend type Query {
-  marketMk12Deals(filter: MarketMk12DealFilterInput!, limit: Int!, offset: Int!): [MarketMk12Deal!]!
-  marketMk12DealsCount(filter: MarketMk12DealFilterInput!): Int!
-  marketDealInfo(id: String!): DealInfo
-  marketDealCountSummary: DealCountSummary
-  dealsPending: [OpenSectorPiece]
+  marketMk12Deals(filter: MarketMk12DealFilterInput!, limit: Int!, offset: Int!): [MarketMk12Deal!]! @hasRole(role: USER)
+  marketMk12DealsCount(filter: MarketMk12DealFilterInput!): Int! @hasRole(role: USER)
+  marketDealInfo(id: String!): DealInfo @hasRole(role: USER)
+  marketDealCountSummary: DealCountSummary @hasRole(role: USER)
+  dealsPending: [OpenSectorPiece] @hasRole(role: USER)
 }
 
 extend type Mutation {
-    dealSealNow(miner: Address!, sectorNumber: Uint64!): Boolean!
+    dealSealNow(miner: Address!, sectorNumber: Uint64!): Boolean! @hasRole(role: OPERATOR)
 }

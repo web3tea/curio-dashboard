@@ -15,7 +15,7 @@ type MessageSend {
 }
 
 extend type Query {
-    messageSends(account: Address, offset: Int!, limit: Int!): [MessageSend]
-    messageSendsCount(account: Address): Int!
-    messageSend(sendTaskId: Int, fromKey: String, nonce: Int, signedCID: String): MessageSend
+    messageSends(account: Address, offset: Int!, limit: Int!): [MessageSend] @hasRole(role: USER)
+    messageSendsCount(account: Address): Int! @hasRole(role: USER)
+    messageSend(sendTaskId: Int, fromKey: String, nonce: Int, signedCID: String): MessageSend @hasRole(role: USER)
 }

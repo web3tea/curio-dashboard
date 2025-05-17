@@ -3,6 +3,6 @@ type PrometheusResponse {
 }
 
 extend type Query {
-  prometheusQuery(query: String!, time: Time): PrometheusResponse!
-  prometheusQueryRange(query: String!, start: Time!, end: Time!, step: Int!): PrometheusResponse!
+  prometheusQuery(query: String!, time: Time): PrometheusResponse! @hasRole(role: USER)
+  prometheusQueryRange(query: String!, start: Time!, end: Time!, step: Int!): PrometheusResponse! @hasRole(role: USER)
 }

@@ -69,6 +69,7 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	HasRole func(ctx context.Context, obj any, next graphql.Resolver, role model.Role) (res any, err error)
 }
 
 type ComplexityRoot struct {
@@ -5971,7 +5972,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/ipni.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/ipni.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql" "schema/user.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -6005,12 +6006,41 @@ var sources = []*ast.Source{
 	{Name: "schema/subscription.graphql", Input: sourceData("schema/subscription.graphql"), BuiltIn: false},
 	{Name: "schema/task.graphql", Input: sourceData("schema/task.graphql"), BuiltIn: false},
 	{Name: "schema/types.graphql", Input: sourceData("schema/types.graphql"), BuiltIn: false},
+	{Name: "schema/user.graphql", Input: sourceData("schema/user.graphql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) dir_hasRole_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.dir_hasRole_argsRole(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["role"] = arg0
+	return args, nil
+}
+func (ec *executionContext) dir_hasRole_argsRole(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (model.Role, error) {
+	if _, ok := rawArgs["role"]; !ok {
+		var zeroVal model.Role
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("role"))
+	if tmp, ok := rawArgs["role"]; ok {
+		return ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, tmp)
+	}
+
+	var zeroVal model.Role
+	return zeroVal, nil
+}
 
 func (ec *executionContext) field_Machine_taskHistories_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
@@ -21721,8 +21751,35 @@ func (ec *executionContext) _Mutation_createConfig(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateConfig(rctx, fc.Args["title"].(string), fc.Args["config"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().CreateConfig(rctx, fc.Args["title"].(string), fc.Args["config"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal *model.Config
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Config
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Config); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Config`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -21783,8 +21840,35 @@ func (ec *executionContext) _Mutation_updateConfig(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateConfig(rctx, fc.Args["title"].(string), fc.Args["config"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().UpdateConfig(rctx, fc.Args["title"].(string), fc.Args["config"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal *model.Config
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Config
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Config); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Config`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -21845,8 +21929,35 @@ func (ec *executionContext) _Mutation_removeConfig(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RemoveConfig(rctx, fc.Args["title"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().RemoveConfig(rctx, fc.Args["title"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal *model.Config
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Config
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Config); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Config`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -21907,8 +22018,35 @@ func (ec *executionContext) _Mutation_dealSealNow(ctx context.Context, field gra
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DealSealNow(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(uint64))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().DealSealNow(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(uint64))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -21962,8 +22100,35 @@ func (ec *executionContext) _Mutation_marketAddBalance(ctx context.Context, fiel
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketAddBalance(rctx, fc.Args["miner"].(types.Address), fc.Args["wallet"].(types.Address), fc.Args["amount"].(types.FIL))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketAddBalance(rctx, fc.Args["miner"].(types.Address), fc.Args["wallet"].(types.Address), fc.Args["amount"].(types.FIL))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "ADMIN")
+			if err != nil {
+				var zeroVal *model.MarketBalance
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MarketBalance
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MarketBalance); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MarketBalance`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22022,8 +22187,35 @@ func (ec *executionContext) _Mutation_updateMarketMk12StorageAsk(ctx context.Con
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMarketMk12StorageAsk(rctx, fc.Args["input"].(model.MarketMk12StorageAskInput))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().UpdateMarketMk12StorageAsk(rctx, fc.Args["input"].(model.MarketMk12StorageAskInput))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal *model.MarketMk12StorageAsk
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MarketMk12StorageAsk
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MarketMk12StorageAsk); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MarketMk12StorageAsk`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22092,8 +22284,35 @@ func (ec *executionContext) _Mutation_marketAddPriceFilter(ctx context.Context, 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketAddPriceFilter(rctx, fc.Args["input"].(model.PriceFilterInput))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketAddPriceFilter(rctx, fc.Args["input"].(model.PriceFilterInput))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22147,8 +22366,35 @@ func (ec *executionContext) _Mutation_marketUpdatePriceFilter(ctx context.Contex
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketUpdatePriceFilter(rctx, fc.Args["input"].(model.PriceFilterInput))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketUpdatePriceFilter(rctx, fc.Args["input"].(model.PriceFilterInput))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal *model.PriceFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.PriceFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.PriceFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.PriceFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22215,8 +22461,35 @@ func (ec *executionContext) _Mutation_marketDeletePriceFilter(ctx context.Contex
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketDeletePriceFilter(rctx, fc.Args["name"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketDeletePriceFilter(rctx, fc.Args["name"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22270,8 +22543,35 @@ func (ec *executionContext) _Mutation_marketAddClientFilter(ctx context.Context,
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketAddClientFilter(rctx, fc.Args["input"].(model.ClientFilterInput))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketAddClientFilter(rctx, fc.Args["input"].(model.ClientFilterInput))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22325,8 +22625,35 @@ func (ec *executionContext) _Mutation_marketUpdateClientFilter(ctx context.Conte
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketUpdateClientFilter(rctx, fc.Args["input"].(model.ClientFilterInput))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketUpdateClientFilter(rctx, fc.Args["input"].(model.ClientFilterInput))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal *model.ClientFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.ClientFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.ClientFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.ClientFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22395,8 +22722,35 @@ func (ec *executionContext) _Mutation_marketDeleteClientFilter(ctx context.Conte
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketDeleteClientFilter(rctx, fc.Args["name"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketDeleteClientFilter(rctx, fc.Args["name"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22450,8 +22804,35 @@ func (ec *executionContext) _Mutation_marketToggleClientFilter(ctx context.Conte
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketToggleClientFilter(rctx, fc.Args["name"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketToggleClientFilter(rctx, fc.Args["name"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22505,8 +22886,35 @@ func (ec *executionContext) _Mutation_marketSetAllowFilter(ctx context.Context, 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketSetAllowFilter(rctx, fc.Args["wallet"].(types.Address), fc.Args["status"].(bool))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketSetAllowFilter(rctx, fc.Args["wallet"].(types.Address), fc.Args["status"].(bool))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal *model.MarketAllowFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MarketAllowFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MarketAllowFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MarketAllowFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22563,8 +22971,35 @@ func (ec *executionContext) _Mutation_marketDeleteAllowFilter(ctx context.Contex
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketDeleteAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketDeleteAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22618,8 +23053,35 @@ func (ec *executionContext) _Mutation_marketToggleAllowFilter(ctx context.Contex
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().MarketToggleAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().MarketToggleAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22673,8 +23135,35 @@ func (ec *executionContext) _Mutation_removeSector(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RemoveSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().RemoveSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22728,8 +23217,35 @@ func (ec *executionContext) _Mutation_restartSector(ctx context.Context, field g
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RestartSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().RestartSector(rctx, fc.Args["miner"].(types.Address), fc.Args["sectorNumber"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -22783,8 +23299,35 @@ func (ec *executionContext) _Mutation_restartAllFailedSectors(ctx context.Contex
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RestartAllFailedSectors(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().RestartAllFailedSectors(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "OPERATOR")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -26979,8 +27522,35 @@ func (ec *executionContext) _Query_actors(ctx context.Context, field graphql.Col
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Actors(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Actors(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Actor
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Actor
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Actor); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Actor`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27040,8 +27610,35 @@ func (ec *executionContext) _Query_actor(ctx context.Context, field graphql.Coll
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Actor(rctx, fc.Args["address"].(types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Actor(rctx, fc.Args["address"].(types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Actor
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Actor
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Actor); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Actor`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27112,8 +27709,35 @@ func (ec *executionContext) _Query_alerts(ctx context.Context, field graphql.Col
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Alerts(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Alerts(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Alert
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Alert
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Alert); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Alert`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27161,8 +27785,35 @@ func (ec *executionContext) _Query_config(ctx context.Context, field graphql.Col
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Config(rctx, fc.Args["layer"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Config(rctx, fc.Args["layer"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Config
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Config
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Config); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Config`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27223,8 +27874,35 @@ func (ec *executionContext) _Query_configs(ctx context.Context, field graphql.Co
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Configs(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Configs(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Config
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Config
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Config); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Config`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27274,8 +27952,35 @@ func (ec *executionContext) _Query_marketMk12Deals(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12Deals(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput), fc.Args["limit"].(int), fc.Args["offset"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketMk12Deals(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput), fc.Args["limit"].(int), fc.Args["offset"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MarketMk12Deal
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MarketMk12Deal
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MarketMk12Deal); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MarketMk12Deal`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27375,8 +28080,35 @@ func (ec *executionContext) _Query_marketMk12DealsCount(ctx context.Context, fie
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12DealsCount(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketMk12DealsCount(rctx, fc.Args["filter"].(model.MarketMk12DealFilterInput))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27430,8 +28162,35 @@ func (ec *executionContext) _Query_marketDealInfo(ctx context.Context, field gra
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketDealInfo(rctx, fc.Args["id"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketDealInfo(rctx, fc.Args["id"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.DealInfo
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.DealInfo
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.DealInfo); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.DealInfo`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27532,8 +28291,35 @@ func (ec *executionContext) _Query_marketDealCountSummary(ctx context.Context, f
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketDealCountSummary(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketDealCountSummary(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.DealCountSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.DealCountSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.DealCountSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.DealCountSummary`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27581,8 +28367,35 @@ func (ec *executionContext) _Query_dealsPending(ctx context.Context, field graph
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().DealsPending(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().DealsPending(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.OpenSectorPiece
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.OpenSectorPiece
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.OpenSectorPiece); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.OpenSectorPiece`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27662,8 +28475,35 @@ func (ec *executionContext) _Query_ipniStats(ctx context.Context, field graphql.
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniStats(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniStats(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.IPNIStats
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.IPNIStats
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.IPNIStats); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.IPNIStats`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27728,8 +28568,35 @@ func (ec *executionContext) _Query_ipniAdvertisement(ctx context.Context, field 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniAdvertisement(rctx, fc.Args["orderNumber"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniAdvertisement(rctx, fc.Args["orderNumber"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.IPNIAdvertisement
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.IPNIAdvertisement
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.IPNIAdvertisement); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.IPNIAdvertisement`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27808,8 +28675,35 @@ func (ec *executionContext) _Query_ipniAdvertisements(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniAdvertisements(rctx, fc.Args["offset"].(int), fc.Args["limit"].(int), fc.Args["provider"].(*string), fc.Args["isSkip"].(*bool), fc.Args["isRemoved"].(*bool))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniAdvertisements(rctx, fc.Args["offset"].(int), fc.Args["limit"].(int), fc.Args["provider"].(*string), fc.Args["isSkip"].(*bool), fc.Args["isRemoved"].(*bool))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.IPNIAdvertisement
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.IPNIAdvertisement
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.IPNIAdvertisement); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.IPNIAdvertisement`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27891,8 +28785,35 @@ func (ec *executionContext) _Query_ipniAdvertisementsCount(ctx context.Context, 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniAdvertisementsCount(rctx, fc.Args["provider"].(*string), fc.Args["isSkip"].(*bool), fc.Args["isRemoved"].(*bool))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniAdvertisementsCount(rctx, fc.Args["provider"].(*string), fc.Args["isSkip"].(*bool), fc.Args["isRemoved"].(*bool))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -27946,8 +28867,35 @@ func (ec *executionContext) _Query_ipniTask(ctx context.Context, field graphql.C
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniTask(rctx, fc.Args["taskId"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniTask(rctx, fc.Args["taskId"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.IPNITask
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.IPNITask
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.IPNITask); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.IPNITask`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28020,8 +28968,35 @@ func (ec *executionContext) _Query_ipniTasks(ctx context.Context, field graphql.
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniTasks(rctx, fc.Args["limit"].(*int), fc.Args["spId"].(*types.ActorID), fc.Args["isRm"].(*bool))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniTasks(rctx, fc.Args["limit"].(*int), fc.Args["spId"].(*types.ActorID), fc.Args["isRm"].(*bool))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.IPNITask
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.IPNITask
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.IPNITask); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.IPNITask`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28097,8 +29072,35 @@ func (ec *executionContext) _Query_ipniTasksCount(ctx context.Context, field gra
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniTasksCount(rctx, fc.Args["spId"].(*types.ActorID), fc.Args["isRm"].(*bool))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniTasksCount(rctx, fc.Args["spId"].(*types.ActorID), fc.Args["isRm"].(*bool))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28152,8 +29154,35 @@ func (ec *executionContext) _Query_ipniProviders(ctx context.Context, field grap
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().IpniProviders(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().IpniProviders(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.IPNIProvider
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.IPNIProvider
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.IPNIProvider); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.IPNIProvider`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28208,8 +29237,35 @@ func (ec *executionContext) _Query_machine(ctx context.Context, field graphql.Co
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Machine(rctx, fc.Args["id"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Machine(rctx, fc.Args["id"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Machine
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Machine
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Machine); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Machine`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28284,8 +29340,35 @@ func (ec *executionContext) _Query_machineByHostAndPort(ctx context.Context, fie
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MachineByHostAndPort(rctx, fc.Args["hostAndPort"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MachineByHostAndPort(rctx, fc.Args["hostAndPort"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Machine
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Machine
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Machine); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Machine`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28360,8 +29443,35 @@ func (ec *executionContext) _Query_machines(ctx context.Context, field graphql.C
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Machines(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Machines(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Machine
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Machine
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Machine); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Machine`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28425,8 +29535,35 @@ func (ec *executionContext) _Query_machineSummary(ctx context.Context, field gra
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MachineSummary(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MachineSummary(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MachineSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MachineSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MachineSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MachineSummary`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28488,8 +29625,35 @@ func (ec *executionContext) _Query_marketBalance(ctx context.Context, field grap
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketBalance(rctx, fc.Args["miner"].(types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketBalance(rctx, fc.Args["miner"].(types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MarketBalance
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MarketBalance
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MarketBalance); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MarketBalance`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28548,8 +29712,35 @@ func (ec *executionContext) _Query_marketBalances(ctx context.Context, field gra
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketBalances(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketBalances(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MarketBalance
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MarketBalance
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MarketBalance); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MarketBalance`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28597,8 +29788,35 @@ func (ec *executionContext) _Query_marketMk12StorageAsks(ctx context.Context, fi
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12StorageAsks(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketMk12StorageAsks(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MarketMk12StorageAsk
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MarketMk12StorageAsk
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MarketMk12StorageAsk); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MarketMk12StorageAsk`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28656,8 +29874,35 @@ func (ec *executionContext) _Query_marketMk12StorageAsk(ctx context.Context, fie
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12StorageAsk(rctx, fc.Args["spId"].(types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketMk12StorageAsk(rctx, fc.Args["spId"].(types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MarketMk12StorageAsk
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MarketMk12StorageAsk
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MarketMk12StorageAsk); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MarketMk12StorageAsk`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28726,8 +29971,35 @@ func (ec *executionContext) _Query_marketMk12StorageAsksCount(ctx context.Contex
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketMk12StorageAsksCount(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketMk12StorageAsksCount(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28770,8 +30042,35 @@ func (ec *executionContext) _Query_makretPriceFilters(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MakretPriceFilters(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MakretPriceFilters(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.PriceFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.PriceFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.PriceFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.PriceFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28827,8 +30126,35 @@ func (ec *executionContext) _Query_marketPriceFilter(ctx context.Context, field 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketPriceFilter(rctx, fc.Args["name"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketPriceFilter(rctx, fc.Args["name"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.PriceFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.PriceFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.PriceFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.PriceFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28895,8 +30221,35 @@ func (ec *executionContext) _Query_marketCheckPriceFilter(ctx context.Context, f
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketCheckPriceFilter(rctx, fc.Args["name"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketCheckPriceFilter(rctx, fc.Args["name"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -28950,8 +30303,35 @@ func (ec *executionContext) _Query_marketClientFilters(ctx context.Context, fiel
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketClientFilters(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketClientFilters(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.ClientFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.ClientFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.ClientFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.ClientFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29009,8 +30389,35 @@ func (ec *executionContext) _Query_marketClientFilter(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketClientFilter(rctx, fc.Args["name"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketClientFilter(rctx, fc.Args["name"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.ClientFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.ClientFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.ClientFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.ClientFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29079,8 +30486,35 @@ func (ec *executionContext) _Query_marketCheckClientFilter(ctx context.Context, 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketCheckClientFilter(rctx, fc.Args["name"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketCheckClientFilter(rctx, fc.Args["name"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29134,8 +30568,35 @@ func (ec *executionContext) _Query_marketAllowFilters(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketAllowFilters(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketAllowFilters(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MarketAllowFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MarketAllowFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MarketAllowFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MarketAllowFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29181,8 +30642,35 @@ func (ec *executionContext) _Query_marketAllowFilter(ctx context.Context, field 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketAllowFilter(rctx, fc.Args["wallet"].(types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MarketAllowFilter
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MarketAllowFilter
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MarketAllowFilter); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MarketAllowFilter`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29239,8 +30727,35 @@ func (ec *executionContext) _Query_marketAllowDefault(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MarketAllowDefault(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MarketAllowDefault(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal bool
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal bool
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(bool); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29283,8 +30798,35 @@ func (ec *executionContext) _Query_messageSends(ctx context.Context, field graph
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MessageSends(rctx, fc.Args["account"].(*types.Address), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MessageSends(rctx, fc.Args["account"].(*types.Address), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MessageSend
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MessageSend
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MessageSend); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MessageSend`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29363,8 +30905,35 @@ func (ec *executionContext) _Query_messageSendsCount(ctx context.Context, field 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MessageSendsCount(rctx, fc.Args["account"].(*types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MessageSendsCount(rctx, fc.Args["account"].(*types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29418,8 +30987,35 @@ func (ec *executionContext) _Query_messageSend(ctx context.Context, field graphq
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MessageSend(rctx, fc.Args["sendTaskId"].(*int), fc.Args["fromKey"].(*string), fc.Args["nonce"].(*int), fc.Args["signedCID"].(*string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MessageSend(rctx, fc.Args["sendTaskId"].(*int), fc.Args["fromKey"].(*string), fc.Args["nonce"].(*int), fc.Args["signedCID"].(*string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MessageSend
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MessageSend
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MessageSend); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MessageSend`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29498,8 +31094,35 @@ func (ec *executionContext) _Query_metadata(ctx context.Context, field graphql.C
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Metadata(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Metadata(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Metadata
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Metadata
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Metadata); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Metadata`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29548,8 +31171,35 @@ func (ec *executionContext) _Query_miner(ctx context.Context, field graphql.Coll
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Miner(rctx, fc.Args["address"].(types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Miner(rctx, fc.Args["address"].(types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Miner
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Miner
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Miner); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Miner`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29610,8 +31260,35 @@ func (ec *executionContext) _Query_minerPower(ctx context.Context, field graphql
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MinerPower(rctx, fc.Args["address"].(*types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MinerPower(rctx, fc.Args["address"].(*types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MinerPower
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MinerPower
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MinerPower); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MinerPower`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29672,8 +31349,35 @@ func (ec *executionContext) _Query_miningSummaryByDay(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningSummaryByDay(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MiningSummaryByDay(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MiningSummaryDay
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MiningSummaryDay
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MiningSummaryDay); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MiningSummaryDay`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29732,8 +31436,35 @@ func (ec *executionContext) _Query_miningCount(ctx context.Context, field graphq
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MiningCount(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MiningCount
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MiningCount
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MiningCount); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MiningCount`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29793,8 +31524,35 @@ func (ec *executionContext) _Query_miningWins(ctx context.Context, field graphql
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWins(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MiningWins(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MiningTask
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MiningTask
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MiningTask); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MiningTask`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29867,8 +31625,35 @@ func (ec *executionContext) _Query_miningWinsCount(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningWinsCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MiningWinsCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["actor"].(*types.Address), fc.Args["include"].(*bool))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29922,8 +31707,35 @@ func (ec *executionContext) _Query_miningCountSummary(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCountSummary(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MiningCountSummary(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MiningCountSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MiningCountSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MiningCountSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MiningCountSummary`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -29990,8 +31802,35 @@ func (ec *executionContext) _Query_miningCountAggregate(ctx context.Context, fie
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningCountAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address), fc.Args["interval"].(model.MiningTaskAggregateInterval))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MiningCountAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["actor"].(*types.Address), fc.Args["interval"].(model.MiningTaskAggregateInterval))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MiningCountAggregated
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MiningCountAggregated
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MiningCountAggregated); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MiningCountAggregated`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30052,8 +31891,35 @@ func (ec *executionContext) _Query_miningStatusSummay(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MiningStatusSummay(rctx, fc.Args["spID"].(*types.ActorID), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MiningStatusSummay(rctx, fc.Args["spID"].(*types.ActorID), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MiningStatusSummay
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MiningStatusSummay
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MiningStatusSummay); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MiningStatusSummay`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30116,8 +31982,35 @@ func (ec *executionContext) _Query_nodesInfo(ctx context.Context, field graphql.
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().NodesInfo(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().NodesInfo(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.NodeInfo
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.NodeInfo
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.NodeInfo); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.NodeInfo`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30171,8 +32064,35 @@ func (ec *executionContext) _Query_nodeHealthSummary(ctx context.Context, field 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().NodeHealthSummary(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().NodeHealthSummary(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.NodeHealthSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.NodeHealthSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.NodeHealthSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.NodeHealthSummary`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30220,8 +32140,35 @@ func (ec *executionContext) _Query_poreps(ctx context.Context, field graphql.Col
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Poreps(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Poreps(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Porep
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Porep
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Porep); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Porep`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30361,8 +32308,35 @@ func (ec *executionContext) _Query_porep(ctx context.Context, field graphql.Coll
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Porep(rctx, fc.Args["sp"].(types.Address), fc.Args["sectorNumber"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Porep(rctx, fc.Args["sp"].(types.Address), fc.Args["sectorNumber"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Porep
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Porep
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Porep); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Porep`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30513,8 +32487,35 @@ func (ec *executionContext) _Query_pipelinesSummary(ctx context.Context, field g
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().PipelinesSummary(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().PipelinesSummary(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.PipelineSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.PipelineSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.PipelineSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.PipelineSummary`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30574,8 +32575,35 @@ func (ec *executionContext) _Query_prometheusQuery(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().PrometheusQuery(rctx, fc.Args["query"].(string), fc.Args["time"].(*time.Time))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().PrometheusQuery(rctx, fc.Args["query"].(string), fc.Args["time"].(*time.Time))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.PrometheusResponse
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.PrometheusResponse
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.PrometheusResponse); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.PrometheusResponse`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30633,8 +32661,35 @@ func (ec *executionContext) _Query_prometheusQueryRange(ctx context.Context, fie
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().PrometheusQueryRange(rctx, fc.Args["query"].(string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["step"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().PrometheusQueryRange(rctx, fc.Args["query"].(string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["step"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.PrometheusResponse
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.PrometheusResponse
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.PrometheusResponse); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.PrometheusResponse`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30692,8 +32747,35 @@ func (ec *executionContext) _Query_sectors(ctx context.Context, field graphql.Co
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Sectors(rctx, fc.Args["actor"].(*types.Address), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Sectors(rctx, fc.Args["actor"].(*types.Address), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Sector
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Sector
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Sector); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Sector`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30766,8 +32848,35 @@ func (ec *executionContext) _Query_sectorsCount(ctx context.Context, field graph
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SectorsCount(rctx, fc.Args["actor"].(*types.Address))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().SectorsCount(rctx, fc.Args["actor"].(*types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30821,8 +32930,35 @@ func (ec *executionContext) _Query_sector(ctx context.Context, field graphql.Col
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Sector(rctx, fc.Args["actor"].(types.Address), fc.Args["sectorNumber"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Sector(rctx, fc.Args["actor"].(types.Address), fc.Args["sectorNumber"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Sector
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Sector
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Sector); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Sector`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30895,8 +33031,35 @@ func (ec *executionContext) _Query_sectorSummary(ctx context.Context, field grap
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SectorSummary(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().SectorSummary(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.SectorSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.SectorSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.SectorSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.SectorSummary`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -30944,8 +33107,35 @@ func (ec *executionContext) _Query_storage(ctx context.Context, field graphql.Co
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Storage(rctx, fc.Args["id"].(string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Storage(rctx, fc.Args["id"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Storage
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Storage
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Storage); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Storage`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31004,8 +33194,35 @@ func (ec *executionContext) _Query_storages(ctx context.Context, field graphql.C
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Storages(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Storages(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Storage
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Storage
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Storage); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Storage`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31056,8 +33273,35 @@ func (ec *executionContext) _Query_storageStats(ctx context.Context, field graph
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().StorageStats(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().StorageStats(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.StorageStats
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.StorageStats
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.StorageStats); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.StorageStats`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31111,8 +33355,35 @@ func (ec *executionContext) _Query_task(ctx context.Context, field graphql.Colle
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Task(rctx, fc.Args["id"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Task(rctx, fc.Args["id"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Task
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Task
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.Task); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.Task`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31191,8 +33462,35 @@ func (ec *executionContext) _Query_tasks(ctx context.Context, field graphql.Coll
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Tasks(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().Tasks(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.Task
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.Task
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.Task); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.Task`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31260,8 +33558,35 @@ func (ec *executionContext) _Query_tasksCount(ctx context.Context, field graphql
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TasksCount(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TasksCount(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31304,8 +33629,35 @@ func (ec *executionContext) _Query_taskHistories(ctx context.Context, field grap
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistories(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TaskHistories(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.TaskHistory
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.TaskHistory
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.TaskHistory); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.TaskHistory`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31378,8 +33730,35 @@ func (ec *executionContext) _Query_taskHistoriesCount(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistoriesCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TaskHistoriesCount(rctx, fc.Args["start"].(*time.Time), fc.Args["end"].(*time.Time), fc.Args["hostPort"].(*string), fc.Args["name"].(*string), fc.Args["result"].(*bool))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31433,8 +33812,35 @@ func (ec *executionContext) _Query_taskHistoriesAggregate(ctx context.Context, f
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskHistoriesAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["interval"].(model.TaskHistoriesAggregateInterval))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TaskHistoriesAggregate(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["interval"].(model.TaskHistoriesAggregateInterval))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.TaskAggregate
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.TaskAggregate
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.TaskAggregate); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.TaskAggregate`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31495,8 +33901,35 @@ func (ec *executionContext) _Query_tasksStats(ctx context.Context, field graphql
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TasksStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["machine"].(*string))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TasksStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time), fc.Args["machine"].(*string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.TaskStats
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.TaskStats
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.TaskStats); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.TaskStats`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31557,8 +33990,35 @@ func (ec *executionContext) _Query_taskNames(ctx context.Context, field graphql.
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskNames(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TaskNames(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []string
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []string
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]string); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []string`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31598,8 +34058,35 @@ func (ec *executionContext) _Query_taskSuccessRate(ctx context.Context, field gr
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskSuccessRate(rctx, fc.Args["name"].(*string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TaskSuccessRate(rctx, fc.Args["name"].(*string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.TaskSuccessRate
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.TaskSuccessRate
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.TaskSuccessRate); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.TaskSuccessRate`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31660,8 +34147,35 @@ func (ec *executionContext) _Query_runningTaskSummary(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RunningTaskSummary(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().RunningTaskSummary(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.RunningTaskSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.RunningTaskSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.RunningTaskSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.RunningTaskSummary`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31709,8 +34223,35 @@ func (ec *executionContext) _Query_taskDurationStats(ctx context.Context, field 
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TaskDurationStats(rctx, fc.Args["name"].(string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TaskDurationStats(rctx, fc.Args["name"].(string), fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.TaskDurationStats
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.TaskDurationStats
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.TaskDurationStats); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.TaskDurationStats`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -31781,8 +34322,35 @@ func (ec *executionContext) _Query_tasksDurationStats(ctx context.Context, field
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().TasksDurationStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().TasksDurationStats(rctx, fc.Args["start"].(time.Time), fc.Args["end"].(time.Time))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.TaskDurationStats
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.TaskDurationStats
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.TaskDurationStats); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.TaskDurationStats`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -36555,8 +39123,35 @@ func (ec *executionContext) _Subscription_alerts(ctx context.Context, field grap
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().Alerts(rctx, fc.Args["offset"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Subscription().Alerts(rctx, fc.Args["offset"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Alert
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Alert
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(<-chan *model.Alert); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be <-chan *github.com/web3tea/curio-dashboard/graph/model.Alert`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -36632,8 +39227,35 @@ func (ec *executionContext) _Subscription_chainHead(ctx context.Context, field g
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().ChainHead(rctx)
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Subscription().ChainHead(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.ChainHead
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.ChainHead
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(<-chan *model.ChainHead); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be <-chan *github.com/web3tea/curio-dashboard/graph/model.ChainHead`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -36696,8 +39318,35 @@ func (ec *executionContext) _Subscription_completedTask(ctx context.Context, fie
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().CompletedTask(rctx, fc.Args["machine"].(*string), fc.Args["last"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Subscription().CompletedTask(rctx, fc.Args["machine"].(*string), fc.Args["last"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.TaskHistory
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.TaskHistory
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(<-chan *model.TaskHistory); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be <-chan *github.com/web3tea/curio-dashboard/graph/model.TaskHistory`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -36787,8 +39436,35 @@ func (ec *executionContext) _Subscription_newTask(ctx context.Context, field gra
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Subscription().NewTask(rctx, fc.Args["machineID"].(*int), fc.Args["last"].(int))
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Subscription().NewTask(rctx, fc.Args["machineID"].(*int), fc.Args["last"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.Task
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.Task
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(<-chan *model.Task); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be <-chan *github.com/web3tea/curio-dashboard/graph/model.Task`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -51881,6 +54557,16 @@ func (ec *executionContext) marshalNPrometheusResponse2ᚖgithubᚗcomᚋweb3tea
 		return graphql.Null
 	}
 	return ec._PrometheusResponse(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx context.Context, v any) (model.Role, error) {
+	var res model.Role
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx context.Context, sel ast.SelectionSet, v model.Role) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) marshalNSectorLocation2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorLocation(ctx context.Context, sel ast.SelectionSet, v []*model.SectorLocation) graphql.Marshaler {

@@ -2,13 +2,13 @@ package graph
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/samber/lo"
 	"github.com/vektah/gqlparser/v2/ast"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -16,12 +16,12 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/extension"
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
-	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"github.com/web3tea/curio-dashboard/config"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
+	"github.com/web3tea/curio-dashboard/graph/model"
 )
 
 var log = logging.Logger("graph")
@@ -29,11 +29,21 @@ var log = logging.Logger("graph")
 func Router(r *chi.Mux, cfg *config.Config, resolver ResolverRoot) {
 	ah := authHandler{cfg: cfg}
 	r.Post("/auth/token", ah.Login)
-	r.Handle("/graphql", graphHandler(cfg, resolver))
+	r.With(TokenExtractMiddleware(cfg)).Handle("/graphql", graphHandler(cfg, resolver))
 }
 
 func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
-	srv := handler.New(NewExecutableSchema(Config{Resolvers: resolver}))
+	c := Config{Resolvers: resolver}
+	c.Directives.HasRole = func(ctx context.Context, obj any, next graphql.Resolver, role model.Role) (res any, err error) {
+		if cfg.Auth.Secret == "" {
+			return next(ctx)
+		}
+		if hasRole(ctx, role) {
+			return next(ctx)
+		}
+		return nil, fmt.Errorf("access denied: %s role required", role)
+	}
+	srv := handler.New(NewExecutableSchema(c))
 	if cfg.Auth.Secret != "" {
 		log.Infof("JWT secret is set, graphql authentication is enabled")
 	} else {
@@ -58,10 +68,9 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 			}
 		},
 	})
-	// srv.AddTransport(transport.Options{})
-	// srv.AddTransport(transport.GET{})
-	// srv.AddTransport(transport.POST{})
-	// srv.AddTransport(transport.MultipartForm{})
+	srv.AddTransport(transport.Options{})
+	srv.AddTransport(transport.GET{})
+	srv.AddTransport(transport.POST{})
 	srv.SetQueryCache(lru.New[*ast.QueryDocument](1000))
 	srv.Use(extension.Introspection{})
 	srv.Use(extension.AutomaticPersistedQuery{
@@ -93,7 +102,7 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 		return err
 	})
 
-	srv.SetRecoverFunc(func(ctx context.Context, err interface{}) error {
+	srv.SetRecoverFunc(func(ctx context.Context, err any) error {
 		log.Error(err)
 		return gqlerror.Errorf("internal server error")
 	})
@@ -101,32 +110,80 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 	return srv
 }
 
-type userKey struct{}
-
 func webSocketInit(ctx context.Context, cfg *config.Config, initPayload transport.InitPayload) (context.Context, *transport.InitPayload, error) {
 	tokenKey := initPayload["authToken"]
-	token, ok := tokenKey.(string)
-	if !ok || token == "" {
-		return nil, nil, errors.New("authToken not found in transport payload")
+	tokenString, ok := tokenKey.(string)
+	if !ok || tokenString == "" {
+		return nil, nil, fmt.Errorf("no token found in init payload")
 	}
 
-	tc, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		return []byte(cfg.Auth.Secret), nil
-	})
+	user, err := ValidateToken(tokenString, cfg.Auth.Secret, cfg.Auth.Users)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to parse token: %w", err)
+		log.Warnf("failed to validate token: %s", err)
+		return nil, nil, err
 	}
-	if !tc.Valid {
-		return nil, nil, fmt.Errorf("invalid token")
-	}
-	claim := tc.Claims.(jwt.MapClaims)
-
-	username := claim["username"].(string)
 
 	// put it in context
-	ctxNew := context.WithValue(ctx, userKey{}, username)
+	ctxNew := context.WithValue(ctx, userKey{}, user)
 
 	return ctxNew, &transport.InitPayload{
-		"message": fmt.Sprintf("Hello, %s", username),
+		"message": fmt.Sprintf("Hello, %s", user.Username),
 	}, nil
+}
+
+func FindUser(users []config.UserConfig, username string) (*UserContext, error) {
+	for _, u := range users {
+		if u.Username == username {
+			ur := strings.ToUpper(u.Role)
+			return &UserContext{
+				Username: u.Username,
+				Role:     lo.If(model.Role(ur).IsValid(), model.Role(ur)).Else(model.RoleUser),
+			}, nil
+		}
+	}
+	return nil, fmt.Errorf("user not found: %s", username)
+}
+
+func hasRole(ctx context.Context, role model.Role) bool {
+	if ctx == nil {
+		return false
+	}
+	user, ok := ctx.Value(userKey{}).(*UserContext)
+	if !ok {
+		return false
+	}
+	return user.Role.IsValid() && lo.IndexOf(model.AllRole, user.Role) >= lo.IndexOf(model.AllRole, role)
+}
+
+func TokenExtractMiddleware(cfg *config.Config) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if cfg.Auth.Secret == "" {
+				log.Debugf("Authentication secret is not set, skipping authentication")
+				// Authentication disabled
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			// Try to extract and validate the token
+			authHeader := r.Header.Get("Authorization")
+			if authHeader != "" {
+				bearerPrefix := "Bearer "
+				if strings.HasPrefix(authHeader, bearerPrefix) {
+					tokenString := strings.TrimPrefix(authHeader, bearerPrefix)
+					user, err := ValidateToken(tokenString, cfg.Auth.Secret, cfg.Auth.Users)
+					if err == nil {
+						// Token is valid, add user to context
+						ctx := context.WithValue(r.Context(), userKey{}, user)
+						next.ServeHTTP(w, r.WithContext(ctx))
+						return
+					}
+					log.Warnf("Invalid token: %v", err)
+				}
+			}
+			// If we reach here, either no token was provided or it was invalid
+			// Continue without authentication
+			next.ServeHTTP(w, r)
+		})
+	}
 }

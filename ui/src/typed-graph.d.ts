@@ -1135,6 +1135,11 @@ export type QueryTasksStatsArgs = {
   start: Scalars['Time']['input'];
 };
 
+export type Role =
+  | 'ADMIN'
+  | 'OPERATOR'
+  | 'USER';
+
 export type RunningTaskSummary = {
   __typename?: 'RunningTaskSummary';
   averageWaitTime: Scalars['Float']['output'];

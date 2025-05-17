@@ -93,7 +93,7 @@ type Porep {
 }
 
 extend type Query {
-    poreps: [Porep]
-    porep(sp: Address!, sectorNumber: Int!): Porep
-    pipelinesSummary: [PipelineSummary]
+    poreps: [Porep] @hasRole(role: USER)
+    porep(sp: Address!, sectorNumber: Int!): Porep @hasRole(role: USER)
+    pipelinesSummary: [PipelineSummary] @hasRole(role: USER)
 }

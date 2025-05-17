@@ -63,7 +63,7 @@ enum StorageType {
 }
 
 extend type Query {
-    storage(id: String!): Storage
-    storages: [Storage!]!
-    storageStats: [StorageStats]
+    storage(id: String!): Storage @hasRole(role: USER)
+    storages: [Storage!]! @hasRole(role: USER)
+    storageStats: [StorageStats] @hasRole(role: USER)
 }

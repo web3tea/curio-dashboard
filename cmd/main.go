@@ -46,6 +46,7 @@ func main() {
 		Commands: []*cli.Command{
 			runCmd,
 			configCmd,
+			authCmd,
 		},
 	}
 	app.Setup()

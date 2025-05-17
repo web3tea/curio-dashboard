@@ -78,33 +78,33 @@ type MarketAllowFilter {
 
 
 extend type Query {
-    marketBalance(miner: Address!): MarketBalance
-    marketBalances: [MarketBalance!]
-    marketMk12StorageAsks: [MarketMk12StorageAsk]
-    marketMk12StorageAsk(spId: Address!): MarketMk12StorageAsk
-    marketMk12StorageAsksCount: Int!
-    makretPriceFilters: [PriceFilter!]
-    marketPriceFilter(name: String!): PriceFilter
-    marketCheckPriceFilter(name: String!): Boolean!
-    marketClientFilters: [ClientFilter!]
-    marketClientFilter(name: String!): ClientFilter
-    marketCheckClientFilter(name: String!): Boolean!
-    marketAllowFilters: [MarketAllowFilter!]
-    marketAllowFilter(wallet: Address!): MarketAllowFilter
-    marketAllowDefault: Boolean!
+    marketBalance(miner: Address!): MarketBalance @hasRole(role: USER)
+    marketBalances: [MarketBalance!] @hasRole(role: USER)
+    marketMk12StorageAsks: [MarketMk12StorageAsk] @hasRole(role: USER)
+    marketMk12StorageAsk(spId: Address!): MarketMk12StorageAsk @hasRole(role: USER)
+    marketMk12StorageAsksCount: Int! @hasRole(role: USER)
+    makretPriceFilters: [PriceFilter!] @hasRole(role: USER)
+    marketPriceFilter(name: String!): PriceFilter @hasRole(role: USER)
+    marketCheckPriceFilter(name: String!): Boolean! @hasRole(role: USER)
+    marketClientFilters: [ClientFilter!] @hasRole(role: USER)
+    marketClientFilter(name: String!): ClientFilter @hasRole(role: USER)
+    marketCheckClientFilter(name: String!): Boolean! @hasRole(role: USER)
+    marketAllowFilters: [MarketAllowFilter!] @hasRole(role: USER)
+    marketAllowFilter(wallet: Address!): MarketAllowFilter @hasRole(role: USER)
+    marketAllowDefault: Boolean! @hasRole(role: USER)
 }
 
 extend type Mutation {
-    marketAddBalance(miner: Address!, wallet: Address!, amount: FIL!): MarketBalance
-    updateMarketMk12StorageAsk(input: MarketMk12StorageAskInput!): MarketMk12StorageAsk
-    marketAddPriceFilter(input: PriceFilterInput!): Boolean!
-    marketUpdatePriceFilter(input: PriceFilterInput!): PriceFilter
-    marketDeletePriceFilter(name: String!): Boolean!
-    marketAddClientFilter(input: ClientFilterInput!): Boolean!
-    marketUpdateClientFilter(input: ClientFilterInput!): ClientFilter
-    marketDeleteClientFilter(name: String!): Boolean!
-    marketToggleClientFilter(name: String!): Boolean!
-    marketSetAllowFilter(wallet: Address!, status: Boolean!): MarketAllowFilter
-    marketDeleteAllowFilter(wallet: Address!): Boolean!
-    marketToggleAllowFilter(wallet: Address!): Boolean!
+    marketAddBalance(miner: Address!, wallet: Address!, amount: FIL!): MarketBalance @hasRole(role: ADMIN)
+    updateMarketMk12StorageAsk(input: MarketMk12StorageAskInput!): MarketMk12StorageAsk @hasRole(role: OPERATOR)
+    marketAddPriceFilter(input: PriceFilterInput!): Boolean! @hasRole(role: OPERATOR)
+    marketUpdatePriceFilter(input: PriceFilterInput!): PriceFilter @hasRole(role: OPERATOR)
+    marketDeletePriceFilter(name: String!): Boolean! @hasRole(role: OPERATOR)
+    marketAddClientFilter(input: ClientFilterInput!): Boolean! @hasRole(role: OPERATOR)
+    marketUpdateClientFilter(input: ClientFilterInput!): ClientFilter @hasRole(role: OPERATOR)
+    marketDeleteClientFilter(name: String!): Boolean! @hasRole(role: OPERATOR)
+    marketToggleClientFilter(name: String!): Boolean! @hasRole(role: OPERATOR)
+    marketSetAllowFilter(wallet: Address!, status: Boolean!): MarketAllowFilter @hasRole(role: OPERATOR)
+    marketDeleteAllowFilter(wallet: Address!): Boolean! @hasRole(role: OPERATOR)
+    marketToggleAllowFilter(wallet: Address!): Boolean! @hasRole(role: OPERATOR)
 }

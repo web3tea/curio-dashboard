@@ -14,6 +14,6 @@ type NodeHealthSummary {
 }
 
 extend type Query {
-    nodesInfo: [NodeInfo]
-    nodeHealthSummary: NodeHealthSummary
+    nodesInfo: [NodeInfo] @hasRole(role: USER)
+    nodeHealthSummary: NodeHealthSummary @hasRole(role: USER)
 }

@@ -12,77 +12,53 @@
 | ![Porep](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/porep.png) | ![IPNI](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/ipni.png) |
 ### Key Features
 
-- **Authenticated Access**: Secure login ensures data protection.
+- **Authenticated Access**: Secure login ensures data protection with role-based access control.
+- **Role-Based Permissions**: Built-in permission levels (Admin, Operator, User) for granular access control.
 - **Efficient Data Management**: Server-side pagination and filtering for handling large datasets.
-- **Responsive UI**: Dark/light mode support and mobile-friendly for enhanced usability.
+- **Responsive UI**: Dark/light mode support and responsive layout design for different screen sizes.
 - **Real-Time Monitoring**: Live data streaming for real-time insights.
 - **Data Visualizations**: Detailed charts to analyze cluster performance and trends.
 
 ## Architecture Diagram
 ```mermaid
 flowchart TD
-    %% UI / Frontend
-    subgraph "UI / Frontend"
-        UI["Curio Dashboard UI (Vue.js)"]:::frontend
+    subgraph Frontend
+        UI["Dashboard UI (Vue.js)"]
     end
 
-    %% Backend Service Layer
-    subgraph "Backend Service"
-        BA["Main Application (Go)"]:::backend
-        CI["Configuration & Initialization"]:::backend
-        GA["GraphQL API Layer (gqlgen)"]:::backend
-        DB["Database Integration (Connector)"]:::backend
-        IH["Internal Helpers"]:::backend
+    subgraph Backend
+        App["Backend (Go)"]
+        Config["Config"]
+        GraphQL["GraphQL API"]
+        DB["Database Connector"]
+        Helper["Helpers"]
     end
 
-    %% External Services Layer
-    subgraph "External Services"
-        CN["Curio Node API"]:::external
-        YD["YugabyteDB"]:::external
-        PM["Prometheus"]:::external
-        EX["Curio Exporter"]:::external
-        LD["Lotus Daemon"]:::external
+    subgraph External
+        Curio["Curio Node API"]
+        YB["YugabyteDB"]
+        Prom["Prometheus"]
+        Exporter["Curio Exporter"]
+        Lotus["Lotus Daemon"]
     end
 
-    %% CI/CD & Containerization Layer
-    subgraph "CI/CD & Containerization"
-        CCD["CI/CD & Containerization"]:::ci
+    subgraph Deploy
+        CICD["CI/CD & Container"]
     end
 
-    %% Data Flow Connections
-    UI -->|"GraphQL_call"| GA
-
-    CI -->|"init_ready"| BA
-    BA -->|"expose_API"| GA
-    BA -->|"handles_db"| DB
-    BA -->|"uses_helpers"| IH
-
-    GA -->|"curio webrpc"| CN
-    GA -->|"metrics"| PM
-    DB -->|"query_db"| YD
-    BA -->|"blockchain_data"| LD
-
-    CN -->|"direct_metrics"| PM
-    EX -->|"fetch_yb_data"| YD
-    EX -->|"expose_metrics"| PM
-
-    CCD -->|"deploys"| BA
-
-     %% Click Events
-        click BA "https://github.com/web3tea/curio-dashboard/blob/main/cmd/main.go"
-        click CI "https://github.com/web3tea/curio-dashboard/blob/main/config/config.go"
-        click GA "https://github.com/web3tea/curio-dashboard/tree/main/graph"
-        click DB "https://github.com/web3tea/curio-dashboard/blob/main/db/harmony.go"
-        click IH "https://github.com/web3tea/curio-dashboard/tree/main/types"
-        click UI "https://github.com/web3tea/curio-dashboard/tree/main/ui"
-        click CCD "https://github.com/web3tea/curio-dashboard/tree/main/Dockerfile"
-        click EX "https://github.com/web3tea/curio-exporter"
-
-    %% Styles
-    classDef frontend fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
-    classDef backend fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
-    classDef external fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
-    classDef ci fill:#F0F0F0,stroke:#333,stroke-width:2px,color:#000;
+    UI --> GraphQL
+    Config --> App
+    App --> GraphQL
+    App --> DB
+    App --> Helper
+    GraphQL --> Curio
+    GraphQL --> Prom
+    DB --> YB
+    App --> Lotus
+    Curio --> Prom
+    Exporter --> YB
+    Exporter --> Prom
+    CICD --> App
 ```
 
 ## Requirements
@@ -150,7 +126,7 @@ Follow these steps to build the dashboard from source:
    ```
 
 2. **Edit the Configuration**
-   Adjust the `config.toml` to match your setup, or start with a [minimal configuration file](minimal.config.toml).
+   Adjust the `config.toml` to match your setup, including user roles and permissions, or start with a [minimal configuration file](minimal.config.toml).
 
 3. **Start the Backend**
    ```bash
@@ -160,3 +136,62 @@ Follow these steps to build the dashboard from source:
 4. **Access the Dashboard**
    - Production URL: [http://localhost:9091](http://localhost:9091)
    - Development URL: [http://localhost:3000](http://localhost:3000) (`cd ui; pnpm dev`)
+
+## User Authentication and Role Permissions
+
+The Curio Dashboard implements a role-based access control system with three permission levels:
+
+- **Admin**: Full system access with all privileges
+- **Operator**: Operational access for monitoring and management tasks
+- **User**: Basic read-only access for viewing dashboard data
+
+Configure users and their roles in the `config.toml` file:
+
+```toml
+[auth]
+secret = "your-jwt-secret"
+expires = 24  # Token expiration in hours
+
+[[auth.users]]
+username = "admin"
+password = "strong-password"
+role = "admin"
+description = "Administrator account"
+
+[[auth.users]]
+username = "operator"
+password = "secure-password"
+role = "operator"
+description = "Operations account"
+
+[[auth.users]]
+username = "user"
+password = "user-password"
+role = "user"
+description = "Read-only account"
+```
+
+## GraphQL Playground
+
+GraphQL Playground is a graphical, interactive, in-browser GraphQL IDE that allows you to explore and test the GraphQL API.
+
+### Accessing GraphQL Playground
+
+1. **Without Authentication**
+   - If authentication is disabled (no JWT secret configured), you can directly access the playground at:
+     - [http://localhost:9091/playground](http://localhost:9091/playground)
+
+2. **With Authentication**
+   - If authentication is enabled, you will need a valid token:
+     ```bash
+     ./curio-dashboard auth gt --user admin
+     ```
+   - In the playground interface, add a header with your token:
+     ```json
+     {
+       "Authorization": "Bearer <your_token>"
+     }
+     ```
+   - This token will allow you to execute authenticated GraphQL operations in the playground
+
+![Playground](assets/playground.png)
