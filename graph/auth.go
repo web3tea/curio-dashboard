@@ -12,10 +12,16 @@ import (
 )
 
 type (
-	userKey     struct{}
+	userKey struct{}
+
 	UserContext struct {
-		Username string
-		Role     model.Role
+		Username string     `json:"username"`
+		Role     model.Role `json:"role"`
+	}
+
+	TokenClaims struct {
+		UserContext
+		jwt.RegisteredClaims
 	}
 )
 
@@ -56,12 +62,18 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func GenerateToken(secret string, expires time.Duration, username string, role model.Role) (string, error) {
-	claims := jwt.MapClaims{}
-	claims["username"] = username
-	claims["role"] = role
-	if expires > 0 {
-		claims["exp"] = time.Now().Add(expires).Unix()
+	claims := TokenClaims{
+		UserContext: UserContext{
+			Username: username,
+			Role:     role,
+		},
+		RegisteredClaims: jwt.RegisteredClaims{},
 	}
+
+	if expires > 0 {
+		claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(expires))
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	ts, err := token.SignedString([]byte(secret))
@@ -72,32 +84,30 @@ func GenerateToken(secret string, expires time.Duration, username string, role m
 }
 
 func ValidateToken(tokenString string, secret string, users []config.UserConfig) (*UserContext, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+	claims := &TokenClaims{}
+
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (any, error) {
 		return []byte(secret), nil
 	})
 	if err != nil {
 		return nil, err
 	}
+
 	if !token.Valid {
 		return nil, fmt.Errorf("invalid token")
 	}
-	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		if exp, ok := claims["exp"].(int64); ok && time.Unix(exp, 0).Before(time.Now()) {
-			return nil, fmt.Errorf("token expired")
-		}
-		username := claims["username"].(string)
-		role := model.Role(claims["role"].(string))
-		user, err := FindUser(users, username)
-		if err != nil {
-			return nil, err
-		}
-		if user.Role != role {
-			return nil, fmt.Errorf("user role mismatch")
-		}
-		// Return successful validation result
-		return user, nil
+
+	user, err := FindUser(users, claims.Username)
+	if err != nil {
+		return nil, err
 	}
-	return nil, fmt.Errorf("invalid token")
+
+	if user.Role != claims.Role {
+		return nil, fmt.Errorf("user role mismatch")
+	}
+
+	// Return successful validation result
+	return &claims.UserContext, nil
 }
 
 func writeError(w http.ResponseWriter, msg string, code int) {

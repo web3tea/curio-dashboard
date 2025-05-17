@@ -140,7 +140,7 @@ func FindUser(users []config.UserConfig, username string) (*UserContext, error) 
 			}, nil
 		}
 	}
-	return nil, fmt.Errorf("user %s not found", username)
+	return nil, fmt.Errorf("user not found: %s", username)
 }
 
 func hasRole(ctx context.Context, role model.Role) bool {
