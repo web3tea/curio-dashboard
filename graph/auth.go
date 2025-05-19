@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -43,7 +44,7 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	for _, u := range h.cfg.Auth.Users {
 		if u.Username == user.Username && u.Password == user.Password {
-			ts, err := GenerateToken(h.cfg.Auth.Secret, time.Duration(h.cfg.Auth.Expires)*time.Hour, user.Username, model.Role(u.Role))
+			ts, err := GenerateToken(h.cfg.Auth.Secret, time.Duration(h.cfg.Auth.Expires)*time.Hour, user.Username, model.Role(strings.ToUpper(u.Role)))
 			if err != nil {
 				writeError(w, "failed to generate token", http.StatusInternalServerError)
 				return
