@@ -29,22 +29,31 @@
           "tsdk": "ui/node_modules/typescript/lib"
         }
       }
+    },
+    "biome": {
+      "settings": {
+        "config_path": "ui/biome.json",
+        "require_config_file": true
+      }
     }
   },
   "languages": {
     "Vue.js": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
       }
     },
     "JavaScript": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
       }
     },
     "TypeScript": {
       "code_actions_on_format": {
-        "source.fixAll.eslint": true
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
       }
     },
     "Go": {
@@ -52,7 +61,6 @@
     }
   },
   "formatter": {
-    "code_actions": {
-    }
+    "code_actions": {}
   }
 }
