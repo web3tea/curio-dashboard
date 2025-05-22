@@ -12,8 +12,7 @@
 | ![Porep](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/porep.png) | ![IPNI](https://pub-9a61031c6282458db7b0b90fa2365e69.r2.dev/curio-dashboard/ipni.png) |
 ### Key Features
 
-- **Authenticated Access**: Secure login ensures data protection with role-based access control.
-- **Role-Based Permissions**: Built-in permission levels (Admin, Operator, User) for granular access control.
+- **Access Control**: Secure login with built-in role-based permissions (Admin, Operator, User) ensures data protection and granular access control.
 - **Efficient Data Management**: Server-side pagination and filtering for handling large datasets.
 - **Responsive UI**: Dark/light mode support and responsive layout design for different screen sizes.
 - **Real-Time Monitoring**: Live data streaming for real-time insights.
