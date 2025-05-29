@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef } from 'vue'
-import { Machine } from '@/typed-graph'
+import { computed } from 'vue'
 import { GetMachinesBase } from '@/gql/machine'
 
 const emit = defineEmits(['update:modelValue'])
@@ -25,7 +24,7 @@ const { result, loading } = useQuery(GetMachinesBase, null, () => ({
   fetchPolicy: 'cache-first',
 }))
 
-const machines: ComputedRef<[Machine]> = computed(() => result.value?.machines || [])
+const machines = computed(() => result.value?.machines || [])
 
 const localValue = computed({
   get () {

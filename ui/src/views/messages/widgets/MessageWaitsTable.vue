@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from "@vue/apollo-composable"
 import { GetMessageWaits } from "@/gql/message"
-import { computed, ComputedRef, ref } from "vue"
+import { computed, ComputedRef, ref, watchEffect } from "vue"
 import { MessageWait } from "@/typed-graph"
 import { IconRefresh } from "@tabler/icons-vue"
 import { useTableSettingsStore } from "@/stores/table"
@@ -43,9 +43,13 @@ const { result, loading, refetch } = useQuery(GetMessageWaits, {
   fetchPolicy: 'cache-first',
 }))
 
-const items: ComputedRef<[MessageWait]> = computed(() => result.value?.messageWaits || [])
-const itemsCount: ComputedRef<number> = computed(() => {
-  return result.value?.messageWaitsCount || itemsCount.value || 0
+const items: ComputedRef<MessageWait[]> = computed(() => result.value?.messageWaits || [])
+
+const itemsCount = ref(0)
+watchEffect(() => {
+  if (result.value?.messageWaitsCount !== undefined) {
+    itemsCount.value = result.value.messageWaitsCount
+  }
 })
 
 const headers = [
@@ -60,14 +64,14 @@ const headers = [
 ] as const
 
 const getExecutionStatus = (item: MessageWait) => {
-  if (item.executedTskCid) {
+  if (item.executedRcptExitcode !== null && item.executedRcptExitcode !== undefined) {
     return item.executedRcptExitcode === 0 ? 'success' : 'failure'
   }
   return 'pending'
 }
 
 const getExecutionStatusText = (item: MessageWait) => {
-  if (item.executedTskCid) {
+  if (item.executedRcptExitcode !== null && item.executedRcptExitcode !== undefined) {
     return item.executedRcptExitcode === 0 ? 'Executed Successfully' : `Failed (Exit Code: ${item.executedRcptExitcode})`
   }
   return 'Pending Execution'
