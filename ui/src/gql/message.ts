@@ -27,3 +27,33 @@ export const GetMessageSends = gql`
   }
   ${messageSendFragment}
 `
+
+export const messageWaitFragment = gql`
+  fragment MessageWaitAll on MessageWait {
+    signedMessageCid
+    waiterMachineId
+    waiterMachine {
+      id
+      hostAndPort
+      lastContact
+    }
+    executedTskCid
+    executedTskEpoch
+    executedMsgCid
+    executedMsgData
+    executedRcptExitcode
+    executedRcptReturn
+    executedRcptGasUsed
+    createdAt
+  }
+`
+
+export const GetMessageWaits = gql`
+  query GetMessageWaits($waiterMachineId: Int, $offset: Int!, $limit: Int!) {
+    messageWaits(waiterMachineId: $waiterMachineId, offset: $offset, limit: $limit) {
+      ...MessageWaitAll
+    }
+    messageWaitsCount(waiterMachineId: $waiterMachineId)
+  }
+  ${messageWaitFragment}
+`

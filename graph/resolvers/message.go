@@ -8,10 +8,20 @@ import (
 	"context"
 	"time"
 
+	"github.com/web3tea/curio-dashboard/graph"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
 	"github.com/web3tea/curio-dashboard/graph/model"
 	"github.com/web3tea/curio-dashboard/types"
 )
+
+// WaiterMachine is the resolver for the waiterMachine field.
+func (r *messageWaitResolver) WaiterMachine(ctx context.Context, obj *model.MessageWait) (*model.Machine, error) {
+	if obj.WaiterMachineID == nil {
+		return nil, nil
+	}
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.Machine(ctx, *obj.WaiterMachineID)
+}
 
 // MessageSends is the resolver for the messageSends field.
 func (r *queryResolver) MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error) {
@@ -30,3 +40,26 @@ func (r *queryResolver) MessageSend(ctx context.Context, sendTaskID *int, fromKe
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
 	return r.loader.MessageSend(ctx, sendTaskID, fromKey, nonce, signedCid)
 }
+
+// MessageWaits is the resolver for the messageWaits field.
+func (r *queryResolver) MessageWaits(ctx context.Context, waiterMachineID *int, offset int, limit int) ([]*model.MessageWait, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MessageWaits(ctx, waiterMachineID, offset, limit)
+}
+
+// MessageWaitsCount is the resolver for the messageWaitsCount field.
+func (r *queryResolver) MessageWaitsCount(ctx context.Context, waiterMachineID *int) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MessageWaitsCount(ctx, waiterMachineID)
+}
+
+// MessageWait is the resolver for the messageWait field.
+func (r *queryResolver) MessageWait(ctx context.Context, signedMessageCid string) (*model.MessageWait, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute)
+	return r.loader.MessageWait(ctx, signedMessageCid)
+}
+
+// MessageWait returns graph.MessageWaitResolver implementation.
+func (r *Resolver) MessageWait() graph.MessageWaitResolver { return &messageWaitResolver{r} }
+
+type messageWaitResolver struct{ *Resolver }

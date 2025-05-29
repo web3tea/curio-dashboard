@@ -50,6 +50,7 @@ type ResolverRoot interface {
 	Machine() MachineResolver
 	MachineDetail() MachineDetailResolver
 	MachineSummary() MachineSummaryResolver
+	MessageWait() MessageWaitResolver
 	Metadata() MetadataResolver
 	Miner() MinerResolver
 	MinerBalance() MinerBalanceResolver
@@ -340,6 +341,20 @@ type ComplexityRoot struct {
 		ToAddr       func(childComplexity int) int
 		UnsignedCid  func(childComplexity int) int
 		UnsignedData func(childComplexity int) int
+	}
+
+	MessageWait struct {
+		CreatedAt            func(childComplexity int) int
+		ExecutedMsgCid       func(childComplexity int) int
+		ExecutedMsgData      func(childComplexity int) int
+		ExecutedRcptExitcode func(childComplexity int) int
+		ExecutedRcptGasUsed  func(childComplexity int) int
+		ExecutedRcptReturn   func(childComplexity int) int
+		ExecutedTskCid       func(childComplexity int) int
+		ExecutedTskEpoch     func(childComplexity int) int
+		SignedMessageCid     func(childComplexity int) int
+		WaiterMachine        func(childComplexity int) int
+		WaiterMachineID      func(childComplexity int) int
 	}
 
 	Metadata struct {
@@ -633,6 +648,9 @@ type ComplexityRoot struct {
 		MessageSend                func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
 		MessageSends               func(childComplexity int, account *types.Address, offset int, limit int) int
 		MessageSendsCount          func(childComplexity int, account *types.Address) int
+		MessageWait                func(childComplexity int, signedMessageCid string) int
+		MessageWaits               func(childComplexity int, waiterMachineID *int, offset int, limit int) int
+		MessageWaitsCount          func(childComplexity int, waiterMachineID *int) int
 		Metadata                   func(childComplexity int) int
 		Miner                      func(childComplexity int, address types.Address) int
 		MinerPower                 func(childComplexity int, address *types.Address) int
@@ -963,6 +981,9 @@ type MachineSummaryResolver interface {
 	TotalGpu(ctx context.Context, obj *model.MachineSummary) (float64, error)
 	UpdatedAt(ctx context.Context, obj *model.MachineSummary) (*time.Time, error)
 }
+type MessageWaitResolver interface {
+	WaiterMachine(ctx context.Context, obj *model.MessageWait) (*model.Machine, error)
+}
 type MetadataResolver interface {
 	NetworkName(ctx context.Context, obj *model.Metadata) (string, error)
 	GenesisTimestamp(ctx context.Context, obj *model.Metadata) (uint64, error)
@@ -1061,6 +1082,9 @@ type QueryResolver interface {
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
+	MessageWaits(ctx context.Context, waiterMachineID *int, offset int, limit int) ([]*model.MessageWait, error)
+	MessageWaitsCount(ctx context.Context, waiterMachineID *int) (int, error)
+	MessageWait(ctx context.Context, signedMessageCid string) (*model.MessageWait, error)
 	Metadata(ctx context.Context) (*model.Metadata, error)
 	Miner(ctx context.Context, address types.Address) (*model.Miner, error)
 	MinerPower(ctx context.Context, address *types.Address) (*model.MinerPower, error)
@@ -2545,6 +2569,83 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MessageSend.UnsignedData(childComplexity), true
+
+	case "MessageWait.createdAt":
+		if e.complexity.MessageWait.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.CreatedAt(childComplexity), true
+
+	case "MessageWait.executedMsgCid":
+		if e.complexity.MessageWait.ExecutedMsgCid == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.ExecutedMsgCid(childComplexity), true
+
+	case "MessageWait.executedMsgData":
+		if e.complexity.MessageWait.ExecutedMsgData == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.ExecutedMsgData(childComplexity), true
+
+	case "MessageWait.executedRcptExitcode":
+		if e.complexity.MessageWait.ExecutedRcptExitcode == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.ExecutedRcptExitcode(childComplexity), true
+
+	case "MessageWait.executedRcptGasUsed":
+		if e.complexity.MessageWait.ExecutedRcptGasUsed == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.ExecutedRcptGasUsed(childComplexity), true
+
+	case "MessageWait.executedRcptReturn":
+		if e.complexity.MessageWait.ExecutedRcptReturn == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.ExecutedRcptReturn(childComplexity), true
+
+	case "MessageWait.executedTskCid":
+		if e.complexity.MessageWait.ExecutedTskCid == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.ExecutedTskCid(childComplexity), true
+
+	case "MessageWait.executedTskEpoch":
+		if e.complexity.MessageWait.ExecutedTskEpoch == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.ExecutedTskEpoch(childComplexity), true
+
+	case "MessageWait.signedMessageCid":
+		if e.complexity.MessageWait.SignedMessageCid == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.SignedMessageCid(childComplexity), true
+
+	case "MessageWait.waiterMachine":
+		if e.complexity.MessageWait.WaiterMachine == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.WaiterMachine(childComplexity), true
+
+	case "MessageWait.waiterMachineId":
+		if e.complexity.MessageWait.WaiterMachineID == nil {
+			break
+		}
+
+		return e.complexity.MessageWait.WaiterMachineID(childComplexity), true
 
 	case "Metadata.genesisTimestamp":
 		if e.complexity.Metadata.GenesisTimestamp == nil {
@@ -4318,6 +4419,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.MessageSendsCount(childComplexity, args["account"].(*types.Address)), true
+
+	case "Query.messageWait":
+		if e.complexity.Query.MessageWait == nil {
+			break
+		}
+
+		args, err := ec.field_Query_messageWait_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MessageWait(childComplexity, args["signedMessageCid"].(string)), true
+
+	case "Query.messageWaits":
+		if e.complexity.Query.MessageWaits == nil {
+			break
+		}
+
+		args, err := ec.field_Query_messageWaits_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MessageWaits(childComplexity, args["waiterMachineId"].(*int), args["offset"].(int), args["limit"].(int)), true
+
+	case "Query.messageWaitsCount":
+		if e.complexity.Query.MessageWaitsCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_messageWaitsCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MessageWaitsCount(childComplexity, args["waiterMachineId"].(*int)), true
 
 	case "Query.metadata":
 		if e.complexity.Query.Metadata == nil {
@@ -7781,6 +7918,136 @@ func (ec *executionContext) field_Query_messageSends_argsOffset(
 }
 
 func (ec *executionContext) field_Query_messageSends_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["limit"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageWait_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_messageWait_argsSignedMessageCid(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["signedMessageCid"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_messageWait_argsSignedMessageCid(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (string, error) {
+	if _, ok := rawArgs["signedMessageCid"]; !ok {
+		var zeroVal string
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("signedMessageCid"))
+	if tmp, ok := rawArgs["signedMessageCid"]; ok {
+		return ec.unmarshalNString2string(ctx, tmp)
+	}
+
+	var zeroVal string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageWaitsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_messageWaitsCount_argsWaiterMachineID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["waiterMachineId"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_messageWaitsCount_argsWaiterMachineID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["waiterMachineId"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("waiterMachineId"))
+	if tmp, ok := rawArgs["waiterMachineId"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageWaits_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_messageWaits_argsWaiterMachineID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["waiterMachineId"] = arg0
+	arg1, err := ec.field_Query_messageWaits_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	arg2, err := ec.field_Query_messageWaits_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_messageWaits_argsWaiterMachineID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["waiterMachineId"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("waiterMachineId"))
+	if tmp, ok := rawArgs["waiterMachineId"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageWaits_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["offset"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_messageWaits_argsLimit(
 	ctx context.Context,
 	rawArgs map[string]any,
 ) (int, error) {
@@ -18591,6 +18858,487 @@ func (ec *executionContext) fieldContext_MessageSend_sendError(_ context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_signedMessageCid(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_signedMessageCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SignedMessageCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_signedMessageCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_waiterMachineId(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_waiterMachineId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.WaiterMachineID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_waiterMachineId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_waiterMachine(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_waiterMachine(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.MessageWait().WaiterMachine(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Machine)
+	fc.Result = res
+	return ec.marshalOMachine2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMachine(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_waiterMachine(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Machine_id(ctx, field)
+			case "lastContact":
+				return ec.fieldContext_Machine_lastContact(ctx, field)
+			case "hostAndPort":
+				return ec.fieldContext_Machine_hostAndPort(ctx, field)
+			case "cpu":
+				return ec.fieldContext_Machine_cpu(ctx, field)
+			case "ram":
+				return ec.fieldContext_Machine_ram(ctx, field)
+			case "gpu":
+				return ec.fieldContext_Machine_gpu(ctx, field)
+			case "detail":
+				return ec.fieldContext_Machine_detail(ctx, field)
+			case "tasks":
+				return ec.fieldContext_Machine_tasks(ctx, field)
+			case "taskHistories":
+				return ec.fieldContext_Machine_taskHistories(ctx, field)
+			case "storages":
+				return ec.fieldContext_Machine_storages(ctx, field)
+			case "metrics":
+				return ec.fieldContext_Machine_metrics(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Machine", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_executedTskCid(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_executedTskCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExecutedTskCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_executedTskCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_executedTskEpoch(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_executedTskEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExecutedTskEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	fc.Result = res
+	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_executedTskEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_executedMsgCid(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_executedMsgCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExecutedMsgCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_executedMsgCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_executedMsgData(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_executedMsgData(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExecutedMsgData, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*types.JSON)
+	fc.Result = res
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_executedMsgData(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSON does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_executedRcptExitcode(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_executedRcptExitcode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExecutedRcptExitcode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	fc.Result = res
+	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_executedRcptExitcode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_executedRcptReturn(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_executedRcptReturn(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExecutedRcptReturn, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.Bytes)
+	fc.Result = res
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_executedRcptReturn(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_executedRcptGasUsed(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_executedRcptGasUsed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ExecutedRcptGasUsed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int64)
+	fc.Result = res
+	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_executedRcptGasUsed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int64 does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _MessageWait_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.MessageWait) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_MessageWait_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_MessageWait_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "MessageWait",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -31075,6 +31823,294 @@ func (ec *executionContext) fieldContext_Query_messageSend(ctx context.Context, 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_messageSend_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageWaits(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageWaits(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MessageWaits(rctx, fc.Args["waiterMachineId"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.MessageWait
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.MessageWait
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.MessageWait); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.MessageWait`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.MessageWait)
+	fc.Result = res
+	return ec.marshalOMessageWait2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageWait(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageWaits(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "signedMessageCid":
+				return ec.fieldContext_MessageWait_signedMessageCid(ctx, field)
+			case "waiterMachineId":
+				return ec.fieldContext_MessageWait_waiterMachineId(ctx, field)
+			case "waiterMachine":
+				return ec.fieldContext_MessageWait_waiterMachine(ctx, field)
+			case "executedTskCid":
+				return ec.fieldContext_MessageWait_executedTskCid(ctx, field)
+			case "executedTskEpoch":
+				return ec.fieldContext_MessageWait_executedTskEpoch(ctx, field)
+			case "executedMsgCid":
+				return ec.fieldContext_MessageWait_executedMsgCid(ctx, field)
+			case "executedMsgData":
+				return ec.fieldContext_MessageWait_executedMsgData(ctx, field)
+			case "executedRcptExitcode":
+				return ec.fieldContext_MessageWait_executedRcptExitcode(ctx, field)
+			case "executedRcptReturn":
+				return ec.fieldContext_MessageWait_executedRcptReturn(ctx, field)
+			case "executedRcptGasUsed":
+				return ec.fieldContext_MessageWait_executedRcptGasUsed(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MessageWait_createdAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MessageWait", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageWaits_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageWaitsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageWaitsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MessageWaitsCount(rctx, fc.Args["waiterMachineId"].(*int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageWaitsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageWaitsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_messageWait(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_messageWait(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().MessageWait(rctx, fc.Args["signedMessageCid"].(string))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.MessageWait
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.MessageWait
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.MessageWait); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.MessageWait`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.MessageWait)
+	fc.Result = res
+	return ec.marshalOMessageWait2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageWait(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_messageWait(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "signedMessageCid":
+				return ec.fieldContext_MessageWait_signedMessageCid(ctx, field)
+			case "waiterMachineId":
+				return ec.fieldContext_MessageWait_waiterMachineId(ctx, field)
+			case "waiterMachine":
+				return ec.fieldContext_MessageWait_waiterMachine(ctx, field)
+			case "executedTskCid":
+				return ec.fieldContext_MessageWait_executedTskCid(ctx, field)
+			case "executedTskEpoch":
+				return ec.fieldContext_MessageWait_executedTskEpoch(ctx, field)
+			case "executedMsgCid":
+				return ec.fieldContext_MessageWait_executedMsgCid(ctx, field)
+			case "executedMsgData":
+				return ec.fieldContext_MessageWait_executedMsgData(ctx, field)
+			case "executedRcptExitcode":
+				return ec.fieldContext_MessageWait_executedRcptExitcode(ctx, field)
+			case "executedRcptReturn":
+				return ec.fieldContext_MessageWait_executedRcptReturn(ctx, field)
+			case "executedRcptGasUsed":
+				return ec.fieldContext_MessageWait_executedRcptGasUsed(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_MessageWait_createdAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MessageWait", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_messageWait_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -47522,6 +48558,99 @@ func (ec *executionContext) _MessageSend(ctx context.Context, sel ast.SelectionS
 	return out
 }
 
+var messageWaitImplementors = []string{"MessageWait"}
+
+func (ec *executionContext) _MessageWait(ctx context.Context, sel ast.SelectionSet, obj *model.MessageWait) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, messageWaitImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("MessageWait")
+		case "signedMessageCid":
+			out.Values[i] = ec._MessageWait_signedMessageCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "waiterMachineId":
+			out.Values[i] = ec._MessageWait_waiterMachineId(ctx, field, obj)
+		case "waiterMachine":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._MessageWait_waiterMachine(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "executedTskCid":
+			out.Values[i] = ec._MessageWait_executedTskCid(ctx, field, obj)
+		case "executedTskEpoch":
+			out.Values[i] = ec._MessageWait_executedTskEpoch(ctx, field, obj)
+		case "executedMsgCid":
+			out.Values[i] = ec._MessageWait_executedMsgCid(ctx, field, obj)
+		case "executedMsgData":
+			out.Values[i] = ec._MessageWait_executedMsgData(ctx, field, obj)
+		case "executedRcptExitcode":
+			out.Values[i] = ec._MessageWait_executedRcptExitcode(ctx, field, obj)
+		case "executedRcptReturn":
+			out.Values[i] = ec._MessageWait_executedRcptReturn(ctx, field, obj)
+		case "executedRcptGasUsed":
+			out.Values[i] = ec._MessageWait_executedRcptGasUsed(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._MessageWait_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var metadataImplementors = []string{"Metadata"}
 
 func (ec *executionContext) _Metadata(ctx context.Context, sel ast.SelectionSet, obj *model.Metadata) graphql.Marshaler {
@@ -50601,6 +51730,66 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_messageSend(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "messageWaits":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_messageWaits(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "messageWaitsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_messageWaitsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "messageWait":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_messageWait(ctx, field)
 				return res
 			}
 
@@ -55728,6 +56917,22 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 	return res
 }
 
+func (ec *executionContext) unmarshalOInt642ᚖint64(ctx context.Context, v any) (*int64, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalInt64(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOInt642ᚖint64(ctx context.Context, sel ast.SelectionSet, v *int64) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalInt64(*v)
+	return res
+}
+
 func (ec *executionContext) unmarshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx context.Context, v any) (*types.JSON, error) {
 	if v == nil {
 		return nil, nil
@@ -56015,6 +57220,54 @@ func (ec *executionContext) marshalOMessageSend2ᚖgithubᚗcomᚋweb3teaᚋcuri
 		return graphql.Null
 	}
 	return ec._MessageSend(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOMessageWait2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageWait(ctx context.Context, sel ast.SelectionSet, v []*model.MessageWait) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOMessageWait2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageWait(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOMessageWait2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMessageWait(ctx context.Context, sel ast.SelectionSet, v *model.MessageWait) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._MessageWait(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOMiner2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐMiner(ctx context.Context, sel ast.SelectionSet, v *model.Miner) graphql.Marshaler {

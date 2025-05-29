@@ -14,8 +14,25 @@ type MessageSend {
     sendError: String
 }
 
+type MessageWait {
+    signedMessageCid: String!
+    waiterMachineId: Int
+    waiterMachine: Machine @goField(forceResolver: true)
+    executedTskCid: String
+    executedTskEpoch: Int64
+    executedMsgCid: String
+    executedMsgData: JSON
+    executedRcptExitcode: Int64
+    executedRcptReturn: Bytes
+    executedRcptGasUsed: Int64
+    createdAt: Time!
+}
+
 extend type Query {
     messageSends(account: Address, offset: Int!, limit: Int!): [MessageSend] @hasRole(role: USER)
     messageSendsCount(account: Address): Int! @hasRole(role: USER)
     messageSend(sendTaskId: Int, fromKey: String, nonce: Int, signedCID: String): MessageSend @hasRole(role: USER)
+    messageWaits(waiterMachineId: Int, offset: Int!, limit: Int!): [MessageWait] @hasRole(role: USER)
+    messageWaitsCount(waiterMachineId: Int): Int! @hasRole(role: USER)
+    messageWait(signedMessageCid: String!): MessageWait @hasRole(role: USER)
 }
