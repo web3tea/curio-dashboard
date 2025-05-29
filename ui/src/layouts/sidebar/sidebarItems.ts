@@ -124,7 +124,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         },
         {
           title: t('nav.messageHistory'),
-          to: { name: "MessageSends" },
+          to: { name: "MessageHistory" },
         },
       ],
     },

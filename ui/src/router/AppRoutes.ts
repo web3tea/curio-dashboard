@@ -196,12 +196,12 @@ const AppRoutes = {
       },
     },
     {
-      name: "MessageSends",
-      path: "/messages/sends",
+      name: "MessageHistory",
+      path: "/messages/history",
       component: () => import('@/views/messages/history/MessageHistoryIndex.vue'),
       meta: {
         title: 'Message Sends',
-        description: 'List of all message sends in the cluster',
+        description: 'List of all message history in the cluster',
       },
     },
     {

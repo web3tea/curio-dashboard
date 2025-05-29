@@ -4,7 +4,6 @@ import { GetMessageWaits } from "@/gql/message"
 import { computed, ComputedRef, ref, watchEffect } from "vue"
 import { MessageWait } from "@/typed-graph"
 import { IconRefresh } from "@tabler/icons-vue"
-import { useTableSettingsStore } from "@/stores/table"
 import { getRelativeTime } from '@/utils/helpers/time'
 import MachineSelectInput from '@/components/app/MachineSelectInput.vue'
 import TruncatedText from '@/components/shared/TruncatedText.vue'
@@ -26,8 +25,6 @@ const props = defineProps({
     default: 'calc(100vh - 330px)'
   },
 })
-
-const tableSettings = useTableSettingsStore()
 
 const localMachineId = ref(props.waiterMachineId)
 
@@ -104,7 +101,7 @@ const getExecutionStatusText = (item: MessageWait) => {
                 v-if="allowSwitchMachine"
                 v-model="localMachineId"
                 class="c-input"
-                label="Filter by Machine"
+                label="Machine"
                 clearable
               />
             </v-col>
@@ -129,15 +126,13 @@ const getExecutionStatusText = (item: MessageWait) => {
     <v-card-text class="pa-0">
       <v-data-table-server
         v-model:page="page"
-        v-model:items-per-page="tableSettings.itemsPerPage"
-        :fixed-header="tableSettings.fixedHeader"
+        fixed-header
+        hover
         :headers="headers"
         :height="props.height"
-        :hover="tableSettings.hover"
         :items="items"
         :items-length="itemsCount"
         :loading="loading"
-        :items-per-page-options="tableSettings.itemsPerPageOptions"
       >
         <template #item.signedMessageCid="{ value }">
           <TruncatedText :text="value" />
