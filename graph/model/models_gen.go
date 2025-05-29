@@ -296,6 +296,20 @@ type MessageSend struct {
 	SendError    *string     `json:"sendError"`
 }
 
+type MessageWait struct {
+	SignedMessageCid     string      `json:"signedMessageCid"`
+	WaiterMachineID      *int        `json:"waiterMachineId"`
+	WaiterMachine        *Machine    `json:"waiterMachine"`
+	ExecutedTskCid       *string     `json:"executedTskCid"`
+	ExecutedTskEpoch     *int64      `json:"executedTskEpoch"`
+	ExecutedMsgCid       *string     `json:"executedMsgCid"`
+	ExecutedMsgData      *types.JSON `json:"executedMsgData"`
+	ExecutedRcptExitcode *int64      `json:"executedRcptExitcode"`
+	ExecutedRcptReturn   types.Bytes `json:"executedRcptReturn"`
+	ExecutedRcptGasUsed  *int64      `json:"executedRcptGasUsed"`
+	CreatedAt            time.Time   `json:"createdAt"`
+}
+
 type Metadata struct {
 	NetworkName      string `json:"networkName"`
 	GenesisTimestamp uint64 `json:"genesisTimestamp"`

@@ -359,6 +359,21 @@ export type MessageSend = {
   unsignedData: Scalars['Bytes']['output'];
 };
 
+export type MessageWait = {
+  __typename?: 'MessageWait';
+  createdAt: Scalars['Time']['output'];
+  executedMsgCid?: Maybe<Scalars['String']['output']>;
+  executedMsgData?: Maybe<Scalars['JSON']['output']>;
+  executedRcptExitcode?: Maybe<Scalars['Int64']['output']>;
+  executedRcptGasUsed?: Maybe<Scalars['Int64']['output']>;
+  executedRcptReturn?: Maybe<Scalars['Bytes']['output']>;
+  executedTskCid?: Maybe<Scalars['String']['output']>;
+  executedTskEpoch?: Maybe<Scalars['Int64']['output']>;
+  signedMessageCid: Scalars['String']['output'];
+  waiterMachine?: Maybe<Machine>;
+  waiterMachineId?: Maybe<Scalars['Int']['output']>;
+};
+
 export type Metadata = {
   __typename?: 'Metadata';
   genesisTimestamp: Scalars['Uint64']['output'];
@@ -800,6 +815,9 @@ export type Query = {
   messageSend?: Maybe<MessageSend>;
   messageSends?: Maybe<Array<Maybe<MessageSend>>>;
   messageSendsCount: Scalars['Int']['output'];
+  messageWait?: Maybe<MessageWait>;
+  messageWaits?: Maybe<Array<Maybe<MessageWait>>>;
+  messageWaitsCount: Scalars['Int']['output'];
   metadata: Metadata;
   miner?: Maybe<Miner>;
   minerPower?: Maybe<MinerPower>;
@@ -967,6 +985,23 @@ export type QueryMessageSendsArgs = {
 
 export type QueryMessageSendsCountArgs = {
   account?: InputMaybe<Scalars['Address']['input']>;
+};
+
+
+export type QueryMessageWaitArgs = {
+  signedMessageCid: Scalars['String']['input'];
+};
+
+
+export type QueryMessageWaitsArgs = {
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  waiterMachineId?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryMessageWaitsCountArgs = {
+  waiterMachineId?: InputMaybe<Scalars['Int']['input']>;
 };
 
 

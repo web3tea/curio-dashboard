@@ -117,7 +117,16 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
     {
       title: t('nav.Messages'),
       icon: IconSend,
-      to: { name: "MessageSends" },
+      children: [
+        {
+          title: t('nav.messagePending'),
+          to: { name: "MessagePendings" },
+        },
+        {
+          title: t('nav.messageHistory'),
+          to: { name: "MessageHistory" },
+        },
+      ],
     },
     { header: t('nav.Market & Deals'), icon: IconShoppingCart },
     {

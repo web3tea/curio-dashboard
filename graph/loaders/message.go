@@ -11,6 +11,9 @@ type MessageLoader interface {
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
+	MessageWaits(ctx context.Context, waiterMachineID *int, offset int, limit int) ([]*model.MessageWait, error)
+	MessageWaitsCount(ctx context.Context, waiterMachineID *int) (int, error)
+	MessageWait(ctx context.Context, signedMessageCid string) (*model.MessageWait, error)
 }
 
 type MessageLoaderImpl struct {
@@ -102,6 +105,82 @@ LIMIT 1;`, sendTaskID, fromKey, nonce, signedCid).Scan(&result.FromKey,
 		&result.SendTime,
 		&result.SendSuccess,
 		&result.SendError)
+	if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+func (l *MessageLoaderImpl) MessageWaitsCount(ctx context.Context, waiterMachineID *int) (int, error) {
+	var result int
+	err := l.loader.db.QueryRow(ctx, `
+SELECT
+    COUNT(*)
+FROM
+    message_waits
+WHERE
+    ($1::int IS NULL OR waiter_machine_id = $1)`, waiterMachineID).Scan(&result)
+	return result, err
+}
+
+func (l *MessageLoaderImpl) MessageWaits(ctx context.Context, waiterMachineID *int, offset int, limit int) ([]*model.MessageWait, error) {
+	var result []*model.MessageWait
+
+	err := l.loader.db.Select(ctx, &result, `
+SELECT
+    signed_message_cid,
+    waiter_machine_id,
+    executed_tsk_cid,
+    executed_tsk_epoch,
+    executed_msg_cid,
+    executed_msg_data,
+    executed_rcpt_exitcode,
+    executed_rcpt_return,
+    executed_rcpt_gas_used,
+    created_at
+FROM
+    message_waits
+WHERE
+    ($1::int IS NULL OR waiter_machine_id = $1)
+ORDER BY
+    created_at DESC
+LIMIT $2 OFFSET $3;`, waiterMachineID, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (l *MessageLoaderImpl) MessageWait(ctx context.Context, signedMessageCid string) (*model.MessageWait, error) {
+	var result model.MessageWait
+
+	err := l.loader.db.QueryRow(ctx, `
+SELECT
+    signed_message_cid,
+    waiter_machine_id,
+    executed_tsk_cid,
+    executed_tsk_epoch,
+    executed_msg_cid,
+    executed_msg_data,
+    executed_rcpt_exitcode,
+    executed_rcpt_return,
+    executed_rcpt_gas_used,
+    created_at
+FROM
+    message_waits
+WHERE
+    signed_message_cid = $1
+LIMIT 1;`, signedMessageCid).Scan(
+		&result.SignedMessageCid,
+		&result.WaiterMachineID,
+		&result.ExecutedTskCid,
+		&result.ExecutedTskEpoch,
+		&result.ExecutedMsgCid,
+		&result.ExecutedMsgData,
+		&result.ExecutedRcptExitcode,
+		&result.ExecutedRcptReturn,
+		&result.ExecutedRcptGasUsed,
+		&result.CreatedAt)
 	if err != nil {
 		return nil, err
 	}

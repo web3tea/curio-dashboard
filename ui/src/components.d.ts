@@ -20,6 +20,7 @@ declare module 'vue' {
     HostPortSelectInput: typeof import('./components/app/HostPortSelectInput.vue')['default']
     InfoDialog: typeof import('./components/shared/InfoDialog.vue')['default']
     JsonViewer: typeof import('./components/shared/JsonViewer.vue')['default']
+    MachineSelectInput: typeof import('./components/app/MachineSelectInput.vue')['default']
     MinerSelectInput: typeof import('./components/app/MinerSelectInput.vue')['default']
     PriceInput: typeof import('./components/app/PriceInput.vue')['default']
     PrometheusChart: typeof import('./components/app/PrometheusChart.vue')['default']

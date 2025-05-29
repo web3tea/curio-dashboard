@@ -196,12 +196,21 @@ const AppRoutes = {
       },
     },
     {
-      name: "MessageSends",
-      path: "/messages/sends",
-      component: () => import('@/views/messages/MessageIndex.vue'),
+      name: "MessageHistory",
+      path: "/messages/history",
+      component: () => import('@/views/messages/history/MessageHistoryIndex.vue'),
       meta: {
         title: 'Message Sends',
-        description: 'List of all message sends in the cluster',
+        description: 'List of all message history in the cluster',
+      },
+    },
+    {
+      name: "MessagePendings",
+      path: "/messages/pending",
+      component: () => import('@/views/messages/pending/MessagePendingIndex.vue'),
+      meta: {
+        title: 'Message Pendings',
+        description: 'List of all pending messages in the cluster',
       },
     },
     {
