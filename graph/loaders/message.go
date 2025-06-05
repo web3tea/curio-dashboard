@@ -119,6 +119,8 @@ SELECT
 FROM
     message_waits
 WHERE
+	executed_tsk_cid IS NULL
+AND
     ($1::int IS NULL OR waiter_machine_id = $1)`, waiterMachineID).Scan(&result)
 	return result, err
 }
@@ -141,6 +143,8 @@ SELECT
 FROM
     message_waits
 WHERE
+	executed_tsk_cid IS NULL
+AND
     ($1::int IS NULL OR waiter_machine_id = $1)
 ORDER BY
     created_at DESC
