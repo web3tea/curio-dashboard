@@ -1,0 +1,61 @@
+{
+    "go.formatOnSave": true,
+    "go.formatTool": "gofumpt",
+    "go.lintOnSave": "package",
+    "go.lintTool": "golangci-lint",
+    "go.useLanguageServer": true,
+    "go.goplsOptions": {
+        "gofumpt": true
+    },
+    "go.vetOnSave": "off",
+    "eslint.enable": true,
+    "eslint.validate": [
+        "javascript",
+        "typescript",
+        "javascriptreact",
+        "typescriptreact",
+        "vue"
+    ],
+    "eslint.workingDirectories": [
+        {
+            "directory": "./ui",
+            "changeProcessCWD": true
+        }
+    ],
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "Vue.volar",
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features",
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": "explicit"
+        }
+    },
+    "[go]": {
+        "editor.defaultFormatter": "golang.go"
+    },
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "typescript.suggest.autoImports": true,
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "vue.inlayHints.missingProps": true,
+    "vue.inlayHints.inlineHandlerLeading": true,
+    "files.watcherExclude": {
+        "**/node_modules/**": true,
+        "**/dist/**": true,
+        "**/coverage/**": true
+    }
+}
