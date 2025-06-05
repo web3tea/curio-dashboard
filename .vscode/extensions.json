@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "golang.go",
+        "Vue.volar",
+        "Vue.vscode-typescript-vue-plugin",
+        "dbaeumer.vscode-eslint",
+        "EditorConfig.EditorConfig",
+        "apollographql.vscode-apollo",
+        "ms-vscode.makefile-tools"
+    ]
+}
