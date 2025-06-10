@@ -8,11 +8,19 @@ import (
 	"strconv"
 
 	"github.com/filecoin-project/go-address"
+	"github.com/samber/lo"
 )
 
 type Address struct {
 	address.Address
-	ID uint64
+	id *uint64
+}
+
+func (a *Address) ID() *uint64 {
+	if a == nil {
+		return nil
+	}
+	return a.id
 }
 
 func MustParseAddress(addr string) Address {
@@ -34,7 +42,7 @@ func NewFromString(addr string) (Address, error) {
 		if err != nil {
 			return Address{}, err
 		}
-		v.ID = id
+		v.id = lo.ToPtr(id)
 	}
 	return v, nil
 }
@@ -51,14 +59,14 @@ func (b *Address) UnmarshalGQL(v interface{}) error {
 		if err != nil { // nolint: staticcheck
 			// ignore error
 		}
-		*b = Address{Address: addr, ID: aid}
+		*b = Address{Address: addr, id: lo.ToPtr(aid)}
 	case int, uint, int64, uint64:
 		val := reflect.ValueOf(value).Convert(reflect.TypeOf(uint64(0))).Uint()
 		addr, err := address.NewIDAddress(val)
 		if err != nil {
 			return fmt.Errorf("invalid address: %w", err)
 		}
-		*b = Address{Address: addr, ID: val}
+		*b = Address{Address: addr, id: lo.ToPtr(val)}
 	default:
 		return fmt.Errorf("invalid address: %v", v)
 	}
