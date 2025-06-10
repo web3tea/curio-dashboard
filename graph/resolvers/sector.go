@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/samber/lo"
 	"github.com/web3tea/curio-dashboard/graph"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
 	"github.com/web3tea/curio-dashboard/graph/loaders"
@@ -19,7 +20,7 @@ import (
 
 // RemoveSector is the resolver for the removeSector field.
 func (r *mutationResolver) RemoveSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error) {
-	if err := r.curioAPI.SectorRemove(ctx, int(miner.ID), sectorNumber); err != nil {
+	if err := r.curioAPI.SectorRemove(ctx, int(lo.FromPtr(miner.ID())), sectorNumber); err != nil {
 		return false, err
 	}
 	return true, nil
@@ -27,7 +28,7 @@ func (r *mutationResolver) RemoveSector(ctx context.Context, miner types.Address
 
 // RestartSector is the resolver for the restartSector field.
 func (r *mutationResolver) RestartSector(ctx context.Context, miner types.Address, sectorNumber int) (bool, error) {
-	if err := r.curioAPI.SectorResume(ctx, int64(miner.ID), int64(sectorNumber)); err != nil {
+	if err := r.curioAPI.SectorResume(ctx, int64(lo.FromPtr(miner.ID())), int64(sectorNumber)); err != nil {
 		return false, err
 	}
 	return true, nil
@@ -165,6 +166,8 @@ func (r *Resolver) SectorLocation() graph.SectorLocationResolver { return &secto
 // SectorMeta returns graph.SectorMetaResolver implementation.
 func (r *Resolver) SectorMeta() graph.SectorMetaResolver { return &sectorMetaResolver{r} }
 
-type sectorResolver struct{ *Resolver }
-type sectorLocationResolver struct{ *Resolver }
-type sectorMetaResolver struct{ *Resolver }
+type (
+	sectorResolver         struct{ *Resolver }
+	sectorLocationResolver struct{ *Resolver }
+	sectorMetaResolver     struct{ *Resolver }
+)

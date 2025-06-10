@@ -48,7 +48,7 @@ func (r *mutationResolver) UpdateMarketMk12StorageAsk(ctx context.Context, input
 		return nil, fmt.Errorf("invalid SpID: %w", err)
 	}
 	ask := webrpc.StorageAsk{
-		SpID:          int64(input.SpID.ID),
+		SpID:          int64(lo.FromPtr(input.SpID.ID())),
 		Price:         int64(input.Price),
 		VerifiedPrice: int64(input.VerifiedPrice),
 		MinSize:       int64(input.MinSize),
@@ -269,7 +269,7 @@ func (r *queryResolver) MarketMk12StorageAsks(ctx context.Context) ([]*model.Mar
 // MarketMk12StorageAsk is the resolver for the marketMk12StorageAsk field.
 func (r *queryResolver) MarketMk12StorageAsk(ctx context.Context, spID types.Address) (*model.MarketMk12StorageAsk, error) {
 	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, marketDefaultCacheAge)
-	return r.loader.MarketLoader.MarketMk12StorageAsk(ctx, spID.ID)
+	return r.loader.MarketLoader.MarketMk12StorageAsk(ctx, lo.FromPtr(spID.ID()))
 }
 
 // MarketMk12StorageAsksCount is the resolver for the marketMk12StorageAsksCount field.

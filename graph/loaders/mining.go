@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/samber/lo"
 	"github.com/web3tea/curio-dashboard/types"
 
 	"github.com/web3tea/curio-dashboard/graph/model"
@@ -83,7 +82,7 @@ WHERE
     ($1::int IS NULL OR sp_id = $1) AND
     base_compute_time BETWEEN $2 AND $3
 GROUP BY
-    included;`, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), start, end)
+    included;`, actor.ID(), start, end)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +109,7 @@ WHERE
     ($2::int IS NULL OR sp_id = $2) AND
     ($3::bool IS NULL OR included = $3) AND
     ($4::timestamp IS NULL OR base_compute_time >= $4) AND
-    ($5::timestamp IS NULL OR base_compute_time <= $5);`, won, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), include, start, end).Scan(&count)
+    ($5::timestamp IS NULL OR base_compute_time <= $5);`, won, actor.ID(), include, start, end).Scan(&count)
 	if err != nil {
 		return 0, err
 	}
@@ -142,7 +141,7 @@ WHERE
     ($5::timestamp IS NULL OR base_compute_time <= $5)
 ORDER BY
     base_compute_time DESC
-LIMIT $6 OFFSET $7;`, won, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), include, start, end, limit, offset)
+LIMIT $6 OFFSET $7;`, won, actor.ID(), include, start, end, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +179,7 @@ func (l *MiningLoaderImpl) MiningCountSummary(ctx context.Context, start, end ti
               OR mt.sp_id = (SELECT actor_id FROM params)
           )
     `
-	err := l.loader.db.QueryRow(ctx, query, start, end, lo.If[*uint64](actor == nil, nil).Else(&actor.ID)).Scan(&stats.Total, &stats.Won, &stats.Included)
+	err := l.loader.db.QueryRow(ctx, query, start, end, actor.ID()).Scan(&stats.Total, &stats.Won, &stats.Included)
 	if err != nil {
 		return nil, err
 	}
@@ -221,7 +220,7 @@ func (l *MiningLoaderImpl) MiningCountAggregate(ctx context.Context, start, end 
     ORDER BY
         time;
 `
-	err := l.loader.db.Select(ctx, &result, query, start, end, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), interval)
+	err := l.loader.db.Select(ctx, &result, query, start, end, actor.ID(), interval)
 	if err != nil {
 		return nil, err
 	}

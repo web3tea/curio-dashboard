@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/samber/lo"
 	"github.com/web3tea/curio-dashboard/types"
 	"golang.org/x/xerrors"
 
@@ -70,7 +69,7 @@ func (l *SectorLoaderImpl) SectorMetas(ctx context.Context, actor *types.Address
 FROM
 				sectors_meta
 WHERE ($1::bigint IS NULL OR sp_id = $1)
-LIMIT $2 OFFSET $3`, lo.If[*uint64](actor == nil, nil).Else(&actor.ID), limit, offset); err != nil {
+LIMIT $2 OFFSET $3`, actor.ID(), limit, offset); err != nil {
 		return nil, err
 	}
 	return m, nil
@@ -110,7 +109,7 @@ func (l *SectorLoaderImpl) SectorsCount(ctx context.Context, actor *types.Addres
 	var count int
 	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*)
 FROM sectors_meta
-WHERE ($1::bigint IS NULL OR sp_id = $1)`, lo.If[*uint64](actor == nil, nil).Else(&actor.ID)).Scan(&count)
+WHERE ($1::bigint IS NULL OR sp_id = $1)`, actor.ID()).Scan(&count)
 	if err != nil {
 		return 0, xerrors.Errorf("counting sectors: %w", err)
 	}
@@ -131,7 +130,7 @@ func (l *SectorLoaderImpl) SectorLocations(ctx context.Context, actor types.Addr
     write_lock_owner
 FROM
     sector_location
-WHERE miner_id = $1 AND sector_num = $2`, actor.ID, sectorNumber); err != nil {
+WHERE miner_id = $1 AND sector_num = $2`, actor.ID(), sectorNumber); err != nil {
 		return nil, err
 	}
 	return locations, nil

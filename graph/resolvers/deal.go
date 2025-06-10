@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/samber/lo"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
 	"github.com/web3tea/curio-dashboard/graph/model"
 	"github.com/web3tea/curio-dashboard/types"
@@ -16,7 +17,7 @@ import (
 
 // DealSealNow is the resolver for the dealSealNow field.
 func (r *mutationResolver) DealSealNow(ctx context.Context, miner types.Address, sectorNumber uint64) (bool, error) {
-	err := r.curioAPI.DealsSealNow(ctx, uint64(miner.ID), sectorNumber)
+	err := r.curioAPI.DealsSealNow(ctx, lo.FromPtr(miner.ID()), sectorNumber)
 	if err != nil {
 		return false, err
 	}
