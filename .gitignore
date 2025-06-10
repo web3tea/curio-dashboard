@@ -24,3 +24,4 @@ curio-dashboard
 .idea
 qodana.yaml
 config.toml
+.github/copilot-instructions.md

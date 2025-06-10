@@ -854,6 +854,9 @@ export type Query = {
   tasksCount: Scalars['Int']['output'];
   tasksDurationStats: Array<TaskDurationStats>;
   tasksStats?: Maybe<Array<Maybe<TaskStats>>>;
+  wdpostProof?: Maybe<WdpostProofs>;
+  wdpostProofs: Array<WdpostProofs>;
+  wdpostProofsCount: Scalars['Int']['output'];
 };
 
 
@@ -1170,6 +1173,26 @@ export type QueryTasksStatsArgs = {
   start: Scalars['Time']['input'];
 };
 
+
+export type QueryWdpostProofArgs = {
+  deadline: Scalars['Int']['input'];
+  partition: Scalars['Int']['input'];
+  provingPeriodStart: Scalars['Int']['input'];
+  spId: Scalars['Address']['input'];
+};
+
+
+export type QueryWdpostProofsArgs = {
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  spId?: InputMaybe<Scalars['Address']['input']>;
+};
+
+
+export type QueryWdpostProofsCountArgs = {
+  spId?: InputMaybe<Scalars['Address']['input']>;
+};
+
 export type Role =
   | 'ADMIN'
   | 'OPERATOR'
@@ -1477,6 +1500,21 @@ export type WalletBalance = {
   __typename?: 'WalletBalance';
   address: Scalars['Address']['output'];
   balance: Scalars['FIL']['output'];
+};
+
+export type WdpostProofs = {
+  __typename?: 'WdpostProofs';
+  deadline: Scalars['Int']['output'];
+  id: Scalars['String']['output'];
+  messageCid?: Maybe<Scalars['String']['output']>;
+  partition: Scalars['Int']['output'];
+  proofParams?: Maybe<Scalars['Bytes']['output']>;
+  provingPeriodStart: Scalars['Int']['output'];
+  spId: Scalars['Address']['output'];
+  submitAtEpoch: Scalars['Int']['output'];
+  submitByEpoch: Scalars['Int']['output'];
+  submitTaskId?: Maybe<Scalars['Int']['output']>;
+  testTaskId?: Maybe<Scalars['Int']['output']>;
 };
 
 

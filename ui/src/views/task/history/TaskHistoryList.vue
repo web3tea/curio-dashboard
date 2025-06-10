@@ -116,7 +116,10 @@ const selectDateRange = computed({
                   md="2"
                   class="c-input-container"
                 >
-                  <TaskNameSelectInput class="c-input" v-model="name" />
+                  <TaskNameSelectInput
+                    v-model="name"
+                    class="c-input"
+                  />
                 </v-col>
                 <v-col
                   cols="4"

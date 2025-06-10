@@ -29,6 +29,7 @@ type Loader struct {
 	TaskLoader
 	NodeLoader
 	IPNILoader
+	WdPostLoader
 }
 
 func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
@@ -50,6 +51,7 @@ func NewLoader(db *db.HarmonyDB, cacheSize int) *Loader {
 	loader.TaskLoader = NewTaskLoader(loader)
 	loader.NodeLoader = NewNodeLoader(loader)
 	loader.IPNILoader = NewIPNILoader(loader)
+	loader.WdPostLoader = NewWdPostLoader(loader)
 
 	return loader
 }

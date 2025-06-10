@@ -23,6 +23,7 @@ import (
 const (
 	sectorDefaultCacheAge = time.Minute * 5
 	marketDefaultCacheAge = time.Minute
+	wdpostDefaultCacheAge = time.Minute * 2
 )
 
 var log = logging.Logger("resolvers")
