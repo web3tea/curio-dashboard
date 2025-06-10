@@ -166,8 +166,6 @@ func (r *Resolver) SectorLocation() graph.SectorLocationResolver { return &secto
 // SectorMeta returns graph.SectorMetaResolver implementation.
 func (r *Resolver) SectorMeta() graph.SectorMetaResolver { return &sectorMetaResolver{r} }
 
-type (
-	sectorResolver         struct{ *Resolver }
-	sectorLocationResolver struct{ *Resolver }
-	sectorMetaResolver     struct{ *Resolver }
-)
+type sectorResolver struct{ *Resolver }
+type sectorLocationResolver struct{ *Resolver }
+type sectorMetaResolver struct{ *Resolver }
