@@ -80,7 +80,7 @@ FROM
     wdpost_proofs
 WHERE
     sp_id = $1 AND proving_period_start = $2 AND deadline = $3 AND partition = $4`,
-		spID.ID, provingPeriodStart, deadline, partition).Scan(
+		spID.ID(), provingPeriodStart, deadline, partition).Scan(
 		&result.SpID,
 		&result.ProvingPeriodStart,
 		&result.Deadline,
