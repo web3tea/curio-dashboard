@@ -141,10 +141,16 @@ const getProofStatusText = (item: WdpostProofs) => {
           <EpochField :epoch="value" />
         </template>
         <template #item.submitAtEpoch="{ value }">
-          <EpochField :epoch="value" />
+          <EpochField
+            :epoch="value"
+            swap
+          />
         </template>
         <template #item.submitByEpoch="{ value }">
-          <EpochField :epoch="value" />
+          <EpochField
+            :epoch="value"
+            swap
+          />
         </template>
         <template #item.submitTaskId="{ value }">
           <span v-if="value">{{ value }}</span>

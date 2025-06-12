@@ -19,16 +19,34 @@ const props = defineProps({
   defaultText: {
     type: String,
     default: 'N/A',
+  },
+  swap: {
+    type: Boolean,
+    default: false,
   }
 })
 
 const ms = useMetadataStore()
 
-const text = computed(() => {
+const timeText = computed(() => {
   if (!props.epoch) {
     return props.defaultText
   }
   return getRelativeTime(ms.epochToTime(props.epoch), 'long', 2, d)
+})
+
+const displayText = computed(() => {
+  if (!props.epoch) {
+    return props.defaultText
+  }
+  return props.swap ? timeText.value : props.epoch
+})
+
+const tooltipText = computed(() => {
+  if (!props.epoch) {
+    return props.defaultText
+  }
+  return props.swap ? props.epoch : timeText.value
 })
 
 </script>
@@ -39,10 +57,10 @@ const text = computed(() => {
       <span
         v-bind="pp"
       >
-        {{ epoch }}
+        {{ displayText }}
       </span>
     </template>
-    {{ text }}
+    {{ tooltipText }}
   </v-tooltip>
 </template>
 
