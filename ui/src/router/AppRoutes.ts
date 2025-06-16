@@ -66,6 +66,15 @@ const AppRoutes = {
       },
     },
     {
+      name: 'Wdpost',
+      path: '/pipeline/wdpost',
+      component: () => import('@/views/wdpost/WdpostIndex.vue'),
+      meta: {
+        title: 'WindowedPoSt Proofs',
+        description: 'WindowedPoSt proofs status and management',
+      },
+    },
+    {
       name: 'ActiveTasks',
       path: '/tasks/active',
       component: () => import('@/views/task/active/ActiveTaskIndex.vue'),

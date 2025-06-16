@@ -1,0 +1,25 @@
+type WdpostProofs {
+    id: String! @goField(forceResolver: true) @goTag(key: "db", value: "-")
+    spId: Address!
+    provingPeriodStart: Int!
+    deadline: Int!
+    partition: Int!
+    submitAtEpoch: Int!
+    submitByEpoch: Int!
+    proofParams: Bytes
+    submitTaskId: Int
+    messageCid: String
+    testTaskId: Int
+}
+
+extend type Query {
+    wdpostProof(
+        spId: Address!
+        provingPeriodStart: Int!
+        deadline: Int!
+        partition: Int!
+    ): WdpostProofs
+
+    wdpostProofs(spId: Address, offset: Int!, limit: Int!): [WdpostProofs!]!
+    wdpostProofsCount(spId: Address): Int!
+}

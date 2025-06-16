@@ -99,8 +99,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
       children: [
         {
           title: t('nav.WindowPoSt'),
-          to: 'WindowPoSt',
-          disabled: true // todo: add WindowPoSt page
+          to: { name: "Wdpost" },
         },
         {
           title: t('nav.Partition Tasks'),

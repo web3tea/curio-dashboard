@@ -767,6 +767,20 @@ type WalletBalance struct {
 	Balance types.FIL     `json:"balance"`
 }
 
+type WdpostProofs struct {
+	ID                 string        `json:"id" db:"-"`
+	SpID               types.Address `json:"spId"`
+	ProvingPeriodStart int           `json:"provingPeriodStart"`
+	Deadline           int           `json:"deadline"`
+	Partition          int           `json:"partition"`
+	SubmitAtEpoch      int           `json:"submitAtEpoch"`
+	SubmitByEpoch      int           `json:"submitByEpoch"`
+	ProofParams        types.Bytes   `json:"proofParams"`
+	SubmitTaskID       *int          `json:"submitTaskId"`
+	MessageCid         *string       `json:"messageCid"`
+	TestTaskID         *int          `json:"testTaskId"`
+}
+
 type IPNIProviderStatus string
 
 const (

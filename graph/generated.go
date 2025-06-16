@@ -67,6 +67,7 @@ type ResolverRoot interface {
 	Subscription() SubscriptionResolver
 	Task() TaskResolver
 	TaskHistory() TaskHistoryResolver
+	WdpostProofs() WdpostProofsResolver
 }
 
 type DirectiveRoot struct {
@@ -687,6 +688,9 @@ type ComplexityRoot struct {
 		TasksCount                 func(childComplexity int) int
 		TasksDurationStats         func(childComplexity int, start time.Time, end time.Time) int
 		TasksStats                 func(childComplexity int, start time.Time, end time.Time, machine *string) int
+		WdpostProof                func(childComplexity int, spID types.Address, provingPeriodStart int, deadline int, partition int) int
+		WdpostProofs               func(childComplexity int, spID *types.Address, offset int, limit int) int
+		WdpostProofsCount          func(childComplexity int, spID *types.Address) int
 	}
 
 	RunningTaskSummary struct {
@@ -920,6 +924,20 @@ type ComplexityRoot struct {
 		Address func(childComplexity int) int
 		Balance func(childComplexity int) int
 	}
+
+	WdpostProofs struct {
+		Deadline           func(childComplexity int) int
+		ID                 func(childComplexity int) int
+		MessageCid         func(childComplexity int) int
+		Partition          func(childComplexity int) int
+		ProofParams        func(childComplexity int) int
+		ProvingPeriodStart func(childComplexity int) int
+		SpID               func(childComplexity int) int
+		SubmitAtEpoch      func(childComplexity int) int
+		SubmitByEpoch      func(childComplexity int) int
+		SubmitTaskID       func(childComplexity int) int
+		TestTaskID         func(childComplexity int) int
+	}
 }
 
 type ActorResolver interface {
@@ -1121,6 +1139,9 @@ type QueryResolver interface {
 	RunningTaskSummary(ctx context.Context) (*model.RunningTaskSummary, error)
 	TaskDurationStats(ctx context.Context, name string, start time.Time, end time.Time) (*model.TaskDurationStats, error)
 	TasksDurationStats(ctx context.Context, start time.Time, end time.Time) ([]*model.TaskDurationStats, error)
+	WdpostProof(ctx context.Context, spID types.Address, provingPeriodStart int, deadline int, partition int) (*model.WdpostProofs, error)
+	WdpostProofs(ctx context.Context, spID *types.Address, offset int, limit int) ([]*model.WdpostProofs, error)
+	WdpostProofsCount(ctx context.Context, spID *types.Address) (int, error)
 }
 type SectorResolver interface {
 	ID(ctx context.Context, obj *model.Sector) (string, error)
@@ -1165,6 +1186,9 @@ type TaskResolver interface {
 }
 type TaskHistoryResolver interface {
 	CompletedBy(ctx context.Context, obj *model.TaskHistory) (*model.Machine, error)
+}
+type WdpostProofsResolver interface {
+	ID(ctx context.Context, obj *model.WdpostProofs) (string, error)
 }
 
 type executableSchema struct {
@@ -4828,6 +4852,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.TasksStats(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["machine"].(*string)), true
 
+	case "Query.wdpostProof":
+		if e.complexity.Query.WdpostProof == nil {
+			break
+		}
+
+		args, err := ec.field_Query_wdpostProof_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.WdpostProof(childComplexity, args["spId"].(types.Address), args["provingPeriodStart"].(int), args["deadline"].(int), args["partition"].(int)), true
+
+	case "Query.wdpostProofs":
+		if e.complexity.Query.WdpostProofs == nil {
+			break
+		}
+
+		args, err := ec.field_Query_wdpostProofs_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.WdpostProofs(childComplexity, args["spId"].(*types.Address), args["offset"].(int), args["limit"].(int)), true
+
+	case "Query.wdpostProofsCount":
+		if e.complexity.Query.WdpostProofsCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_wdpostProofsCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.WdpostProofsCount(childComplexity, args["spId"].(*types.Address)), true
+
 	case "RunningTaskSummary.averageWaitTime":
 		if e.complexity.RunningTaskSummary.AverageWaitTime == nil {
 			break
@@ -5984,6 +6044,83 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.WalletBalance.Balance(childComplexity), true
 
+	case "WdpostProofs.deadline":
+		if e.complexity.WdpostProofs.Deadline == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.Deadline(childComplexity), true
+
+	case "WdpostProofs.id":
+		if e.complexity.WdpostProofs.ID == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.ID(childComplexity), true
+
+	case "WdpostProofs.messageCid":
+		if e.complexity.WdpostProofs.MessageCid == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.MessageCid(childComplexity), true
+
+	case "WdpostProofs.partition":
+		if e.complexity.WdpostProofs.Partition == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.Partition(childComplexity), true
+
+	case "WdpostProofs.proofParams":
+		if e.complexity.WdpostProofs.ProofParams == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.ProofParams(childComplexity), true
+
+	case "WdpostProofs.provingPeriodStart":
+		if e.complexity.WdpostProofs.ProvingPeriodStart == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.ProvingPeriodStart(childComplexity), true
+
+	case "WdpostProofs.spId":
+		if e.complexity.WdpostProofs.SpID == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.SpID(childComplexity), true
+
+	case "WdpostProofs.submitAtEpoch":
+		if e.complexity.WdpostProofs.SubmitAtEpoch == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.SubmitAtEpoch(childComplexity), true
+
+	case "WdpostProofs.submitByEpoch":
+		if e.complexity.WdpostProofs.SubmitByEpoch == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.SubmitByEpoch(childComplexity), true
+
+	case "WdpostProofs.submitTaskId":
+		if e.complexity.WdpostProofs.SubmitTaskID == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.SubmitTaskID(childComplexity), true
+
+	case "WdpostProofs.testTaskId":
+		if e.complexity.WdpostProofs.TestTaskID == nil {
+			break
+		}
+
+		return e.complexity.WdpostProofs.TestTaskID(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -6109,7 +6246,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/ipni.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql" "schema/user.graphql"
+//go:embed "schema/actor.graphql" "schema/alert.graphql" "schema/config.graphql" "schema/deal.graphql" "schema/directive.graphql" "schema/ipni.graphql" "schema/machine.graphql" "schema/market.graphql" "schema/message.graphql" "schema/metadata.graphql" "schema/miner.graphql" "schema/mining.graphql" "schema/mutation.graphql" "schema/node.graphql" "schema/pipeline.graphql" "schema/prometheus.graphql" "schema/query.graphql" "schema/sector.graphql" "schema/storage.graphql" "schema/subscription.graphql" "schema/task.graphql" "schema/types.graphql" "schema/user.graphql" "schema/wdpost.graphql"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -6144,6 +6281,7 @@ var sources = []*ast.Source{
 	{Name: "schema/task.graphql", Input: sourceData("schema/task.graphql"), BuiltIn: false},
 	{Name: "schema/types.graphql", Input: sourceData("schema/types.graphql"), BuiltIn: false},
 	{Name: "schema/user.graphql", Input: sourceData("schema/user.graphql"), BuiltIn: false},
+	{Name: "schema/wdpost.graphql", Input: sourceData("schema/wdpost.graphql"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -9792,6 +9930,205 @@ func (ec *executionContext) field_Query_tasksStats_argsMachine(
 	}
 
 	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProof_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_wdpostProof_argsSpID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["spId"] = arg0
+	arg1, err := ec.field_Query_wdpostProof_argsProvingPeriodStart(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["provingPeriodStart"] = arg1
+	arg2, err := ec.field_Query_wdpostProof_argsDeadline(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["deadline"] = arg2
+	arg3, err := ec.field_Query_wdpostProof_argsPartition(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["partition"] = arg3
+	return args, nil
+}
+func (ec *executionContext) field_Query_wdpostProof_argsSpID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (types.Address, error) {
+	if _, ok := rawArgs["spId"]; !ok {
+		var zeroVal types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+	if tmp, ok := rawArgs["spId"]; ok {
+		return ec.unmarshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProof_argsProvingPeriodStart(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["provingPeriodStart"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("provingPeriodStart"))
+	if tmp, ok := rawArgs["provingPeriodStart"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProof_argsDeadline(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["deadline"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("deadline"))
+	if tmp, ok := rawArgs["deadline"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProof_argsPartition(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["partition"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("partition"))
+	if tmp, ok := rawArgs["partition"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProofsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_wdpostProofsCount_argsSpID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["spId"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_wdpostProofsCount_argsSpID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.Address, error) {
+	if _, ok := rawArgs["spId"]; !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+	if tmp, ok := rawArgs["spId"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProofs_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_wdpostProofs_argsSpID(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["spId"] = arg0
+	arg1, err := ec.field_Query_wdpostProofs_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg1
+	arg2, err := ec.field_Query_wdpostProofs_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg2
+	return args, nil
+}
+func (ec *executionContext) field_Query_wdpostProofs_argsSpID(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.Address, error) {
+	if _, ok := rawArgs["spId"]; !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("spId"))
+	if tmp, ok := rawArgs["spId"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProofs_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["offset"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_wdpostProofs_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["limit"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
 	return zeroVal, nil
 }
 
@@ -35447,6 +35784,216 @@ func (ec *executionContext) fieldContext_Query_tasksDurationStats(ctx context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_wdpostProof(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_wdpostProof(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().WdpostProof(rctx, fc.Args["spId"].(types.Address), fc.Args["provingPeriodStart"].(int), fc.Args["deadline"].(int), fc.Args["partition"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.WdpostProofs)
+	fc.Result = res
+	return ec.marshalOWdpostProofs2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWdpostProofs(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_wdpostProof(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_WdpostProofs_id(ctx, field)
+			case "spId":
+				return ec.fieldContext_WdpostProofs_spId(ctx, field)
+			case "provingPeriodStart":
+				return ec.fieldContext_WdpostProofs_provingPeriodStart(ctx, field)
+			case "deadline":
+				return ec.fieldContext_WdpostProofs_deadline(ctx, field)
+			case "partition":
+				return ec.fieldContext_WdpostProofs_partition(ctx, field)
+			case "submitAtEpoch":
+				return ec.fieldContext_WdpostProofs_submitAtEpoch(ctx, field)
+			case "submitByEpoch":
+				return ec.fieldContext_WdpostProofs_submitByEpoch(ctx, field)
+			case "proofParams":
+				return ec.fieldContext_WdpostProofs_proofParams(ctx, field)
+			case "submitTaskId":
+				return ec.fieldContext_WdpostProofs_submitTaskId(ctx, field)
+			case "messageCid":
+				return ec.fieldContext_WdpostProofs_messageCid(ctx, field)
+			case "testTaskId":
+				return ec.fieldContext_WdpostProofs_testTaskId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WdpostProofs", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_wdpostProof_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_wdpostProofs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_wdpostProofs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().WdpostProofs(rctx, fc.Args["spId"].(*types.Address), fc.Args["offset"].(int), fc.Args["limit"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.WdpostProofs)
+	fc.Result = res
+	return ec.marshalNWdpostProofs2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWdpostProofsᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_wdpostProofs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_WdpostProofs_id(ctx, field)
+			case "spId":
+				return ec.fieldContext_WdpostProofs_spId(ctx, field)
+			case "provingPeriodStart":
+				return ec.fieldContext_WdpostProofs_provingPeriodStart(ctx, field)
+			case "deadline":
+				return ec.fieldContext_WdpostProofs_deadline(ctx, field)
+			case "partition":
+				return ec.fieldContext_WdpostProofs_partition(ctx, field)
+			case "submitAtEpoch":
+				return ec.fieldContext_WdpostProofs_submitAtEpoch(ctx, field)
+			case "submitByEpoch":
+				return ec.fieldContext_WdpostProofs_submitByEpoch(ctx, field)
+			case "proofParams":
+				return ec.fieldContext_WdpostProofs_proofParams(ctx, field)
+			case "submitTaskId":
+				return ec.fieldContext_WdpostProofs_submitTaskId(ctx, field)
+			case "messageCid":
+				return ec.fieldContext_WdpostProofs_messageCid(ctx, field)
+			case "testTaskId":
+				return ec.fieldContext_WdpostProofs_testTaskId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WdpostProofs", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_wdpostProofs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_wdpostProofsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_wdpostProofsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().WdpostProofsCount(rctx, fc.Args["spId"].(*types.Address))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_wdpostProofsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_wdpostProofsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -43372,6 +43919,478 @@ func (ec *executionContext) fieldContext_WalletBalance_balance(_ context.Context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type FIL does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_id(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.WdpostProofs().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_spId(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_spId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_spId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_provingPeriodStart(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_provingPeriodStart(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProvingPeriodStart, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_provingPeriodStart(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_deadline(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_deadline(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Deadline, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_deadline(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_partition(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_partition(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Partition, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_partition(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_submitAtEpoch(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_submitAtEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubmitAtEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_submitAtEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_submitByEpoch(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_submitByEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubmitByEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_submitByEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_proofParams(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_proofParams(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProofParams, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.Bytes)
+	fc.Result = res
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_proofParams(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_submitTaskId(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_submitTaskId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubmitTaskID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_submitTaskId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_messageCid(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_messageCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MessageCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_messageCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WdpostProofs_testTaskId(ctx context.Context, field graphql.CollectedField, obj *model.WdpostProofs) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WdpostProofs_testTaskId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TestTaskID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WdpostProofs_testTaskId(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WdpostProofs",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -52513,6 +53532,69 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "wdpostProof":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_wdpostProof(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "wdpostProofs":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_wdpostProofs(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "wdpostProofsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_wdpostProofsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -54624,6 +55706,114 @@ func (ec *executionContext) _WalletBalance(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var wdpostProofsImplementors = []string{"WdpostProofs"}
+
+func (ec *executionContext) _WdpostProofs(ctx context.Context, sel ast.SelectionSet, obj *model.WdpostProofs) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, wdpostProofsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("WdpostProofs")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._WdpostProofs_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "spId":
+			out.Values[i] = ec._WdpostProofs_spId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "provingPeriodStart":
+			out.Values[i] = ec._WdpostProofs_provingPeriodStart(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "deadline":
+			out.Values[i] = ec._WdpostProofs_deadline(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "partition":
+			out.Values[i] = ec._WdpostProofs_partition(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "submitAtEpoch":
+			out.Values[i] = ec._WdpostProofs_submitAtEpoch(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "submitByEpoch":
+			out.Values[i] = ec._WdpostProofs_submitByEpoch(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "proofParams":
+			out.Values[i] = ec._WdpostProofs_proofParams(ctx, field, obj)
+		case "submitTaskId":
+			out.Values[i] = ec._WdpostProofs_submitTaskId(ctx, field, obj)
+		case "messageCid":
+			out.Values[i] = ec._WdpostProofs_messageCid(ctx, field, obj)
+		case "testTaskId":
+			out.Values[i] = ec._WdpostProofs_testTaskId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var __DirectiveImplementors = []string{"__Directive"}
 
 func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionSet, obj *introspection.Directive) graphql.Marshaler {
@@ -56234,6 +57424,60 @@ func (ec *executionContext) marshalNWalletBalance2ᚖgithubᚗcomᚋweb3teaᚋcu
 		return graphql.Null
 	}
 	return ec._WalletBalance(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNWdpostProofs2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWdpostProofsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.WdpostProofs) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNWdpostProofs2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWdpostProofs(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNWdpostProofs2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWdpostProofs(ctx context.Context, sel ast.SelectionSet, v *model.WdpostProofs) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._WdpostProofs(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -58235,6 +59479,13 @@ func (ec *executionContext) marshalOWalletBalance2ᚕᚖgithubᚗcomᚋweb3tea�
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalOWdpostProofs2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐWdpostProofs(ctx context.Context, sel ast.SelectionSet, v *model.WdpostProofs) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._WdpostProofs(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {
