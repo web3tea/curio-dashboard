@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons-vue'
+import { IconEyeOff, IconEye } from '@tabler/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from 'vue-i18n'
 
@@ -62,14 +62,14 @@ function submit () {
             rounded
             variant="text"
           >
-            <EyeInvisibleOutlined
+            <IconEyeOff
               v-if="!show1"
-              :style="{ color: 'rgb(var(--v-theme-secondary))' }"
+              color="rgb(var(--v-theme-secondary))"
               @click="show1 = !show1"
             />
-            <EyeOutlined
+            <IconEye
               v-if="show1"
-              :style="{ color: 'rgb(var(--v-theme-secondary))' }"
+              color="rgb(var(--v-theme-secondary))"
               @click="show1 = !show1"
             />
           </v-btn>

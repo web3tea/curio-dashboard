@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 // icons
-import { CloseOutlined, MailOutlined } from '@ant-design/icons-vue'
+import { IconX, IconMail } from '@tabler/icons-vue'
 
 const MessageMenu = ref(false)
 </script>
@@ -24,7 +24,7 @@ const MessageMenu = ref(false)
         size="small"
         v-bind="props"
       >
-        <MailOutlined :style="{ fontSize: '16px' }" />
+        <IconMail :size="16" />
       </v-btn>
     </template>
     <v-sheet
@@ -45,7 +45,7 @@ const MessageMenu = ref(false)
             variant="text"
             @click="MessageMenu = false"
           >
-            <CloseOutlined :style="{ fontSize: '12px' }" />
+            <IconX :size="12" />
           </v-btn>
         </div>
       </div>
