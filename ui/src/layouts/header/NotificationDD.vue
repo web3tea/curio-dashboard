@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { watch } from 'vue'
-import { BellOutlined, CheckCircleOutlined } from '@ant-design/icons-vue'
+import { IconBell, IconCircleCheck, IconExclamationCircle } from '@tabler/icons-vue'
 import { useSubscription } from '@vue/apollo-composable'
 import { SubscribeAlerts } from '@/layouts/header/graphql'
 import { useAlertsStore } from '@/stores/alerts'
-import { IconExclamationCircle } from '@tabler/icons-vue'
 import moment from 'moment'
 
 const alertStore = useAlertsStore()
@@ -46,7 +45,7 @@ function markAllRead () {
           offset-x="-4"
           offset-y="-5"
         >
-          <BellOutlined :style="{ fontSize: '16px' }" />
+          <IconBell :size="16" />
         </v-badge>
       </v-btn>
     </template>
@@ -69,7 +68,7 @@ function markAllRead () {
             variant="text"
             @click="markAllRead"
           >
-            <CheckCircleOutlined :style="{ fontSize: '16px' }" />
+            <IconCircleCheck :size="16" />
             <v-tooltip
               activator="parent"
               aria-label="tooltip"

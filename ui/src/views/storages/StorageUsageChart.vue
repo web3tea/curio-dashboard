@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ComputedRef } from 'vue'
-import { CaretUpFilled } from '@ant-design/icons-vue'
+import { IconCaretUp } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetStorageStats } from '@/gql/storage'
 import { StorageStats } from '@/typed-graph'
@@ -166,9 +166,9 @@ function getOption (title: string, color: string) {
               </div>
               <div>
                 <div class="d-flex align-center justify-end">
-                  <CaretUpFilled
+                  <IconCaretUp
                     class="text-success"
-                    :style="{ fontSize: '12px' }"
+                    :size="12"
                   />
                   <p class="text-h6 text-lightText mb-0 ml-2">
                     {{ chart.percentage }}

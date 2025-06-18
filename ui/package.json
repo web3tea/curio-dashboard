@@ -16,7 +16,6 @@
     "i18n:check": "vue-i18n-extract report --vueFiles './src/**/*.?(ts|vue)' --languageFiles './src/utils/locales/*.?(json|yml|yaml)' --ci"
   },
   "dependencies": {
-    "@ant-design/icons-vue": "^7.0.1",
     "@apollo/client": "^3.11.1",
     "@codemirror/language": "^6.10.2",
     "@codemirror/legacy-modes": "^6.4.0",
