@@ -65,11 +65,13 @@ function submit () {
             <IconEyeOff
               v-if="!show1"
               color="rgb(var(--v-theme-secondary))"
+              size="16"
               @click="show1 = !show1"
             />
             <IconEye
               v-if="show1"
               color="rgb(var(--v-theme-secondary))"
+              size="16"
               @click="show1 = !show1"
             />
           </v-btn>
