@@ -107,17 +107,37 @@ const ariaLabel = computed(() => {
   const label = STATUS_CONFIG[props.status]?.label || props.status
   return props.tooltip || `${label}`
 })
+
+const isLongTooltip = computed(() => {
+  return props.tooltip && props.tooltip.length > 60
+})
+
+const tooltipProps = computed(() => {
+  const baseProps = {
+    location: 'top' as const
+  }
+
+  if (isLongTooltip.value) {
+    return {
+      ...baseProps,
+      maxWidth: 300,
+      contentClass: 'status-icon-tooltip--long'
+    }
+  }
+
+  return baseProps
+})
 </script>
 
 <template>
   <v-tooltip
     v-if="tooltip"
     :text="tooltip"
-    location="top"
+    v-bind="tooltipProps"
   >
-    <template #activator="{ props: tooltipProps }">
+    <template #activator="{ props: activatorProps }">
       <div
-        v-bind="tooltipProps"
+        v-bind="activatorProps"
         :aria-label="ariaLabel"
         class="d-inline-flex align-center"
       >
@@ -142,3 +162,14 @@ const ariaLabel = computed(() => {
     />
   </div>
 </template>
+
+<style scoped>
+:deep(.status-icon-tooltip--long) {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-align: left;
+  line-height: 1.4;
+  padding: 12px 16px;
+  font-size: 14px;
+}
+</style>
