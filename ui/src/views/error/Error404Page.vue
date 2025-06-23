@@ -8,30 +8,29 @@
   >
     <v-col class="d-flex align-center justify-center">
       <div class="text-center">
-        <div class="CardMediaWrapper">
-          <img
-            alt="404"
-            src="@/assets/images/maintenance/Error404.png"
+        <div class="error-icon mb-8">
+          <v-icon
+            size="120"
+            color="primary"
           >
-          <div class="CardMediaBuild">
-            <img
-              alt="grid"
-              class="w-100"
-              src="@/assets/images/maintenance/TwoCone.png"
-            >
-          </div>
+            mdi-alert-circle-outline
+          </v-icon>
         </div>
-        <h1 class="text-md-h1 text-h2 mt-16">
-          Page Not Found
+        <h1 class="text-md-h1 text-h2 mb-4">
+          404
         </h1>
-        <p class="text-h6 text-lightText">
-          The page you are looking was moved, removed, <br>renamed, or might never exist!
+        <h2 class="text-h4 text-h5 mb-4">
+          Page Not Found
+        </h2>
+        <p class="text-h6 text-lightText mb-8">
+          The page you are looking was moved, removed,<br>
+          renamed, or might never exist!
         </p>
         <v-btn
-          class="mt-2"
           color="primary"
           :to="{name: 'Overview'}"
           variant="flat"
+          size="large"
         >
           Back To Home
         </v-btn>
@@ -39,34 +38,9 @@
     </v-col>
   </v-row>
 </template>
-<style lang="scss">
-.CardMediaWrapper {
-  max-width: 720px;
-  margin: 0 auto;
-  position: relative;
-  > img {
-    @media (min-width: 0px) {
-      width: 250px;
-      height: 130px;
-    }
-    @media (min-width: 768px) {
-      width: 590px;
-      height: 300px;
-    }
-  }
-}
-.CardMediaBuild {
-  position: absolute;
-  top: 60px;
-  @media (min-width: 0px) {
-    width: 130px;
-    height: 115px;
-    right: -14%;
-  }
-  @media (min-width: 768px) {
-    width: 390px;
-    height: 330px;
-    right: -60%;
-  }
+
+<style lang="scss" scoped>
+.error-icon {
+  opacity: 0.8;
 }
 </style>

@@ -15,7 +15,7 @@ const authStore = useAuthStore()
       >
         <img
           alt="Julia"
-          src="@/assets/images/users/avatar-1.png"
+          src="@/assets/images/users/avatar.png"
           width="32"
         >
       </v-avatar>

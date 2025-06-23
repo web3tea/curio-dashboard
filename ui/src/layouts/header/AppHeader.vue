@@ -126,7 +126,7 @@ const priority = ref(customizer.horizontalLayout ? 0 : 0)
             <v-avatar class="mr-sm-2 mr-0 py-2">
               <img
                 alt="Julia"
-                src="@/assets/images/users/avatar-1.png"
+                src="@/assets/images/users/avatar.png"
               >
             </v-avatar>
           </div>
