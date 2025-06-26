@@ -10,10 +10,10 @@ import (
 	"fmt"
 	"time"
 
-	pgx "github.com/jackc/pgx/v5"
 	"github.com/web3tea/curio-dashboard/graph"
 	"github.com/web3tea/curio-dashboard/graph/cachecontrol"
 	"github.com/web3tea/curio-dashboard/graph/model"
+	pgx "github.com/yugabyte/pgx/v5"
 )
 
 // UsedBy is the resolver for the usedBy field.
