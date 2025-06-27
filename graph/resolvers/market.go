@@ -404,5 +404,11 @@ func (r *queryResolver) MarketDefaultFilterBehaviour(ctx context.Context) (*mode
 	return &model.DefaultFilterBehaviour{
 		AllowDealsFromUnknownClients:             df.AllowDealsFromUnknownClients,
 		IsDealRejectedWhenCidGravityNotReachable: df.IsDealRejectedWhenCidGravityNotReachable,
+		IsCidGravityEnabled: lo.MapToSlice(df.IsCidGravityEnabled, func(key string, value bool) *model.CidGravityStatus {
+			return &model.CidGravityStatus{
+				Miner:  types.MustParseAddress(key),
+				Status: value,
+			}
+		}),
 	}, nil
 }
