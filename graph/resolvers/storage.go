@@ -26,7 +26,7 @@ func (r *queryResolver) Storages(ctx context.Context) ([]*model.Storage, error) 
 	}
 	var storages []*model.Storage
 	for _, path := range paths {
-		storages = append(storages, &model.Storage{ID: path.ID, Path: path})
+		storages = append(storages, &model.Storage{ID: path.StorageID.String, Path: path})
 	}
 	return storages, nil
 }

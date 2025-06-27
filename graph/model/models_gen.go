@@ -30,6 +30,11 @@ type ChainHead struct {
 	Timestamp uint64 `json:"timestamp"`
 }
 
+type CidGravityStatus struct {
+	Miner  types.Address `json:"miner"`
+	Status bool          `json:"status"`
+}
+
 type ClientFilter struct {
 	Name               string           `json:"name"`
 	Active             bool             `json:"active"`
@@ -90,6 +95,12 @@ type DealInfo struct {
 	IsLegacy          bool             `json:"isLegacy"`
 	Indexed           types.NullBool   `json:"indexed"`
 	IsDdo             bool             `json:"isDdo"`
+}
+
+type DefaultFilterBehaviour struct {
+	AllowDealsFromUnknownClients             bool                `json:"allowDealsFromUnknownClients"`
+	IsDealRejectedWhenCidGravityNotReachable bool                `json:"isDealRejectedWhenCidGravityNotReachable"`
+	IsCidGravityEnabled                      []*CidGravityStatus `json:"isCidGravityEnabled"`
 }
 
 type GaugeCountValue struct {

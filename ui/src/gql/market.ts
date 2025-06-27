@@ -206,7 +206,14 @@ export const GetMarketClientAllowList = gql`
       wallet
       status
     }
-    marketAllowDefault
+    marketDefaultFilterBehaviour {
+      allowDealsFromUnknownClients
+      isDealRejectedWhenCidGravityNotReachable
+      isCidGravityEnabled {
+        miner
+        status
+      }
+    }
   }
   `
 

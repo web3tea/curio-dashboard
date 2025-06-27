@@ -76,6 +76,17 @@ type MarketAllowFilter {
     status: Boolean!
 }
 
+# type cid_gravity_status
+type CidGravityStatus {
+  miner: Address!
+  status: Boolean!
+}
+
+type DefaultFilterBehaviour {
+  allowDealsFromUnknownClients: Boolean!
+  isDealRejectedWhenCidGravityNotReachable: Boolean!
+  isCidGravityEnabled: [CidGravityStatus!]!
+}
 
 extend type Query {
     marketBalance(miner: Address!): MarketBalance @hasRole(role: USER)
@@ -91,7 +102,7 @@ extend type Query {
     marketCheckClientFilter(name: String!): Boolean! @hasRole(role: USER)
     marketAllowFilters: [MarketAllowFilter!] @hasRole(role: USER)
     marketAllowFilter(wallet: Address!): MarketAllowFilter @hasRole(role: USER)
-    marketAllowDefault: Boolean! @hasRole(role: USER)
+    marketDefaultFilterBehaviour: DefaultFilterBehaviour @hasRole(role: USER)
 }
 
 extend type Mutation {

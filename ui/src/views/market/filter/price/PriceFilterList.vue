@@ -81,20 +81,23 @@ const handleDelete = async (name: string) => {
         {{ attoFilToFilPerTiBPerMonth(item.price) }}
       </template>
       <template #item.actions="{ item }">
-        <SetPriceFilter
-          :key="item.name"
-          :item="item"
-          action="update"
-        />
-        <v-btn
-          class="ml-2"
-          color="error"
-          variant="elevated"
-          :loading="deletingItem === item.name"
-          @click="handleDelete(item.name)"
-        >
-          Remove
-        </v-btn>
+        <div class="d-flex align-center">
+          <SetPriceFilter
+            :key="item.name"
+            :item="item"
+            action="update"
+            class="me-8"
+          />
+          <v-btn
+            color="error"
+            variant="elevated"
+            :loading="deletingItem === item.name"
+            @click="handleDelete(item.name)"
+            class="ml-12"
+          >
+            Remove
+          </v-btn>
+        </div>
       </template>
     </v-data-table-virtual>
   </UiTableCard>

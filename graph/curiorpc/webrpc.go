@@ -55,7 +55,7 @@ type WebRPC interface {
 	SetAllowDenyList(ctx context.Context, wallet string, status bool) error
 	AddAllowDenyList(ctx context.Context, wallet string, status bool) error
 	RemoveAllowFilter(ctx context.Context, wallet string) error
-	DefaultAllowBehaviour(ctx context.Context) (bool, error)
+	DefaultFilterBehaviour(ctx context.Context) (*webrpc.DefaultFilterBehaviourResponse, error)
 
 	// Market Deals
 	StorageDealInfo(ctx context.Context, deal string) (*webrpc.StorageDealSummary, error)

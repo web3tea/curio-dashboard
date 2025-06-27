@@ -12,7 +12,7 @@ const { t } = useI18n()
 const props = defineProps({
   detailsLink: {
     type: Object as () => RouteLocationRaw,
-    default: () => ({ name: 'TaskHistory', query: { success: false } }),
+    default: () => ({ name: 'TaskHistory' }),
   },
   timeRange: {
     type: String as () => TimeRangeType,

@@ -163,6 +163,10 @@ export const GetTaskHistories = gql`
     query GetTaskHistories($start: Time, $end: Time, $machine: String, $name: String, $result: Boolean, $offset: Int!, $limit: Int!) {
         taskHistories(start: $start, end: $end, hostPort: $machine, name: $name, result: $result, offset: $offset, limit: $limit) {
             ...TaskHistoryAll
+            completedBy {
+              id
+              hostAndPort
+            }
         }
         taskHistoriesCount(start: $start, end: $end, hostPort: $machine, name: $name, result: $result)
     }

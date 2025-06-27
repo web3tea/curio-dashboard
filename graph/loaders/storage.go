@@ -52,7 +52,9 @@ WHERE storage_id = $1`, id); err != nil {
 	if len(m) != 1 {
 		return nil, fmt.Errorf("storage id not found: %s", id)
 	}
-	return m[0], nil
+	p := m[0]
+	p.ID = id
+	return p, nil
 }
 
 func (l *StorageLoaderImpl) StoragePaths(ctx context.Context) ([]*model.StoragePath, error) {
@@ -81,6 +83,9 @@ FROM
     storage_path
 `); err != nil {
 		return nil, err
+	}
+	for _, p := range m {
+		p.ID = p.StorageID.String
 	}
 	return m, nil
 }

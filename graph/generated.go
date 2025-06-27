@@ -106,6 +106,11 @@ type ComplexityRoot struct {
 		Timestamp func(childComplexity int) int
 	}
 
+	CidGravityStatus struct {
+		Miner  func(childComplexity int) int
+		Status func(childComplexity int) int
+	}
+
 	ClientFilter struct {
 		Active             func(childComplexity int) int
 		Info               func(childComplexity int) int
@@ -155,6 +160,12 @@ type ComplexityRoot struct {
 		URLHeaders        func(childComplexity int) int
 		Urls              func(childComplexity int) int
 		Verified          func(childComplexity int) int
+	}
+
+	DefaultFilterBehaviour struct {
+		AllowDealsFromUnknownClients             func(childComplexity int) int
+		IsCidGravityEnabled                      func(childComplexity int) int
+		IsDealRejectedWhenCidGravityNotReachable func(childComplexity int) int
 	}
 
 	GaugeCountValue struct {
@@ -610,87 +621,87 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Actor                      func(childComplexity int, address types.Address) int
-		Actors                     func(childComplexity int) int
-		Alerts                     func(childComplexity int) int
-		Config                     func(childComplexity int, layer string) int
-		Configs                    func(childComplexity int) int
-		DealsPending               func(childComplexity int) int
-		IpniAdvertisement          func(childComplexity int, orderNumber int) int
-		IpniAdvertisements         func(childComplexity int, offset int, limit int, provider *string, isSkip *bool, isRemoved *bool) int
-		IpniAdvertisementsCount    func(childComplexity int, provider *string, isSkip *bool, isRemoved *bool) int
-		IpniProviders              func(childComplexity int) int
-		IpniStats                  func(childComplexity int) int
-		IpniTask                   func(childComplexity int, taskID int) int
-		IpniTasks                  func(childComplexity int, limit *int, spID *types.ActorID, isRm *bool) int
-		IpniTasksCount             func(childComplexity int, spID *types.ActorID, isRm *bool) int
-		Machine                    func(childComplexity int, id int) int
-		MachineByHostAndPort       func(childComplexity int, hostAndPort string) int
-		MachineSummary             func(childComplexity int) int
-		Machines                   func(childComplexity int) int
-		MakretPriceFilters         func(childComplexity int) int
-		MarketAllowDefault         func(childComplexity int) int
-		MarketAllowFilter          func(childComplexity int, wallet types.Address) int
-		MarketAllowFilters         func(childComplexity int) int
-		MarketBalance              func(childComplexity int, miner types.Address) int
-		MarketBalances             func(childComplexity int) int
-		MarketCheckClientFilter    func(childComplexity int, name string) int
-		MarketCheckPriceFilter     func(childComplexity int, name string) int
-		MarketClientFilter         func(childComplexity int, name string) int
-		MarketClientFilters        func(childComplexity int) int
-		MarketDealCountSummary     func(childComplexity int) int
-		MarketDealInfo             func(childComplexity int, id string) int
-		MarketMk12Deals            func(childComplexity int, filter model.MarketMk12DealFilterInput, limit int, offset int) int
-		MarketMk12DealsCount       func(childComplexity int, filter model.MarketMk12DealFilterInput) int
-		MarketMk12StorageAsk       func(childComplexity int, spID types.Address) int
-		MarketMk12StorageAsks      func(childComplexity int) int
-		MarketMk12StorageAsksCount func(childComplexity int) int
-		MarketPriceFilter          func(childComplexity int, name string) int
-		MessageSend                func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
-		MessageSends               func(childComplexity int, account *types.Address, offset int, limit int) int
-		MessageSendsCount          func(childComplexity int, account *types.Address) int
-		MessageWait                func(childComplexity int, signedMessageCid string) int
-		MessageWaits               func(childComplexity int, waiterMachineID *int, offset int, limit int) int
-		MessageWaitsCount          func(childComplexity int, waiterMachineID *int) int
-		Metadata                   func(childComplexity int) int
-		Miner                      func(childComplexity int, address types.Address) int
-		MinerPower                 func(childComplexity int, address *types.Address) int
-		MiningCount                func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
-		MiningCountAggregate       func(childComplexity int, start time.Time, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) int
-		MiningCountSummary         func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
-		MiningStatusSummay         func(childComplexity int, spID *types.ActorID, start time.Time, end time.Time) int
-		MiningSummaryByDay         func(childComplexity int, start time.Time, end time.Time) int
-		MiningWins                 func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) int
-		MiningWinsCount            func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool) int
-		NodeHealthSummary          func(childComplexity int) int
-		NodesInfo                  func(childComplexity int) int
-		PipelinesSummary           func(childComplexity int) int
-		Porep                      func(childComplexity int, sp types.Address, sectorNumber int) int
-		Poreps                     func(childComplexity int) int
-		PrometheusQuery            func(childComplexity int, query string, time *time.Time) int
-		PrometheusQueryRange       func(childComplexity int, query string, start time.Time, end time.Time, step int) int
-		RunningTaskSummary         func(childComplexity int) int
-		Sector                     func(childComplexity int, actor types.Address, sectorNumber int) int
-		SectorSummary              func(childComplexity int) int
-		Sectors                    func(childComplexity int, actor *types.Address, sectorNumber *int, offset int, limit int) int
-		SectorsCount               func(childComplexity int, actor *types.Address) int
-		Storage                    func(childComplexity int, id string) int
-		StorageStats               func(childComplexity int) int
-		Storages                   func(childComplexity int) int
-		Task                       func(childComplexity int, id int) int
-		TaskDurationStats          func(childComplexity int, name string, start time.Time, end time.Time) int
-		TaskHistories              func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) int
-		TaskHistoriesAggregate     func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
-		TaskHistoriesCount         func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) int
-		TaskNames                  func(childComplexity int) int
-		TaskSuccessRate            func(childComplexity int, name *string, start time.Time, end time.Time) int
-		Tasks                      func(childComplexity int) int
-		TasksCount                 func(childComplexity int) int
-		TasksDurationStats         func(childComplexity int, start time.Time, end time.Time) int
-		TasksStats                 func(childComplexity int, start time.Time, end time.Time, machine *string) int
-		WdpostProof                func(childComplexity int, spID types.Address, provingPeriodStart int, deadline int, partition int) int
-		WdpostProofs               func(childComplexity int, spID *types.Address, offset int, limit int) int
-		WdpostProofsCount          func(childComplexity int, spID *types.Address) int
+		Actor                        func(childComplexity int, address types.Address) int
+		Actors                       func(childComplexity int) int
+		Alerts                       func(childComplexity int) int
+		Config                       func(childComplexity int, layer string) int
+		Configs                      func(childComplexity int) int
+		DealsPending                 func(childComplexity int) int
+		IpniAdvertisement            func(childComplexity int, orderNumber int) int
+		IpniAdvertisements           func(childComplexity int, offset int, limit int, provider *string, isSkip *bool, isRemoved *bool) int
+		IpniAdvertisementsCount      func(childComplexity int, provider *string, isSkip *bool, isRemoved *bool) int
+		IpniProviders                func(childComplexity int) int
+		IpniStats                    func(childComplexity int) int
+		IpniTask                     func(childComplexity int, taskID int) int
+		IpniTasks                    func(childComplexity int, limit *int, spID *types.ActorID, isRm *bool) int
+		IpniTasksCount               func(childComplexity int, spID *types.ActorID, isRm *bool) int
+		Machine                      func(childComplexity int, id int) int
+		MachineByHostAndPort         func(childComplexity int, hostAndPort string) int
+		MachineSummary               func(childComplexity int) int
+		Machines                     func(childComplexity int) int
+		MakretPriceFilters           func(childComplexity int) int
+		MarketAllowFilter            func(childComplexity int, wallet types.Address) int
+		MarketAllowFilters           func(childComplexity int) int
+		MarketBalance                func(childComplexity int, miner types.Address) int
+		MarketBalances               func(childComplexity int) int
+		MarketCheckClientFilter      func(childComplexity int, name string) int
+		MarketCheckPriceFilter       func(childComplexity int, name string) int
+		MarketClientFilter           func(childComplexity int, name string) int
+		MarketClientFilters          func(childComplexity int) int
+		MarketDealCountSummary       func(childComplexity int) int
+		MarketDealInfo               func(childComplexity int, id string) int
+		MarketDefaultFilterBehaviour func(childComplexity int) int
+		MarketMk12Deals              func(childComplexity int, filter model.MarketMk12DealFilterInput, limit int, offset int) int
+		MarketMk12DealsCount         func(childComplexity int, filter model.MarketMk12DealFilterInput) int
+		MarketMk12StorageAsk         func(childComplexity int, spID types.Address) int
+		MarketMk12StorageAsks        func(childComplexity int) int
+		MarketMk12StorageAsksCount   func(childComplexity int) int
+		MarketPriceFilter            func(childComplexity int, name string) int
+		MessageSend                  func(childComplexity int, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) int
+		MessageSends                 func(childComplexity int, account *types.Address, offset int, limit int) int
+		MessageSendsCount            func(childComplexity int, account *types.Address) int
+		MessageWait                  func(childComplexity int, signedMessageCid string) int
+		MessageWaits                 func(childComplexity int, waiterMachineID *int, offset int, limit int) int
+		MessageWaitsCount            func(childComplexity int, waiterMachineID *int) int
+		Metadata                     func(childComplexity int) int
+		Miner                        func(childComplexity int, address types.Address) int
+		MinerPower                   func(childComplexity int, address *types.Address) int
+		MiningCount                  func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
+		MiningCountAggregate         func(childComplexity int, start time.Time, end time.Time, actor *types.Address, interval model.MiningTaskAggregateInterval) int
+		MiningCountSummary           func(childComplexity int, start time.Time, end time.Time, actor *types.Address) int
+		MiningStatusSummay           func(childComplexity int, spID *types.ActorID, start time.Time, end time.Time) int
+		MiningSummaryByDay           func(childComplexity int, start time.Time, end time.Time) int
+		MiningWins                   func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool, offset int, limit int) int
+		MiningWinsCount              func(childComplexity int, start *time.Time, end *time.Time, actor *types.Address, include *bool) int
+		NodeHealthSummary            func(childComplexity int) int
+		NodesInfo                    func(childComplexity int) int
+		PipelinesSummary             func(childComplexity int) int
+		Porep                        func(childComplexity int, sp types.Address, sectorNumber int) int
+		Poreps                       func(childComplexity int) int
+		PrometheusQuery              func(childComplexity int, query string, time *time.Time) int
+		PrometheusQueryRange         func(childComplexity int, query string, start time.Time, end time.Time, step int) int
+		RunningTaskSummary           func(childComplexity int) int
+		Sector                       func(childComplexity int, actor types.Address, sectorNumber int) int
+		SectorSummary                func(childComplexity int) int
+		Sectors                      func(childComplexity int, actor *types.Address, sectorNumber *int, offset int, limit int) int
+		SectorsCount                 func(childComplexity int, actor *types.Address) int
+		Storage                      func(childComplexity int, id string) int
+		StorageStats                 func(childComplexity int) int
+		Storages                     func(childComplexity int) int
+		Task                         func(childComplexity int, id int) int
+		TaskDurationStats            func(childComplexity int, name string, start time.Time, end time.Time) int
+		TaskHistories                func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool, offset int, limit int) int
+		TaskHistoriesAggregate       func(childComplexity int, start time.Time, end time.Time, interval model.TaskHistoriesAggregateInterval) int
+		TaskHistoriesCount           func(childComplexity int, start *time.Time, end *time.Time, hostPort *string, name *string, result *bool) int
+		TaskNames                    func(childComplexity int) int
+		TaskSuccessRate              func(childComplexity int, name *string, start time.Time, end time.Time) int
+		Tasks                        func(childComplexity int) int
+		TasksCount                   func(childComplexity int) int
+		TasksDurationStats           func(childComplexity int, start time.Time, end time.Time) int
+		TasksStats                   func(childComplexity int, start time.Time, end time.Time, machine *string) int
+		WdpostProof                  func(childComplexity int, spID types.Address, provingPeriodStart int, deadline int, partition int) int
+		WdpostProofs                 func(childComplexity int, spID *types.Address, offset int, limit int) int
+		WdpostProofsCount            func(childComplexity int, spID *types.Address) int
 	}
 
 	RunningTaskSummary struct {
@@ -1096,7 +1107,7 @@ type QueryResolver interface {
 	MarketCheckClientFilter(ctx context.Context, name string) (bool, error)
 	MarketAllowFilters(ctx context.Context) ([]*model.MarketAllowFilter, error)
 	MarketAllowFilter(ctx context.Context, wallet types.Address) (*model.MarketAllowFilter, error)
-	MarketAllowDefault(ctx context.Context) (bool, error)
+	MarketDefaultFilterBehaviour(ctx context.Context) (*model.DefaultFilterBehaviour, error)
 	MessageSends(ctx context.Context, account *types.Address, offset int, limit int) ([]*model.MessageSend, error)
 	MessageSendsCount(ctx context.Context, account *types.Address) (int, error)
 	MessageSend(ctx context.Context, sendTaskID *int, fromKey *string, nonce *int, signedCid *string) (*model.MessageSend, error)
@@ -1342,6 +1353,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ChainHead.Timestamp(childComplexity), true
+
+	case "CidGravityStatus.miner":
+		if e.complexity.CidGravityStatus.Miner == nil {
+			break
+		}
+
+		return e.complexity.CidGravityStatus.Miner(childComplexity), true
+
+	case "CidGravityStatus.status":
+		if e.complexity.CidGravityStatus.Status == nil {
+			break
+		}
+
+		return e.complexity.CidGravityStatus.Status(childComplexity), true
 
 	case "ClientFilter.active":
 		if e.complexity.ClientFilter.Active == nil {
@@ -1615,6 +1640,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.DealInfo.Verified(childComplexity), true
+
+	case "DefaultFilterBehaviour.allowDealsFromUnknownClients":
+		if e.complexity.DefaultFilterBehaviour.AllowDealsFromUnknownClients == nil {
+			break
+		}
+
+		return e.complexity.DefaultFilterBehaviour.AllowDealsFromUnknownClients(childComplexity), true
+
+	case "DefaultFilterBehaviour.isCidGravityEnabled":
+		if e.complexity.DefaultFilterBehaviour.IsCidGravityEnabled == nil {
+			break
+		}
+
+		return e.complexity.DefaultFilterBehaviour.IsCidGravityEnabled(childComplexity), true
+
+	case "DefaultFilterBehaviour.isDealRejectedWhenCidGravityNotReachable":
+		if e.complexity.DefaultFilterBehaviour.IsDealRejectedWhenCidGravityNotReachable == nil {
+			break
+		}
+
+		return e.complexity.DefaultFilterBehaviour.IsDealRejectedWhenCidGravityNotReachable(childComplexity), true
 
 	case "GaugeCountValue.key":
 		if e.complexity.GaugeCountValue.Key == nil {
@@ -4239,13 +4285,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.MakretPriceFilters(childComplexity), true
 
-	case "Query.marketAllowDefault":
-		if e.complexity.Query.MarketAllowDefault == nil {
-			break
-		}
-
-		return e.complexity.Query.MarketAllowDefault(childComplexity), true
-
 	case "Query.marketAllowFilter":
 		if e.complexity.Query.MarketAllowFilter == nil {
 			break
@@ -4345,6 +4384,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.MarketDealInfo(childComplexity, args["id"].(string)), true
+
+	case "Query.marketDefaultFilterBehaviour":
+		if e.complexity.Query.MarketDefaultFilterBehaviour == nil {
+			break
+		}
+
+		return e.complexity.Query.MarketDefaultFilterBehaviour(childComplexity), true
 
 	case "Query.marketMk12Deals":
 		if e.complexity.Query.MarketMk12Deals == nil {
@@ -11224,6 +11270,94 @@ func (ec *executionContext) fieldContext_ChainHead_timestamp(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _CidGravityStatus_miner(ctx context.Context, field graphql.CollectedField, obj *model.CidGravityStatus) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CidGravityStatus_miner(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Miner, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CidGravityStatus_miner(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CidGravityStatus",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CidGravityStatus_status(ctx context.Context, field graphql.CollectedField, obj *model.CidGravityStatus) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CidGravityStatus_status(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CidGravityStatus_status(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CidGravityStatus",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _ClientFilter_name(ctx context.Context, field graphql.CollectedField, obj *model.ClientFilter) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ClientFilter_name(ctx, field)
 	if err != nil {
@@ -12957,6 +13091,144 @@ func (ec *executionContext) fieldContext_DealInfo_isDdo(_ context.Context, field
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DefaultFilterBehaviour_allowDealsFromUnknownClients(ctx context.Context, field graphql.CollectedField, obj *model.DefaultFilterBehaviour) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DefaultFilterBehaviour_allowDealsFromUnknownClients(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AllowDealsFromUnknownClients, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DefaultFilterBehaviour_allowDealsFromUnknownClients(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DefaultFilterBehaviour",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DefaultFilterBehaviour_isDealRejectedWhenCidGravityNotReachable(ctx context.Context, field graphql.CollectedField, obj *model.DefaultFilterBehaviour) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DefaultFilterBehaviour_isDealRejectedWhenCidGravityNotReachable(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsDealRejectedWhenCidGravityNotReachable, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DefaultFilterBehaviour_isDealRejectedWhenCidGravityNotReachable(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DefaultFilterBehaviour",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _DefaultFilterBehaviour_isCidGravityEnabled(ctx context.Context, field graphql.CollectedField, obj *model.DefaultFilterBehaviour) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_DefaultFilterBehaviour_isCidGravityEnabled(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsCidGravityEnabled, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.CidGravityStatus)
+	fc.Result = res
+	return ec.marshalNCidGravityStatus2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐCidGravityStatusᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_DefaultFilterBehaviour_isCidGravityEnabled(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "DefaultFilterBehaviour",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "miner":
+				return ec.fieldContext_CidGravityStatus_miner(ctx, field)
+			case "status":
+				return ec.fieldContext_CidGravityStatus_status(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CidGravityStatus", field.Name)
 		},
 	}
 	return fc, nil
@@ -31799,8 +32071,8 @@ func (ec *executionContext) fieldContext_Query_marketAllowFilter(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_marketAllowDefault(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_marketAllowDefault(ctx, field)
+func (ec *executionContext) _Query_marketDefaultFilterBehaviour(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_marketDefaultFilterBehaviour(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -31814,17 +32086,17 @@ func (ec *executionContext) _Query_marketAllowDefault(ctx context.Context, field
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
 		directive0 := func(rctx context.Context) (any, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Query().MarketAllowDefault(rctx)
+			return ec.resolvers.Query().MarketDefaultFilterBehaviour(rctx)
 		}
 
 		directive1 := func(ctx context.Context) (any, error) {
 			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
 			if err != nil {
-				var zeroVal bool
+				var zeroVal *model.DefaultFilterBehaviour
 				return zeroVal, err
 			}
 			if ec.directives.HasRole == nil {
-				var zeroVal bool
+				var zeroVal *model.DefaultFilterBehaviour
 				return zeroVal, errors.New("directive hasRole is not implemented")
 			}
 			return ec.directives.HasRole(ctx, nil, directive0, role)
@@ -31837,34 +32109,39 @@ func (ec *executionContext) _Query_marketAllowDefault(ctx context.Context, field
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(bool); ok {
+		if data, ok := tmp.(*model.DefaultFilterBehaviour); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.DefaultFilterBehaviour`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*model.DefaultFilterBehaviour)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalODefaultFilterBehaviour2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐDefaultFilterBehaviour(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_marketAllowDefault(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_marketDefaultFilterBehaviour(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			switch field.Name {
+			case "allowDealsFromUnknownClients":
+				return ec.fieldContext_DefaultFilterBehaviour_allowDealsFromUnknownClients(ctx, field)
+			case "isDealRejectedWhenCidGravityNotReachable":
+				return ec.fieldContext_DefaultFilterBehaviour_isDealRejectedWhenCidGravityNotReachable(ctx, field)
+			case "isCidGravityEnabled":
+				return ec.fieldContext_DefaultFilterBehaviour_isCidGravityEnabled(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type DefaultFilterBehaviour", field.Name)
 		},
 	}
 	return fc, nil
@@ -47059,6 +47336,50 @@ func (ec *executionContext) _ChainHead(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
+var cidGravityStatusImplementors = []string{"CidGravityStatus"}
+
+func (ec *executionContext) _CidGravityStatus(ctx context.Context, sel ast.SelectionSet, obj *model.CidGravityStatus) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, cidGravityStatusImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CidGravityStatus")
+		case "miner":
+			out.Values[i] = ec._CidGravityStatus_miner(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "status":
+			out.Values[i] = ec._CidGravityStatus_status(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var clientFilterImplementors = []string{"ClientFilter"}
 
 func (ec *executionContext) _ClientFilter(ctx context.Context, sel ast.SelectionSet, obj *model.ClientFilter) graphql.Marshaler {
@@ -47395,6 +47716,55 @@ func (ec *executionContext) _DealInfo(ctx context.Context, sel ast.SelectionSet,
 			}
 		case "isDdo":
 			out.Values[i] = ec._DealInfo_isDdo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var defaultFilterBehaviourImplementors = []string{"DefaultFilterBehaviour"}
+
+func (ec *executionContext) _DefaultFilterBehaviour(ctx context.Context, sel ast.SelectionSet, obj *model.DefaultFilterBehaviour) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, defaultFilterBehaviourImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("DefaultFilterBehaviour")
+		case "allowDealsFromUnknownClients":
+			out.Values[i] = ec._DefaultFilterBehaviour_allowDealsFromUnknownClients(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "isDealRejectedWhenCidGravityNotReachable":
+			out.Values[i] = ec._DefaultFilterBehaviour_isDealRejectedWhenCidGravityNotReachable(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "isCidGravityEnabled":
+			out.Values[i] = ec._DefaultFilterBehaviour_isCidGravityEnabled(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -52676,19 +53046,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "marketAllowDefault":
+		case "marketDefaultFilterBehaviour":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_marketAllowDefault(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
+				res = ec._Query_marketDefaultFilterBehaviour(ctx, field)
 				return res
 			}
 
@@ -56300,6 +56667,60 @@ func (ec *executionContext) marshalNChainHead2ᚖgithubᚗcomᚋweb3teaᚋcurio�
 	return ec._ChainHead(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNCidGravityStatus2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐCidGravityStatusᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.CidGravityStatus) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNCidGravityStatus2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐCidGravityStatus(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) marshalNCidGravityStatus2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐCidGravityStatus(ctx context.Context, sel ast.SelectionSet, v *model.CidGravityStatus) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._CidGravityStatus(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNClientFilter2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐClientFilter(ctx context.Context, sel ast.SelectionSet, v *model.ClientFilter) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -58115,6 +58536,13 @@ func (ec *executionContext) marshalODealInfo2ᚖgithubᚗcomᚋweb3teaᚋcurio�
 		return graphql.Null
 	}
 	return ec._DealInfo(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalODefaultFilterBehaviour2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐDefaultFilterBehaviour(ctx context.Context, sel ast.SelectionSet, v *model.DefaultFilterBehaviour) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._DefaultFilterBehaviour(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOGaugeCountValue2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐGaugeCountValue(ctx context.Context, sel ast.SelectionSet, v *model.GaugeCountValue) graphql.Marshaler {
