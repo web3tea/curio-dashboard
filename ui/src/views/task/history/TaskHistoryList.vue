@@ -186,12 +186,14 @@ const selectDateRange = computed({
             :loading="loading"
             :items-per-page-options="tableSettings.itemsPerPageOptions"
           >
-            <template #item.completedByHostAndPort="{ value }">
+            <template #item.completedByHostAndPort="{ item }">
               <RouterLink
-                :to="{ name: 'MachineInfo', params: { id: value } }"
+                v-if="item.completedBy"
+                :to="{ name: 'MachineInfo', params: { id: item.completedBy.id } }"
               >
-                {{ value }}
+                {{ item.completedBy.hostAndPort }}
               </RouterLink>
+              <span v-else>-</span>
             </template>
 
             <template #item.name="{ value }">

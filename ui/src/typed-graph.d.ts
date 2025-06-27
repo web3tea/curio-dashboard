@@ -63,6 +63,12 @@ export type ChainHead = {
   timestamp: Scalars['Uint64']['output'];
 };
 
+export type CidGravityStatus = {
+  __typename?: 'CidGravityStatus';
+  miner: Scalars['Address']['output'];
+  status: Scalars['Boolean']['output'];
+};
+
 export type ClientFilter = {
   __typename?: 'ClientFilter';
   active: Scalars['Boolean']['output'];
@@ -127,6 +133,13 @@ export type DealInfo = {
   urlHeaders: Scalars['JSON']['output'];
   urls: Scalars['String']['output'];
   verified: Scalars['Boolean']['output'];
+};
+
+export type DefaultFilterBehaviour = {
+  __typename?: 'DefaultFilterBehaviour';
+  allowDealsFromUnknownClients: Scalars['Boolean']['output'];
+  isCidGravityEnabled: Array<CidGravityStatus>;
+  isDealRejectedWhenCidGravityNotReachable: Scalars['Boolean']['output'];
 };
 
 export type GaugeCountValue = {
@@ -795,7 +808,6 @@ export type Query = {
   machineSummary?: Maybe<MachineSummary>;
   machines?: Maybe<Array<Maybe<Machine>>>;
   makretPriceFilters?: Maybe<Array<PriceFilter>>;
-  marketAllowDefault: Scalars['Boolean']['output'];
   marketAllowFilter?: Maybe<MarketAllowFilter>;
   marketAllowFilters?: Maybe<Array<MarketAllowFilter>>;
   marketBalance?: Maybe<MarketBalance>;
@@ -806,6 +818,7 @@ export type Query = {
   marketClientFilters?: Maybe<Array<ClientFilter>>;
   marketDealCountSummary?: Maybe<DealCountSummary>;
   marketDealInfo?: Maybe<DealInfo>;
+  marketDefaultFilterBehaviour?: Maybe<DefaultFilterBehaviour>;
   marketMk12Deals: Array<MarketMk12Deal>;
   marketMk12DealsCount: Scalars['Int']['output'];
   marketMk12StorageAsk?: Maybe<MarketMk12StorageAsk>;

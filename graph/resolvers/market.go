@@ -395,8 +395,14 @@ func (r *queryResolver) MarketAllowFilter(ctx context.Context, wallet types.Addr
 	return r.loader.MarketAllowFilter(ctx, wallet)
 }
 
-// MarketAllowDefault is the resolver for the marketAllowDefault field.
-func (r *queryResolver) MarketAllowDefault(ctx context.Context) (bool, error) {
-	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*10)
-	return r.curioAPI.DefaultAllowBehaviour(ctx)
+// MarketDefaultFilterBehaviour is the resolver for the marketDefaultFilterBehaviour field.
+func (r *queryResolver) MarketDefaultFilterBehaviour(ctx context.Context) (*model.DefaultFilterBehaviour, error) {
+	df, err := r.curioAPI.DefaultFilterBehaviour(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &model.DefaultFilterBehaviour{
+		AllowDealsFromUnknownClients:             df.AllowDealsFromUnknownClients,
+		IsDealRejectedWhenCidGravityNotReachable: df.IsDealRejectedWhenCidGravityNotReachable,
+	}, nil
 }

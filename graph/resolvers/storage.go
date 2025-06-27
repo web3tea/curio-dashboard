@@ -26,7 +26,7 @@ func (r *queryResolver) Storages(ctx context.Context) ([]*model.Storage, error) 
 	}
 	var storages []*model.Storage
 	for _, path := range paths {
-		storages = append(storages, &model.Storage{ID: path.ID, Path: path})
+		storages = append(storages, &model.Storage{ID: path.StorageID.String, Path: path})
 	}
 	return storages, nil
 }
@@ -73,5 +73,7 @@ func (r *Resolver) Storage() graph.StorageResolver { return &storageResolver{r} 
 // StoragePath returns graph.StoragePathResolver implementation.
 func (r *Resolver) StoragePath() graph.StoragePathResolver { return &storagePathResolver{r} }
 
-type storageResolver struct{ *Resolver }
-type storagePathResolver struct{ *Resolver }
+type (
+	storageResolver     struct{ *Resolver }
+	storagePathResolver struct{ *Resolver }
+)

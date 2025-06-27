@@ -79,7 +79,7 @@ var DefaultConfig = Config{
 		Secret:  lo.RandomString(32, lo.LettersCharset),
 		Expires: 24 * 30,
 		Users: []UserConfig{
-			{Username: "admin", Password: lo.RandomString(24, lo.LettersCharset), Description: "Administrator"},
+			{Username: "admin", Role: "admin", Password: lo.RandomString(24, lo.LettersCharset), Description: "Administrator"},
 		},
 	},
 	Features: FeaturesConfig{
