@@ -98,11 +98,19 @@ func (r *machineResolver) Metrics(ctx context.Context, obj *model.Machine) (*mod
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalf("Error fetching metrics: %v", err)
+		return nil, fmt.Errorf("error fetching metrics: %v", err)
 	}
 	defer resp.Body.Close() // nolint: errcheck
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("metrics endpoint returned status: %d", resp.StatusCode)
+	}
 
 	var parser expfmt.TextParser
 	metrics, err := parser.TextToMetricFamilies(resp.Body)
