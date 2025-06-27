@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, ref, onActivated, nextTick } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMiningSummary } from '@/gql/mining'
 import { MiningSummaryDay } from '@/typed-graph'
@@ -17,6 +17,8 @@ const props = defineProps({
 const customizer = useCustomizerStore()
 const { t } = useI18n()
 
+const chartKey = ref(0)
+
 const end = new Date()
 const start = new Date(end.getTime() - 7 * 24 * 60 * 60 * 1000) // todo: props
 
@@ -28,6 +30,13 @@ const { result, refetch, loading, error } = useQuery(GetMiningSummary, {
 }))
 
 const items: ComputedRef<[MiningSummaryDay]> = computed(() => result.value?.miningSummaryByDay || [])
+
+onActivated(() => {
+  // Force chart re-render
+  nextTick(() => {
+    chartKey.value++
+  })
+})
 
 const chartOptions = computed(() => {
   return {
@@ -149,6 +158,7 @@ const totalWonBlocks = computed(() => {
       </h3>
     </div>
     <apexchart
+      :key="chartKey"
       :height="props.height"
       :loading="loading"
       :options="chartOptions"

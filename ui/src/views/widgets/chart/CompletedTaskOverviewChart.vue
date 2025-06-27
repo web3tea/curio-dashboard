@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref, watch } from 'vue'
+import { computed, ComputedRef, ref, watch, onActivated, nextTick } from 'vue'
 import { getLightBorder } from '@/theme/ChartColors'
 import { useQuery } from '@vue/apollo-composable'
 import { TaskAggregate } from '@/typed-graph'
@@ -17,23 +17,42 @@ const ErrorColor = theme.current.value.colors.error
 const customizer = useCustomizerStore()
 
 const tab = ref('7')
-watch(() => tab.value, () => {
+const chartKey = ref(0)
+
+// Extract time range calculation logic
+const getTimeRange = () => {
   const end = new Date()
   const start = new Date(end.getTime() - (Number(tab.value) * 24 * 60 * 60 * 1000))
-  refetch({
-    start,
-    end,
-    interval: tab.value === '7' ? 'hour' : 'day',
-  })
-})
+  return { start, end }
+}
 
 const { result, loading, refetch, error } = useQuery(GetTaskHistoriesAggregation, {
   start: new Date(new Date().getTime() - Number(tab.value) * 24 * 60 * 60 * 1000),
   end: new Date(),
   interval: 'hour',
 }, () => ({
-  fetchPolicy: 'cache-first',
+  fetchPolicy: 'cache-and-network',
 }))
+
+// Extract data fetching logic
+const fetchData = () => {
+  const { start, end } = getTimeRange()
+  refetch({
+    start,
+    end,
+    interval: tab.value === '7' ? 'hour' : 'day',
+  })
+}
+
+watch(() => tab.value, fetchData)
+
+onActivated(() => {
+  // Force chart re-render
+  nextTick(() => {
+    chartKey.value++
+  })
+})
+
 const items: ComputedRef<[TaskAggregate]> = computed(() => result.value?.taskHistoriesAggregate || [])
 
 const chartOptions = computed(() => {
@@ -110,6 +129,7 @@ const areaChart = computed(() => {
     data: [] as number[][],
   }
   items.value.forEach(item => {
+
     success.data.push([new Date(item.time).getTime(), item.success])
     failure.data.push([new Date(item.time).getTime(), item.failure])
   })
@@ -160,6 +180,7 @@ const areaChart = computed(() => {
       </div>
     </template>
     <apexchart
+      :key="chartKey"
       height="450"
       :options="chartOptions"
       :series="areaChart.series"
