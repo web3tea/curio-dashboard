@@ -20,6 +20,14 @@ const { result, loading, refetch } = useQuery(GetNodeHealth, null, {
 })
 const item: ComputedRef<NodeHealthSummary> = computed(() => result.value?.nodeHealthSummary || {})
 
+const healthPercentage = computed(() => {
+  const totalNodes = item.value.onlineNodes + item.value.unscheduledNodes + item.value.offlineNodes;
+  if (totalNodes === 0) {
+    return 0; // Avoid division by zero, or handle as per design (e.g., NaN, 'N/A')
+  }
+  return (item.value.onlineNodes / totalNodes) * 100;
+});
+
 const emit = defineEmits<(e: 'click', event?: MouseEvent) => void>()
 
 const handleClick = (event?: MouseEvent): void => {
@@ -47,9 +55,9 @@ defineExpose({
     >
       <div class="text-h2 font-weight-bold">
         {{
-          item.onlineNodes / (item.onlineNodes + item.unscheduledNodes + item.offlineNodes) * 100 === 100
+          healthPercentage === 100
             ? '100'
-            : (item.onlineNodes / (item.onlineNodes + item.unscheduledNodes + item.offlineNodes) * 100).toFixed(2)
+            : healthPercentage.toFixed(2)
         }}%
       </div>
 
