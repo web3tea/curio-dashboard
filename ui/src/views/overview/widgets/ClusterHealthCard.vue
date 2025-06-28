@@ -46,7 +46,11 @@ defineExpose({
       class="text-center"
     >
       <div class="text-h2 font-weight-bold">
-        {{ item.onlineNodes / (item.onlineNodes + item.unscheduledNodes + item.offlineNodes) * 100 }}%
+        {{
+          item.onlineNodes / (item.onlineNodes + item.unscheduledNodes + item.offlineNodes) * 100 === 100
+            ? '100'
+            : (item.onlineNodes / (item.onlineNodes + item.unscheduledNodes + item.offlineNodes) * 100).toFixed(2)
+        }}%
       </div>
 
       <v-row class="mt-2 w-100">
