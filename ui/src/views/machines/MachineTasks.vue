@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, onActivated } from 'vue'
 import { Task } from '@/typed-graph'
 import { GetMachineTasks } from '@/gql/task'
 import { IconRefresh } from '@tabler/icons-vue'
@@ -22,6 +22,10 @@ const { result, loading, refetch } = useQuery(GetMachineTasks, {
 }, () => ({
   fetchPolicy: 'cache-first',
 }))
+
+onActivated(() => {
+  refetch()
+})
 
 const tasks: ComputedRef<[Task]> = computed(() => result.value?.machine.tasks || [])
 

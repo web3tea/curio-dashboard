@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { Config, MachineDetail, Maybe } from '@/typed-graph'
 import { GetConfigs } from '@/gql/config'
 import { IconPlus, IconRefresh, IconSearch } from '@tabler/icons-vue'
@@ -11,11 +11,25 @@ import UsedByListDialog from '@/views/configurations/UsedByListDialog.vue'
 
 const { t } = useI18n()
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetConfigs, null, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
 
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
+
 const items: ComputedRef<[Config]> = computed(() => result.value?.configs || [])
+
+
 const headers = [
   { title: 'ID', key: 'id' },
   { title: 'Layer', key: 'title' },

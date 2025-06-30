@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated } from 'vue'
 import { useQuery,useMutation } from '@vue/apollo-composable'
 import { GetMarketClientFilters,DeleteMarketClientFilter, ToggleMarketClientFilter } from '@/gql/market'
 import { ClientFilter } from '@/typed-graph'
@@ -20,6 +20,10 @@ const headers = [
 ]
 
 const { result, loading, refetch } = useQuery(GetMarketClientFilters, null, {})
+
+onActivated(() => {
+  refetch()
+})
 const items: ComputedRef<[ClientFilter]> = computed(() => result.value?.marketClientFilters || [])
 
 const searchValue = ref<string>()

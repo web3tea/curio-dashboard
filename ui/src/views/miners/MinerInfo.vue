@@ -2,7 +2,7 @@
 
 import { useQuery } from '@vue/apollo-composable'
 import { GetMinerFull } from '@/gql/miner'
-import { computed } from 'vue'
+import { computed, onActivated } from 'vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { formatFIL } from '@/utils/helpers/formatFIL'
@@ -23,6 +23,10 @@ const { result, loading, refetch, error } = useQuery(GetMinerFull, {
 }, () => ({
   fetchPolicy: 'cache-first',
 }))
+
+onActivated(() => {
+  refetch()
+})
 
 const cols1 = computed(() => {
   const miner = result.value?.miner

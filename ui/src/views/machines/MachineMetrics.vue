@@ -2,7 +2,7 @@
 import { useQuery } from '@vue/apollo-composable'
 import { GetMachineInfo } from '@/gql/machine'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
-import { computed } from 'vue'
+import { computed, onActivated } from 'vue'
 import moment from 'moment'
 import { formatBytes } from '@/utils/helpers/formatBytes'
 import { IconRefresh } from '@tabler/icons-vue'
@@ -23,6 +23,10 @@ const { result, loading, refetch, error } = useQuery(GetMachineInfo, {
 }, () => ({
   fetchPolicy: 'cache-first',
 }))
+
+onActivated(() => {
+  refetch()
+})
 
 const details = computed(() => {
   const machine = result.value?.machine

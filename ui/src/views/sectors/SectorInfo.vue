@@ -4,7 +4,7 @@ import SectorRemoveDialog from '@/views/sectors/SectorRemoveDialog.vue'
 import UiChildCard from '@/components/shared/UiChildCard.vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetSectorMeta } from '@/gql/sector'
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, onActivated } from 'vue'
 import { TaskStatus, SectorMeta } from '@/typed-graph'
 import { IconBox, IconBrandRedux, IconRefresh, IconTrash, IconUser } from '@tabler/icons-vue'
 import { useI18n } from 'vue-i18n'
@@ -31,6 +31,10 @@ const { result, loading, refetch } = useQuery(GetSectorMeta, {
 }, () => ({
   fetchPolicy: 'cache-first',
 }))
+
+onActivated(() => {
+  refetch()
+})
 
 const meta: ComputedRef<SectorMeta> = computed(() => result.value?.sector.meta || {})
 const status: ComputedRef<TaskStatus> = computed(() => result.value?.sector.status)

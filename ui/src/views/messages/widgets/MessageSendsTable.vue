@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from "@vue/apollo-composable"
 import { GetMessageSends } from "@/gql/message"
-import { computed, ComputedRef, ref } from "vue"
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from "vue"
 import { MessageSend } from "@/typed-graph"
 import { IconRefresh } from "@tabler/icons-vue"
 import { useTableSettingsStore } from "@/stores/table"
@@ -30,13 +30,25 @@ const limit = ref(100)
 const page = ref(1)
 const offset = computed(() => (page.value - 1) * limit.value)
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetMessageSends, {
   account: localAccount,
   offset: offset,
   limit: limit
 }, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const items: ComputedRef<[MessageSend]> = computed(() => result.value?.messageSends || [])
 const itemsCount: ComputedRef<number> = computed(() => {

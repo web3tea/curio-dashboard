@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from "@vue/apollo-composable"
 import { GetWdpostProofs } from "@/gql/wdpost"
-import { computed, ComputedRef, ref, watchEffect } from "vue"
+import { computed, ComputedRef, ref, watchEffect, onActivated, onDeactivated } from "vue"
 import { WdpostProofs } from "@/typed-graph"
 import { IconRefresh } from "@tabler/icons-vue"
 import MinerSelectInput from '@/components/app/MinerSelectInput.vue'
@@ -22,13 +22,25 @@ const limit = ref(100)
 const page = ref(1)
 const offset = computed(() => (page.value - 1) * limit.value)
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetWdpostProofs, {
   spId: selectedMiner,
   offset: offset,
   limit: limit
 }, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const items: ComputedRef<WdpostProofs[]> = computed(() => result.value?.wdpostProofs || [])
 
