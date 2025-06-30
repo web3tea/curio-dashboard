@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onActivated, onDeactivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useQuery } from '@vue/apollo-composable'
 import { RouteLocationRaw } from 'vue-router'
@@ -25,11 +25,22 @@ const start = computed(() => {
   return calculateStartTime(props.timeRange, end.value)
 })
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetTaskSuccessRate, {
   start: start.value,
   end: end.value,
-}, {
+}, () => ({
+  enabled: enabled.value,
   pollInterval: 600000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 
 interface TaskSuccessRateData {

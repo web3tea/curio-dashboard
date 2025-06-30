@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, ComputedRef } from 'vue'
+import { ref, computed, watch, ComputedRef, onActivated, onDeactivated } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetAdvertisements } from '@/gql/advertisement'
 import { IpniAdvertisement } from '@/typed-graph'
@@ -16,6 +16,7 @@ import {
 
 const { t } = useI18n()
 
+const enabled = ref(true)
 const itemsPerPage = ref(10)
 const page = ref(1)
 const offset = computed(() => {
@@ -56,12 +57,24 @@ const { result, loading, refetch } = useQuery(
     isSkip: isSkip.value,
     isRemoved: isRemoved.value,
   }),
-  {
+  () => ({
     debounce: 500,
-  }
+    enabled: enabled.value,
+    pollInterval: 5000,
+  })
 )
 
-const advertisements: ComputedRef<[IpniAdvertisement]> = computed(() => result.value?.ipniAdvertisements || [])
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
+
+
+
+const advertisements: ComputedRef<IpniAdvertisement[]> = computed(() => result.value?.ipniAdvertisements || [])
 const itemsCount: ComputedRef<number> = computed(() => {
   return result.value?.ipniAdvertisementsCount || itemsCount.value || 0
 })

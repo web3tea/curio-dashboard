@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { gql } from 'graphql-tag'
 import { IpniAdvertisement } from '@/typed-graph'
@@ -25,6 +25,8 @@ const props = defineProps({
 const { t } = useI18n()
 const router = useRouter()
 
+const enabled = ref(true)
+
 const { result, loading, error, refetch } = useQuery(
   gql`
     query GetRecentAdvertisements($offset: Int!, $limit: Int!) {
@@ -45,10 +47,19 @@ const { result, loading, error, refetch } = useQuery(
     offset: 0,
     limit: props.limit,
   },
-  {
+  () => ({
+    enabled: enabled.value,
     pollInterval: 5000,
-  }
+  })
 )
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const advertisements: ComputedRef<IpniAdvertisement[]> = computed(() => result.value?.ipniAdvertisements || [])
 

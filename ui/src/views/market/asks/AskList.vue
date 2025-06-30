@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef,ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { GetMarketMk12StorageAsks } from '@/gql/market'
 import { MarketMk12StorageAsk } from '@/typed-graph'
 import { attoFilToFilPerTiBPerMonth } from '@/utils/helpers/convertPrice'
@@ -10,9 +10,21 @@ import { IconRefresh } from '@tabler/icons-vue'
 import { getRelativeTime } from '@/utils/helpers/time'
 import SetAsk from './widgets/SetAsk.vue'
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetMarketMk12StorageAsks, null, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 const items: ComputedRef<[MarketMk12StorageAsk]> = computed(() => result.value?.marketMk12StorageAsks || [])
 
 const headers = [

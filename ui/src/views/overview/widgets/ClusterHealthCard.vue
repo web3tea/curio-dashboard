@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {  ComputedRef, computed } from 'vue'
+import {  ComputedRef, computed, ref, onActivated, onDeactivated } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { NodeHealthSummary } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
@@ -15,8 +15,19 @@ defineProps({
   }
 })
 
-const { result, loading, refetch } = useQuery(GetNodeHealth, null, {
-  pollInterval: 10000
+const enabled = ref(true)
+
+const { result, loading, refetch } = useQuery(GetNodeHealth, null, () => ({
+  enabled: enabled.value,
+  pollInterval: 10000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 const item: ComputedRef<NodeHealthSummary> = computed(() => result.value?.nodeHealthSummary || {})
 

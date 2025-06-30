@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { useMutation, useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { OpenSectorPiece } from '@/typed-graph'
 import { DealSealNow, GetPendingDeals } from '@/gql/deal'
 import { IconRefresh, IconSearch } from '@tabler/icons-vue'
@@ -15,10 +15,21 @@ const { t } = useI18n()
 
 const ns = useNotificationStore()
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetPendingDeals, null, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
   pollInterval: 5000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 const items: ComputedRef<[OpenSectorPiece]> = computed(() => result.value?.dealsPending || [])
 
 const { mutate: dealSealNow, loading: dealSealNowLoading, onDone, onError } = useMutation(DealSealNow, () => ({

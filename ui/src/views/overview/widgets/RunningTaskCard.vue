@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { computed } from 'vue'
+import { computed, ref, onActivated, onDeactivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RunningTaskSummary, TrendType } from '@/typed-graph'
 import { GetRunningTaskSummary } from '@/gql/task'
@@ -16,8 +16,19 @@ defineProps({
 
 const { t } = useI18n()
 
-const { result, loading, refetch } = useQuery(GetRunningTaskSummary, null, {
+const enabled = ref(true)
+
+const { result, loading, refetch } = useQuery(GetRunningTaskSummary, null, () => ({
+  enabled: enabled.value,
   pollInterval: 3000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 
 interface RunningTaskData {

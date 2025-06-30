@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, reactive, ref } from 'vue'
+import { computed, ComputedRef, reactive, ref, onActivated, onDeactivated } from 'vue'
 import { Sector } from '@/typed-graph'
 import { GetSectors } from '@/gql/sector'
 import {  IconRefresh } from '@tabler/icons-vue'
@@ -19,6 +19,8 @@ const selectedMiner = ref<string>()
 const searchSectorNumber = ref<number>()
 const searchSectorNumberCache = ref<number>()
 
+const enabled = ref(true)
+
 function enterSearch (): void {
   searchSectorNumber.value = searchSectorNumberCache.value
 }
@@ -30,7 +32,17 @@ const { result, loading, refetch } = useQuery(GetSectors, {
   limit: tableSettings.itemsPerPage,
 }, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const items: ComputedRef<[Sector]> = computed(() => result.value?.sectors || [])
 const itemsCount: ComputedRef<number> = computed(() => {
@@ -88,7 +100,7 @@ function hasSealed (item: Sector): boolean {
               md="3"
               class="c-input-container"
             >
-              <MinerSelectInput 
+              <MinerSelectInput
                 v-model="selectedMiner"
                 class="c-input"
               />

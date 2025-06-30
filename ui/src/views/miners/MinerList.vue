@@ -2,7 +2,7 @@
 
 import { IconRefresh, IconSearch } from '@tabler/icons-vue'
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { Actor } from '@/typed-graph'
 import { GetActors } from '@/gql/miner'
 import { formatFIL } from '@/utils/helpers/formatFIL'
@@ -11,9 +11,21 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetActors, null, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 const items: ComputedRef<[Actor]> = computed(() => result.value?.actors || [])
 
 const searchValue = ref('')

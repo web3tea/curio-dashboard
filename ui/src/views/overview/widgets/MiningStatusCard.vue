@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
 import { TrendType, TimeRangeType, MiningStatusSummay } from '@/typed-graph'
-import { computed,  } from 'vue'
+import { computed, ref, onActivated, onDeactivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { calculateStartTime } from '@/utils/helpers/startTime'
 import { GetMiningStatusSummary } from '@/gql/mining'
@@ -9,6 +9,8 @@ import { RouteLocationRaw } from 'vue-router'
 import { getRelativeTime } from '@/utils/helpers/time'
 
 const { t } = useI18n()
+
+const enabled = ref(true)
 
 const props = defineProps({
   detailsLink: {
@@ -39,8 +41,17 @@ interface MiningStatusData {
 const { result, loading, refetch } = useQuery(GetMiningStatusSummary, {
   start: start.value,
   end: end.value
-}, {
+}, () => ({
+  enabled: enabled.value,
   pollInterval: 60000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 
 const item = computed<MiningStatusData>(() => {

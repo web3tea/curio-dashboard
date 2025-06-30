@@ -2,10 +2,10 @@
 import { MarketMk12Deal } from '@/typed-graph'
 import { GetMarketMk12Deals } from '@/gql/market'
 import { useQuery } from '@vue/apollo-composable'
-import { ComputedRef, computed, ref } from 'vue'
+import { ComputedRef, computed, ref, onActivated, onDeactivated } from 'vue'
 import { IconRefresh } from '@tabler/icons-vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
-import { watchDebounced } from '@vueuse/core'
+import { refDebounced } from '@vueuse/core'
 import { getRelativeTime } from '@/utils/helpers/time'
 
 const headers = [
@@ -23,20 +23,33 @@ const page = ref(1)
 const offset = computed(() => (page.value - 1) * limit.value)
 
 const search = ref<string>()
-const searchDebounced = ref<string>()
+const searchDebounced = refDebounced(search, 500)
 
-watchDebounced(search, (value) => {
-  searchDebounced.value = value?.trim() === '' ? undefined : value
-}, { debounce: 1000 })
+const searchFilter = computed(() => {
+  const trimmed = searchDebounced.value?.trim()
+  return trimmed === '' ? undefined : trimmed
+})
+const enabled = ref(true)
 
 const { result, loading, refetch } = useQuery(GetMarketMk12Deals, () => ({
   filter: {
-    uuid: searchDebounced.value,
+    uuid: searchFilter.value,
   },
   offset: offset.value,
   limit: limit.value,
+}), () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 const items: ComputedRef<[MarketMk12Deal]> = computed(() => result.value?.marketMk12Deals || [])
 const itemsCount: ComputedRef<number> = computed(() => {
   return result.value?.marketMk12DealsCount || itemsCount.value || 0
@@ -64,7 +77,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
       height="calc(100vh - 330px)"
     >
       <template #item.uuid="{ value }">
-        <RouterLink :to="{ name: 'MakretDealInfo', params: { id: value } }">
+        <RouterLink :to="{ name: 'MarketDealInfo', params: { id: value } }">
           <TruncatedText
             :text="value"
             :allow-copy="false"

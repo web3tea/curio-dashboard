@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
 import { GetStoragePaths } from '@/gql/storage'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { StoragePath, Storage, StorageType } from '@/typed-graph'
 import { IconRefresh, IconSearch, IconEye } from '@tabler/icons-vue'
 import { formatBytes } from '@/utils/helpers/formatBytes'
@@ -13,7 +13,20 @@ import StoragePathDetailDialog from './StoragePathDetailDialog.vue'
 
 const { t } = useI18n()
 
-const { result, loading, refetch, error } = useQuery(GetStoragePaths, null, {})
+const enabled = ref(true)
+
+const { result, loading, refetch, error } = useQuery(GetStoragePaths, null, () => ({
+  enabled: enabled.value,
+  pollInterval: 10000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const items: ComputedRef<StoragePath[]> = computed(() => {
   if (!result.value?.storages) return []

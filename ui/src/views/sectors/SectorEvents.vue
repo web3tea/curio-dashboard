@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, onActivated } from 'vue'
 
 import { useQuery } from '@vue/apollo-composable'
 import { TaskHistory } from '@/typed-graph'
@@ -26,6 +26,10 @@ const props = defineProps({
 const { result, loading, refetch } = useQuery(GetSectorEvents, {
   miner: props.miner,
   sectorNumber: props.sectorNumber,
+})
+
+onActivated(() => {
+  refetch()
 })
 
 const events: ComputedRef<[TaskHistory]> = computed(() => result.value?.sector.events || [])

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef, ref, reactive } from 'vue'
+import { computed, ComputedRef, ref, reactive, onActivated, onDeactivated } from 'vue'
 import { IconRefresh, IconEye, IconSearch } from '@tabler/icons-vue'
 import TableFilterMenu from '@/components/app/TableFilterMenu.vue'
 import { useQuery } from '@vue/apollo-composable'
@@ -11,9 +11,21 @@ import { getRelativeTime } from '@/utils/helpers/time'
 
 const { t } = useI18n()
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetMachines, null, () => ({
   fetchPolicy: 'cache-first',
+  enabled: enabled.value,
+  pollInterval: 10000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 const items: ComputedRef<[Machine]> = computed(() => result.value?.machines || [])
 
 const allLayers = computed(() => {

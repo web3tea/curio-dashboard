@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
 import { GetStorageStats } from '@/gql/storage'
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { StorageStats, TrendType } from '@/typed-graph'
 import { useI18n } from 'vue-i18n'
 import { RouteLocationRaw } from 'vue-router'
@@ -24,8 +24,19 @@ interface StorageUsedData {
   trendValue?: string;
 }
 
-const { result, loading, refetch } = useQuery(GetStorageStats, null, {
+const enabled = ref(true)
+
+const { result, loading, refetch } = useQuery(GetStorageStats, null, () => ({
+  enabled: enabled.value,
   pollInterval: 60000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 
 const items: ComputedRef<[StorageStats]> = computed(() => result.value?.storageStats || [])

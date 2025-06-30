@@ -2,7 +2,7 @@
 import { useQuery } from '@vue/apollo-composable'
 import { useI18n } from 'vue-i18n'
 import { TrendType } from '@/typed-graph'
-import { computed } from 'vue'
+import { computed, ref, onActivated, onDeactivated } from 'vue'
 import { RouteLocationRaw } from 'vue-router'
 import { GetSectorSummary } from '@/gql/sector'
 
@@ -15,6 +15,8 @@ defineProps({
 
 const { t } = useI18n()
 
+const enabled = ref(true)
+
 interface SectorSummaryData {
   total: number;
   active: number;
@@ -24,8 +26,17 @@ interface SectorSummaryData {
   trendValue?: string;
 }
 
-const { result, loading, refetch } = useQuery(GetSectorSummary, null, {
+const { result, loading, refetch } = useQuery(GetSectorSummary, null, () => ({
+  enabled: enabled.value,
   pollInterval: 60000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 
 const item = computed<SectorSummaryData>(() => {

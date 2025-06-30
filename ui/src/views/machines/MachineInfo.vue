@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated } from 'vue'
 import MachineTasks from '@/views/machines/MachineTasks.vue'
 import MachineStorages from '@/views/machines/MachineStorages.vue'
 import RecentTasksTable from '@/views/widgets/data/RecentTasksTable.vue'
@@ -33,7 +33,11 @@ const breadcrumbs = ref([
   },
 ])
 
-const { result, loading } = useQuery(query, variables, {})
+const { result, loading, refetch } = useQuery(query, variables, {})
+
+onActivated(() => {
+  refetch()
+})
 const machine: ComputedRef<Machine> = computed(() => result.value?.machine || {})
 
 </script>

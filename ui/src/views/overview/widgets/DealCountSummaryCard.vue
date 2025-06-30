@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
 import { TrendType } from '@/typed-graph'
-import { computed } from 'vue'
+import { computed, ref, onActivated, onDeactivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouteLocationRaw } from 'vue-router'
 import { GetDealCountSummary } from '@/gql/deal'
@@ -24,8 +24,19 @@ interface DealCountSummaryData {
   trendValue?: string;
 }
 
-const { result, loading, refetch } = useQuery(GetDealCountSummary, null, {
+const enabled = ref(true)
+
+const { result, loading, refetch } = useQuery(GetDealCountSummary, null, () => ({
+  enabled: enabled.value,
   pollInterval: 60000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 
 const item = computed<DealCountSummaryData>(() => {
