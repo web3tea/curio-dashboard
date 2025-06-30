@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { computed } from 'vue'
+import { computed, ref, onActivated, onDeactivated } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { MinerPower } from '@/typed-graph'
 import { GetMinerPower } from '@/gql/miner'
@@ -17,8 +17,19 @@ defineProps({
 
 const { t } = useI18n()
 
-const { result, loading, refetch } = useQuery(GetMinerPower, null, {
+const enabled = ref(true)
+
+const { result, loading, refetch } = useQuery(GetMinerPower, null, () => ({
+  enabled: enabled.value,
   pollInterval: 60000,
+}))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
 })
 
 // const minerPower: ComputedRef<MinerPower> = computed(() => result.value?.minerPower || {})

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { IpniProvider } from '@/typed-graph'
@@ -24,6 +24,8 @@ const props = defineProps({
 const { t } = useI18n()
 const router = useRouter()
 
+const enabled = ref(true)
+
 const { result, loading, error, refetch } = useQuery(
   gql`
     query GetIPNIProviders {
@@ -35,11 +37,20 @@ const { result, loading, error, refetch } = useQuery(
       }
     }
   `,
-  {},
-  {
+  null,
+  () => ({
+    enabled: enabled.value,
     pollInterval: 5000,
-  }
+  })
 )
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const allProviders: ComputedRef<IpniProvider[]> = computed(() => result.value?.ipniProviders || [])
 

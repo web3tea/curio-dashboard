@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ComputedRef } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { useQuery } from '@vue/apollo-composable'
 import { GetMachinesSummary } from '@/gql/machine'
 import { MachineSummary } from '@/typed-graph'
@@ -10,9 +10,20 @@ import { getRelativeTime } from '@/utils/helpers/time'
 
 const { t } = useI18n()
 
+const enabled = ref(true)
+
 const { result } = useQuery(GetMachinesSummary, null, () => ({
+  enabled: enabled.value,
   pollInterval: 60000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const stats: ComputedRef<MachineSummary> = computed(() => result.value?.machineSummary)
 

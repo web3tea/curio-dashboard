@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, ComputedRef, ref, onActivated, onDeactivated } from 'vue'
 import { Task } from '@/typed-graph'
 import { GetRunningTasks } from '@/gql/task'
 import { IconRefresh, IconSearch } from '@tabler/icons-vue'
@@ -10,10 +10,20 @@ import { useLocalState } from '@/utils/helpers/localState'
 
 const { t } = useI18n()
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetRunningTasks, null, () => ({
-  fetchPolicy: 'cache-and-network',
+  enabled: enabled.value,
   pollInterval: 3000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 
 const items: ComputedRef<[Task]> = computed(() => result.value?.tasks || [])
 const headers = [

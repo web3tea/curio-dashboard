@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from '@vue/apollo-composable'
-import { computed, ComputedRef, ref, watch } from 'vue'
+import { computed, ComputedRef, ref, watch, onActivated, onDeactivated } from 'vue'
 import { GetSectorsPoreps } from '@/gql/porep'
 import { Porep, TaskStatus } from '@/typed-graph'
 import { IconRefresh, IconSearch, IconSettings } from '@tabler/icons-vue'
@@ -14,10 +14,20 @@ import { useNotificationStore } from '@/stores/notification'
 const ns = useNotificationStore()
 const { t } = useI18n()
 
+const enabled = ref(true)
+
 const { result, loading, refetch } = useQuery(GetSectorsPoreps, null, () => ({
-  fetchPolicy: 'network-only',
+  enabled: enabled.value,
   pollInterval: 5000,
 }))
+
+onActivated(() => {
+  enabled.value = true
+})
+
+onDeactivated(() => {
+  enabled.value = false
+})
 const items: ComputedRef<[Porep]> = computed(() => result.value?.poreps || [])
 watch(items, () => {
   selected.value = []
