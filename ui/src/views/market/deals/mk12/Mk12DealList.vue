@@ -25,11 +25,15 @@ const offset = computed(() => (page.value - 1) * limit.value)
 const search = ref<string>()
 const searchDebounced = refDebounced(search, 500)
 
+const searchFilter = computed(() => {
+  const trimmed = searchDebounced.value?.trim()
+  return trimmed === '' ? undefined : trimmed
+})
 const enabled = ref(true)
 
 const { result, loading, refetch } = useQuery(GetMarketMk12Deals, () => ({
   filter: {
-    uuid: searchDebounced.value,
+    uuid: searchFilter.value,
   },
   offset: offset.value,
   limit: limit.value,
@@ -73,7 +77,7 @@ const itemsCount: ComputedRef<number> = computed(() => {
       height="calc(100vh - 330px)"
     >
       <template #item.uuid="{ value }">
-        <RouterLink :to="{ name: 'MakretDealInfo', params: { id: value } }">
+        <RouterLink :to="{ name: 'MarketDealInfo', params: { id: value } }">
           <TruncatedText
             :text="value"
             :allow-copy="false"
