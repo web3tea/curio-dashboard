@@ -46,6 +46,7 @@ func getClientIP(r *http.Request) string {
 	if colonIndex := strings.LastIndex(ip, ":"); colonIndex != -1 {
 		ip = ip[:colonIndex]
 	}
+	ip = strings.Trim(ip, "[]")
 	return ip
 }
 
