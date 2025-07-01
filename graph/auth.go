@@ -13,7 +13,8 @@ import (
 )
 
 type (
-	userKey struct{}
+	userKey    struct{}
+	requestKey struct{}
 
 	UserContext struct {
 		Username string     `json:"username"`

@@ -26,6 +26,29 @@ import (
 
 var log = logging.Logger("graph")
 
+func getClientIP(r *http.Request) string {
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		ips := strings.Split(xff, ",")
+		if len(ips) > 0 {
+			return strings.TrimSpace(ips[0])
+		}
+	}
+
+	if xri := r.Header.Get("X-Real-IP"); xri != "" {
+		return strings.TrimSpace(xri)
+	}
+
+	if cfip := r.Header.Get("CF-Connecting-IP"); cfip != "" {
+		return strings.TrimSpace(cfip)
+	}
+
+	ip := r.RemoteAddr
+	if colonIndex := strings.LastIndex(ip, ":"); colonIndex != -1 {
+		ip = ip[:colonIndex]
+	}
+	return ip
+}
+
 func Router(r *chi.Mux, cfg *config.Config, resolver ResolverRoot) {
 	ah := authHandler{cfg: cfg}
 	r.Post("/auth/token", ah.Login)
@@ -85,9 +108,21 @@ func graphHandler(cfg *config.Config, resolver ResolverRoot) http.Handler {
 
 		if oc != nil && ns != nil {
 			if !strings.HasPrefix(oc.OperationName, "Sub") {
-				log.Debugw("request", "operation", oc.OperationName,
-					"duration", time.Since(oc.Stats.OperationStart).String(),
-					"variables", oc.Variables, "error", ns.Errors.Error())
+				fields := []any{
+					"op", oc.OperationName,
+					"dur", time.Since(oc.Stats.OperationStart).String(),
+					"vars", oc.Variables,
+				}
+
+				if req, ok := ctx.Value(requestKey{}).(*http.Request); ok {
+					fields = append(fields, "ip", getClientIP(req))
+				}
+
+				if len(ns.Errors) > 0 {
+					fields = append(fields, "err", ns.Errors.Error())
+				}
+
+				log.Debugw("request", fields...)
 			}
 		}
 		return ns
@@ -175,6 +210,7 @@ func TokenExtractMiddleware(cfg *config.Config) func(next http.Handler) http.Han
 					if err == nil {
 						// Token is valid, add user to context
 						ctx := context.WithValue(r.Context(), userKey{}, user)
+						ctx = context.WithValue(ctx, requestKey{}, r)
 						next.ServeHTTP(w, r.WithContext(ctx))
 						return
 					}
@@ -183,7 +219,8 @@ func TokenExtractMiddleware(cfg *config.Config) func(next http.Handler) http.Han
 			}
 			// If we reach here, either no token was provided or it was invalid
 			// Continue without authentication
-			next.ServeHTTP(w, r)
+			ctx := context.WithValue(r.Context(), requestKey{}, r)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }
