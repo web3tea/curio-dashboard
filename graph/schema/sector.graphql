@@ -90,11 +90,69 @@ type SectorSummary {
     failed: Int!
 }
 
+type SectorSnapPipeline {
+    spID: Address!
+    sectorNumber: Int!
+    startTime: Time!
+    upgradeProof: Int!
+    dataAssigned: Boolean!
+    updateUnsealedCid: String
+    updateSealedCid: String
+    taskIdEncode: Int
+    afterEncode: Boolean!
+    proof: Bytes
+    taskIdProve: Int
+    afterProve: Boolean!
+    proveMsgCid: String
+    taskIdSubmit: Int
+    afterSubmit: Boolean!
+    afterProveMsgSuccess: Boolean!
+    proveMsgTsk: Bytes
+    taskIdMoveStorage: Int
+    afterMoveStorage: Boolean!
+    failed: Boolean!
+    failedAt: Time
+    failedReason: String!
+    failedReasonMsg: String!
+    submitAfter: Time
+    updateReadyAt: Time
+    meta: SectorMeta @goField(forceResolver: true)
+    pieces: [SectorSnapPiece]! @goField(forceResolver: true)
+}
+
+type SectorSnapPiece {
+    spID: Address!
+    sectorNumber: Int!
+    createdAt: Time!
+    pieceIndex: Int!
+    pieceCid: String!
+    pieceSize: Int!
+    dataUrl: String!
+    dataHeaders: JSON!
+    dataRawSize: Int!
+    dataDeleteOnFinalize: Boolean!
+    directStartEpoch: Int
+    directEndEpoch: Int
+    directPieceActivationManifest: JSON
+}
+
+type SnapSummary {
+    encoding: Int!
+    proving: Int!
+    submitting: Int!
+    moveStorage: Int!
+    failed: Int!
+    completed: Int!
+}
+
 extend type Query {
     sectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [Sector] @hasRole(role: USER)
     sectorsCount(actor: Address): Int! @hasRole(role: USER)
     sector(actor: Address!, sectorNumber: Int!): Sector @hasRole(role: USER)
     sectorSummary: SectorSummary @hasRole(role: USER)
+    snapSectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [SectorSnapPipeline] @hasRole(role: USER)
+    snapSectorsCount(actor: Address): Int! @hasRole(role: USER)
+    snapSummary: SnapSummary @hasRole(role: USER)
 }
 
 extend type Mutation {

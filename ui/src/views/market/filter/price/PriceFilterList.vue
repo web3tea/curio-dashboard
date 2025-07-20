@@ -92,8 +92,8 @@ const handleDelete = async (name: string) => {
             color="error"
             variant="elevated"
             :loading="deletingItem === item.name"
-            @click="handleDelete(item.name)"
             class="ml-12"
+            @click="handleDelete(item.name)"
           >
             Remove
           </v-btn>

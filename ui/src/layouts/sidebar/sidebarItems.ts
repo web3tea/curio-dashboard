@@ -78,8 +78,7 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         },
         {
           title: t('nav.Snap'),
-          to: 'Snap Deals',
-          disabled: true // todo: add Snap Deals page
+          to: { name: "Snap" },
         },
         {
           title: t('nav.Unsealing'),

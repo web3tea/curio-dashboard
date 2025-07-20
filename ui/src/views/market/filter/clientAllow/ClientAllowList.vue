@@ -16,8 +16,6 @@ const { result, loading, refetch } = useQuery(GetMarketClientAllowList, null, {}
 const items: ComputedRef<[MarketAllowFilter]> = computed(() => result.value?.marketAllowFilters || [])
 const defaultBehavior = computed(() => result.value?.marketDefaultFilterBehaviour)
 
-
-
 const searchValue = ref<string>()
 const deletingItem = ref<string | null>(null)
 
@@ -98,11 +96,17 @@ const handleToggle = async (wallet: string) => {
             </span>
             <span v-if="defaultBehavior.isCidGravityEnabled?.length">
               CID Gravity:
-              <template v-for="(item, index) in defaultBehavior.isCidGravityEnabled" :key="item.miner">
+              <template
+                v-for="(item, index) in defaultBehavior.isCidGravityEnabled"
+                :key="item.miner"
+              >
                 <span :class="item.status ? 'text-success' : 'text-error'">
                   {{ item.miner }}{{ item.status ? '✓' : '✗' }}
                 </span>
-                <span v-if="index < defaultBehavior.isCidGravityEnabled.length - 1" class="mx-1">|</span>
+                <span
+                  v-if="index < defaultBehavior.isCidGravityEnabled.length - 1"
+                  class="mx-1"
+                >|</span>
               </template>
             </span>
           </div>

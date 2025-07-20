@@ -62,6 +62,7 @@ type ResolverRoot interface {
 	Sector() SectorResolver
 	SectorLocation() SectorLocationResolver
 	SectorMeta() SectorMetaResolver
+	SectorSnapPipeline() SectorSnapPipelineResolver
 	Storage() StorageResolver
 	StoragePath() StoragePathResolver
 	Subscription() SubscriptionResolver
@@ -685,6 +686,9 @@ type ComplexityRoot struct {
 		SectorSummary                func(childComplexity int) int
 		Sectors                      func(childComplexity int, actor *types.Address, sectorNumber *int, offset int, limit int) int
 		SectorsCount                 func(childComplexity int, actor *types.Address) int
+		SnapSectors                  func(childComplexity int, actor *types.Address, sectorNumber *int, offset int, limit int) int
+		SnapSectorsCount             func(childComplexity int, actor *types.Address) int
+		SnapSummary                  func(childComplexity int) int
 		Storage                      func(childComplexity int, id string) int
 		StorageStats                 func(childComplexity int) int
 		Storages                     func(childComplexity int) int
@@ -773,10 +777,65 @@ type ComplexityRoot struct {
 		StartEpoch        func(childComplexity int) int
 	}
 
+	SectorSnapPiece struct {
+		CreatedAt                     func(childComplexity int) int
+		DataDeleteOnFinalize          func(childComplexity int) int
+		DataHeaders                   func(childComplexity int) int
+		DataRawSize                   func(childComplexity int) int
+		DataURL                       func(childComplexity int) int
+		DirectEndEpoch                func(childComplexity int) int
+		DirectPieceActivationManifest func(childComplexity int) int
+		DirectStartEpoch              func(childComplexity int) int
+		PieceCid                      func(childComplexity int) int
+		PieceIndex                    func(childComplexity int) int
+		PieceSize                     func(childComplexity int) int
+		SectorNumber                  func(childComplexity int) int
+		SpID                          func(childComplexity int) int
+	}
+
+	SectorSnapPipeline struct {
+		AfterEncode          func(childComplexity int) int
+		AfterMoveStorage     func(childComplexity int) int
+		AfterProve           func(childComplexity int) int
+		AfterProveMsgSuccess func(childComplexity int) int
+		AfterSubmit          func(childComplexity int) int
+		DataAssigned         func(childComplexity int) int
+		Failed               func(childComplexity int) int
+		FailedAt             func(childComplexity int) int
+		FailedReason         func(childComplexity int) int
+		FailedReasonMsg      func(childComplexity int) int
+		Meta                 func(childComplexity int) int
+		Pieces               func(childComplexity int) int
+		Proof                func(childComplexity int) int
+		ProveMsgCid          func(childComplexity int) int
+		ProveMsgTsk          func(childComplexity int) int
+		SectorNumber         func(childComplexity int) int
+		SpID                 func(childComplexity int) int
+		StartTime            func(childComplexity int) int
+		SubmitAfter          func(childComplexity int) int
+		TaskIDEncode         func(childComplexity int) int
+		TaskIDMoveStorage    func(childComplexity int) int
+		TaskIDProve          func(childComplexity int) int
+		TaskIDSubmit         func(childComplexity int) int
+		UpdateReadyAt        func(childComplexity int) int
+		UpdateSealedCid      func(childComplexity int) int
+		UpdateUnsealedCid    func(childComplexity int) int
+		UpgradeProof         func(childComplexity int) int
+	}
+
 	SectorSummary struct {
 		Active  func(childComplexity int) int
 		Failed  func(childComplexity int) int
 		Sealing func(childComplexity int) int
+	}
+
+	SnapSummary struct {
+		Completed   func(childComplexity int) int
+		Encoding    func(childComplexity int) int
+		Failed      func(childComplexity int) int
+		MoveStorage func(childComplexity int) int
+		Proving     func(childComplexity int) int
+		Submitting  func(childComplexity int) int
 	}
 
 	Storage struct {
@@ -1135,6 +1194,9 @@ type QueryResolver interface {
 	SectorsCount(ctx context.Context, actor *types.Address) (int, error)
 	Sector(ctx context.Context, actor types.Address, sectorNumber int) (*model.Sector, error)
 	SectorSummary(ctx context.Context) (*model.SectorSummary, error)
+	SnapSectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.SectorSnapPipeline, error)
+	SnapSectorsCount(ctx context.Context, actor *types.Address) (int, error)
+	SnapSummary(ctx context.Context) (*model.SnapSummary, error)
 	Storage(ctx context.Context, id string) (*model.Storage, error)
 	Storages(ctx context.Context) ([]*model.Storage, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
@@ -1170,6 +1232,10 @@ type SectorLocationResolver interface {
 }
 type SectorMetaResolver interface {
 	ID(ctx context.Context, obj *model.SectorMeta) (string, error)
+}
+type SectorSnapPipelineResolver interface {
+	Meta(ctx context.Context, obj *model.SectorSnapPipeline) (*model.SectorMeta, error)
+	Pieces(ctx context.Context, obj *model.SectorSnapPipeline) ([]*model.SectorSnapPiece, error)
 }
 type StorageResolver interface {
 	Path(ctx context.Context, obj *model.Storage) (*model.StoragePath, error)
@@ -4755,6 +4821,37 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.SectorsCount(childComplexity, args["actor"].(*types.Address)), true
 
+	case "Query.snapSectors":
+		if e.complexity.Query.SnapSectors == nil {
+			break
+		}
+
+		args, err := ec.field_Query_snapSectors_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SnapSectors(childComplexity, args["actor"].(*types.Address), args["sectorNumber"].(*int), args["offset"].(int), args["limit"].(int)), true
+
+	case "Query.snapSectorsCount":
+		if e.complexity.Query.SnapSectorsCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_snapSectorsCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SnapSectorsCount(childComplexity, args["actor"].(*types.Address)), true
+
+	case "Query.snapSummary":
+		if e.complexity.Query.SnapSummary == nil {
+			break
+		}
+
+		return e.complexity.Query.SnapSummary(childComplexity), true
+
 	case "Query.storage":
 		if e.complexity.Query.Storage == nil {
 			break
@@ -5312,6 +5409,286 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SectorMetaPiece.StartEpoch(childComplexity), true
 
+	case "SectorSnapPiece.createdAt":
+		if e.complexity.SectorSnapPiece.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.CreatedAt(childComplexity), true
+
+	case "SectorSnapPiece.dataDeleteOnFinalize":
+		if e.complexity.SectorSnapPiece.DataDeleteOnFinalize == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.DataDeleteOnFinalize(childComplexity), true
+
+	case "SectorSnapPiece.dataHeaders":
+		if e.complexity.SectorSnapPiece.DataHeaders == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.DataHeaders(childComplexity), true
+
+	case "SectorSnapPiece.dataRawSize":
+		if e.complexity.SectorSnapPiece.DataRawSize == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.DataRawSize(childComplexity), true
+
+	case "SectorSnapPiece.dataUrl":
+		if e.complexity.SectorSnapPiece.DataURL == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.DataURL(childComplexity), true
+
+	case "SectorSnapPiece.directEndEpoch":
+		if e.complexity.SectorSnapPiece.DirectEndEpoch == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.DirectEndEpoch(childComplexity), true
+
+	case "SectorSnapPiece.directPieceActivationManifest":
+		if e.complexity.SectorSnapPiece.DirectPieceActivationManifest == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.DirectPieceActivationManifest(childComplexity), true
+
+	case "SectorSnapPiece.directStartEpoch":
+		if e.complexity.SectorSnapPiece.DirectStartEpoch == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.DirectStartEpoch(childComplexity), true
+
+	case "SectorSnapPiece.pieceCid":
+		if e.complexity.SectorSnapPiece.PieceCid == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.PieceCid(childComplexity), true
+
+	case "SectorSnapPiece.pieceIndex":
+		if e.complexity.SectorSnapPiece.PieceIndex == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.PieceIndex(childComplexity), true
+
+	case "SectorSnapPiece.pieceSize":
+		if e.complexity.SectorSnapPiece.PieceSize == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.PieceSize(childComplexity), true
+
+	case "SectorSnapPiece.sectorNumber":
+		if e.complexity.SectorSnapPiece.SectorNumber == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.SectorNumber(childComplexity), true
+
+	case "SectorSnapPiece.spID":
+		if e.complexity.SectorSnapPiece.SpID == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPiece.SpID(childComplexity), true
+
+	case "SectorSnapPipeline.afterEncode":
+		if e.complexity.SectorSnapPipeline.AfterEncode == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.AfterEncode(childComplexity), true
+
+	case "SectorSnapPipeline.afterMoveStorage":
+		if e.complexity.SectorSnapPipeline.AfterMoveStorage == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.AfterMoveStorage(childComplexity), true
+
+	case "SectorSnapPipeline.afterProve":
+		if e.complexity.SectorSnapPipeline.AfterProve == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.AfterProve(childComplexity), true
+
+	case "SectorSnapPipeline.afterProveMsgSuccess":
+		if e.complexity.SectorSnapPipeline.AfterProveMsgSuccess == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.AfterProveMsgSuccess(childComplexity), true
+
+	case "SectorSnapPipeline.afterSubmit":
+		if e.complexity.SectorSnapPipeline.AfterSubmit == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.AfterSubmit(childComplexity), true
+
+	case "SectorSnapPipeline.dataAssigned":
+		if e.complexity.SectorSnapPipeline.DataAssigned == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.DataAssigned(childComplexity), true
+
+	case "SectorSnapPipeline.failed":
+		if e.complexity.SectorSnapPipeline.Failed == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.Failed(childComplexity), true
+
+	case "SectorSnapPipeline.failedAt":
+		if e.complexity.SectorSnapPipeline.FailedAt == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.FailedAt(childComplexity), true
+
+	case "SectorSnapPipeline.failedReason":
+		if e.complexity.SectorSnapPipeline.FailedReason == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.FailedReason(childComplexity), true
+
+	case "SectorSnapPipeline.failedReasonMsg":
+		if e.complexity.SectorSnapPipeline.FailedReasonMsg == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.FailedReasonMsg(childComplexity), true
+
+	case "SectorSnapPipeline.meta":
+		if e.complexity.SectorSnapPipeline.Meta == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.Meta(childComplexity), true
+
+	case "SectorSnapPipeline.pieces":
+		if e.complexity.SectorSnapPipeline.Pieces == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.Pieces(childComplexity), true
+
+	case "SectorSnapPipeline.proof":
+		if e.complexity.SectorSnapPipeline.Proof == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.Proof(childComplexity), true
+
+	case "SectorSnapPipeline.proveMsgCid":
+		if e.complexity.SectorSnapPipeline.ProveMsgCid == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.ProveMsgCid(childComplexity), true
+
+	case "SectorSnapPipeline.proveMsgTsk":
+		if e.complexity.SectorSnapPipeline.ProveMsgTsk == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.ProveMsgTsk(childComplexity), true
+
+	case "SectorSnapPipeline.sectorNumber":
+		if e.complexity.SectorSnapPipeline.SectorNumber == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.SectorNumber(childComplexity), true
+
+	case "SectorSnapPipeline.spID":
+		if e.complexity.SectorSnapPipeline.SpID == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.SpID(childComplexity), true
+
+	case "SectorSnapPipeline.startTime":
+		if e.complexity.SectorSnapPipeline.StartTime == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.StartTime(childComplexity), true
+
+	case "SectorSnapPipeline.submitAfter":
+		if e.complexity.SectorSnapPipeline.SubmitAfter == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.SubmitAfter(childComplexity), true
+
+	case "SectorSnapPipeline.taskIdEncode":
+		if e.complexity.SectorSnapPipeline.TaskIDEncode == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.TaskIDEncode(childComplexity), true
+
+	case "SectorSnapPipeline.taskIdMoveStorage":
+		if e.complexity.SectorSnapPipeline.TaskIDMoveStorage == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.TaskIDMoveStorage(childComplexity), true
+
+	case "SectorSnapPipeline.taskIdProve":
+		if e.complexity.SectorSnapPipeline.TaskIDProve == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.TaskIDProve(childComplexity), true
+
+	case "SectorSnapPipeline.taskIdSubmit":
+		if e.complexity.SectorSnapPipeline.TaskIDSubmit == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.TaskIDSubmit(childComplexity), true
+
+	case "SectorSnapPipeline.updateReadyAt":
+		if e.complexity.SectorSnapPipeline.UpdateReadyAt == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.UpdateReadyAt(childComplexity), true
+
+	case "SectorSnapPipeline.updateSealedCid":
+		if e.complexity.SectorSnapPipeline.UpdateSealedCid == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.UpdateSealedCid(childComplexity), true
+
+	case "SectorSnapPipeline.updateUnsealedCid":
+		if e.complexity.SectorSnapPipeline.UpdateUnsealedCid == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.UpdateUnsealedCid(childComplexity), true
+
+	case "SectorSnapPipeline.upgradeProof":
+		if e.complexity.SectorSnapPipeline.UpgradeProof == nil {
+			break
+		}
+
+		return e.complexity.SectorSnapPipeline.UpgradeProof(childComplexity), true
+
 	case "SectorSummary.active":
 		if e.complexity.SectorSummary.Active == nil {
 			break
@@ -5332,6 +5709,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.SectorSummary.Sealing(childComplexity), true
+
+	case "SnapSummary.completed":
+		if e.complexity.SnapSummary.Completed == nil {
+			break
+		}
+
+		return e.complexity.SnapSummary.Completed(childComplexity), true
+
+	case "SnapSummary.encoding":
+		if e.complexity.SnapSummary.Encoding == nil {
+			break
+		}
+
+		return e.complexity.SnapSummary.Encoding(childComplexity), true
+
+	case "SnapSummary.failed":
+		if e.complexity.SnapSummary.Failed == nil {
+			break
+		}
+
+		return e.complexity.SnapSummary.Failed(childComplexity), true
+
+	case "SnapSummary.moveStorage":
+		if e.complexity.SnapSummary.MoveStorage == nil {
+			break
+		}
+
+		return e.complexity.SnapSummary.MoveStorage(childComplexity), true
+
+	case "SnapSummary.proving":
+		if e.complexity.SnapSummary.Proving == nil {
+			break
+		}
+
+		return e.complexity.SnapSummary.Proving(childComplexity), true
+
+	case "SnapSummary.submitting":
+		if e.complexity.SnapSummary.Submitting == nil {
+			break
+		}
+
+		return e.complexity.SnapSummary.Submitting(childComplexity), true
 
 	case "Storage.id":
 		if e.complexity.Storage.ID == nil {
@@ -9273,6 +9692,131 @@ func (ec *executionContext) field_Query_sectors_argsOffset(
 }
 
 func (ec *executionContext) field_Query_sectors_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["limit"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_snapSectorsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_snapSectorsCount_argsActor(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["actor"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_snapSectorsCount_argsActor(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.Address, error) {
+	if _, ok := rawArgs["actor"]; !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
+	if tmp, ok := rawArgs["actor"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_snapSectors_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_snapSectors_argsActor(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["actor"] = arg0
+	arg1, err := ec.field_Query_snapSectors_argsSectorNumber(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["sectorNumber"] = arg1
+	arg2, err := ec.field_Query_snapSectors_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg2
+	arg3, err := ec.field_Query_snapSectors_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg3
+	return args, nil
+}
+func (ec *executionContext) field_Query_snapSectors_argsActor(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.Address, error) {
+	if _, ok := rawArgs["actor"]; !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
+	if tmp, ok := rawArgs["actor"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_snapSectors_argsSectorNumber(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sectorNumber"))
+	if tmp, ok := rawArgs["sectorNumber"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_snapSectors_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["offset"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_snapSectors_argsLimit(
 	ctx context.Context,
 	rawArgs map[string]any,
 ) (int, error) {
@@ -34744,6 +35288,305 @@ func (ec *executionContext) fieldContext_Query_sectorSummary(_ context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_snapSectors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_snapSectors(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().SnapSectors(rctx, fc.Args["actor"].(*types.Address), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.SectorSnapPipeline
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.SectorSnapPipeline
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.SectorSnapPipeline); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.SectorSnapPipeline`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.SectorSnapPipeline)
+	fc.Result = res
+	return ec.marshalOSectorSnapPipeline2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPipeline(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_snapSectors(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spID":
+				return ec.fieldContext_SectorSnapPipeline_spID(ctx, field)
+			case "sectorNumber":
+				return ec.fieldContext_SectorSnapPipeline_sectorNumber(ctx, field)
+			case "startTime":
+				return ec.fieldContext_SectorSnapPipeline_startTime(ctx, field)
+			case "upgradeProof":
+				return ec.fieldContext_SectorSnapPipeline_upgradeProof(ctx, field)
+			case "dataAssigned":
+				return ec.fieldContext_SectorSnapPipeline_dataAssigned(ctx, field)
+			case "updateUnsealedCid":
+				return ec.fieldContext_SectorSnapPipeline_updateUnsealedCid(ctx, field)
+			case "updateSealedCid":
+				return ec.fieldContext_SectorSnapPipeline_updateSealedCid(ctx, field)
+			case "taskIdEncode":
+				return ec.fieldContext_SectorSnapPipeline_taskIdEncode(ctx, field)
+			case "afterEncode":
+				return ec.fieldContext_SectorSnapPipeline_afterEncode(ctx, field)
+			case "proof":
+				return ec.fieldContext_SectorSnapPipeline_proof(ctx, field)
+			case "taskIdProve":
+				return ec.fieldContext_SectorSnapPipeline_taskIdProve(ctx, field)
+			case "afterProve":
+				return ec.fieldContext_SectorSnapPipeline_afterProve(ctx, field)
+			case "proveMsgCid":
+				return ec.fieldContext_SectorSnapPipeline_proveMsgCid(ctx, field)
+			case "taskIdSubmit":
+				return ec.fieldContext_SectorSnapPipeline_taskIdSubmit(ctx, field)
+			case "afterSubmit":
+				return ec.fieldContext_SectorSnapPipeline_afterSubmit(ctx, field)
+			case "afterProveMsgSuccess":
+				return ec.fieldContext_SectorSnapPipeline_afterProveMsgSuccess(ctx, field)
+			case "proveMsgTsk":
+				return ec.fieldContext_SectorSnapPipeline_proveMsgTsk(ctx, field)
+			case "taskIdMoveStorage":
+				return ec.fieldContext_SectorSnapPipeline_taskIdMoveStorage(ctx, field)
+			case "afterMoveStorage":
+				return ec.fieldContext_SectorSnapPipeline_afterMoveStorage(ctx, field)
+			case "failed":
+				return ec.fieldContext_SectorSnapPipeline_failed(ctx, field)
+			case "failedAt":
+				return ec.fieldContext_SectorSnapPipeline_failedAt(ctx, field)
+			case "failedReason":
+				return ec.fieldContext_SectorSnapPipeline_failedReason(ctx, field)
+			case "failedReasonMsg":
+				return ec.fieldContext_SectorSnapPipeline_failedReasonMsg(ctx, field)
+			case "submitAfter":
+				return ec.fieldContext_SectorSnapPipeline_submitAfter(ctx, field)
+			case "updateReadyAt":
+				return ec.fieldContext_SectorSnapPipeline_updateReadyAt(ctx, field)
+			case "meta":
+				return ec.fieldContext_SectorSnapPipeline_meta(ctx, field)
+			case "pieces":
+				return ec.fieldContext_SectorSnapPipeline_pieces(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SectorSnapPipeline", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_snapSectors_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_snapSectorsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_snapSectorsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().SnapSectorsCount(rctx, fc.Args["actor"].(*types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_snapSectorsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_snapSectorsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_snapSummary(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_snapSummary(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().SnapSummary(rctx)
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal *model.SnapSummary
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal *model.SnapSummary
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.SnapSummary); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/web3tea/curio-dashboard/graph/model.SnapSummary`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SnapSummary)
+	fc.Result = res
+	return ec.marshalOSnapSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSnapSummary(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_snapSummary(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "encoding":
+				return ec.fieldContext_SnapSummary_encoding(ctx, field)
+			case "proving":
+				return ec.fieldContext_SnapSummary_proving(ctx, field)
+			case "submitting":
+				return ec.fieldContext_SnapSummary_submitting(ctx, field)
+			case "moveStorage":
+				return ec.fieldContext_SnapSummary_moveStorage(ctx, field)
+			case "failed":
+				return ec.fieldContext_SnapSummary_failed(ctx, field)
+			case "completed":
+				return ec.fieldContext_SnapSummary_completed(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SnapSummary", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_storage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_storage(ctx, field)
 	if err != nil {
@@ -38991,6 +39834,1786 @@ func (ec *executionContext) fieldContext_SectorMetaPiece_f05DealProposal(_ conte
 	return fc, nil
 }
 
+func (ec *executionContext) _SectorSnapPiece_spID(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_spID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_sectorNumber(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_sectorNumber(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SectorNumber, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_sectorNumber(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_createdAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_pieceIndex(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_pieceIndex(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PieceIndex, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_pieceIndex(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_pieceCid(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_pieceCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PieceCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_pieceCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_pieceSize(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_pieceSize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PieceSize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_pieceSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_dataUrl(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_dataUrl(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DataURL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_dataUrl(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_dataHeaders(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_dataHeaders(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DataHeaders, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.JSON)
+	fc.Result = res
+	return ec.marshalNJSON2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_dataHeaders(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSON does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_dataRawSize(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_dataRawSize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DataRawSize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_dataRawSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_dataDeleteOnFinalize(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_dataDeleteOnFinalize(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DataDeleteOnFinalize, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_dataDeleteOnFinalize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_directStartEpoch(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_directStartEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DirectStartEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_directStartEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_directEndEpoch(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_directEndEpoch(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DirectEndEpoch, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_directEndEpoch(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPiece_directPieceActivationManifest(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPiece) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPiece_directPieceActivationManifest(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DirectPieceActivationManifest, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*types.JSON)
+	fc.Result = res
+	return ec.marshalOJSON2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐJSON(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPiece_directPieceActivationManifest(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPiece",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type JSON does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_spID(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_spID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_sectorNumber(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_sectorNumber(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SectorNumber, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_sectorNumber(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_startTime(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_startTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_startTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_upgradeProof(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_upgradeProof(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpgradeProof, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_upgradeProof(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_dataAssigned(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_dataAssigned(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DataAssigned, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_dataAssigned(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_updateUnsealedCid(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_updateUnsealedCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdateUnsealedCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_updateUnsealedCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_updateSealedCid(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_updateSealedCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdateSealedCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_updateSealedCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_taskIdEncode(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_taskIdEncode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskIDEncode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_taskIdEncode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_afterEncode(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_afterEncode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AfterEncode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_afterEncode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_proof(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_proof(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Proof, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.Bytes)
+	fc.Result = res
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_proof(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_taskIdProve(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_taskIdProve(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskIDProve, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_taskIdProve(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_afterProve(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_afterProve(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AfterProve, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_afterProve(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_proveMsgCid(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_proveMsgCid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProveMsgCid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_proveMsgCid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_taskIdSubmit(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_taskIdSubmit(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskIDSubmit, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_taskIdSubmit(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_afterSubmit(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_afterSubmit(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AfterSubmit, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_afterSubmit(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_afterProveMsgSuccess(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_afterProveMsgSuccess(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AfterProveMsgSuccess, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_afterProveMsgSuccess(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_proveMsgTsk(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_proveMsgTsk(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProveMsgTsk, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(types.Bytes)
+	fc.Result = res
+	return ec.marshalOBytes2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐBytes(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_proveMsgTsk(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Bytes does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_taskIdMoveStorage(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_taskIdMoveStorage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskIDMoveStorage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_taskIdMoveStorage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_afterMoveStorage(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_afterMoveStorage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AfterMoveStorage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_afterMoveStorage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_failed(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_failed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Failed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_failed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_failedAt(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_failedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FailedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_failedAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_failedReason(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_failedReason(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FailedReason, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_failedReason(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_failedReasonMsg(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_failedReasonMsg(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FailedReasonMsg, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_failedReasonMsg(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_submitAfter(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_submitAfter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubmitAfter, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_submitAfter(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_updateReadyAt(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_updateReadyAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdateReadyAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_updateReadyAt(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_meta(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_meta(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SectorSnapPipeline().Meta(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SectorMeta)
+	fc.Result = res
+	return ec.marshalOSectorMeta2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMeta(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_meta(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_SectorMeta_id(ctx, field)
+			case "spId":
+				return ec.fieldContext_SectorMeta_spId(ctx, field)
+			case "sectorNum":
+				return ec.fieldContext_SectorMeta_sectorNum(ctx, field)
+			case "regSealProof":
+				return ec.fieldContext_SectorMeta_regSealProof(ctx, field)
+			case "ticketEpoch":
+				return ec.fieldContext_SectorMeta_ticketEpoch(ctx, field)
+			case "ticketValue":
+				return ec.fieldContext_SectorMeta_ticketValue(ctx, field)
+			case "origSealedCid":
+				return ec.fieldContext_SectorMeta_origSealedCid(ctx, field)
+			case "origUnsealedCid":
+				return ec.fieldContext_SectorMeta_origUnsealedCid(ctx, field)
+			case "curSealedCid":
+				return ec.fieldContext_SectorMeta_curSealedCid(ctx, field)
+			case "curUnsealedCid":
+				return ec.fieldContext_SectorMeta_curUnsealedCid(ctx, field)
+			case "msgCidPrecommit":
+				return ec.fieldContext_SectorMeta_msgCidPrecommit(ctx, field)
+			case "msgCidCommit":
+				return ec.fieldContext_SectorMeta_msgCidCommit(ctx, field)
+			case "msgCidUpdate":
+				return ec.fieldContext_SectorMeta_msgCidUpdate(ctx, field)
+			case "seedEpoch":
+				return ec.fieldContext_SectorMeta_seedEpoch(ctx, field)
+			case "seedValue":
+				return ec.fieldContext_SectorMeta_seedValue(ctx, field)
+			case "expirationEpoch":
+				return ec.fieldContext_SectorMeta_expirationEpoch(ctx, field)
+			case "isCC":
+				return ec.fieldContext_SectorMeta_isCC(ctx, field)
+			case "deadline":
+				return ec.fieldContext_SectorMeta_deadline(ctx, field)
+			case "partition":
+				return ec.fieldContext_SectorMeta_partition(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SectorMeta", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorSnapPipeline_pieces(ctx context.Context, field graphql.CollectedField, obj *model.SectorSnapPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorSnapPipeline_pieces(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SectorSnapPipeline().Pieces(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.SectorSnapPiece)
+	fc.Result = res
+	return ec.marshalNSectorSnapPiece2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPiece(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorSnapPipeline_pieces(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorSnapPipeline",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spID":
+				return ec.fieldContext_SectorSnapPiece_spID(ctx, field)
+			case "sectorNumber":
+				return ec.fieldContext_SectorSnapPiece_sectorNumber(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_SectorSnapPiece_createdAt(ctx, field)
+			case "pieceIndex":
+				return ec.fieldContext_SectorSnapPiece_pieceIndex(ctx, field)
+			case "pieceCid":
+				return ec.fieldContext_SectorSnapPiece_pieceCid(ctx, field)
+			case "pieceSize":
+				return ec.fieldContext_SectorSnapPiece_pieceSize(ctx, field)
+			case "dataUrl":
+				return ec.fieldContext_SectorSnapPiece_dataUrl(ctx, field)
+			case "dataHeaders":
+				return ec.fieldContext_SectorSnapPiece_dataHeaders(ctx, field)
+			case "dataRawSize":
+				return ec.fieldContext_SectorSnapPiece_dataRawSize(ctx, field)
+			case "dataDeleteOnFinalize":
+				return ec.fieldContext_SectorSnapPiece_dataDeleteOnFinalize(ctx, field)
+			case "directStartEpoch":
+				return ec.fieldContext_SectorSnapPiece_directStartEpoch(ctx, field)
+			case "directEndEpoch":
+				return ec.fieldContext_SectorSnapPiece_directEndEpoch(ctx, field)
+			case "directPieceActivationManifest":
+				return ec.fieldContext_SectorSnapPiece_directPieceActivationManifest(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SectorSnapPiece", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _SectorSummary_active(ctx context.Context, field graphql.CollectedField, obj *model.SectorSummary) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SectorSummary_active(ctx, field)
 	if err != nil {
@@ -39113,6 +41736,270 @@ func (ec *executionContext) _SectorSummary_failed(ctx context.Context, field gra
 func (ec *executionContext) fieldContext_SectorSummary_failed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "SectorSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SnapSummary_encoding(ctx context.Context, field graphql.CollectedField, obj *model.SnapSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SnapSummary_encoding(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Encoding, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SnapSummary_encoding(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SnapSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SnapSummary_proving(ctx context.Context, field graphql.CollectedField, obj *model.SnapSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SnapSummary_proving(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Proving, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SnapSummary_proving(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SnapSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SnapSummary_submitting(ctx context.Context, field graphql.CollectedField, obj *model.SnapSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SnapSummary_submitting(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Submitting, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SnapSummary_submitting(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SnapSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SnapSummary_moveStorage(ctx context.Context, field graphql.CollectedField, obj *model.SnapSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SnapSummary_moveStorage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MoveStorage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SnapSummary_moveStorage(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SnapSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SnapSummary_failed(ctx context.Context, field graphql.CollectedField, obj *model.SnapSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SnapSummary_failed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Failed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SnapSummary_failed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SnapSummary",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SnapSummary_completed(ctx context.Context, field graphql.CollectedField, obj *model.SnapSummary) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SnapSummary_completed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Completed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SnapSummary_completed(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SnapSummary",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -53602,6 +56489,66 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "snapSectors":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_snapSectors(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "snapSectorsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_snapSectorsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "snapSummary":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_snapSummary(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "storage":
 			field := field
 
@@ -54710,6 +57657,288 @@ func (ec *executionContext) _SectorMetaPiece(ctx context.Context, sel ast.Select
 	return out
 }
 
+var sectorSnapPieceImplementors = []string{"SectorSnapPiece"}
+
+func (ec *executionContext) _SectorSnapPiece(ctx context.Context, sel ast.SelectionSet, obj *model.SectorSnapPiece) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, sectorSnapPieceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SectorSnapPiece")
+		case "spID":
+			out.Values[i] = ec._SectorSnapPiece_spID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "sectorNumber":
+			out.Values[i] = ec._SectorSnapPiece_sectorNumber(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._SectorSnapPiece_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "pieceIndex":
+			out.Values[i] = ec._SectorSnapPiece_pieceIndex(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "pieceCid":
+			out.Values[i] = ec._SectorSnapPiece_pieceCid(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "pieceSize":
+			out.Values[i] = ec._SectorSnapPiece_pieceSize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "dataUrl":
+			out.Values[i] = ec._SectorSnapPiece_dataUrl(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "dataHeaders":
+			out.Values[i] = ec._SectorSnapPiece_dataHeaders(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "dataRawSize":
+			out.Values[i] = ec._SectorSnapPiece_dataRawSize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "dataDeleteOnFinalize":
+			out.Values[i] = ec._SectorSnapPiece_dataDeleteOnFinalize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "directStartEpoch":
+			out.Values[i] = ec._SectorSnapPiece_directStartEpoch(ctx, field, obj)
+		case "directEndEpoch":
+			out.Values[i] = ec._SectorSnapPiece_directEndEpoch(ctx, field, obj)
+		case "directPieceActivationManifest":
+			out.Values[i] = ec._SectorSnapPiece_directPieceActivationManifest(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var sectorSnapPipelineImplementors = []string{"SectorSnapPipeline"}
+
+func (ec *executionContext) _SectorSnapPipeline(ctx context.Context, sel ast.SelectionSet, obj *model.SectorSnapPipeline) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, sectorSnapPipelineImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SectorSnapPipeline")
+		case "spID":
+			out.Values[i] = ec._SectorSnapPipeline_spID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "sectorNumber":
+			out.Values[i] = ec._SectorSnapPipeline_sectorNumber(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "startTime":
+			out.Values[i] = ec._SectorSnapPipeline_startTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "upgradeProof":
+			out.Values[i] = ec._SectorSnapPipeline_upgradeProof(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "dataAssigned":
+			out.Values[i] = ec._SectorSnapPipeline_dataAssigned(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updateUnsealedCid":
+			out.Values[i] = ec._SectorSnapPipeline_updateUnsealedCid(ctx, field, obj)
+		case "updateSealedCid":
+			out.Values[i] = ec._SectorSnapPipeline_updateSealedCid(ctx, field, obj)
+		case "taskIdEncode":
+			out.Values[i] = ec._SectorSnapPipeline_taskIdEncode(ctx, field, obj)
+		case "afterEncode":
+			out.Values[i] = ec._SectorSnapPipeline_afterEncode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "proof":
+			out.Values[i] = ec._SectorSnapPipeline_proof(ctx, field, obj)
+		case "taskIdProve":
+			out.Values[i] = ec._SectorSnapPipeline_taskIdProve(ctx, field, obj)
+		case "afterProve":
+			out.Values[i] = ec._SectorSnapPipeline_afterProve(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "proveMsgCid":
+			out.Values[i] = ec._SectorSnapPipeline_proveMsgCid(ctx, field, obj)
+		case "taskIdSubmit":
+			out.Values[i] = ec._SectorSnapPipeline_taskIdSubmit(ctx, field, obj)
+		case "afterSubmit":
+			out.Values[i] = ec._SectorSnapPipeline_afterSubmit(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "afterProveMsgSuccess":
+			out.Values[i] = ec._SectorSnapPipeline_afterProveMsgSuccess(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "proveMsgTsk":
+			out.Values[i] = ec._SectorSnapPipeline_proveMsgTsk(ctx, field, obj)
+		case "taskIdMoveStorage":
+			out.Values[i] = ec._SectorSnapPipeline_taskIdMoveStorage(ctx, field, obj)
+		case "afterMoveStorage":
+			out.Values[i] = ec._SectorSnapPipeline_afterMoveStorage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "failed":
+			out.Values[i] = ec._SectorSnapPipeline_failed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "failedAt":
+			out.Values[i] = ec._SectorSnapPipeline_failedAt(ctx, field, obj)
+		case "failedReason":
+			out.Values[i] = ec._SectorSnapPipeline_failedReason(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "failedReasonMsg":
+			out.Values[i] = ec._SectorSnapPipeline_failedReasonMsg(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "submitAfter":
+			out.Values[i] = ec._SectorSnapPipeline_submitAfter(ctx, field, obj)
+		case "updateReadyAt":
+			out.Values[i] = ec._SectorSnapPipeline_updateReadyAt(ctx, field, obj)
+		case "meta":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorSnapPipeline_meta(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "pieces":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorSnapPipeline_pieces(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var sectorSummaryImplementors = []string{"SectorSummary"}
 
 func (ec *executionContext) _SectorSummary(ctx context.Context, sel ast.SelectionSet, obj *model.SectorSummary) graphql.Marshaler {
@@ -54733,6 +57962,70 @@ func (ec *executionContext) _SectorSummary(ctx context.Context, sel ast.Selectio
 			}
 		case "failed":
 			out.Values[i] = ec._SectorSummary_failed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var snapSummaryImplementors = []string{"SnapSummary"}
+
+func (ec *executionContext) _SnapSummary(ctx context.Context, sel ast.SelectionSet, obj *model.SnapSummary) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, snapSummaryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SnapSummary")
+		case "encoding":
+			out.Values[i] = ec._SnapSummary_encoding(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "proving":
+			out.Values[i] = ec._SnapSummary_proving(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "submitting":
+			out.Values[i] = ec._SnapSummary_submitting(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "moveStorage":
+			out.Values[i] = ec._SnapSummary_moveStorage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "failed":
+			out.Values[i] = ec._SnapSummary_failed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "completed":
+			out.Values[i] = ec._SnapSummary_completed(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -57445,6 +60738,44 @@ func (ec *executionContext) marshalNSectorMetaPiece2ᚕᚖgithubᚗcomᚋweb3tea
 	return ret
 }
 
+func (ec *executionContext) marshalNSectorSnapPiece2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPiece(ctx context.Context, sel ast.SelectionSet, v []*model.SectorSnapPiece) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOSectorSnapPiece2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPiece(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalNStorage2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorageᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Storage) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -59471,11 +62802,73 @@ func (ec *executionContext) marshalOSectorMetaPiece2ᚖgithubᚗcomᚋweb3teaᚋ
 	return ec._SectorMetaPiece(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOSectorSnapPiece2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPiece(ctx context.Context, sel ast.SelectionSet, v *model.SectorSnapPiece) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SectorSnapPiece(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOSectorSnapPipeline2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPipeline(ctx context.Context, sel ast.SelectionSet, v []*model.SectorSnapPipeline) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOSectorSnapPipeline2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPipeline(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOSectorSnapPipeline2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSnapPipeline(ctx context.Context, sel ast.SelectionSet, v *model.SectorSnapPipeline) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SectorSnapPipeline(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalOSectorSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorSummary(ctx context.Context, sel ast.SelectionSet, v *model.SectorSummary) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._SectorSummary(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOSnapSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSnapSummary(ctx context.Context, sel ast.SelectionSet, v *model.SnapSummary) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SnapSummary(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOStorage2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐStorage(ctx context.Context, sel ast.SelectionSet, v *model.Storage) graphql.Marshaler {

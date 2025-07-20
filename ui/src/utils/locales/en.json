@@ -188,6 +188,21 @@
     "sealing": "Sealing",
     "failed": "Failed"
   },
+  "sectors": {
+    "miner": "Miner",
+    "sector": "Sector",
+    "sectorNumber": "Sector Number",
+    "failed": "Failed",
+    "snap": {
+      "startTime": "Start Time",
+      "upgradeProof": "Upgrade Proof",
+      "status": "Status",
+      "encode": "Encode",
+      "prove": "Prove",
+      "submit": "Submit",
+      "moveStorage": "Move Storage"
+    }
+  },
   "dealCountSummary": {
     "title": "Active Deals",
     "tooltip": "Current active storage deals",

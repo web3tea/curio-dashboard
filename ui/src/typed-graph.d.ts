@@ -853,6 +853,9 @@ export type Query = {
   sectorSummary?: Maybe<SectorSummary>;
   sectors?: Maybe<Array<Maybe<Sector>>>;
   sectorsCount: Scalars['Int']['output'];
+  snapSectors?: Maybe<Array<Maybe<SectorSnapPipeline>>>;
+  snapSectorsCount: Scalars['Int']['output'];
+  snapSummary?: Maybe<SnapSummary>;
   storage?: Maybe<Storage>;
   storageStats?: Maybe<Array<Maybe<StorageStats>>>;
   storages: Array<Storage>;
@@ -1123,6 +1126,19 @@ export type QuerySectorsCountArgs = {
 };
 
 
+export type QuerySnapSectorsArgs = {
+  actor?: InputMaybe<Scalars['Address']['input']>;
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  sectorNumber?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QuerySnapSectorsCountArgs = {
+  actor?: InputMaybe<Scalars['Address']['input']>;
+};
+
+
 export type QueryStorageArgs = {
   id: Scalars['String']['input'];
 };
@@ -1285,11 +1301,69 @@ export type SectorMetaPiece = {
   startEpoch?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SectorSnapPiece = {
+  __typename?: 'SectorSnapPiece';
+  createdAt: Scalars['Time']['output'];
+  dataDeleteOnFinalize: Scalars['Boolean']['output'];
+  dataHeaders: Scalars['JSON']['output'];
+  dataRawSize: Scalars['Int']['output'];
+  dataUrl: Scalars['String']['output'];
+  directEndEpoch?: Maybe<Scalars['Int']['output']>;
+  directPieceActivationManifest?: Maybe<Scalars['JSON']['output']>;
+  directStartEpoch?: Maybe<Scalars['Int']['output']>;
+  pieceCid: Scalars['String']['output'];
+  pieceIndex: Scalars['Int']['output'];
+  pieceSize: Scalars['Int']['output'];
+  sectorNumber: Scalars['Int']['output'];
+  spID: Scalars['Address']['output'];
+};
+
+export type SectorSnapPipeline = {
+  __typename?: 'SectorSnapPipeline';
+  afterEncode: Scalars['Boolean']['output'];
+  afterMoveStorage: Scalars['Boolean']['output'];
+  afterProve: Scalars['Boolean']['output'];
+  afterProveMsgSuccess: Scalars['Boolean']['output'];
+  afterSubmit: Scalars['Boolean']['output'];
+  dataAssigned: Scalars['Boolean']['output'];
+  failed: Scalars['Boolean']['output'];
+  failedAt?: Maybe<Scalars['Time']['output']>;
+  failedReason: Scalars['String']['output'];
+  failedReasonMsg: Scalars['String']['output'];
+  meta?: Maybe<SectorMeta>;
+  pieces: Array<Maybe<SectorSnapPiece>>;
+  proof?: Maybe<Scalars['Bytes']['output']>;
+  proveMsgCid?: Maybe<Scalars['String']['output']>;
+  proveMsgTsk?: Maybe<Scalars['Bytes']['output']>;
+  sectorNumber: Scalars['Int']['output'];
+  spID: Scalars['Address']['output'];
+  startTime: Scalars['Time']['output'];
+  submitAfter?: Maybe<Scalars['Time']['output']>;
+  taskIdEncode?: Maybe<Scalars['Int']['output']>;
+  taskIdMoveStorage?: Maybe<Scalars['Int']['output']>;
+  taskIdProve?: Maybe<Scalars['Int']['output']>;
+  taskIdSubmit?: Maybe<Scalars['Int']['output']>;
+  updateReadyAt?: Maybe<Scalars['Time']['output']>;
+  updateSealedCid?: Maybe<Scalars['String']['output']>;
+  updateUnsealedCid?: Maybe<Scalars['String']['output']>;
+  upgradeProof: Scalars['Int']['output'];
+};
+
 export type SectorSummary = {
   __typename?: 'SectorSummary';
   active: Scalars['Int']['output'];
   failed: Scalars['Int']['output'];
   sealing: Scalars['Int']['output'];
+};
+
+export type SnapSummary = {
+  __typename?: 'SnapSummary';
+  completed: Scalars['Int']['output'];
+  encoding: Scalars['Int']['output'];
+  failed: Scalars['Int']['output'];
+  moveStorage: Scalars['Int']['output'];
+  proving: Scalars['Int']['output'];
+  submitting: Scalars['Int']['output'];
 };
 
 export type Storage = {

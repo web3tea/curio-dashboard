@@ -131,6 +131,15 @@ const AppRoutes = {
       },
     },
     {
+      name: 'Snap',
+      path: '/sectors/snap',
+      component: () => import('@/views/sectors/SnapIndex.vue'),
+      meta: {
+        title: 'Snap Pipeline',
+        description: 'Sector snap update pipeline status',
+      },
+    },
+    {
       name: 'MiningTaskList',
       path: '/mining/wins',
       component: () => import('@/views/mining/wins/MiningWinsIndex.vue'),

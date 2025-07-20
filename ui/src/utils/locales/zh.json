@@ -188,6 +188,21 @@
     "sealing": "封存中",
     "failed": "失败"
   },
+  "sectors": {
+    "miner": "矿工",
+    "sector": "扇区",
+    "sectorNumber": "扇区编号",
+    "failed": "失败",
+    "snap": {
+      "startTime": "开始时间",
+      "upgradeProof": "升级证明",
+      "status": "状态",
+      "encode": "编码",
+      "prove": "证明",
+      "submit": "提交",
+      "moveStorage": "移动存储"
+    }
+  },
   "dealCountSummary": {
     "title": "活跃订单",
     "tooltip": "当前有效的存储交易订单",

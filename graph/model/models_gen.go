@@ -619,10 +619,65 @@ type SectorMetaPiece struct {
 	F05DealProposal   *types.JSON   `json:"f05DealProposal"`
 }
 
+type SectorSnapPiece struct {
+	SpID                          types.Address `json:"spID"`
+	SectorNumber                  int           `json:"sectorNumber"`
+	CreatedAt                     time.Time     `json:"createdAt"`
+	PieceIndex                    int           `json:"pieceIndex"`
+	PieceCid                      string        `json:"pieceCid"`
+	PieceSize                     int           `json:"pieceSize"`
+	DataURL                       string        `json:"dataUrl"`
+	DataHeaders                   types.JSON    `json:"dataHeaders"`
+	DataRawSize                   int           `json:"dataRawSize"`
+	DataDeleteOnFinalize          bool          `json:"dataDeleteOnFinalize"`
+	DirectStartEpoch              *int          `json:"directStartEpoch"`
+	DirectEndEpoch                *int          `json:"directEndEpoch"`
+	DirectPieceActivationManifest *types.JSON   `json:"directPieceActivationManifest"`
+}
+
+type SectorSnapPipeline struct {
+	SpID                 types.Address      `json:"spID"`
+	SectorNumber         int                `json:"sectorNumber"`
+	StartTime            time.Time          `json:"startTime"`
+	UpgradeProof         int                `json:"upgradeProof"`
+	DataAssigned         bool               `json:"dataAssigned"`
+	UpdateUnsealedCid    *string            `json:"updateUnsealedCid"`
+	UpdateSealedCid      *string            `json:"updateSealedCid"`
+	TaskIDEncode         *int               `json:"taskIdEncode"`
+	AfterEncode          bool               `json:"afterEncode"`
+	Proof                types.Bytes        `json:"proof"`
+	TaskIDProve          *int               `json:"taskIdProve"`
+	AfterProve           bool               `json:"afterProve"`
+	ProveMsgCid          *string            `json:"proveMsgCid"`
+	TaskIDSubmit         *int               `json:"taskIdSubmit"`
+	AfterSubmit          bool               `json:"afterSubmit"`
+	AfterProveMsgSuccess bool               `json:"afterProveMsgSuccess"`
+	ProveMsgTsk          types.Bytes        `json:"proveMsgTsk"`
+	TaskIDMoveStorage    *int               `json:"taskIdMoveStorage"`
+	AfterMoveStorage     bool               `json:"afterMoveStorage"`
+	Failed               bool               `json:"failed"`
+	FailedAt             *time.Time         `json:"failedAt"`
+	FailedReason         string             `json:"failedReason"`
+	FailedReasonMsg      string             `json:"failedReasonMsg"`
+	SubmitAfter          *time.Time         `json:"submitAfter"`
+	UpdateReadyAt        *time.Time         `json:"updateReadyAt"`
+	Meta                 *SectorMeta        `json:"meta"`
+	Pieces               []*SectorSnapPiece `json:"pieces"`
+}
+
 type SectorSummary struct {
 	Active  int `json:"active"`
 	Sealing int `json:"sealing"`
 	Failed  int `json:"failed"`
+}
+
+type SnapSummary struct {
+	Encoding    int `json:"encoding"`
+	Proving     int `json:"proving"`
+	Submitting  int `json:"submitting"`
+	MoveStorage int `json:"moveStorage"`
+	Failed      int `json:"failed"`
+	Completed   int `json:"completed"`
 }
 
 type Storage struct {

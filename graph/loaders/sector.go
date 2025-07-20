@@ -20,6 +20,12 @@ type SectorLoader interface {
 	SectorTasks(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.Task, error)
 	OpenSectorPieces(ctx context.Context) ([]*model.OpenSectorPiece, error)
 	SectorSummary(ctx context.Context) (*model.SectorSummary, error)
+	// Snap Pipeline methods
+	SnapPipelines(ctx context.Context, actor *types.Address, offset int, limit int) ([]*model.SectorSnapPipeline, error)
+	SnapPipeline(ctx context.Context, actor types.Address, sectorNumber int) (*model.SectorSnapPipeline, error)
+	SnapSectorsCount(ctx context.Context, actor *types.Address) (int, error)
+	SnapPieces(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.SectorSnapPiece, error)
+	SnapSummary(ctx context.Context) (*model.SnapSummary, error)
 }
 
 type SectorLoaderImpl struct {
@@ -241,5 +247,157 @@ func (l *SectorLoaderImpl) SectorSummary(ctx context.Context) (*model.SectorSumm
 
 	summary.Sealing = sdrSealing + snapSealing
 	summary.Failed = sdrFailed + snapFailed
+	return summary, nil
+}
+
+// SnapPipelines returns all snap pipeline sectors with pagination
+func (l *SectorLoaderImpl) SnapPipelines(ctx context.Context, actor *types.Address, offset int, limit int) ([]*model.SectorSnapPipeline, error) {
+	var pipelines []*model.SectorSnapPipeline
+	if err := l.loader.db.Select(ctx, &pipelines, `SELECT
+		sp_id,
+		sector_number,
+		start_time,
+		upgrade_proof,
+		data_assigned,
+		update_unsealed_cid,
+		update_sealed_cid,
+		task_id_encode,
+		after_encode,
+		proof,
+		task_id_prove,
+		after_prove,
+		prove_msg_cid,
+		task_id_submit,
+		after_submit,
+		after_prove_msg_success,
+		prove_msg_tsk,
+		task_id_move_storage,
+		after_move_storage,
+		failed,
+		failed_at,
+		failed_reason,
+		failed_reason_msg,
+		submit_after,
+		update_ready_at
+	FROM
+		sectors_snap_pipeline
+	WHERE ($1::bigint IS NULL OR sp_id = $1)
+	ORDER BY start_time DESC
+	LIMIT $2 OFFSET $3`, actor.ID(), limit, offset); err != nil {
+		return nil, err
+	}
+	return pipelines, nil
+}
+
+// SnapPipeline returns a single snap pipeline sector
+func (l *SectorLoaderImpl) SnapPipeline(ctx context.Context, actor types.Address, sectorNumber int) (*model.SectorSnapPipeline, error) {
+	var pipelines []*model.SectorSnapPipeline
+	err := l.loader.db.Select(ctx, &pipelines, `SELECT
+		sp_id,
+		sector_number,
+		start_time,
+		upgrade_proof,
+		data_assigned,
+		update_unsealed_cid,
+		update_sealed_cid,
+		task_id_encode,
+		after_encode,
+		proof,
+		task_id_prove,
+		after_prove,
+		prove_msg_cid,
+		task_id_submit,
+		after_submit,
+		after_prove_msg_success,
+		prove_msg_tsk,
+		task_id_move_storage,
+		after_move_storage,
+		failed,
+		failed_at,
+		failed_reason,
+		failed_reason_msg,
+		submit_after,
+		update_ready_at
+	FROM sectors_snap_pipeline
+	WHERE sp_id = $1 AND sector_number = $2`,
+		actor.ID, sectorNumber)
+	if err != nil {
+		return nil, err
+	}
+	if len(pipelines) == 0 {
+		return nil, ErrorNotFound
+	}
+	return pipelines[0], nil
+}
+
+// SnapSectorsCount returns the total count of snap pipeline sectors
+func (l *SectorLoaderImpl) SnapSectorsCount(ctx context.Context, actor *types.Address) (int, error) {
+	var count int
+	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*)
+		FROM sectors_snap_pipeline
+		WHERE ($1::bigint IS NULL OR sp_id = $1)`, actor.ID()).Scan(&count)
+	if err != nil {
+		return 0, xerrors.Errorf("counting snap sectors: %w", err)
+	}
+	return count, nil
+}
+
+// SnapPieces returns pieces for a snap pipeline sector
+func (l *SectorLoaderImpl) SnapPieces(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.SectorSnapPiece, error) {
+	var pieces []*model.SectorSnapPiece
+	if err := l.loader.db.Select(ctx, &pieces, `SELECT
+		sp_id,
+		sector_number,
+		created_at,
+		piece_index,
+		piece_cid,
+		piece_size,
+		data_url,
+		data_headers,
+		data_raw_size,
+		data_delete_on_finalize,
+		direct_start_epoch,
+		direct_end_epoch,
+		direct_piece_activation_manifest
+	FROM
+		sectors_snap_initial_pieces
+	WHERE sp_id = $1 AND sector_number = $2
+	ORDER BY piece_index`, actor.ID, sectorNumber); err != nil {
+		return nil, err
+	}
+	return pieces, nil
+}
+
+// SnapSummary returns summary statistics for snap pipeline
+func (l *SectorLoaderImpl) SnapSummary(ctx context.Context) (*model.SnapSummary, error) {
+	summary := &model.SnapSummary{
+		Encoding:    0,
+		Proving:     0,
+		Submitting:  0,
+		MoveStorage: 0,
+		Failed:      0,
+		Completed:   0,
+	}
+	
+	err := l.loader.db.QueryRow(ctx, `
+		SELECT
+			COUNT(*) FILTER (WHERE NOT after_encode AND NOT failed) as encoding,
+			COUNT(*) FILTER (WHERE after_encode AND NOT after_prove AND NOT failed) as proving,
+			COUNT(*) FILTER (WHERE after_prove AND NOT after_submit AND NOT failed) as submitting,
+			COUNT(*) FILTER (WHERE after_submit AND NOT after_move_storage AND NOT failed) as move_storage,
+			COUNT(*) FILTER (WHERE failed = true) as failed,
+			COUNT(*) FILTER (WHERE after_move_storage AND NOT failed) as completed
+		FROM curio.sectors_snap_pipeline
+	`).Scan(
+		&summary.Encoding,
+		&summary.Proving,
+		&summary.Submitting,
+		&summary.MoveStorage,
+		&summary.Failed,
+		&summary.Completed)
+	
+	if err != nil {
+		return nil, fmt.Errorf("failed to get snap pipeline summary: %w", err)
+	}
 	return summary, nil
 }

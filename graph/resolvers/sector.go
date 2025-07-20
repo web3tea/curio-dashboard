@@ -85,6 +85,31 @@ func (r *queryResolver) SectorSummary(ctx context.Context) (*model.SectorSummary
 	return r.loader.SectorSummary(ctx)
 }
 
+// SnapSectors is the resolver for the snapSectors field.
+func (r *queryResolver) SnapSectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.SectorSnapPipeline, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	if actor != nil && sectorNumber != nil {
+		snap, err := r.loader.SnapPipeline(ctx, *actor, *sectorNumber)
+		if err != nil {
+			return nil, err
+		}
+		return []*model.SectorSnapPipeline{snap}, nil
+	}
+	return r.loader.SnapPipelines(ctx, actor, offset, limit)
+}
+
+// SnapSectorsCount is the resolver for the snapSectorsCount field.
+func (r *queryResolver) SnapSectorsCount(ctx context.Context, actor *types.Address) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.SnapSectorsCount(ctx, actor)
+}
+
+// SnapSummary is the resolver for the snapSummary field.
+func (r *queryResolver) SnapSummary(ctx context.Context) (*model.SnapSummary, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	return r.loader.SnapSummary(ctx)
+}
+
 // ID is the resolver for the id field.
 func (r *sectorResolver) ID(ctx context.Context, obj *model.Sector) (string, error) {
 	return fmt.Sprintf("%s:%d", obj.SpID, obj.SectorNum), nil
@@ -157,6 +182,18 @@ func (r *sectorMetaResolver) ID(ctx context.Context, obj *model.SectorMeta) (str
 	return fmt.Sprintf("%s-%d", obj.SpID, obj.SectorNum), nil
 }
 
+// Meta is the resolver for the meta field on SectorSnapPipeline.
+func (r *sectorSnapPipelineResolver) Meta(ctx context.Context, obj *model.SectorSnapPipeline) (*model.SectorMeta, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	return r.loader.SectorMeta(ctx, obj.SpID, obj.SectorNumber)
+}
+
+// Pieces is the resolver for the pieces field on SectorSnapPipeline.
+func (r *sectorSnapPipelineResolver) Pieces(ctx context.Context, obj *model.SectorSnapPipeline) ([]*model.SectorSnapPiece, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	return r.loader.SnapPieces(ctx, obj.SpID, obj.SectorNumber)
+}
+
 // Sector returns graph.SectorResolver implementation.
 func (r *Resolver) Sector() graph.SectorResolver { return &sectorResolver{r} }
 
@@ -166,6 +203,12 @@ func (r *Resolver) SectorLocation() graph.SectorLocationResolver { return &secto
 // SectorMeta returns graph.SectorMetaResolver implementation.
 func (r *Resolver) SectorMeta() graph.SectorMetaResolver { return &sectorMetaResolver{r} }
 
+// SectorSnapPipeline returns graph.SectorSnapPipelineResolver implementation.
+func (r *Resolver) SectorSnapPipeline() graph.SectorSnapPipelineResolver {
+	return &sectorSnapPipelineResolver{r}
+}
+
 type sectorResolver struct{ *Resolver }
 type sectorLocationResolver struct{ *Resolver }
 type sectorMetaResolver struct{ *Resolver }
+type sectorSnapPipelineResolver struct{ *Resolver }
