@@ -1,5 +1,5 @@
-import { RouteLocationNormalizedLoaded } from 'vue-router'
 import { parseBoolean, parseNumber } from '@/utils/helpers/routeParamsParser'
+import { RouteLocationNormalizedLoaded } from 'vue-router'
 
 const AppRoutes = {
   path: '/',
@@ -137,6 +137,15 @@ const AppRoutes = {
       meta: {
         title: 'Snap Pipeline',
         description: 'Sector snap update pipeline status',
+      },
+    },
+    {
+      name: 'Unsealing',
+      path: '/sectors/unsealing',
+      component: () => import('@/views/sectors/UnsealingIndex.vue'),
+      meta: {
+        title: 'Unsealing',
+        description: 'Sector unsealing pipeline status',
       },
     },
     {

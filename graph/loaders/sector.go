@@ -26,6 +26,10 @@ type SectorLoader interface {
 	SnapSectorsCount(ctx context.Context, actor *types.Address) (int, error)
 	SnapPieces(ctx context.Context, actor types.Address, sectorNumber int) ([]*model.SectorSnapPiece, error)
 	SnapSummary(ctx context.Context) (*model.SnapSummary, error)
+	// Unseal Pipeline methods
+	UnsealPipelines(ctx context.Context, actor *types.Address, offset int, limit int) ([]*model.SectorUnsealPipeline, error)
+	UnsealPipeline(ctx context.Context, actor types.Address, sectorNumber int) (*model.SectorUnsealPipeline, error)
+	UnsealSectorsCount(ctx context.Context, actor *types.Address) (int, error)
 }
 
 type SectorLoaderImpl struct {
@@ -378,7 +382,7 @@ func (l *SectorLoaderImpl) SnapSummary(ctx context.Context) (*model.SnapSummary,
 		Failed:      0,
 		Completed:   0,
 	}
-	
+
 	err := l.loader.db.QueryRow(ctx, `
 		SELECT
 			COUNT(*) FILTER (WHERE NOT after_encode AND NOT failed) as encoding,
@@ -395,9 +399,67 @@ func (l *SectorLoaderImpl) SnapSummary(ctx context.Context) (*model.SnapSummary,
 		&summary.MoveStorage,
 		&summary.Failed,
 		&summary.Completed)
-	
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to get snap pipeline summary: %w", err)
 	}
 	return summary, nil
+}
+
+// UnsealPipelines returns all unseal pipeline sectors with pagination
+func (l *SectorLoaderImpl) UnsealPipelines(ctx context.Context, actor *types.Address, offset int, limit int) ([]*model.SectorUnsealPipeline, error) {
+	var pipelines []*model.SectorUnsealPipeline
+	if err := l.loader.db.Select(ctx, &pipelines, `SELECT
+        sp_id,
+        sector_number,
+        create_time,
+        reg_seal_proof,
+        task_id_unseal_sdr,
+        after_unseal_sdr,
+        task_id_decode_sector,
+        after_decode_sector
+    FROM
+        sectors_unseal_pipeline
+    WHERE ($1::bigint IS NULL OR sp_id = $1)
+    ORDER BY create_time DESC
+    LIMIT $2 OFFSET $3`, actor.ID(), limit, offset); err != nil {
+		return nil, err
+	}
+	return pipelines, nil
+}
+
+// UnsealPipeline returns a single unseal pipeline sector
+func (l *SectorLoaderImpl) UnsealPipeline(ctx context.Context, actor types.Address, sectorNumber int) (*model.SectorUnsealPipeline, error) {
+	var pipelines []*model.SectorUnsealPipeline
+	err := l.loader.db.Select(ctx, &pipelines, `SELECT
+        sp_id,
+        sector_number,
+        create_time,
+        reg_seal_proof,
+        task_id_unseal_sdr,
+        after_unseal_sdr,
+        task_id_decode_sector,
+        after_decode_sector
+    FROM sectors_unseal_pipeline
+    WHERE sp_id = $1 AND sector_number = $2`,
+		actor.ID, sectorNumber)
+	if err != nil {
+		return nil, err
+	}
+	if len(pipelines) == 0 {
+		return nil, ErrorNotFound
+	}
+	return pipelines[0], nil
+}
+
+// UnsealSectorsCount returns the total count of unseal pipeline sectors
+func (l *SectorLoaderImpl) UnsealSectorsCount(ctx context.Context, actor *types.Address) (int, error) {
+	var count int
+	err := l.loader.db.QueryRow(ctx, `SELECT COUNT(*)
+        FROM sectors_unseal_pipeline
+        WHERE ($1::bigint IS NULL OR sp_id = $1)`, actor.ID()).Scan(&count)
+	if err != nil {
+		return 0, xerrors.Errorf("counting unseal sectors: %w", err)
+	}
+	return count, nil
 }

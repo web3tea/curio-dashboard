@@ -63,6 +63,7 @@ type ResolverRoot interface {
 	SectorLocation() SectorLocationResolver
 	SectorMeta() SectorMetaResolver
 	SectorSnapPipeline() SectorSnapPipelineResolver
+	SectorUnsealPipeline() SectorUnsealPipelineResolver
 	Storage() StorageResolver
 	StoragePath() StoragePathResolver
 	Subscription() SubscriptionResolver
@@ -703,6 +704,8 @@ type ComplexityRoot struct {
 		TasksCount                   func(childComplexity int) int
 		TasksDurationStats           func(childComplexity int, start time.Time, end time.Time) int
 		TasksStats                   func(childComplexity int, start time.Time, end time.Time, machine *string) int
+		UnsealSectors                func(childComplexity int, actor *types.Address, sectorNumber *int, offset int, limit int) int
+		UnsealSectorsCount           func(childComplexity int, actor *types.Address) int
 		WdpostProof                  func(childComplexity int, spID types.Address, provingPeriodStart int, deadline int, partition int) int
 		WdpostProofs                 func(childComplexity int, spID *types.Address, offset int, limit int) int
 		WdpostProofsCount            func(childComplexity int, spID *types.Address) int
@@ -827,6 +830,18 @@ type ComplexityRoot struct {
 		Active  func(childComplexity int) int
 		Failed  func(childComplexity int) int
 		Sealing func(childComplexity int) int
+	}
+
+	SectorUnsealPipeline struct {
+		AfterDecodeSector  func(childComplexity int) int
+		AfterUnsealSdr     func(childComplexity int) int
+		CreateTime         func(childComplexity int) int
+		Meta               func(childComplexity int) int
+		RegSealProof       func(childComplexity int) int
+		SectorNumber       func(childComplexity int) int
+		SpID               func(childComplexity int) int
+		TaskIDDecodeSector func(childComplexity int) int
+		TaskIDUnsealSdr    func(childComplexity int) int
 	}
 
 	SnapSummary struct {
@@ -1197,6 +1212,8 @@ type QueryResolver interface {
 	SnapSectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.SectorSnapPipeline, error)
 	SnapSectorsCount(ctx context.Context, actor *types.Address) (int, error)
 	SnapSummary(ctx context.Context) (*model.SnapSummary, error)
+	UnsealSectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.SectorUnsealPipeline, error)
+	UnsealSectorsCount(ctx context.Context, actor *types.Address) (int, error)
 	Storage(ctx context.Context, id string) (*model.Storage, error)
 	Storages(ctx context.Context) ([]*model.Storage, error)
 	StorageStats(ctx context.Context) ([]*model.StorageStats, error)
@@ -1236,6 +1253,9 @@ type SectorMetaResolver interface {
 type SectorSnapPipelineResolver interface {
 	Meta(ctx context.Context, obj *model.SectorSnapPipeline) (*model.SectorMeta, error)
 	Pieces(ctx context.Context, obj *model.SectorSnapPipeline) ([]*model.SectorSnapPiece, error)
+}
+type SectorUnsealPipelineResolver interface {
+	Meta(ctx context.Context, obj *model.SectorUnsealPipeline) (*model.SectorMeta, error)
 }
 type StorageResolver interface {
 	Path(ctx context.Context, obj *model.Storage) (*model.StoragePath, error)
@@ -4995,6 +5015,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.TasksStats(childComplexity, args["start"].(time.Time), args["end"].(time.Time), args["machine"].(*string)), true
 
+	case "Query.unsealSectors":
+		if e.complexity.Query.UnsealSectors == nil {
+			break
+		}
+
+		args, err := ec.field_Query_unsealSectors_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UnsealSectors(childComplexity, args["actor"].(*types.Address), args["sectorNumber"].(*int), args["offset"].(int), args["limit"].(int)), true
+
+	case "Query.unsealSectorsCount":
+		if e.complexity.Query.UnsealSectorsCount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_unsealSectorsCount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UnsealSectorsCount(childComplexity, args["actor"].(*types.Address)), true
+
 	case "Query.wdpostProof":
 		if e.complexity.Query.WdpostProof == nil {
 			break
@@ -5709,6 +5753,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.SectorSummary.Sealing(childComplexity), true
+
+	case "SectorUnsealPipeline.afterDecodeSector":
+		if e.complexity.SectorUnsealPipeline.AfterDecodeSector == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.AfterDecodeSector(childComplexity), true
+
+	case "SectorUnsealPipeline.afterUnsealSdr":
+		if e.complexity.SectorUnsealPipeline.AfterUnsealSdr == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.AfterUnsealSdr(childComplexity), true
+
+	case "SectorUnsealPipeline.createTime":
+		if e.complexity.SectorUnsealPipeline.CreateTime == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.CreateTime(childComplexity), true
+
+	case "SectorUnsealPipeline.meta":
+		if e.complexity.SectorUnsealPipeline.Meta == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.Meta(childComplexity), true
+
+	case "SectorUnsealPipeline.regSealProof":
+		if e.complexity.SectorUnsealPipeline.RegSealProof == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.RegSealProof(childComplexity), true
+
+	case "SectorUnsealPipeline.sectorNumber":
+		if e.complexity.SectorUnsealPipeline.SectorNumber == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.SectorNumber(childComplexity), true
+
+	case "SectorUnsealPipeline.spID":
+		if e.complexity.SectorUnsealPipeline.SpID == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.SpID(childComplexity), true
+
+	case "SectorUnsealPipeline.taskIdDecodeSector":
+		if e.complexity.SectorUnsealPipeline.TaskIDDecodeSector == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.TaskIDDecodeSector(childComplexity), true
+
+	case "SectorUnsealPipeline.taskIdUnsealSdr":
+		if e.complexity.SectorUnsealPipeline.TaskIDUnsealSdr == nil {
+			break
+		}
+
+		return e.complexity.SectorUnsealPipeline.TaskIDUnsealSdr(childComplexity), true
 
 	case "SnapSummary.completed":
 		if e.complexity.SnapSummary.Completed == nil {
@@ -10520,6 +10627,131 @@ func (ec *executionContext) field_Query_tasksStats_argsMachine(
 	}
 
 	var zeroVal *string
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_unsealSectorsCount_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_unsealSectorsCount_argsActor(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["actor"] = arg0
+	return args, nil
+}
+func (ec *executionContext) field_Query_unsealSectorsCount_argsActor(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.Address, error) {
+	if _, ok := rawArgs["actor"]; !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
+	if tmp, ok := rawArgs["actor"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_unsealSectors_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := ec.field_Query_unsealSectors_argsActor(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["actor"] = arg0
+	arg1, err := ec.field_Query_unsealSectors_argsSectorNumber(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["sectorNumber"] = arg1
+	arg2, err := ec.field_Query_unsealSectors_argsOffset(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["offset"] = arg2
+	arg3, err := ec.field_Query_unsealSectors_argsLimit(ctx, rawArgs)
+	if err != nil {
+		return nil, err
+	}
+	args["limit"] = arg3
+	return args, nil
+}
+func (ec *executionContext) field_Query_unsealSectors_argsActor(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*types.Address, error) {
+	if _, ok := rawArgs["actor"]; !ok {
+		var zeroVal *types.Address
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("actor"))
+	if tmp, ok := rawArgs["actor"]; ok {
+		return ec.unmarshalOAddress2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, tmp)
+	}
+
+	var zeroVal *types.Address
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_unsealSectors_argsSectorNumber(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (*int, error) {
+	if _, ok := rawArgs["sectorNumber"]; !ok {
+		var zeroVal *int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("sectorNumber"))
+	if tmp, ok := rawArgs["sectorNumber"]; ok {
+		return ec.unmarshalOInt2ᚖint(ctx, tmp)
+	}
+
+	var zeroVal *int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_unsealSectors_argsOffset(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["offset"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+	if tmp, ok := rawArgs["offset"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
+	return zeroVal, nil
+}
+
+func (ec *executionContext) field_Query_unsealSectors_argsLimit(
+	ctx context.Context,
+	rawArgs map[string]any,
+) (int, error) {
+	if _, ok := rawArgs["limit"]; !ok {
+		var zeroVal int
+		return zeroVal, nil
+	}
+
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+	if tmp, ok := rawArgs["limit"]; ok {
+		return ec.unmarshalNInt2int(ctx, tmp)
+	}
+
+	var zeroVal int
 	return zeroVal, nil
 }
 
@@ -35587,6 +35819,187 @@ func (ec *executionContext) fieldContext_Query_snapSummary(_ context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_unsealSectors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_unsealSectors(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().UnsealSectors(rctx, fc.Args["actor"].(*types.Address), fc.Args["sectorNumber"].(*int), fc.Args["offset"].(int), fc.Args["limit"].(int))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal []*model.SectorUnsealPipeline
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal []*model.SectorUnsealPipeline
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.([]*model.SectorUnsealPipeline); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be []*github.com/web3tea/curio-dashboard/graph/model.SectorUnsealPipeline`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.SectorUnsealPipeline)
+	fc.Result = res
+	return ec.marshalOSectorUnsealPipeline2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorUnsealPipeline(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_unsealSectors(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "spID":
+				return ec.fieldContext_SectorUnsealPipeline_spID(ctx, field)
+			case "sectorNumber":
+				return ec.fieldContext_SectorUnsealPipeline_sectorNumber(ctx, field)
+			case "createTime":
+				return ec.fieldContext_SectorUnsealPipeline_createTime(ctx, field)
+			case "regSealProof":
+				return ec.fieldContext_SectorUnsealPipeline_regSealProof(ctx, field)
+			case "taskIdUnsealSdr":
+				return ec.fieldContext_SectorUnsealPipeline_taskIdUnsealSdr(ctx, field)
+			case "afterUnsealSdr":
+				return ec.fieldContext_SectorUnsealPipeline_afterUnsealSdr(ctx, field)
+			case "taskIdDecodeSector":
+				return ec.fieldContext_SectorUnsealPipeline_taskIdDecodeSector(ctx, field)
+			case "afterDecodeSector":
+				return ec.fieldContext_SectorUnsealPipeline_afterDecodeSector(ctx, field)
+			case "meta":
+				return ec.fieldContext_SectorUnsealPipeline_meta(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SectorUnsealPipeline", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_unsealSectors_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_unsealSectorsCount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_unsealSectorsCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		directive0 := func(rctx context.Context) (any, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Query().UnsealSectorsCount(rctx, fc.Args["actor"].(*types.Address))
+		}
+
+		directive1 := func(ctx context.Context) (any, error) {
+			role, err := ec.unmarshalNRole2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐRole(ctx, "USER")
+			if err != nil {
+				var zeroVal int
+				return zeroVal, err
+			}
+			if ec.directives.HasRole == nil {
+				var zeroVal int
+				return zeroVal, errors.New("directive hasRole is not implemented")
+			}
+			return ec.directives.HasRole(ctx, nil, directive0, role)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(int); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be int`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_unsealSectorsCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_unsealSectorsCount_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_storage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_storage(ctx, field)
 	if err != nil {
@@ -41741,6 +42154,433 @@ func (ec *executionContext) fieldContext_SectorSummary_failed(_ context.Context,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_spID(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_spID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SpID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(types.Address)
+	fc.Result = res
+	return ec.marshalNAddress2githubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋtypesᚐAddress(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_spID(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Address does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_sectorNumber(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_sectorNumber(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SectorNumber, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_sectorNumber(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_createTime(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_createTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreateTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_createTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_regSealProof(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_regSealProof(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RegSealProof, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_regSealProof(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_taskIdUnsealSdr(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_taskIdUnsealSdr(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskIDUnsealSdr, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_taskIdUnsealSdr(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_afterUnsealSdr(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_afterUnsealSdr(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AfterUnsealSdr, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_afterUnsealSdr(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_taskIdDecodeSector(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_taskIdDecodeSector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TaskIDDecodeSector, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_taskIdDecodeSector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_afterDecodeSector(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_afterDecodeSector(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AfterDecodeSector, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_afterDecodeSector(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SectorUnsealPipeline_meta(ctx context.Context, field graphql.CollectedField, obj *model.SectorUnsealPipeline) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SectorUnsealPipeline_meta(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (any, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.SectorUnsealPipeline().Meta(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.SectorMeta)
+	fc.Result = res
+	return ec.marshalOSectorMeta2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorMeta(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SectorUnsealPipeline_meta(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SectorUnsealPipeline",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_SectorMeta_id(ctx, field)
+			case "spId":
+				return ec.fieldContext_SectorMeta_spId(ctx, field)
+			case "sectorNum":
+				return ec.fieldContext_SectorMeta_sectorNum(ctx, field)
+			case "regSealProof":
+				return ec.fieldContext_SectorMeta_regSealProof(ctx, field)
+			case "ticketEpoch":
+				return ec.fieldContext_SectorMeta_ticketEpoch(ctx, field)
+			case "ticketValue":
+				return ec.fieldContext_SectorMeta_ticketValue(ctx, field)
+			case "origSealedCid":
+				return ec.fieldContext_SectorMeta_origSealedCid(ctx, field)
+			case "origUnsealedCid":
+				return ec.fieldContext_SectorMeta_origUnsealedCid(ctx, field)
+			case "curSealedCid":
+				return ec.fieldContext_SectorMeta_curSealedCid(ctx, field)
+			case "curUnsealedCid":
+				return ec.fieldContext_SectorMeta_curUnsealedCid(ctx, field)
+			case "msgCidPrecommit":
+				return ec.fieldContext_SectorMeta_msgCidPrecommit(ctx, field)
+			case "msgCidCommit":
+				return ec.fieldContext_SectorMeta_msgCidCommit(ctx, field)
+			case "msgCidUpdate":
+				return ec.fieldContext_SectorMeta_msgCidUpdate(ctx, field)
+			case "seedEpoch":
+				return ec.fieldContext_SectorMeta_seedEpoch(ctx, field)
+			case "seedValue":
+				return ec.fieldContext_SectorMeta_seedValue(ctx, field)
+			case "expirationEpoch":
+				return ec.fieldContext_SectorMeta_expirationEpoch(ctx, field)
+			case "isCC":
+				return ec.fieldContext_SectorMeta_isCC(ctx, field)
+			case "deadline":
+				return ec.fieldContext_SectorMeta_deadline(ctx, field)
+			case "partition":
+				return ec.fieldContext_SectorMeta_partition(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SectorMeta", field.Name)
 		},
 	}
 	return fc, nil
@@ -56549,6 +57389,47 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "unsealSectors":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_unsealSectors(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "unsealSectorsCount":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_unsealSectorsCount(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "storage":
 			field := field
 
@@ -57965,6 +58846,107 @@ func (ec *executionContext) _SectorSummary(ctx context.Context, sel ast.Selectio
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var sectorUnsealPipelineImplementors = []string{"SectorUnsealPipeline"}
+
+func (ec *executionContext) _SectorUnsealPipeline(ctx context.Context, sel ast.SelectionSet, obj *model.SectorUnsealPipeline) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, sectorUnsealPipelineImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SectorUnsealPipeline")
+		case "spID":
+			out.Values[i] = ec._SectorUnsealPipeline_spID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "sectorNumber":
+			out.Values[i] = ec._SectorUnsealPipeline_sectorNumber(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "createTime":
+			out.Values[i] = ec._SectorUnsealPipeline_createTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "regSealProof":
+			out.Values[i] = ec._SectorUnsealPipeline_regSealProof(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "taskIdUnsealSdr":
+			out.Values[i] = ec._SectorUnsealPipeline_taskIdUnsealSdr(ctx, field, obj)
+		case "afterUnsealSdr":
+			out.Values[i] = ec._SectorUnsealPipeline_afterUnsealSdr(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "taskIdDecodeSector":
+			out.Values[i] = ec._SectorUnsealPipeline_taskIdDecodeSector(ctx, field, obj)
+		case "afterDecodeSector":
+			out.Values[i] = ec._SectorUnsealPipeline_afterDecodeSector(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "meta":
+			field := field
+
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._SectorUnsealPipeline_meta(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -62862,6 +63844,54 @@ func (ec *executionContext) marshalOSectorSummary2ᚖgithubᚗcomᚋweb3teaᚋcu
 		return graphql.Null
 	}
 	return ec._SectorSummary(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOSectorUnsealPipeline2ᚕᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorUnsealPipeline(ctx context.Context, sel ast.SelectionSet, v []*model.SectorUnsealPipeline) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOSectorUnsealPipeline2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorUnsealPipeline(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalOSectorUnsealPipeline2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSectorUnsealPipeline(ctx context.Context, sel ast.SelectionSet, v *model.SectorUnsealPipeline) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SectorUnsealPipeline(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOSnapSummary2ᚖgithubᚗcomᚋweb3teaᚋcurioᚑdashboardᚋgraphᚋmodelᚐSnapSummary(ctx context.Context, sel ast.SelectionSet, v *model.SnapSummary) graphql.Marshaler {

@@ -870,6 +870,8 @@ export type Query = {
   tasksCount: Scalars['Int']['output'];
   tasksDurationStats: Array<TaskDurationStats>;
   tasksStats?: Maybe<Array<Maybe<TaskStats>>>;
+  unsealSectors?: Maybe<Array<Maybe<SectorUnsealPipeline>>>;
+  unsealSectorsCount: Scalars['Int']['output'];
   wdpostProof?: Maybe<WdpostProofs>;
   wdpostProofs: Array<WdpostProofs>;
   wdpostProofsCount: Scalars['Int']['output'];
@@ -1203,6 +1205,19 @@ export type QueryTasksStatsArgs = {
 };
 
 
+export type QueryUnsealSectorsArgs = {
+  actor?: InputMaybe<Scalars['Address']['input']>;
+  limit: Scalars['Int']['input'];
+  offset: Scalars['Int']['input'];
+  sectorNumber?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryUnsealSectorsCountArgs = {
+  actor?: InputMaybe<Scalars['Address']['input']>;
+};
+
+
 export type QueryWdpostProofArgs = {
   deadline: Scalars['Int']['input'];
   partition: Scalars['Int']['input'];
@@ -1354,6 +1369,19 @@ export type SectorSummary = {
   active: Scalars['Int']['output'];
   failed: Scalars['Int']['output'];
   sealing: Scalars['Int']['output'];
+};
+
+export type SectorUnsealPipeline = {
+  __typename?: 'SectorUnsealPipeline';
+  afterDecodeSector: Scalars['Boolean']['output'];
+  afterUnsealSdr: Scalars['Boolean']['output'];
+  createTime: Scalars['Time']['output'];
+  meta?: Maybe<SectorMeta>;
+  regSealProof: Scalars['Int']['output'];
+  sectorNumber: Scalars['Int']['output'];
+  spID: Scalars['Address']['output'];
+  taskIdDecodeSector?: Maybe<Scalars['Int']['output']>;
+  taskIdUnsealSdr?: Maybe<Scalars['Int']['output']>;
 };
 
 export type SnapSummary = {

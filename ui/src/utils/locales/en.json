@@ -201,6 +201,18 @@
       "prove": "Prove",
       "submit": "Submit",
       "moveStorage": "Move Storage"
+    },
+    "unseal": {
+      "createTime": "Create Time",
+      "regSealProof": "Seal Proof",
+      "unsealSdr": "Unseal SDR",
+      "decodeSector": "Decode Sector",
+      "status": {
+        "label": "Status",
+        "encoding": "Unsealing",
+        "submitting": "Decoding",
+        "completed": "Completed"
+      }
     }
   },
   "dealCountSummary": {

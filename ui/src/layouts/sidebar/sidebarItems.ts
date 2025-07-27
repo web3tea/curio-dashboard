@@ -1,22 +1,22 @@
 import {
   IconBox,
   IconBrandAsana,
+  IconBrandGoogleAnalytics,
+  IconCertificate,
   IconContract,
-  IconStars,
   IconDatabase,
   IconFilterCog,
   IconHome,
+  IconSend,
   IconServer,
   IconSettings,
-  IconUsers,
-  IconSend,
-  IconCertificate,
-  IconBrandGoogleAnalytics,
-  IconShoppingCart
+  IconShoppingCart,
+  IconStars,
+  IconUsers
 } from '@tabler/icons-vue'
-import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 import { computed, ComputedRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { RouteLocationAsPathGeneric, RouteLocationAsRelativeGeneric } from 'vue-router'
 
 export interface menuItem {
   header?: string;
@@ -35,10 +35,10 @@ export interface menuItem {
   subCaption?: string;
 }
 
-export function useSidebarItems(): ComputedRef<menuItem[]>  {
+export function useSidebarItems(): ComputedRef<menuItem[]> {
   const { t } = useI18n()
 
-  const sidebarItems: ComputedRef<menuItem[]> = computed(() =>[
+  const sidebarItems: ComputedRef<menuItem[]> = computed(() => [
     { header: t('nav.Dashboard'), icon: IconHome },
     {
       title: t('nav.Overview'),
@@ -82,8 +82,8 @@ export function useSidebarItems(): ComputedRef<menuItem[]>  {
         },
         {
           title: t('nav.Unsealing'),
-          to: 'Unsealing',
-          disabled: true // todo: add Unsealing page
+          to: { name: 'Unsealing' },
+          disabled: false
         },
         {
           title: t('nav.Events'),

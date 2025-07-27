@@ -57,5 +57,6 @@
         "**/node_modules/**": true,
         "**/dist/**": true,
         "**/coverage/**": true
-    }
+    },
+    "makefile.configureOnOpen": false
 }

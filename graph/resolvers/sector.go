@@ -110,6 +110,25 @@ func (r *queryResolver) SnapSummary(ctx context.Context) (*model.SnapSummary, er
 	return r.loader.SnapSummary(ctx)
 }
 
+// UnsealSectors is the resolver for the unsealSectors field.
+func (r *queryResolver) UnsealSectors(ctx context.Context, actor *types.Address, sectorNumber *int, offset int, limit int) ([]*model.SectorUnsealPipeline, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	if actor != nil && sectorNumber != nil {
+		unseal, err := r.loader.UnsealPipeline(ctx, *actor, *sectorNumber)
+		if err != nil {
+			return nil, err
+		}
+		return []*model.SectorUnsealPipeline{unseal}, nil
+	}
+	return r.loader.UnsealPipelines(ctx, actor, offset, limit)
+}
+
+// UnsealSectorsCount is the resolver for the unsealSectorsCount field.
+func (r *queryResolver) UnsealSectorsCount(ctx context.Context, actor *types.Address) (int, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, time.Minute*5)
+	return r.loader.UnsealSectorsCount(ctx, actor)
+}
+
 // ID is the resolver for the id field.
 func (r *sectorResolver) ID(ctx context.Context, obj *model.Sector) (string, error) {
 	return fmt.Sprintf("%s:%d", obj.SpID, obj.SectorNum), nil
@@ -194,6 +213,12 @@ func (r *sectorSnapPipelineResolver) Pieces(ctx context.Context, obj *model.Sect
 	return r.loader.SnapPieces(ctx, obj.SpID, obj.SectorNumber)
 }
 
+// Meta is the resolver for the meta field on SectorUnsealPipeline.
+func (r *sectorUnsealPipelineResolver) Meta(ctx context.Context, obj *model.SectorUnsealPipeline) (*model.SectorMeta, error) {
+	cachecontrol.SetHint(ctx, cachecontrol.ScopePrivate, sectorDefaultCacheAge)
+	return r.loader.SectorMeta(ctx, obj.SpID, obj.SectorNumber)
+}
+
 // Sector returns graph.SectorResolver implementation.
 func (r *Resolver) Sector() graph.SectorResolver { return &sectorResolver{r} }
 
@@ -208,7 +233,13 @@ func (r *Resolver) SectorSnapPipeline() graph.SectorSnapPipelineResolver {
 	return &sectorSnapPipelineResolver{r}
 }
 
+// SectorUnsealPipeline returns graph.SectorUnsealPipelineResolver implementation.
+func (r *Resolver) SectorUnsealPipeline() graph.SectorUnsealPipelineResolver {
+	return &sectorUnsealPipelineResolver{r}
+}
+
 type sectorResolver struct{ *Resolver }
 type sectorLocationResolver struct{ *Resolver }
 type sectorMetaResolver struct{ *Resolver }
 type sectorSnapPipelineResolver struct{ *Resolver }
+type sectorUnsealPipelineResolver struct{ *Resolver }

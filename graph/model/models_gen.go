@@ -671,6 +671,18 @@ type SectorSummary struct {
 	Failed  int `json:"failed"`
 }
 
+type SectorUnsealPipeline struct {
+	SpID               types.Address `json:"spID"`
+	SectorNumber       int           `json:"sectorNumber"`
+	CreateTime         time.Time     `json:"createTime"`
+	RegSealProof       int           `json:"regSealProof"`
+	TaskIDUnsealSdr    *int          `json:"taskIdUnsealSdr"`
+	AfterUnsealSdr     bool          `json:"afterUnsealSdr"`
+	TaskIDDecodeSector *int          `json:"taskIdDecodeSector"`
+	AfterDecodeSector  bool          `json:"afterDecodeSector"`
+	Meta               *SectorMeta   `json:"meta"`
+}
+
 type SnapSummary struct {
 	Encoding    int `json:"encoding"`
 	Proving     int `json:"proving"`

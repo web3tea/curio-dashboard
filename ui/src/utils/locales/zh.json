@@ -201,6 +201,18 @@
       "prove": "证明",
       "submit": "提交",
       "moveStorage": "移动存储"
+    },
+    "unseal": {
+      "createTime": "创建时间",
+      "regSealProof": "封装证明类型",
+      "unsealSdr": "解封 SDR",
+      "decodeSector": "解码扇区",
+      "status": {
+        "label": "状态",
+        "encoding": "解封中",
+        "submitting": "解码中",
+        "completed": "已完成"
+      }
     }
   },
   "dealCountSummary": {

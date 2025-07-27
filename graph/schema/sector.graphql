@@ -145,6 +145,18 @@ type SnapSummary {
     completed: Int!
 }
 
+type SectorUnsealPipeline {
+    spID: Address!
+    sectorNumber: Int!
+    createTime: Time!
+    regSealProof: Int!
+    taskIdUnsealSdr: Int
+    afterUnsealSdr: Boolean!
+    taskIdDecodeSector: Int
+    afterDecodeSector: Boolean!
+    meta: SectorMeta @goField(forceResolver: true)
+}
+
 extend type Query {
     sectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [Sector] @hasRole(role: USER)
     sectorsCount(actor: Address): Int! @hasRole(role: USER)
@@ -153,6 +165,8 @@ extend type Query {
     snapSectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [SectorSnapPipeline] @hasRole(role: USER)
     snapSectorsCount(actor: Address): Int! @hasRole(role: USER)
     snapSummary: SnapSummary @hasRole(role: USER)
+    unsealSectors(actor: Address, sectorNumber: Int, offset: Int!, limit: Int!): [SectorUnsealPipeline] @hasRole(role: USER)
+    unsealSectorsCount(actor: Address): Int! @hasRole(role: USER)
 }
 
 extend type Mutation {
