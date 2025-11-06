@@ -208,10 +208,7 @@
       "unsealSdr": "Unseal SDR",
       "decodeSector": "Decode Sector",
       "status": {
-        "label": "Status",
-        "encoding": "Unsealing",
-        "submitting": "Decoding",
-        "completed": "Completed"
+        "label": "Status"
       }
     }
   },

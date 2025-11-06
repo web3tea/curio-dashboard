@@ -208,10 +208,7 @@
       "unsealSdr": "解封 SDR",
       "decodeSector": "解码扇区",
       "status": {
-        "label": "状态",
-        "encoding": "解封中",
-        "submitting": "解码中",
-        "completed": "已完成"
+        "label": "状态"
       }
     }
   },
