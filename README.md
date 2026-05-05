@@ -1,6 +1,9 @@
 
 # Curio Dashboard
 
+> This repository has been refactored and moved to [@strahe/cuview](https://github.com/strahe/cuview). For ongoing development, releases, and installation instructions, please visit the new repository. This repository is kept for archival and reference purposes.
+
+
 [![Build Status](https://github.com/web3tea/curio-dashboard/workflows/CI/badge.svg)](https://github.com/web3tea/curio-dashboard/actions) [![Go Report Card](https://goreportcard.com/badge/github.com/web3tea/curio-dashboard)](https://goreportcard.com/report/github.com/web3tea/curio-dashboard) [![CodeFactor](https://www.codefactor.io/repository/github/web3tea/curio-dashboard/badge)](https://www.codefactor.io/repository/github/web3tea/curio-dashboard) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/web3tea/curio-dashboard)](https://github.com/web3tea/curio-dashboard/releases)
 
 ## Overview
