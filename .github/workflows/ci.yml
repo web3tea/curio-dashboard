@@ -2,9 +2,12 @@ name: CI
 
 on:
   push:
+    branches: ['**']
+    tags: ['v*.*.*']
   pull_request:
-  release:
-    types: [ published ]
+
+  repository_dispatch:
+    types: [release-created]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,6 +22,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  # Code quality and linting jobs
   eslint:
     name: eslint
     runs-on: ubuntu-24.04
@@ -88,8 +92,12 @@ jobs:
             exit 1
           fi
 
+  # Main build and deploy job
   build:
     name: build
+    needs: [eslint, i18n-check, golangci-lint, gen-check]
+    # Run if all check jobs succeeded/skipped, or if it's a tag push (regardless of check results)
+    if: success() || (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -102,24 +110,31 @@ jobs:
       - run: |
           make go-dist
           cp curio-dashboard curio-dashboard-linux-amd64
+
+      # Upload the release asset if this was triggered by a tag push or repository_dispatch
       - name: Upload release asset
-        if: github.event_name == 'release'
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'repository_dispatch'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ github.ref_name }} curio-dashboard-linux-amd64
+          if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
+            gh release upload ${{ github.event.client_payload.version }} curio-dashboard-linux-amd64
+          else
+            gh release upload ${GITHUB_REF#refs/*/} curio-dashboard-linux-amd64
+          fi
 
+      # Docker build and push section - only for main branch, tags, or repository dispatch
       - name: Set up QEMU
-        if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'repository_dispatch'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'repository_dispatch'
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to the Container registry
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'repository_dispatch'
         uses: docker/login-action@v3
-        if: github.event_name == 'release' || github.ref == 'refs/heads/main'
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -127,7 +142,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'repository_dispatch'
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
@@ -141,7 +156,7 @@ jobs:
             type=ref,event=branch
 
       - name: Build and push Docker
-        if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'repository_dispatch'
         uses: docker/build-push-action@v6
         with:
           context: .
